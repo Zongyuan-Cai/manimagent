@@ -1,6 +1,7 @@
 # Local configuration and credentials
 .env
 .env.*
+config.yaml
 !.env.example
 !.env.*.example
 

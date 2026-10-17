@@ -4,7 +4,7 @@
 
 本文确定总体计划第一阶段的 MVP 实施边界。核心体验是：用户在一个文本框中输入学习内容，系统自动规划、生成、渲染并检查动画，最后提供可播放的视频。
 
-当前为设计文档，尚未实现或测得实际生成效果。本文的接口、默认值与任务规则作为首轮实现基线；涉及性能和质量的参数在样例验证后调整。
+本文为 0.1.0 实现基线，已有代码与自动化、真实渲染验证，详见[MVP 验证记录](MVP验证记录.md)。真实模型尚待配置，暂不报告其生成质量；涉及性能和质量的参数在实测后调整。
 
 ## 1 产品范围
 
@@ -120,12 +120,12 @@ VLM 输入包括场景目标、题设与关键点、四张带时间标签的采�
 | 对象 | 必需信息 | 作用 |
 |---|---|---|
 | GenerationRequest | text | 唯一外部生成输入 |
-| LessonPlan | title、goal、given_facts、required_points、scenes | 固定题设、目标与场景顺序 |
+| LessonPlan | title、goal、given_facts、example_notes、required_points、scenes | 固定题设、目标与场景顺序 |
 | SceneSpec | scene_id、class_name、goal、covered_point_ids、steps、formulas | 约束单场景内容与画面 |
 | SceneStep | step_id、explanation、visual_action | 关联文字解释和视觉动作，为后续配音留依据 |
-| RenderResult | attempt_id、status、error_category、artifact_ids、duration | 记录执行结果与产物 |
+| RenderResult | status、error_category、video_path、frames、timestamps、duration | 记录执行结果；候选保存 attempt_id，产物由任务清单登记 |
 | ReviewReport | review_status、decision、scores、issues、required_point_coverage | 记录检查有效性与具体问题 |
-| RunManifest | job_id、status、stage、plan_revision、scene_results、artifact_ids、usage | 对应当前任务、候选和最终结果 |
+| RunManifest | job_id、status、stage、plan_revision、scene_results、artifacts、usage | 对应当前任务、候选和最终结果 |
 
 required_points 与 covered_point_ids 使用稳定标识。每个候选绑定 plan_revision、scene_id、代码与检查报告，不允许把某版视频与另一版代码或评分混用。
 
@@ -189,16 +189,18 @@ src/manimagent/
   api.py                 本地网页和任务 API
   config.py              模型角色、质量与预算配置
   schemas.py             输入、规划、检查与任务契约
-  providers/             文本与视觉模型适配
-  planning/              规划与内容一致性检查
-  generation/            场景编码与修订
-  rendering/             隔离渲染、错误分类和抽帧
-  review/                执行与视觉检查
-  workflows/             主流程和场景循环
-  artifacts/             候选、任务清单和视频合成
+  providers.py           文本与视觉模型适配
+  agents.py              规划、编码、修订与检查角色
+  rendering.py           宿主侧隔离渲染协议
+  renderer_driver.py     容器内渲染、抽帧与合成
+  workflow.py            主流程和 LangGraph 场景循环
+  artifacts.py           任务清单与产物访问
+  budget.py              时间、调用次数与使用量预算
+  jobs.py                单 Worker 与有界等待队列
+  web/                   HTML CSS JavaScript 页面
 ```
 
-这是拟实施目录，本次不创建空实现。MVP 不引入数据库、向量检索、独立消息队列或学习者模块。模型密钥只存在于服务配置中，渲染容器不获得密钥、宿主目录或网络访问能力。
+当前以模块文件组织实现。运行方式见[运行与配置](运行与配置.md)。MVP 不引入数据库、向量检索、独立消息队列或学习者模块。模型密钥只存在于服务配置中，渲染容器只挂载本次渲染工作目录与只读驱动脚本，不获得密钥、其他宿主目录或网络访问能力。
 
 ## 9 产物与验收
 

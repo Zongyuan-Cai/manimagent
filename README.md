@@ -4,7 +4,27 @@
 
 项目以 Manim 动画生成为基础，逐步加入学习材料解析、配音与音画同步、学习者长期记忆、个性化讲解规划和 Web 交互，形成从材料输入到学习反馈更新的完整流程。
 
-当前处于设计阶段，仓库包含总体计划和阶段设计文档，尚未提供可运行应用。
+当前提供第一阶段的 0.1.0 MVP：纯文本输入、讲解规划、逐场景 Manim 生成、执行纠错、VLM 检查与修订、正式渲染及视频合成，包含本地网页、任务 API 与 CLI。学习记忆和配音按后续阶段推进。
+
+## 快速运行
+
+需要 Python 3.12、uv 和运行中的 Docker Engine；Windows 使用 Docker Desktop 的 Linux 容器模式。
+
+```bash
+uv sync --frozen --extra dev
+docker build -f docker/renderer.Dockerfile -t manimagent-renderer:0.1.0 .
+```
+
+复制 .env.example 为 .env，填写文本模型与视觉模型的接口地址、模型名和密钥。需要修改预算或角色配置时，再复制 config.example.yaml 为 config.yaml。
+
+```bash
+uv run manimagent doctor
+uv run manimagent serve
+```
+
+打开 http://127.0.0.1:8000。Windows 已有项目环境时，也可直接运行 .\.venv\Scripts\manimagent.exe serve。完整说明见[运行与配置](docs/运行与配置.md)。
+
+不配置模型也可运行 uv run manimagent smoke，验证真实渲染环境。测试范围和当前限制见[MVP 验证记录](docs/MVP验证记录.md)。
 
 ## 开发路线
 
@@ -21,6 +41,8 @@
 
 ## 文档入口
 
+- [运行与配置](docs/运行与配置.md)：安装、模型配置、网页、CLI 和测试。
+- [MVP 验证记录](docs/MVP验证记录.md)：自动化测试、真实渲染与尚未验证的范围。
 - [第一版 MVP 设计](docs/MVP设计.md)：纯文本输入、生成流程、接口、任务状态与验收规则。
 - [文档目录](docs/README.md)：阅读顺序、文档职责与状态。
 - [总体开发计划](docs/总体开发计划.md)：项目目标、六个总体阶段与验收标志。
