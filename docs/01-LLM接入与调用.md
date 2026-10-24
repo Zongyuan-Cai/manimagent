@@ -1,10 +1,10 @@
-# 多 LLM 提供商接入、配置与能力适配设计
+# LLM 接入与调用
 
-更新日期：2026年10月23日
+更新日期：2026年10月24日
 
-状态：设计草案，尚未实现。本文定义官方服务、第三方服务、自建服务及自定义端点的统一接入边界，与[模块解耦与接口设计](模块解耦与接口设计.md)共同约束后续实现。当前 0.1.0 的实际配置方式仍见[运行与配置](运行与配置.md)。
+状态：当前 0.1.0 支持可配置的 Chat Completions；本文的多协议、连接管理和能力检测为待实现设计。当前实际配置见 [运行与配置](运行与配置.md)，跨模块规则见 [文档总览](index.md)。
 
-## 1 问题与当前实现
+## 1 职责与边界
 
 用户应能选择提供商、模型及各阶段使用的配置，也能添加没有预设的服务。适配结果必须覆盖文本、图片、文件、结构化输出、错误及使用量，不能只让一条简单文本请求成功。
 
@@ -24,22 +24,18 @@
 
 官方与非官方是服务来源信息。实际协议、当前端点与模型能力共同决定调用方式；第三方服务也可能暴露多个不同协议，同名模型在不同服务上的能力不能直接互相继承。
 
-## 2 从 CC Switch 借鉴的内容
-
-本次查阅 [farion1231/cc-switch](https://github.com/farion1231/cc-switch)，固定参考提交为 [d8983bb10b82a1ccc15ae5f44ab070902623e990](https://github.com/farion1231/cc-switch/commit/d8983bb10b82a1ccc15ae5f44ab070902623e990)。以下是对该提交的观察与本项目的设计选择，不能当作对任意网关兼容性的保证。
-
-| 已查阅的实现或说明 | 得到的启发 | ManimAgent 的采用方式 |
+| 对象 | 负责的问题 | 不承担的职责 |
 |---|---|---|
-| [提供商与元信息](https://github.com/farion1231/cc-switch/blob/d8983bb10b82a1ccc15ae5f44ab070902623e990/src-tauri/src/provider.rs)、[预设配置](https://github.com/farion1231/cc-switch/blob/d8983bb10b82a1ccc15ae5f44ab070902623e990/src/config/codexProviderPresets.ts) | 预设、自定义实例、API 格式与完整 URL 等信息可以分别表达 | 预设是可编辑的起点，实例使用同一配置结构，能力另行验证 |
-| [ProviderAdapter](https://github.com/farion1231/cc-switch/blob/d8983bb10b82a1ccc15ae5f44ab070902623e990/src-tauri/src/proxy/providers/adapter.rs) | URL、鉴权和请求响应转换有统一接口 | 业务请求先归一化，再由协议适配器编码和解码 |
-| [鉴权策略](https://github.com/farion1231/cc-switch/blob/d8983bb10b82a1ccc15ae5f44ab070902623e990/src-tauri/src/proxy/providers/auth.rs) | API 格式与鉴权方式需要分别处理 | 同一种协议允许配置不同鉴权策略及必要版本头 |
-| [模型映射](https://github.com/farion1231/cc-switch/blob/d8983bb10b82a1ccc15ae5f44ab070902623e990/src-tauri/src/proxy/model_mapper.rs) | 展示模型与实际请求模型需要区分 | 使用显式绑定，保留请求模型与上游报告模型 |
-| [路由器](https://github.com/farion1231/cc-switch/blob/d8983bb10b82a1ccc15ae5f44ab070902623e990/src-tauri/src/proxy/provider_router.rs)、[故障转移说明](https://github.com/farion1231/cc-switch/blob/d8983bb10b82a1ccc15ae5f44ab070902623e990/docs/user-manual/zh/4-proxy/4.3-failover.md) | 候选顺序、健康状态与熔断可以单独维护 | 首版固定主连接和有界重试，跨提供商切换由配置明确开启 |
-| [连通检测说明](https://github.com/farion1231/cc-switch/blob/d8983bb10b82a1ccc15ae5f44ab070902623e990/docs/user-manual/zh/4-proxy/4.5-model-test.md) | 该检测只验证地址可达，不验证密钥和模型 | 分开呈现网络可达、文本调用、结构化输出、图片和文件测试结果 |
+| ProviderConnection | 请求发送到哪里，用什么协议和凭据 | 不决定教材内容或教学策略 |
+| ModelBinding | 通过该连接调用哪个模型，使用哪些参数 | 不把展示别名当成已验证模型身份 |
+| RoleProfile | 本次阶段和角色选择哪些模型绑定 | 不修改全局默认连接或其他任务 |
+| CapabilityRecord | 当前组合支持什么，有什么验证依据 | 不把一次文本成功推广成全功能成功 |
+| ProtocolAdapter | 请求、响应、文件引用及错误如何转换 | 不吞掉图片、公式、来源或业务约束 |
+| 调用执行器 | 传输、超时、预算、重试及调用记录 | 不重新生成教学内容或绕开上层校验 |
 
-CC Switch 面向多个客户端的配置切换与本地路由，ManimAgent 直接发起业务 API 请求。本项目优先采用其配置分层、适配接口和诊断思路；客户端配置改写、账号登录接管、完整代理服务与所有协议互转不作为本项目的前置条件。参考代码与手册，预设目录中的商业宣传不作为服务质量或模型能力证据。
+一条业务调用只经过一层实际协议适配：内部统一请求直接转换为目标协议。更换 SDK 可以作为适配器内部实现选择，不能改变上层 MaterialIR、Answer 或 VideoResult 的含义。
 
-## 3 接入架构与职责
+## 2 处理流程
 
 ```mermaid
 flowchart TD
@@ -56,20 +52,9 @@ flowchart TD
     D --> LOG[(调用记录与使用量)]
 ```
 
-| 对象 | 负责的问题 | 不承担的职责 |
-|---|---|---|
-| ProviderConnection | 请求发送到哪里，用什么协议和凭据 | 不决定教材内容或教学策略 |
-| ModelBinding | 通过该连接调用哪个模型，使用哪些参数 | 不把展示别名当成已验证模型身份 |
-| RoleProfile | 本次阶段和角色选择哪些模型绑定 | 不修改全局默认连接或其他任务 |
-| CapabilityRecord | 当前组合支持什么，有什么验证依据 | 不把一次文本成功推广成全功能成功 |
-| ProtocolAdapter | 请求、响应、文件引用及错误如何转换 | 不吞掉图片、公式、来源或业务约束 |
-| 调用执行器 | 传输、超时、预算、重试及调用记录 | 不重新生成教学内容或绕开上层校验 |
+## 3 输入输出
 
-一条业务调用只经过一层实际协议适配：内部统一请求直接转换为目标协议。更换 SDK 可以作为适配器内部实现选择，不能改变上层 MaterialIR、Answer 或 VideoResult 的含义。
-
-## 4 连接、模型与角色配置
-
-### 4.1 ProviderConnection
+### ProviderConnection
 
 一个连接表示一个具体服务端点、协议与凭据绑定。同一运营方同时提供 Chat Completions 和 Responses 时，可以建立两个连接并在界面分组展示。
 
@@ -96,7 +81,7 @@ operation_urls 模式使用配置中的完整地址，不再自动拼接生成�
 
 凭据首版通过环境变量引用，例如 `{source: "env", name: "MANIMAGENT_GATEWAY_API_KEY"}`。公共查询只返回已配置状态和脱敏引用，执行时再解析秘密。无鉴权仅用于用户明确配置的连接；客户端订阅登录、第三方 API Key 与本项目 API 凭据分别建模，首版不读取或搬用其他客户端的登录文件。
 
-### 4.2 ModelBinding
+### ModelBinding
 
 | 字段 | 类型与默认值 | 约束 |
 |---|---|---|
@@ -112,7 +97,7 @@ operation_urls 模式使用配置中的完整地址，不再自动拼接生成�
 
 统一参数不直接等同于厂商参数。max_output_tokens 等字段由适配器转换；temperature、推理预算、JSON 约束或工具调用若未实现转换或未确认支持，应明确拒绝或使用配置中已经声明的兼容策略，不能静默删除。
 
-### 4.3 RoleProfile 与配置快照
+### RoleProfile 与配置快照
 
 阶段公开请求继续使用 parser_profile_id、answer_profile_id 或 video_profile_id，由服务端阶段配置解析到角色绑定。
 
@@ -126,7 +111,7 @@ RoleProfile 为 `{profile_id, revision, roles}`，revision 从 1 开始；roles 
 
 任务接受时固定角色绑定、连接 revision、协议适配器版本、兼容规则版本、模型参数及能力记录引用。修改全局默认配置只影响新任务。凭据值在发送前解析且不进入日志；快照记录凭据引用，轮换凭据不改变该任务的目标服务或协议。凭据被撤销时允许任务明确失败，不能自动换成另一账户。
 
-### 4.4 配置示例
+### 配置示例
 
 下例为未来配置草案，域名、模型名和能力声明均为占位示例，当前 config.py 尚不接受这些字段。预设连接和自定义连接使用相同结构。
 
@@ -172,22 +157,7 @@ role_profiles:
         allow_failover: false
 ```
 
-## 5 协议适配器与统一调用契约
-
-### 5.1 协议家族
-
-| 适配器 | 需要独立处理的内容 | 依据 |
-|---|---|---|
-| openai_chat | messages、choices、结构化输出参数及图像或文件消息 | [OpenAI 官方接口差异说明](https://developers.openai.com/api/docs/guides/migrate-to-responses) |
-| openai_responses | input、分类型 output、结构化输出配置、文件和状态 | [OpenAI 官方接口差异说明](https://developers.openai.com/api/docs/guides/migrate-to-responses) |
-| anthropic_messages | Messages 请求响应内容块、版本头及可配置鉴权 | [Claude API overview](https://platform.claude.com/docs/en/api/overview) |
-| gemini_generate_content | contents、parts、候选结果和模型相关路径 | [Gemini generateContent](https://ai.google.dev/api/generate-content) |
-
-上述为待实现的协议目录，不代表当前已经支持，也不代表协议名称保证所有扩展功能可用。官方协议版本和网关兼容范围需要在对应适配器实施时复核。文件输入的支持还依赖端点与格式，例如 [OpenAI 文件输入说明](https://developers.openai.com/api/docs/guides/file-inputs)明确区分接口和文件类型。
-
-新增提供商若满足已支持协议，只新增连接和模型绑定。新增协议或特殊签名才扩展适配器。自定义配置只选择已注册的规则和受限参数，不在 YAML 中执行任意 Python、JavaScript 或请求改写脚本。
-
-### 5.2 内部调用对象
+### 内部调用对象
 
 ```text
 LLMRequest:
@@ -230,7 +200,22 @@ JSON Schema 原生约束、JSON 对象模式与提示词后校验分别记录。
 
 调用失败统一抛出携带 LLMError 的异常，字段为 `{code, message, retryable, retry_after_seconds, trace_id, details}`，等待时间未知为 null，details 默认 `{}`。details 可含脱敏的上游状态码和请求标识，不能承载原始鉴权信息。首批分类包括 provider_auth_error、provider_quota_exceeded、provider_rate_limited、provider_unavailable、provider_timeout、model_unavailable、capability_unsupported、invalid_provider_response、output_truncated 与 budget_exceeded。材料解析模块将文件读取能力问题映射为既有 unsupported_file_input；其余分类按业务需要写入 v2 Error，不让业务层解析厂商原始错误体。
 
-## 6 能力记录与实际验证
+## 4 实现方案
+
+### 协议家族
+
+| 适配器 | 需要独立处理的内容 | 依据 |
+|---|---|---|
+| openai_chat | messages、choices、结构化输出参数及图像或文件消息 | [OpenAI 官方接口差异说明](https://developers.openai.com/api/docs/guides/migrate-to-responses) |
+| openai_responses | input、分类型 output、结构化输出配置、文件和状态 | [OpenAI 官方接口差异说明](https://developers.openai.com/api/docs/guides/migrate-to-responses) |
+| anthropic_messages | Messages 请求响应内容块、版本头及可配置鉴权 | [Claude API overview](https://platform.claude.com/docs/en/api/overview) |
+| gemini_generate_content | contents、parts、候选结果和模型相关路径 | [Gemini generateContent](https://ai.google.dev/api/generate-content) |
+
+上述为待实现的协议目录，不代表当前已经支持，也不代表协议名称保证所有扩展功能可用。官方协议版本和网关兼容范围需要在对应适配器实施时复核。文件输入的支持还依赖端点与格式，例如 [OpenAI 文件输入说明](https://developers.openai.com/api/docs/guides/file-inputs)明确区分接口和文件类型。
+
+新增提供商若满足已支持协议，只新增连接和模型绑定。新增协议或特殊签名才扩展适配器。自定义配置只选择已注册的规则和受限参数，不在 YAML 中执行任意 Python、JavaScript 或请求改写脚本。
+
+### 能力记录与实际验证
 
 CapabilityRecord 以连接配置 revision、协议与适配器版本、模型绑定及其 revision、凭据作用域标识为范围。不同区域、套餐、网关、凭据或兼容规则的结果不直接共用；作用域标识只存服务端引用，不存密钥值。
 
@@ -260,7 +245,7 @@ CapabilityRecord 以连接配置 revision、协议与适配器版本、模型绑
 
 检测范围由用户选择，真实调用计入检测预算；不自动向全部预设提供商发送用户学习材料。检测失败按网络、鉴权、模型不可用、功能不支持、内容未被保留等原因记录，而非统一显示“厂商不可用”。
 
-## 7 原件、本系统文件与厂商文件引用
+### 原件、本系统文件与厂商文件引用
 
 本系统 FileAsset 始终是可复用的原件与派生资产。原生调用需要文件上传时，由解析模块请求 prepare_file，记录上传、处理完成或失效状态，再用于目标调用。
 
@@ -270,14 +255,14 @@ ProviderFileRef 为内部对象，至少包含 provider_id、连接 revision、�
 
 原生文件读取成功后，仍必须转为本系统 MaterialIR 并校验，再进入独立回答模块。下游不持有厂商文件 ID、SDK 对象或需要继续存在的厂商会话。
 
-## 8 重试、解析回退与跨提供商切换
+### 重试、解析回退与跨提供商切换
 
 三种策略分别配置，避免一次异常引起整个任务重新生成或材料被转到未选定的服务。
 
 | 策略 | 所属层 | 默认行为 |
 |---|---|---|
 | 同一连接重试 | 调用执行器 | 对明确暂时性错误在剩余预算内重试 |
-| 原生文件转本地解析 | 材料解析模块 | auto 模式下仅对已识别的文件能力不支持进行回退 |
+| 原生文件转本地解析 | [材料解析模块](02-材料输入与解析.md) | auto 模式下仅对已识别的文件能力不支持进行回退 |
 | 切换提供商或模型 | 角色路由 | 默认关闭；仅使用 profile 中明确列出的候选 |
 
 | 错误类别 | 处理规则 |
@@ -296,7 +281,7 @@ ProviderFileRef 为内部对象，至少包含 provider_id、连接 revision、�
 
 按任务固定实验配置时关闭跨提供商切换。启用切换的任务保存实际使用的绑定、候选顺序和每次失败原因，评测按实际路径统计。
 
-## 9 使用量、日志与可追溯性
+### 使用量、日志与可追溯性
 
 每次调用记录 trace_id、job_id、阶段与角色、配置快照、连接与模型绑定、请求模型、上游报告模型、开始结束时间、HTTP 或业务错误码、重试与回退原因。上游报告模型标明为服务自报信息，不能写成已经验证的真实模型身份。
 
@@ -306,7 +291,7 @@ ProviderFileRef 为内部对象，至少包含 provider_id、连接 revision、�
 
 连接与能力诊断默认展示必要的脱敏元信息。API Key、鉴权头和远端临时访问令牌不进入公共 Job、错误消息、配置导出或渲染容器。模型响应原文如用于调试，按本项目产物访问规则保存。
 
-## 10 用户选择与管理接口边界
+### 用户选择与管理接口边界
 
 用户可以从预设创建连接，也可以选择“自定义”，显式填写协议、地址、凭据引用和模型名称。预设只负责初始化，修改后生成实例新 revision，预设目录更新不覆盖已有实例。切换提供商时仅更新连接或角色引用，保留其他阶段的配置。
 
@@ -331,9 +316,24 @@ ProviderFileRef 为内部对象，至少包含 provider_id、连接 revision、�
 
 探测任务沿用 v2 Job 的状态及错误封装，扩展 kind 为 probe，完成时 result 为 `{type: "probe_report", id}`，增加 `GET /api/v2/probe-reports/{id}` 获取 ProbeReport。报告包含 binding_id、配置 revision、各 scope 的状态、证据与脱敏错误；不为每次连通检测创建业务 MaterialIR 或 Answer。
 
-## 11 实施顺序与验收
+### 从 CC Switch 借鉴的内容
 
-本次仅补充设计文档，不修改现有运行逻辑。后续建议顺序：
+既有设计参考 [farion1231/cc-switch](https://github.com/farion1231/cc-switch)，固定参考提交为 [d8983bb10b82a1ccc15ae5f44ab070902623e990](https://github.com/farion1231/cc-switch/commit/d8983bb10b82a1ccc15ae5f44ab070902623e990)。以下是对该提交的观察与本项目的设计选择，不能当作对任意网关兼容性的保证。
+
+| 已查阅的实现或说明 | 得到的启发 | ManimAgent 的采用方式 |
+|---|---|---|
+| [提供商与元信息](https://github.com/farion1231/cc-switch/blob/d8983bb10b82a1ccc15ae5f44ab070902623e990/src-tauri/src/provider.rs)、[预设配置](https://github.com/farion1231/cc-switch/blob/d8983bb10b82a1ccc15ae5f44ab070902623e990/src/config/codexProviderPresets.ts) | 预设、自定义实例、API 格式与完整 URL 等信息可以分别表达 | 预设是可编辑的起点，实例使用同一配置结构，能力另行验证 |
+| [ProviderAdapter](https://github.com/farion1231/cc-switch/blob/d8983bb10b82a1ccc15ae5f44ab070902623e990/src-tauri/src/proxy/providers/adapter.rs) | URL、鉴权和请求响应转换有统一接口 | 业务请求先归一化，再由协议适配器编码和解码 |
+| [鉴权策略](https://github.com/farion1231/cc-switch/blob/d8983bb10b82a1ccc15ae5f44ab070902623e990/src-tauri/src/proxy/providers/auth.rs) | API 格式与鉴权方式需要分别处理 | 同一种协议允许配置不同鉴权策略及必要版本头 |
+| [模型映射](https://github.com/farion1231/cc-switch/blob/d8983bb10b82a1ccc15ae5f44ab070902623e990/src-tauri/src/proxy/model_mapper.rs) | 展示模型与实际请求模型需要区分 | 使用显式绑定，保留请求模型与上游报告模型 |
+| [路由器](https://github.com/farion1231/cc-switch/blob/d8983bb10b82a1ccc15ae5f44ab070902623e990/src-tauri/src/proxy/provider_router.rs)、[故障转移说明](https://github.com/farion1231/cc-switch/blob/d8983bb10b82a1ccc15ae5f44ab070902623e990/docs/user-manual/zh/4-proxy/4.3-failover.md) | 候选顺序、健康状态与熔断可以单独维护 | 首版固定主连接和有界重试，跨提供商切换由配置明确开启 |
+| [连通检测说明](https://github.com/farion1231/cc-switch/blob/d8983bb10b82a1ccc15ae5f44ab070902623e990/docs/user-manual/zh/4-proxy/4.5-model-test.md) | 该检测只验证地址可达，不验证密钥和模型 | 分开呈现网络可达、文本调用、结构化输出、图片和文件测试结果 |
+
+CC Switch 面向多个客户端的配置切换与本地路由，ManimAgent 直接发起业务 API 请求。本项目优先采用其配置分层、适配接口和诊断思路；客户端配置改写、账号登录接管、完整代理服务与所有协议互转不作为本项目的前置条件。参考代码与手册，预设目录中的商业宣传不作为服务质量或模型能力证据。
+
+## 5 当前状态与待办
+
+本次文档迁移保留现有运行逻辑。实施顺序由 [开发计划](开发计划.md) 统筹，本模块的待办为：
 
 1. 把当前 ChatProvider 包装为 openai_chat 适配器，引入 ProviderConnection、ModelBinding 和配置快照；旧 models/roles 配置经适配继续可用。
 2. 拆出统一响应、错误和使用量；增加文本调用及结构化输出诊断，先验证自定义 Chat 兼容端点。
@@ -359,4 +359,4 @@ ProviderFileRef 为内部对象，至少包含 provider_id、连接 revision、�
 | 显式跨提供商切换 | 候选满足能力要求，文件重新准备，累计预算且不混合半份输出 |
 | 旧 MVP 与独立阶段 | 旧配置和接口可用，上传或本地解析不依赖全套模型与渲染服务 |
 
-[返回文档目录](README.md) · [模块解耦与接口设计](模块解耦与接口设计.md) · [技术栈与整体设计](技术栈与整体设计.md)
+[返回文档总览](index.md) · [材料输入与解析](02-材料输入与解析.md)
