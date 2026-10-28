@@ -1,28 +1,46 @@
 # LLM 接入与调用
 
-更新日期：2026年10月24日
+更新日期：2026年10月28日
 
 状态：当前 0.1.0 支持可配置的 Chat Completions；本文的多协议、连接管理和能力检测为待实现设计。当前实际配置见 [运行与配置](运行与配置.md)，跨模块规则见 [文档总览](index.md)。
+
+本文统一维护设计思想、配置对象、调用契约、实施步骤与开源实现依据。上游实现通过固定提交和具体代码段链接引用，不直接复制源码。
 
 ## 1 职责与边界
 
 用户应能选择提供商、模型及各阶段使用的配置，也能添加没有预设的服务。适配结果必须覆盖文本、图片、文件、结构化输出、错误及使用量，不能只让一条简单文本请求成功。
 
-当前 `config.py` 的 ModelConfig 支持 base_url、model、api_key_env、json_mode、token_parameter 与 max_output_tokens，roles 可指定不同模型配置。`providers.py` 的 ChatProvider 仍固定拼接 `/chat/completions`，使用 Bearer 鉴权、Chat Completions 消息和 choices 响应结构。这是单一协议的可配置连接，尚不是多协议提供商适配层。
+### 当前实现
 
-需要独立处理以下差异：
+当前实现已经支持按角色选择模型，但连接信息、模型参数和鉴权仍集中在同一条模型配置中：
 
-| 维度 | 示例 | 设计要求 |
+| 当前代码 | 已有能力 | 下一步需要拆开的内容 |
 |---|---|---|
-| 服务运营方 | 模型官方、云平台、聚合或中转、自建服务 | 记录真实请求目标，分类只用于展示和配置管理 |
-| API 协议 | Chat Completions、Responses、Messages、Gemini Native | 选择明确的协议适配器 |
-| 地址规则 | 带版本前缀的根地址、自定义路径、完整请求 URL | 按操作构建地址，避免重复或丢失路径 |
-| 鉴权与请求头 | Bearer、API Key 请求头、自定义请求头、无鉴权 | 与协议分别配置，由服务端注入 |
-| 模型标识 | 官方名称、网关别名、带前缀的部署名 | 原样传递实际标识，不按名称猜模型能力 |
-| 功能支持 | 文本、视觉、文档输入、JSON、流式、工具调用 | 按连接、模型和具体操作记录能力 |
-| 失败与计量 | 限流、额度不足、截断、空输出、用量缺失 | 归一化原因并执行有界策略 |
+| `src/manimagent/config.py` 的 `ModelConfig` | `base_url`、`model`、`api_key_env`、JSON 模式与 token 参数 | 连接、协议、鉴权策略、模型绑定与兼容规则 |
+| `Settings.model_for()` | `roles` 引用模型配置，默认使用 text 或 vision | 保留业务角色，改为解析模型绑定 |
+| `ChatProvider._post()` | 使用 httpx，统一超时，发送 Bearer 请求头 | 接收已解析的传输配置，不再固定一种鉴权 |
+| `ChatProvider.complete()` | Chat 消息、图片 data URL、JSON 校验、预算与有限重试 | 把协议编码、响应解码与调用执行职责分开 |
 
-官方与非官方是服务来源信息。实际协议、当前端点与模型能力共同决定调用方式；第三方服务也可能暴露多个不同协议，同名模型在不同服务上的能力不能直接互相继承。
+当前 `base_url` 固定追加 `/chat/completions`，配置检查与请求执行均要求存在 API key。因此，当前能够配置第三方 Chat 兼容接口，但不能据此认定已支持 Responses、Messages、自定义鉴权或无鉴权服务。
+
+### 主要设计思想
+
+| 设计思想 | 在 ManimAgent 中的含义 | 解决的问题 |
+|---|---|---|
+| 服务来源与 API 协议分开 | `origin_type` 描述来源，`protocol` 选择适配器 | 第三方提供的 Claude 可以使用 Chat 协议，同一网关也可以提供多个协议 |
+| 连接与模型分开 | `ProviderConnection` 管地址和凭据，`ModelBinding` 管远端模型和参数 | 多个模型共用一个连接；相同模型名通过不同网关时保持独立 |
+| 业务角色只引用绑定 | `RoleProfile` 指定规划、编程、视觉检查等角色使用哪个绑定 | 更换厂商时不改业务流程，也不覆盖其他角色 |
+| 鉴权与消息协议分开 | 同一协议允许 Bearer、指定 API Key 头或无鉴权 | 不要求所有 OpenAI 兼容服务都使用同一种凭据形式 |
+| 地址按操作构造 | 根地址、自定义前缀与完整操作 URL 分别处理 | 避免重复版本和丢失租户路径 |
+| 配置保存引用，调用时解析凭据 | 配置保存 `credential_ref`，发送前读取对应环境变量 | 凭据轮换不需要复制模型配置，任务快照与日志不保存密钥值 |
+| 标准协议之外保留兼容规则 | 用版本化的 `compatibility_profile` 表达已验证差异 | 处理 token 参数、JSON、角色及流式行为差异 |
+| 能力声明与验证结果分开 | 模型声明、探测与运行证据分别记录 | 文本成功不能证明视觉、文件或工具调用可用 |
+| 失败与计量统一处理 | 归一化鉴权、限流、超时、截断及缺失用量 | 业务层执行一致的预算和失败策略 |
+| 第三方与官方走同一配置流程 | 预设负责填默认值，自定义连接使用相同契约 | 新增兼容服务通常只需配置，无需增加厂商品牌分支 |
+
+新增一种符合已有协议的服务，主要是增加连接和模型绑定。新增不兼容的协议、签名或令牌交换，才需要增加对应实现。厂商预设不作为可信模型身份或功能支持的证明。
+
+### 模块边界
 
 | 对象 | 负责的问题 | 不承担的职责 |
 |---|---|---|
@@ -75,11 +93,7 @@ flowchart TD
 | proxy_ref | string 或 null，默认 null | 显式选择出站网络代理配置 |
 | enabled | boolean，默认 true | 关闭后不接受新任务使用；已开始调用按快照处理 |
 
-api_root 模式由对应协议适配器构造操作路径。示例：`https://gateway.example/v1` 与 Chat 生成路径组合得到 `https://gateway.example/v1/chat/completions`。不能再次附加 `/v1`，也不能用覆盖根路径的 URL 拼接方式丢掉 `/team-a/v1` 等前缀。
-
-operation_urls 模式使用配置中的完整地址，不再自动拼接生成路径。未配置的文件或模型列表操作视为未知或未提供，不能从生成 URL 猜测。路径模板及模型名编码由已注册适配器处理；云服务需要特殊签名、区域或部署参数时，增加专用适配器和经过校验的配置契约。
-
-凭据首版通过环境变量引用，例如 `{source: "env", name: "MANIMAGENT_GATEWAY_API_KEY"}`。公共查询只返回已配置状态和脱敏引用，执行时再解析秘密。无鉴权仅用于用户明确配置的连接；客户端订阅登录、第三方 API Key 与本项目 API 凭据分别建模，首版不读取或搬用其他客户端的登录文件。
+地址模式、鉴权头与凭据解析的具体行为见第 4 节。预设连接和自定义连接使用相同契约，不能从协议名称推断鉴权方式。
 
 ### ModelBinding
 
@@ -215,6 +229,57 @@ JSON Schema 原生约束、JSON 对象模式与提示词后校验分别记录。
 
 新增提供商若满足已支持协议，只新增连接和模型绑定。新增协议或特殊签名才扩展适配器。自定义配置只选择已注册的规则和受限参数，不在 YAML 中执行任意 Python、JavaScript 或请求改写脚本。
 
+### 适配器组织与底层库选择
+
+用注册表把 `protocol` 映射到应用已有的适配器；厂商预设只初始化连接和模型绑定。首版复用现有 httpx 实现，将 ChatProvider 包装为 openai_chat 适配器，逐步提取协议编码、传输和响应归一化职责。
+
+若后续采用 LiteLLM 或厂商 SDK，仍由适配器封装，不让业务模块依赖其消息结构，也不要求另建代理服务器。引入前验证超时、内部重试、使用量、图片输入及错误映射。若缓存客户端，缓存必须区分目标地址、凭据作用域和配置版本。
+
+### 地址构造
+
+`api_root` 模式由所选协议适配器构造操作路径，`operation_urls` 模式使用逐项配置的完整地址。以下为待实现行为示例：
+
+| 配置场景 | 输入 | 生成请求地址 |
+|---|---|---|
+| Chat API 根地址 | `api_root = https://gateway.example/v1` | `https://gateway.example/v1/chat/completions` |
+| 含租户路径的 Chat 根地址 | `api_root = https://gateway.example/team-a/v1/` | `https://gateway.example/team-a/v1/chat/completions` |
+| Responses API 根地址 | `api_root = https://gateway.example/team-a/v1` | `https://gateway.example/team-a/v1/responses` |
+| 已指定完整生成地址 | `operation_urls.generate = https://gateway.example/custom/invoke` | 原样使用完整生成地址，不再追加路径 |
+
+适配器定义各操作的相对路径；归一化只处理连接处斜杠，不丢弃已有路径，也不自动补第二个版本前缀。未配置的模型列表或文件操作不能从生成地址推断出来。HTTP 出站代理与模型服务地址分别配置。
+
+涉及模型路径模板、区域、部署或 API 版本时，由对应实现校验并编码。当前通用配置不接受通过 URL 携带密钥；需要特殊 query 鉴权时另增明确契约，避免把秘密写入可导出的 URL。
+
+### 鉴权与请求头
+
+首版支持三种显式鉴权模式：
+
+| `auth.mode` | 凭据要求 | 请求行为 |
+|---|---|---|
+| `bearer` | 必须解析 `credential_ref` | 生成 `Authorization: Bearer …` |
+| `api_key_header` | 必须解析 `credential_ref` 并配置 `header_name` | 将 key 放入指定请求头，例如 `X-API-Key` |
+| `none` | 不配置凭据引用 | 不生成鉴权头，不读取默认厂商 key |
+
+普通 `headers` 只保存非秘密值，例如 API 版本和租户标识。鉴权头由鉴权策略统一生成，大小写不敏感地检查冲突，禁止普通 headers 覆盖鉴权头。上游也有允许调用选项覆盖默认 headers 的实现，见 [Pi 的客户端请求头合并](https://github.com/earendil-works/pi/blob/a92283056d915c758799fcd904948ff0cb42628c/packages/ai/src/api/openai-completions.ts#L749-L782)。本项目选择在配置阶段拒绝鉴权头冲突，避免请求实际使用的凭据与配置展示不一致。
+
+同时要求 Bearer 和另一个秘密网关头的服务，超出首版单一主鉴权契约。后续应增加显式的多秘密头引用或专用鉴权策略；第二把 key 不能直接写入普通 headers。OAuth、AWS 签名与云身份也必须有各自的获取、刷新或签名实现，不能用一个静态 key 字段概括。
+
+### 凭据解析与配置覆盖
+
+凭据首版通过环境变量引用，例如 `{source: "env", name: "MANIMAGENT_GATEWAY_API_KEY"}`。只读取连接明确指定的变量，缺失即报错；现有 `.env` 加载继续遵守不覆盖已存在环境变量的规则。公共查询只返回已配置状态和脱敏引用，发送前再解析秘密。
+
+连接选择属于配置解析，凭据解析只取得该连接指定的秘密。鉴权失败不能改用其他连接的 key、共享协议的默认登录状态或官方默认地址。客户端订阅登录、第三方 API Key 与本项目 API 凭据分别建模，首版不读取或搬用其他客户端的登录文件。
+
+预设只在创建连接时提供默认值，之后以保存的连接 revision 为准；兼容规则不能改写目标地址或凭据来源。任务继续遵守第 3 节的固定快照：发送前可读取轮换后的凭据值，不能动态更换任务的连接和协议。
+
+并发任务使用各自的已解析连接上下文，不通过修改进程级 `os.environ` 切换账户。以后若增加密钥存储或 OAuth，显式声明后端、查找或刷新规则，处理刷新并发与取消，不因一种来源失效而静默改用其他账户。不执行配置中的 shell 命令。
+
+### 兼容规则
+
+`compatibility_profile` 选择已经实现、带版本的受限规则。现有 `json_mode` 和 `token_parameter` 作为最早迁移的兼容选项；后续按实际需求增加角色、流式 usage、thinking 格式和工具行为的转换。每个选项都要有请求级验证，不能只有配置开关。
+
+已知 provider 和 URL 的已验证默认值可以做成预设，自定义网关不能仅因模型名称相同就继承这些能力。上游能力尚未确认时保留未知，本项目尚未实现的功能明确标为不支持。
+
 ### 能力记录与实际验证
 
 CapabilityRecord 以连接配置 revision、协议与适配器版本、模型绑定及其 revision、凭据作用域标识为范围。不同区域、套餐、网关、凭据或兼容规则的结果不直接共用；作用域标识只存服务端引用，不存密钥值。
@@ -316,7 +381,69 @@ ProviderFileRef 为内部对象，至少包含 provider_id、连接 revision、�
 
 探测任务沿用 v2 Job 的状态及错误封装，扩展 kind 为 probe，完成时 result 为 `{type: "probe_report", id}`，增加 `GET /api/v2/probe-reports/{id}` 获取 ProbeReport。报告包含 binding_id、配置 revision、各 scope 的状态、证据与脱敏错误；不为每次连通检测创建业务 MaterialIR 或 Answer。
 
-### 从 CC Switch 借鉴的内容
+### 开源实现依据
+
+下列实现依据使用固定提交链接，其中本次调研的五个 agent 源码同时标注行号；CC Switch 保留既有参考。各段分别说明上游实际做法和本项目的取舍，上游的灵活选项不自动成为本项目承诺。
+
+#### OpenCode：提供商实例、协议实现和实际模型 ID 分开
+
+OpenCode v1.19.5 的实现有三个直接相关的位置：
+
+| 具体代码段 | 可观察到的实现 | 本项目采用方式 |
+|---|---|---|
+| [`BUNDLED_PROVIDERS` 适配器工厂表](https://github.com/anomalyco/opencode/blob/810c0eba1a7348036f8bdf61e6632d0c36c6876c/packages/opencode/src/provider/provider.ts#L148-L175) | 多种 provider 包映射到各自客户端工厂 | 建立协议适配器注册表，业务角色不判断厂商名称 |
+| [从配置构建 provider 和 model](https://github.com/anomalyco/opencode/blob/810c0eba1a7348036f8bdf61e6632d0c36c6876c/packages/opencode/src/provider/provider.ts#L1532-L1567) | provider ID、显示名称、实际 API 模型 ID、实现包与地址分别解析 | 用连接 ID、展示名称、协议和 `upstream_model` 分别表达 |
+| [`resolveSDK()` 解析连接选项并创建客户端](https://github.com/anomalyco/opencode/blob/810c0eba1a7348036f8bdf61e6632d0c36c6876c/packages/opencode/src/provider/provider.ts#L1813-L1864) | 先解析 URL、key、headers，再调用所选工厂；客户端缓存包含 provider ID、实现包和选项 | 在业务调用前形成完整连接上下文；后续若缓存客户端，必须隔离目标、凭据作用域和配置版本 |
+
+本项目采用显式 `protocol`，首版不开放任意 npm 包或动态代码加载。OpenCode 的实现包可逐模型覆盖；本项目先让一个连接对应一个协议，同一服务的不同协议创建不同连接，减少隐式覆盖。
+
+#### Pi：配置协议、模型元数据和兼容差异
+
+| 具体代码段 | 可观察到的实现 | 本项目采用方式 |
+|---|---|---|
+| [`ProviderConfigSchema`](https://github.com/earendil-works/pi/blob/a92283056d915c758799fcd904948ff0cb42628c/packages/coding-agent/src/core/model-config.ts#L89-L115) | 独立声明 `baseUrl`、`api`、`apiKey`、`headers`、`authHeader` 和 `compat` | 明确协议、地址、鉴权与兼容规则，不靠 URL 或模型名推断全部行为 |
+| [`ModelDefinitionSchema`](https://github.com/earendil-works/pi/blob/a92283056d915c758799fcd904948ff0cb42628c/packages/coding-agent/src/core/model-config.ts#L48-L69) | 模型包含实际 ID、输入类型、上下文、输出上限及兼容配置 | 把连接信息与模型能力分开，允许人工填写上游模型 ID |
+| [Chat 兼容性字段定义](https://github.com/earendil-works/pi/blob/a92283056d915c758799fcd904948ff0cb42628c/packages/ai/src/providers/compat-schema.ts#L190-L263) | 对 developer role、流式 usage、token 字段及 thinking 格式分别配置 | 只增加本项目已经实现转换且可以验证的兼容选项 |
+| [Chat 请求中的 usage 与 token 参数处理](https://github.com/earendil-works/pi/blob/a92283056d915c758799fcd904948ff0cb42628c/packages/ai/src/api/openai-completions.ts#L819-L838) | 兼容字段实际控制请求参数 | 每条兼容规则必须有请求级验证，不能只加配置开关 |
+
+Pi 还包含按已知 provider 和 URL 推断兼容默认值的逻辑，见 [兼容默认值检测](https://github.com/earendil-works/pi/blob/a92283056d915c758799fcd904948ff0cb42628c/packages/ai/src/api/openai-completions.ts#L1583-L1668)。本项目可将已验证默认值做成预设，但自定义网关不能仅因模型名称相同就继承这些能力。
+
+本项目的兼容规则和能力验证分别按本节前述约定实施。
+
+#### Cline：先解析配置与凭据，再交给具体客户端
+
+| 具体代码段 | 可观察到的实现 | 本项目采用方式 |
+|---|---|---|
+| [`AuthConfig` 与 `EndpointConfig`](https://github.com/cline/cline/blob/f817e59f698f01487920c00ede2dbecad5c0fa50/sdk/packages/llms/src/providers/config.ts#L70-L101) | 鉴权字段与地址、headers、超时分别定义 | 分开校验鉴权、端点与传输选项 |
+| [`resolveApiKey()`](https://github.com/cline/cline/blob/f817e59f698f01487920c00ede2dbecad5c0fa50/sdk/packages/llms/src/providers/http.ts#L13-L35) | 显式 key、动态 resolver、环境变量有确定的查找顺序 | 凭据解析集中到一处；首版只解析连接明确指定的环境变量，不引入隐式多来源回退 |
+| [`createOpenAICompatibleProviderModule()`](https://github.com/cline/cline/blob/f817e59f698f01487920c00ede2dbecad5c0fa50/sdk/packages/llms/src/providers/vendors/openai-compatible.ts#L226-L251) | 将已解析的 key、base URL、headers、fetch 传入兼容客户端，且不统一拦截缺失 key | 无鉴权是显式配置；不要继续用“必须有 key”作为所有连接的前置条件 |
+| [Azure API 版本参数的请求包装](https://github.com/cline/cline/blob/f817e59f698f01487920c00ede2dbecad5c0fa50/sdk/packages/llms/src/providers/vendors/openai-compatible.ts#L47-L85) | 传输包装可以补充协议相关 query 参数 | 特殊版本、部署与签名由经过注册的实现处理，不向普通配置开放任意请求脚本 |
+
+Cline 的缺失 key 处理是适配器策略。本项目在 `auth.mode` 为 bearer 或 api_key_header 时仍要检查指定凭据；只有 none 模式才允许省略。这样能区分配置缺失和确实无需鉴权。
+
+#### Pi 与 OpenCode：区分凭据类型，明确失败与刷新行为
+
+| 具体代码段 | 可观察到的实现 | 本项目采用方式 |
+|---|---|---|
+| [OpenCode 的 OAuth、API key 凭据联合类型](https://github.com/anomalyco/opencode/blob/810c0eba1a7348036f8bdf61e6632d0c36c6876c/packages/opencode/src/auth/index.ts#L10-L35) | OAuth 保存 access、refresh、expires，API key 使用另一类型 | 静态 key 与需要刷新的登录凭据分别建模，后续再扩展 OAuth |
+| [OpenCode 按 provider 保存凭据](https://github.com/anomalyco/opencode/blob/810c0eba1a7348036f8bdf61e6632d0c36c6876c/packages/opencode/src/auth/index.ts#L69-L88) | 独立 JSON 文件按 provider 索引，并设置文件权限 | 借鉴凭据隔离；首版继续用环境变量引用。文件权限不等于内容加密 |
+| [Pi 的覆盖值、已存凭据与环境来源解析](https://github.com/earendil-works/pi/blob/a92283056d915c758799fcd904948ff0cb42628c/packages/ai/src/auth/resolve.ts#L27-L92) | 已存凭据优先；其刷新失败或类型不匹配时不静默回退环境凭据 | 固定凭据来源，鉴权失败明确报告，避免意外切换账户 |
+| [Pi 的 OAuth 刷新与凭据存储锁](https://github.com/earendil-works/pi/blob/a92283056d915c758799fcd904948ff0cb42628c/packages/ai/src/auth/resolve.ts#L105-L189) | 在锁内重新判断是否需要刷新并保存结果 | 引入 OAuth 时同时处理刷新并发、取消和持久化，而非只增加一个 token 字段 |
+
+Pi 的配置允许命令输出作为密钥来源，入口见前述 `ProviderConfigSchema`。本项目首版保持环境变量引用，不执行配置中的 shell 命令；若以后需要密钥管理器，新增明确的凭据后端。
+
+#### OpenHands 与 Aider：统一调用层，避免进程级状态串用
+
+| 具体代码段 | 可观察到的实现 | 本项目采用方式 |
+|---|---|---|
+| [OpenHands 的 `provider_connection_id` 与连接字段](https://github.com/OpenHands/software-agent-sdk/blob/46b1fa5cb91ada17e6ec938c7e8624a4fa19fa98/openhands-sdk/openhands/sdk/llm/llm.py#L289-L333) | LLM profile 可以引用共享连接；字段约定在加载时解析共享 key 与 URL | 用连接管理可复用的地址与鉴权，角色及模型绑定保存引用 |
+| [OpenHands 的逐调用 OpenRouter 请求头](https://github.com/OpenHands/software-agent-sdk/blob/46b1fa5cb91ada17e6ec938c7e8624a4fa19fa98/openhands-sdk/openhands/sdk/llm/llm.py#L851-L864) | 通过每次请求的 headers 传递，明确避免修改 `os.environ` 导致多会话串用 | 并发任务使用各自的已解析连接上下文，不通过修改全局环境切换账户 |
+| [OpenHands 的 LiteLLM 参数准备与调用](https://github.com/OpenHands/software-agent-sdk/blob/46b1fa5cb91ada17e6ec938c7e8624a4fa19fa98/openhands-sdk/openhands/sdk/llm/llm.py#L2489-L2541) | 在统一层构造参数，再调用 LiteLLM；关闭其内部重试，由 SDK 层负责 | 调用预算与重试由本项目统一执行，避免外层与 SDK 内层重试相乘 |
+| [Aider 的 `send_completion()`](https://github.com/Aider-AI/aider/blob/5dc9490bb35f9729ef2c95d00a19ccd30c26339c/aider/models.py#L985-L1037) | 合并模型参数后调用进程内的 `litellm.completion()` | 多厂商适配库可以作为内部实现选择，不要求另建代理服务器 |
+
+OpenHands 字段中的加载时解析不等于本项目运行中的任务可以动态换连接；ManimAgent 仍在任务接受时固定连接 revision，只在发送前解析指定凭据。
+
+#### CC Switch：连接管理、适配与诊断
 
 既有设计参考 [farion1231/cc-switch](https://github.com/farion1231/cc-switch)，固定参考提交为 [d8983bb10b82a1ccc15ae5f44ab070902623e990](https://github.com/farion1231/cc-switch/commit/d8983bb10b82a1ccc15ae5f44ab070902623e990)。以下是对该提交的观察与本项目的设计选择，不能当作对任意网关兼容性的保证。
 
@@ -331,15 +458,35 @@ ProviderFileRef 为内部对象，至少包含 provider_id、连接 revision、�
 
 CC Switch 面向多个客户端的配置切换与本地路由，ManimAgent 直接发起业务 API 请求。本项目优先采用其配置分层、适配接口和诊断思路；客户端配置改写、账号登录接管、完整代理服务与所有协议互转不作为本项目的前置条件。参考代码与手册，预设目录中的商业宣传不作为服务质量或模型能力证据。
 
+#### 参考版本
+
+| 项目 | 本文核对版本 | 参考范围 |
+|---|---|---|
+| OpenCode | [v1.19.5 / 810c0eba](https://github.com/anomalyco/opencode/commit/810c0eba1a7348036f8bdf61e6632d0c36c6876c) | 稳定版 provider 与 auth；不混用 v2 开发版配置结构 |
+| Pi | [a9228305](https://github.com/earendil-works/pi/commit/a92283056d915c758799fcd904948ff0cb42628c) | 模型配置、协议兼容与凭据解析；仓库原名 badlogic/pi-mono，当前为 earendil-works/pi |
+| Cline | [f817e59f](https://github.com/cline/cline/commit/f817e59f698f01487920c00ede2dbecad5c0fa50) | 当前主分支 SDK 的配置与兼容客户端，不以旧目录结构为依据 |
+| OpenHands SDK | [46b1fa5c](https://github.com/OpenHands/software-agent-sdk/commit/46b1fa5cb91ada17e6ec938c7e8624a4fa19fa98) | 共享连接字段、逐调用参数与 LiteLLM 调用 |
+| CC Switch | [d8983bb1](https://github.com/farion1231/cc-switch/commit/d8983bb10b82a1ccc15ae5f44ab070902623e990) | 既有连接管理、适配器、路由与诊断设计参考 |
+| Aider | [5dc9490b](https://github.com/Aider-AI/aider/commit/5dc9490bb35f9729ef2c95d00a19ccd30c26339c) | 调研时主分支的模型参数合并与进程内 LiteLLM 调用 |
+
+固定引用便于复核本文结论。后续实施时，若升级参考版本或替换底层库，重新核对所依赖的 URL、鉴权合并、重试及兼容行为，再更新相关依据。
+
 ## 5 当前状态与待办
 
-本次文档迁移保留现有运行逻辑。实施顺序由 [开发计划](开发计划.md) 统筹，本模块的待办为：
+实施顺序由 [开发计划](开发计划.md) 统筹。本模块按以下步骤迁移，保留现有 MVP 配置与调用行为：
 
-1. 把当前 ChatProvider 包装为 openai_chat 适配器，引入 ProviderConnection、ModelBinding 和配置快照；旧 models/roles 配置经适配继续可用。
-2. 拆出统一响应、错误和使用量；增加文本调用及结构化输出诊断，先验证自定义 Chat 兼容端点。
-3. 按需求实现 Responses、Messages 和 Gemini 适配器，用各自请求响应样例验证，不提前声称全部兼容。
-4. 加入分格式文件能力、远端文件生命周期及解析回退，与独立材料解析模块联通。
-5. 增加配置管理界面；实际有需要时再引入跨提供商切换、熔断和更复杂的代理或认证。
+### 迁移步骤
+
+| 步骤 | 落点 | 完成条件 |
+|---|---|---|
+| 1. 提取配置对象与 Chat 适配器 | `config.py`、`providers.py` | 引入 ProviderConnection、ModelBinding 和固定快照；旧 `models/roles` 转换为等价对象，保留默认角色行为 |
+| 2. 拆分地址、鉴权与调用执行 | 地址和鉴权模块、调用执行器 | 自定义 Chat 端点、Bearer、指定 key 头与 none 可用；保留图片和 JSON 校验，统一响应、错误、使用量及重试预算 |
+| 3. 增加兼容规则与诊断 | 兼容规则、探测和调用记录 | token 字段和 JSON 模式可追踪，文本调用及结构化输出可独立检测，缺失用量保持未知 |
+| 4. 按需求实现新协议 | Responses、Messages、Gemini 适配器 | 各自请求响应样例验证通过后标记支持，不提前声称全部兼容 |
+| 5. 联通材料解析与文件能力 | 文件能力记录、远端文件生命周期、解析回退 | 分格式验证上传和实际读取，与独立材料解析模块联通 |
+| 6. 增加配置管理与按需扩展 | 配置管理界面、后续鉴权和路由策略 | 支持连接与角色选择；实际需要时再增加 OAuth、云身份、跨提供商切换、熔断和复杂代理 |
+
+### 验收重点
 
 | 验收情形 | 需要确认的行为 |
 |---|---|
@@ -347,11 +494,16 @@ CC Switch 面向多个客户端的配置切换与本地路由，ManimAgent 直�
 | 同一提供商有多个协议 | 显式选择协议，响应按对应规则解码 |
 | 自定义根路径或完整 URL | 保留路径前缀，没有重复版本或多余端点拼接 |
 | Bearer、自定义 API Key 头与无鉴权 | 只发送对应配置，密钥不被响应或日志回显 |
-| 相同模型名称通过不同网关调用 | 模型绑定、能力与调用记录互相区分 |
+| 相同模型名称通过不同网关调用 | 地址、凭据、模型绑定、能力与调用记录互相区分 |
+| 凭据缺失或请求头冲突 | 在明确阶段失败，无鉴权连接不发送残留凭据 |
+| 鉴权或 OAuth 刷新失败 | 不改回官方地址，不静默切换账户或未配置候选 |
+| 并发任务与客户端复用 | 不通过全局环境变量影响彼此，按目标和凭据作用域隔离客户端 |
 | 模型列表接口缺失 | 手动模型绑定仍可测试和使用 |
 | 文本可用但图片被忽略 | 不能把视觉检查角色标为可用 |
 | 文件上传成功但模型不能读 | files_api 与 file_inputs 结果分开，正确回退或报告 |
 | 未实现的参数或输入块 | 明确返回不支持，不能静默丢弃 |
+| 后续流式与工具调用 | 分别验证流式事件与完整工具调用回合，普通文本成功不能替代 |
+| SDK 内部重试与外层重试 | 单一执行层控制，不叠加突破调用次数和时间预算 |
 | 原生 JSON、JSON 对象模式及提示词后校验 | 实际执行路径可追踪，最终统一校验 |
 | 限流、鉴权、额度、超时、拒绝与截断 | 分别分类，不触发不相干的解析或提供商回退 |
 | 用量缺失或失败请求可能已计费 | 保留未知或估算，仍执行调用与时间预算 |
