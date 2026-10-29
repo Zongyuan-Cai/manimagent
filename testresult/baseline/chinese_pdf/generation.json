@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "generation_id": "generation_3d6c481246144ad4a02583002c7c78c0",
+  "output_mode": "text",
+  "source": {
+    "inputs": [
+      {
+        "type": "file",
+        "file_id": "file_fffc3f8e872a4c44a8b5aa860b8067e9",
+        "selection": null
+      }
+    ],
+    "parser_profile_id": null,
+    "input_mode": "auto",
+    "type": "inputs",
+    "instruction": "解答 PDF 中的投影题并解释。",
+    "answer_profile_id": null
+  },
+  "material_ids": [
+    "material_eb0783686cf6458d8fb18ea3ffd8d650"
+  ],
+  "answer_id": "answer_6192b5004c134d93a94a3b53154ee3cf",
+  "stages": {
+    "material": {
+      "status": "completed",
+      "error": null,
+      "diagnostic_asset_ids": []
+    },
+    "answer": {
+      "status": "completed",
+      "error": null,
+      "diagnostic_asset_ids": []
+    }
+  },
+  "active_job_id": "job_b54395134e7d4a1fbf6f120932ed14da",
+  "job_ids": [
+    "job_b54395134e7d4a1fbf6f120932ed14da"
+  ],
+  "created_at": "2026-10-29T10:23:49.877275+00:00",
+  "updated_at": "2026-10-29T10:24:01.147069+00:00"
+}

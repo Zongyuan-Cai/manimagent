@@ -1,0 +1,61 @@
+{
+  "schema_version": "1.0",
+  "generation_id": "generation_d729e2934b5e49f982044f9b0192d868",
+  "output_mode": "text",
+  "source": {
+    "inputs": [
+      {
+        "type": "file",
+        "file_id": "file_5075f6c283414840b35c89e8a795668c",
+        "selection": null
+      },
+      {
+        "type": "file",
+        "file_id": "file_a9eba9554b7b4f79bd5a33dea8558990",
+        "selection": null
+      },
+      {
+        "type": "file",
+        "file_id": "file_ad5bdf06cb9142c4ac87e6d7a77d7042",
+        "selection": null
+      }
+    ],
+    "parser_profile_id": null,
+    "input_mode": "auto",
+    "type": "inputs",
+    "instruction": "合并三份材料，求投影系数与投影向量，并引用两个同名文件。",
+    "answer_profile_id": null
+  },
+  "material_ids": [
+    "material_237cd4b6db1f46e7a1f3ca4a35bd475d"
+  ],
+  "answer_id": null,
+  "stages": {
+    "material": {
+      "status": "completed",
+      "error": null,
+      "diagnostic_asset_ids": []
+    },
+    "answer": {
+      "status": "needs_input",
+      "error": {
+        "code": "source_incomplete",
+        "message": "投影系数与投影向量的计算正确，来源块引用也合法；但材料仅提供来源文件 ID，没有文件名，无法确认并引用“两个同名文件”。该要求缺少必要信息，需补充文件名或明确指出哪两个文件同名。",
+        "retryable": false,
+        "details": {}
+      },
+      "diagnostic_asset_ids": [
+        "file_74607d2f4ce6437da3f81f320e2d998c",
+        "file_7bea1fb19ee341b089d01faf083caf40",
+        "file_6a620bf4c18d4170be6dd5e19f0de960",
+        "file_de3c516bcce94349bdb5fdb5824e61e7"
+      ]
+    }
+  },
+  "active_job_id": "job_6486f6d1cdf24786ad727744220c0734",
+  "job_ids": [
+    "job_6486f6d1cdf24786ad727744220c0734"
+  ],
+  "created_at": "2026-10-29T10:24:36.493774+00:00",
+  "updated_at": "2026-10-29T10:24:53.346905+00:00"
+}

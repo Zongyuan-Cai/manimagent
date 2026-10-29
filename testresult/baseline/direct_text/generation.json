@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0",
+  "generation_id": "generation_fd76bac4809e4006bfc26ed616f5f93e",
+  "output_mode": "text",
+  "source": {
+    "inputs": [
+      {
+        "type": "text",
+        "text": "给定 a=(3,2)，b=(2,0)。求投影系数与投影向量。"
+      }
+    ],
+    "parser_profile_id": null,
+    "input_mode": "auto",
+    "type": "inputs",
+    "instruction": "给定 a=(3,2)，b=(2,0)。求投影系数与投影向量。",
+    "answer_profile_id": null
+  },
+  "material_ids": [
+    "material_a39c39996ab94067a69de31cfa386f71"
+  ],
+  "answer_id": "answer_67d28dbde1c341f98bbb977912290ec7",
+  "stages": {
+    "material": {
+      "status": "completed",
+      "error": null,
+      "diagnostic_asset_ids": []
+    },
+    "answer": {
+      "status": "completed",
+      "error": null,
+      "diagnostic_asset_ids": []
+    }
+  },
+  "active_job_id": "job_2c66a35137b6473f8b79299f0f53aec6",
+  "job_ids": [
+    "job_2c66a35137b6473f8b79299f0f53aec6"
+  ],
+  "created_at": "2026-10-29T10:23:04.174438+00:00",
+  "updated_at": "2026-10-29T10:23:22.241392+00:00"
+}

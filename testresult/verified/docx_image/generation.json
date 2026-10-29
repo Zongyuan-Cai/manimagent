@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0",
+  "generation_id": "generation_962d26eacc1c4bf3be73b0d4c2f0cec9",
+  "output_mode": "text",
+  "source": {
+    "inputs": [
+      {
+        "type": "file",
+        "file_id": "file_0a26fc2820224712ad48227185437e5f",
+        "selection": null
+      }
+    ],
+    "parser_profile_id": null,
+    "input_mode": "auto",
+    "type": "inputs",
+    "instruction": "解答题目。",
+    "answer_profile_id": null
+  },
+  "material_ids": [],
+  "answer_id": null,
+  "stages": {
+    "material": {
+      "status": "needs_review",
+      "error": {
+        "code": "content_uncertain",
+        "message": "DOCX 包含公式对象、图片、嵌入对象或特殊内容，当前解析不能保证完整，请提供文本版",
+        "retryable": false,
+        "details": {}
+      },
+      "diagnostic_asset_ids": [
+        "file_3d5a7cd2bc334d6aa3fc0aa327c74cd5"
+      ]
+    },
+    "answer": {
+      "status": "blocked",
+      "error": null,
+      "diagnostic_asset_ids": []
+    }
+  },
+  "active_job_id": "job_d818afe4ece24d859959d11f8e9a9032",
+  "job_ids": [
+    "job_d818afe4ece24d859959d11f8e9a9032"
+  ],
+  "created_at": "2026-10-29T10:37:56.460400+00:00",
+  "updated_at": "2026-10-29T10:37:56.932683+00:00"
+}

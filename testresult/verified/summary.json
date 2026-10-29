@@ -1,0 +1,337 @@
+{
+  "started_at": "2026-10-29T10:35:35.573502+00:00",
+  "endpoint": "https://api.deepseek.com",
+  "model": "deepseek-flash",
+  "label": "verified",
+  "cases": [
+    {
+      "name": "direct_text",
+      "files": [],
+      "expected": "completed",
+      "passed": true,
+      "status": "completed",
+      "usage": {
+        "model_calls": 2,
+        "input_tokens": 1632,
+        "output_tokens": 1676,
+        "tokens_reported": true,
+        "elapsed_seconds": 11.125
+      },
+      "job_id": "job_59e03fd407e142b59a2879e3d8e82569",
+      "elapsed_seconds": 11.656
+    },
+    {
+      "name": "utf8_txt",
+      "files": [
+        "投影题.txt"
+      ],
+      "expected": "completed",
+      "passed": true,
+      "status": "completed",
+      "usage": {
+        "model_calls": 2,
+        "input_tokens": 2440,
+        "output_tokens": 2376,
+        "tokens_reported": true,
+        "elapsed_seconds": 14.125
+      },
+      "job_id": "job_057ca5464e9b466caf201567c72fa9d8",
+      "elapsed_seconds": 15.047
+    },
+    {
+      "name": "markdown_math_table",
+      "files": [
+        "公式与表格.md"
+      ],
+      "expected": "completed",
+      "passed": true,
+      "status": "completed",
+      "usage": {
+        "model_calls": 2,
+        "input_tokens": 3240,
+        "output_tokens": 2348,
+        "tokens_reported": true,
+        "elapsed_seconds": 15.922
+      },
+      "job_id": "job_9c7230a6b09446c2825f760b137a0846",
+      "elapsed_seconds": 17.219
+    },
+    {
+      "name": "chinese_pdf",
+      "files": [
+        "中文题目.pdf"
+      ],
+      "expected": "completed",
+      "passed": true,
+      "status": "completed",
+      "usage": {
+        "model_calls": 2,
+        "input_tokens": 2167,
+        "output_tokens": 1897,
+        "tokens_reported": true,
+        "elapsed_seconds": 11.422
+      },
+      "job_id": "job_f85438006205449b88b263b9b79ecb98",
+      "elapsed_seconds": 11.671
+    },
+    {
+      "name": "pdf_selected_page",
+      "files": [
+        "分页材料.pdf"
+      ],
+      "expected": "completed",
+      "passed": true,
+      "status": "completed",
+      "usage": {
+        "model_calls": 2,
+        "input_tokens": 1836,
+        "output_tokens": 3179,
+        "tokens_reported": true,
+        "elapsed_seconds": 19.359
+      },
+      "job_id": "job_1e064240e79a47feacb15af2c769ebf1",
+      "elapsed_seconds": 19.735
+    },
+    {
+      "name": "docx_table",
+      "files": [
+        "段落与表格.docx"
+      ],
+      "expected": "completed",
+      "passed": true,
+      "status": "completed",
+      "usage": {
+        "model_calls": 2,
+        "input_tokens": 3470,
+        "output_tokens": 3952,
+        "tokens_reported": true,
+        "elapsed_seconds": 28.578
+      },
+      "job_id": "job_3a5954df193e49609da9e9274251eec0",
+      "elapsed_seconds": 28.828
+    },
+    {
+      "name": "mixed_duplicate_names",
+      "files": [
+        "same_a/同名.txt",
+        "same_b/同名.txt",
+        "公式与表格.md"
+      ],
+      "expected": "completed",
+      "passed": true,
+      "status": "completed",
+      "usage": {
+        "model_calls": 2,
+        "input_tokens": 4377,
+        "output_tokens": 1411,
+        "tokens_reported": true,
+        "elapsed_seconds": 9.578
+      },
+      "job_id": "job_d6859f60224a44549453da8dc917aef0",
+      "elapsed_seconds": 10.203
+    },
+    {
+      "name": "missing_conditions",
+      "files": [
+        "缺少条件.txt"
+      ],
+      "expected": "needs_input",
+      "passed": true,
+      "status": "needs_input",
+      "usage": {
+        "model_calls": 2,
+        "input_tokens": 1495,
+        "output_tokens": 410,
+        "tokens_reported": true,
+        "elapsed_seconds": 4.5
+      },
+      "job_id": "job_fb93fa89dee74919a88f52f6a85332a7",
+      "elapsed_seconds": 4.578
+    },
+    {
+      "name": "untrusted_instructions",
+      "files": [
+        "不可信指令.txt"
+      ],
+      "expected": "completed",
+      "passed": true,
+      "status": "completed",
+      "usage": {
+        "model_calls": 2,
+        "input_tokens": 2510,
+        "output_tokens": 3235,
+        "tokens_reported": true,
+        "elapsed_seconds": 18.516
+      },
+      "job_id": "job_2a0984fe10f047498d69c8e7db4edeba",
+      "elapsed_seconds": 18.719
+    },
+    {
+      "name": "scanned_pdf",
+      "files": [
+        "扫描页.pdf"
+      ],
+      "expected": "needs_review",
+      "passed": true,
+      "status": "needs_review",
+      "usage": {
+        "model_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "tokens_reported": false,
+        "elapsed_seconds": 0.484
+      },
+      "job_id": "job_b3468ef6477844b38aa872dcfdece6c9",
+      "elapsed_seconds": 1.062
+    },
+    {
+      "name": "mixed_blank_pdf",
+      "files": [
+        "空白页.pdf"
+      ],
+      "expected": "needs_review",
+      "passed": true,
+      "status": "needs_review",
+      "usage": {
+        "model_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "tokens_reported": false,
+        "elapsed_seconds": 0.5
+      },
+      "job_id": "job_8272528acd3a40a4a7356e44fbfe7b5a",
+      "elapsed_seconds": 1.047
+    },
+    {
+      "name": "vector_diagram_pdf",
+      "files": [
+        "题图.pdf"
+      ],
+      "expected": "needs_review",
+      "passed": true,
+      "status": "needs_review",
+      "usage": {
+        "model_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "tokens_reported": false,
+        "elapsed_seconds": 0.469
+      },
+      "job_id": "job_1ff88c8c599245e59547cf9405644ebb",
+      "elapsed_seconds": 0.547
+    },
+    {
+      "name": "docx_equation",
+      "files": [
+        "公式对象.docx"
+      ],
+      "expected": "needs_review",
+      "passed": true,
+      "status": "needs_review",
+      "usage": {
+        "model_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "tokens_reported": false,
+        "elapsed_seconds": 0.453
+      },
+      "job_id": "job_1b88ea8391eb46d5b178e2945d8b556d",
+      "elapsed_seconds": 0.547
+    },
+    {
+      "name": "docx_image",
+      "files": [
+        "内嵌图片.docx"
+      ],
+      "expected": "needs_review",
+      "passed": true,
+      "status": "needs_review",
+      "usage": {
+        "model_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "tokens_reported": false,
+        "elapsed_seconds": 0.453
+      },
+      "job_id": "job_d818afe4ece24d859959d11f8e9a9032",
+      "elapsed_seconds": 1.047
+    },
+    {
+      "name": "encrypted_pdf",
+      "files": [
+        "加密.pdf"
+      ],
+      "expected": "needs_input",
+      "passed": true,
+      "status": "needs_input",
+      "usage": {
+        "model_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "tokens_reported": false,
+        "elapsed_seconds": 0.469
+      },
+      "job_id": "job_101568b81bb446d49220bd89207b3242",
+      "elapsed_seconds": 0.562
+    },
+    {
+      "name": "corrupt_pdf",
+      "files": [
+        "损坏.pdf"
+      ],
+      "expected": "needs_input",
+      "passed": true,
+      "status": "needs_input",
+      "usage": {
+        "model_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "tokens_reported": false,
+        "elapsed_seconds": 0.438
+      },
+      "job_id": "job_ff33b46c906e41879c298423a30253b5",
+      "elapsed_seconds": 0.547
+    },
+    {
+      "name": "empty_text",
+      "files": [
+        "空文件.txt"
+      ],
+      "expected": "needs_input",
+      "passed": true,
+      "status": "needs_input",
+      "usage": {
+        "model_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "tokens_reported": false,
+        "elapsed_seconds": 0.375
+      },
+      "job_id": "job_dd64f952fcfe4eb6904c5ed6e905a019",
+      "elapsed_seconds": 0.547
+    },
+    {
+      "name": "upload_reject_错误编码.txt",
+      "expected_http": 415,
+      "passed": true
+    },
+    {
+      "name": "upload_reject_不支持.csv",
+      "expected_http": 415,
+      "passed": true
+    },
+    {
+      "name": "upload_reject_扫描图片.png",
+      "expected_http": 415,
+      "passed": true
+    },
+    {
+      "name": "upload_reject_超限.txt",
+      "expected_http": 413,
+      "passed": true
+    }
+  ],
+  "finished_at": "2026-10-29T10:37:59.619050+00:00",
+  "passed": 21,
+  "total": 21
+}

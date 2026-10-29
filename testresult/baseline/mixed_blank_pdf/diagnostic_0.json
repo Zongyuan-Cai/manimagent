@@ -1,0 +1,105 @@
+{
+  "job_id": "job_c2e5afb8bcaa48d7aed6c3c22968301d",
+  "request": {
+    "output_mode": "text",
+    "source": {
+      "inputs": [
+        {
+          "type": "file",
+          "file_id": "file_5745a98b40934600aad79f0e65d313d2",
+          "selection": null
+        }
+      ],
+      "parser_profile_id": null,
+      "input_mode": "auto",
+      "type": "inputs",
+      "instruction": "完整解释所有页。",
+      "answer_profile_id": null
+    }
+  },
+  "parse": {
+    "request": {
+      "inputs": [
+        {
+          "type": "file",
+          "file_id": "file_5745a98b40934600aad79f0e65d313d2",
+          "selection": null
+        }
+      ],
+      "parser_profile_id": null,
+      "input_mode": "auto"
+    },
+    "parser_version": "local-1",
+    "coverage": [
+      {
+        "input_index": 0,
+        "requested_scope": "full",
+        "state": "incomplete",
+        "processed_ranges": [
+          [
+            1,
+            2
+          ]
+        ],
+        "missing_ranges": [
+          [
+            2,
+            2
+          ]
+        ],
+        "unit_kind": "page",
+        "total_units": 2
+      }
+    ],
+    "candidates": [
+      {
+        "blocks": [
+          {
+            "block_id": "block_967f103bf27844698d9a1606f662c8b9",
+            "kind": "text",
+            "content": "这是可读取的第一页。",
+            "asset_ids": [],
+            "source": {
+              "input_index": 0,
+              "file_id": "file_5745a98b40934600aad79f0e65d313d2",
+              "locator": {
+                "page": 1
+              },
+              "verification": "verified"
+            },
+            "review_state": "unverified"
+          }
+        ],
+        "coverage": {
+          "input_index": 0,
+          "requested_scope": "full",
+          "state": "incomplete",
+          "processed_ranges": [
+            [
+              1,
+              2
+            ]
+          ],
+          "missing_ranges": [
+            [
+              2,
+              2
+            ]
+          ],
+          "unit_kind": "page",
+          "total_units": 2
+        },
+        "issues": [
+          "第 2 页没有可读取文字（空页或扫描页），请提供文本版或缩小范围"
+        ]
+      }
+    ]
+  },
+  "usage": {
+    "model_calls": 0,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "tokens_reported": false,
+    "elapsed_seconds": 0.469
+  }
+}

@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ManimAgent · 把想法变成动画</title>
+<link rel="stylesheet" href="/static/app.css">
+<main>
+<header><div class="brand">Manim<span>Agent</span></div><div class="tag">文本 → 数学动画 <span class="badge">MVP 0.1</span></div></header>
+<h1>把一个知识点，<br>讲成一段动画。</h1>
+<p class="intro">写下想理解的概念或一道完整题目。系统会规划步骤、生成动画，并检查画面。</p>
+<div id="health" role="status"></div>
+<div class="grid"><section class="panel"><h2>01　输入学习内容</h2>
+<form id="form"><label for="text">知识点、题目与本次讲解要求</label><textarea id="text" placeholder="例如：请用动画解释二维向量投影。用 a=(3,2)、b=(1,0) 举例，区分投影系数和投影向量。面向初学者，尽量少堆公式。" required></textarea>
+<div class="meta"><button type="button" class="example" id="example">试试向量投影</button><span id="count">0 / 3000</span></div>
+<button type="submit" id="generate">生成动画　↗</button><p id="error" role="alert"></p></form>
+<footer>只需纯文本，可包含数学符号与 LaTeX。请提供完整题设。<br>建议一次讲一个概念，目标时长约一分钟。</footer></section>
+<section class="panel"><h2>02　动画与生成结果</h2><div id="status" role="status"></div><div id="result" class="empty"><svg width="54" height="54" viewBox="0 0 54 54" fill="none"><rect x="4" y="9" width="46" height="34" rx="8" stroke="currentColor" stroke-width="1.5"/><path d="m23 19 12 7-12 8V19Z" fill="currentColor"/></svg><strong>你的动画将显示在这里</strong><p>生成包含规划、渲染与画面检查，通常需要一些时间。</p></div><div id="message"></div><div id="artifacts"></div><div class="stage" id="job"></div></section></div>
+<footer>自动检查用于改进生成质量。学习或引用时，请核对数学内容与适用条件。</footer>
+</main>
+<script src="/static/app.js" defer></script>
+</html>

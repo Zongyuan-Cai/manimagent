@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "job_id": "job_f1d899ff4bb44a928c716d49e9ba6f2d",
+  "kind": "parse",
+  "status": "completed",
+  "stage": "completed",
+  "message": "文字处理已完成",
+  "resource_ref": null,
+  "result": {
+    "type": "material",
+    "id": "material_5f1b0073ffae4f8593a8082a82bd624a"
+  },
+  "error": null,
+  "diagnostic_asset_ids": [
+    "file_defc6cbe7e1f4c5a8d1c9d30d5ed6d94"
+  ],
+  "usage": {
+    "model_calls": 0,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "tokens_reported": false,
+    "elapsed_seconds": 0.016
+  },
+  "created_at": "2026-10-29T10:50:03.144985+00:00",
+  "updated_at": "2026-10-29T10:50:03.187331+00:00"
+}

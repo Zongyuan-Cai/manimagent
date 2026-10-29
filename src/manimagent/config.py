@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 import re
+from collections.abc import Callable
 from pathlib import Path
 from typing import Literal
 from urllib.parse import urlsplit
@@ -19,8 +20,12 @@ class ModelConfig(BaseModel):
     json_mode: bool = True
     token_parameter: Literal["max_tokens", "max_completion_tokens"] = "max_tokens"
     max_output_tokens: int = Field(default=6000, ge=256, le=32000)
+    auth_mode: Literal["bearer", "api_key_header", "none"] = "bearer"
+    api_key_header: str = "X-API-Key"
+    generate_url: str = ""
+    context_window: int = Field(default=32000, ge=1024)
 
-    @field_validator("base_url")
+    @field_validator("base_url", "generate_url")
     @classmethod
     def clean_url(cls, value: str) -> str:
         if value and not value.startswith(("https://", "http://")):
@@ -37,18 +42,26 @@ class ModelConfig(BaseModel):
                 raise ValueError("base_url 不能包含凭据、查询参数或片段")
         return value.rstrip("/")
 
+    @field_validator("api_key_header")
+    @classmethod
+    def valid_header(cls, value: str) -> str:
+        if not re.fullmatch(r"[A-Za-z0-9-]+", value):
+            raise ValueError("鉴权头名称无效")
+        return value
+
 
 class Settings(BaseModel):
     model_config = ConfigDict(extra="forbid")
-    runs_dir: Path = Path("runs")
-    renderer_image: str = "manimagent-renderer:0.1.0"
-    target_seconds: int = Field(default=60, ge=10, le=120)
-    max_scenes: int = Field(default=4, ge=1, le=4)
-    max_execution_repairs: int = Field(default=2, ge=0, le=5)
-    max_visual_revisions: int = Field(default=2, ge=0, le=5)
-    max_candidates: int = Field(default=5, ge=1, le=11)
-    render_timeout: float = Field(default=180, gt=0)
-    scene_timeout: float = Field(default=300, gt=0)
+    runs_dir: Path = Path("runs/current")
+    private_dir: Path | None = None
+    max_upload_bytes: int = Field(default=20 * 1024 * 1024, ge=1)
+    max_parse_pages: int = Field(default=100, ge=1)
+    max_parse_chars: int = Field(default=200000, ge=1)
+    max_archive_bytes: int = Field(default=50 * 1024 * 1024, ge=1)
+    max_archive_entries: int = Field(default=2000, ge=1)
+    parse_timeout: float = Field(default=60, gt=0)
+    answer_context_tokens: int = Field(default=24000, ge=1024)
+    answer_check: bool = True
     task_timeout: float = Field(default=900, gt=0)
     model_timeout: float = Field(default=90, gt=0)
     max_model_calls: int = Field(default=60, ge=1)
@@ -64,22 +77,30 @@ class Settings(BaseModel):
         return self
 
     def model_for(self, role: str) -> ModelConfig:
-        default = "vision" if role == "vision_checker" else "text"
+        default = "text"
         return self.models.get(self.roles.get(role, default), ModelConfig())
 
-    def configuration_errors(self) -> list[str]:
+    def configuration_errors(
+        self,
+        roles: tuple[str, ...] | None = None,
+        credential_resolver: Callable[[str], str | None] = os.getenv,
+    ) -> list[str]:
         errors = []
         for role in (
-            "planner",
-            "plan_checker",
-            "coder",
-            "execution_repair",
-            "visual_reviser",
-            "vision_checker",
+            roles
+            if roles is not None
+            else (("answer_writer", "answer_checker") if self.answer_check else ("answer_writer",))
         ):
             cfg = self.model_for(role)
-            if not cfg.model or not cfg.base_url or not os.getenv(cfg.api_key_env):
-                errors.append(f"{role} 的模型、接口地址或环境变量 {cfg.api_key_env} 未配置")
+            if (
+                not cfg.model
+                or not (cfg.base_url or cfg.generate_url)
+                or (cfg.auth_mode != "none" and not credential_resolver(cfg.api_key_env))
+            ):
+                label = {"answer_writer": "回答模型", "answer_checker": "内容检查模型"}.get(
+                    role, role
+                )
+                errors.append(f"{label} 的模型名称、接口地址或 API Key 未配置")
         return errors
 
 
@@ -115,10 +136,15 @@ def load_settings(path: str | Path | None = None) -> Settings:
                 "model": os.getenv(f"MANIMAGENT_{name.upper()}_MODEL", ""),
                 "api_key_env": f"MANIMAGENT_{name.upper()}_API_KEY",
             }
-            for name in ("text", "vision")
+            for name in ("text",)
         }
     settings = Settings.model_validate(data)
     if not settings.runs_dir.is_absolute():
         settings.runs_dir = config_path.parent / settings.runs_dir
     settings.runs_dir = settings.runs_dir.resolve()
+    if settings.private_dir is None:
+        settings.private_dir = settings.runs_dir / "private"
+    elif not settings.private_dir.is_absolute():
+        settings.private_dir = config_path.parent / settings.private_dir
+    settings.private_dir = settings.private_dir.resolve()
     return settings

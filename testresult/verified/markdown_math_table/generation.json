@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "generation_id": "generation_c16452d88f384235baed241bc97e4448",
+  "output_mode": "text",
+  "source": {
+    "inputs": [
+      {
+        "type": "file",
+        "file_id": "file_fb60938ab71a4b8da2b4877c64e1535a",
+        "selection": null
+      }
+    ],
+    "parser_profile_id": null,
+    "input_mode": "auto",
+    "type": "inputs",
+    "instruction": "按材料计算投影，保留公式，另用表格对比系数与向量。",
+    "answer_profile_id": null
+  },
+  "material_ids": [
+    "material_1c70cb40478b4aeb94f73c518ed01f6b"
+  ],
+  "answer_id": "answer_6db2449c6b2b447dbf43fead63f77bec",
+  "stages": {
+    "material": {
+      "status": "completed",
+      "error": null,
+      "diagnostic_asset_ids": []
+    },
+    "answer": {
+      "status": "completed",
+      "error": null,
+      "diagnostic_asset_ids": []
+    }
+  },
+  "active_job_id": "job_9c7230a6b09446c2825f760b137a0846",
+  "job_ids": [
+    "job_9c7230a6b09446c2825f760b137a0846"
+  ],
+  "created_at": "2026-10-29T10:36:02.764401+00:00",
+  "updated_at": "2026-10-29T10:36:19.243902+00:00"
+}

@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "material_id": "material_eb0783686cf6458d8fb18ea3ffd8d650",
+  "source_file_ids": [
+    "file_fffc3f8e872a4c44a8b5aa860b8067e9"
+  ],
+  "blocks": [
+    {
+      "block_id": "block_6699dfff324b466f8f069174d37443d3",
+      "kind": "text",
+      "content": "向量投影练习\n给定 a=(3,2)，b=(2,0)。\n求投影系数 c 与投影向量 p，并保留计算过程。",
+      "asset_ids": [],
+      "source": {
+        "input_index": 0,
+        "file_id": "file_fffc3f8e872a4c44a8b5aa860b8067e9",
+        "locator": {
+          "page": 1
+        },
+        "verification": "verified"
+      },
+      "review_state": "unverified"
+    }
+  ],
+  "warnings": [],
+  "created_at": "2026-10-29T10:23:50.411848+00:00"
+}

@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0",
+  "job_id": "job_22e4abd0a7b84dec857fd7e8373e0ae9",
+  "kind": "generation",
+  "status": "needs_review",
+  "stage": "material",
+  "message": "第 1 页没有可读取文字（空页或扫描页），请提供文本版或缩小范围；文件没有可用正文，请提供完整文本材料",
+  "resource_ref": {
+    "type": "generation",
+    "id": "generation_14cd62103fa04abba419a2d9e2bde76d"
+  },
+  "result": null,
+  "error": {
+    "code": "content_uncertain",
+    "message": "第 1 页没有可读取文字（空页或扫描页），请提供文本版或缩小范围；文件没有可用正文，请提供完整文本材料",
+    "retryable": false,
+    "details": {}
+  },
+  "diagnostic_asset_ids": [
+    "file_e09a4e9e8ee74924965919f655c42bfa"
+  ],
+  "usage": {
+    "model_calls": 0,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "tokens_reported": false,
+    "elapsed_seconds": 0.39
+  },
+  "created_at": "2026-10-29T10:25:12.505995+00:00",
+  "updated_at": "2026-10-29T10:25:12.930010+00:00"
+}

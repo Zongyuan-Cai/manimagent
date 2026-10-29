@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0",
+  "job_id": "job_59e03fd407e142b59a2879e3d8e82569",
+  "kind": "generation",
+  "status": "completed",
+  "stage": "completed",
+  "message": "文字处理已完成",
+  "resource_ref": {
+    "type": "generation",
+    "id": "generation_61e1ed1a062b4d5187c6f71139b31686"
+  },
+  "result": {
+    "type": "generation",
+    "id": "generation_61e1ed1a062b4d5187c6f71139b31686"
+  },
+  "error": null,
+  "diagnostic_asset_ids": [
+    "file_4224eefbb05e4e80a07a5f9f884a1c5d",
+    "file_ac6475f8f6e646d6944cbe1dd2eb884f",
+    "file_f9c93a43259f4483ba33eb711666701b"
+  ],
+  "usage": {
+    "model_calls": 2,
+    "input_tokens": 1632,
+    "output_tokens": 1676,
+    "tokens_reported": true,
+    "elapsed_seconds": 11.125
+  },
+  "created_at": "2026-10-29T10:35:35.576503+00:00",
+  "updated_at": "2026-10-29T10:35:46.715382+00:00"
+}

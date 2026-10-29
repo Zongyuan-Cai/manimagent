@@ -1,0 +1,84 @@
+<h2>题目</h2>
+<p>给定<br />
+[
+\mathbf a=(3,2),\qquad \mathbf b=(2,0),
+]
+求 <span class="math">\(\mathbf a\)</span> 在 <span class="math">\(\mathbf b\)</span> 方向上的投影系数 <span class="math">\(c\)</span> 与投影向量 <span class="math">\(\mathbf p\)</span>。<a href="#block_7cc35611d5f94c10a6496525015474c3">来源 1</a></p>
+<p>这里采用常见定义：设投影向量<br />
+[
+\mathbf p=c\mathbf b,
+]
+即 <span class="math">\(c\)</span> 是相对于向量 <span class="math">\(\mathbf b\)</span> 本身的投影系数。</p>
+<hr />
+<h2>计算</h2>
+<p>向量点积为<br />
+[
+\mathbf a\cdot \mathbf b=3\cdot 2+2\cdot 0=6.
+]</p>
+<p>又因为<br />
+[
+\mathbf b\cdot \mathbf b=2^2+0^2=4,
+]
+所以投影系数为<br />
+[
+c=\frac{\mathbf a\cdot \mathbf b}{\mathbf b\cdot \mathbf b}
+=\frac{6}{4}
+=\frac32.
+]</p>
+<p>因此投影向量为<br />
+[
+\mathbf p=c\mathbf b
+=\frac32(2,0)
+=(3,0).
+]</p>
+<hr />
+<h2>结论</h2>
+<div class="math">\[
+\boxed{c=\frac32}
+\]</div>
+<div class="math">\[
+\boxed{\mathbf p=(3,0)}
+\]</div>
+<p>也可以说明：<span class="math">\(\mathbf b=(2,0)\)</span> 的方向是 <span class="math">\(x\)</span> 轴正方向，所以 <span class="math">\(\mathbf a=(3,2)\)</span> 在该方向上的投影向量就是 <span class="math">\((3,0)\)</span>，投影长度为<br />
+[
+|\mathbf p|=3.
+]</p>
+<p>验证正交性：<br />
+[
+\mathbf a-\mathbf p=(3,2)-(3,0)=(0,2),
+]
+而<br />
+[
+(0,2)\cdot (2,0)=0,
+]
+说明 <span class="math">\(\mathbf a-\mathbf p\)</span> 与 <span class="math">\(\mathbf b\)</span> 垂直，符合正交投影的定义。</p>
+<hr />
+<h2>关于“投影系数”的说明</h2>
+<p>如果题目把 <span class="math">\(c\)</span> 定义为相对于 <span class="math">\(\mathbf b\)</span> 的<strong>单位方向向量</strong><br />
+[
+\mathbf e_{\mathbf b}=\frac{\mathbf b}{|\mathbf b|}=(1,0)
+]
+的系数，那么<br />
+[
+c'=\mathbf a\cdot \mathbf e_{\mathbf b}
+=3\cdot 1+2\cdot 0=3,
+]
+此时<br />
+[
+\mathbf p=c'\mathbf e_{\mathbf b}=3(1,0)=(3,0).
+]</p>
+<p>所以：</p>
+<ul>
+<li>若定义为 <span class="math">\(\mathbf p=c\mathbf b\)</span>，则<br />
+[
+\boxed{c=\frac32};
+]</li>
+<li>若定义为 <span class="math">\(\mathbf p=c&#x27;\mathbf e_{\mathbf b}\)</span>，则<br />
+[
+\boxed{c'=3}.
+]</li>
+</ul>
+<p>无论采用哪种系数定义，投影向量都相同：
+[
+\boxed{\mathbf p=(3,0)}.
+]</p>

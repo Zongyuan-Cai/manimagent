@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0",
+  "job_id": "job_8272528acd3a40a4a7356e44fbfe7b5a",
+  "kind": "generation",
+  "status": "needs_review",
+  "stage": "material",
+  "message": "第 2 页没有可读取文字（空页或扫描页），请提供文本版或缩小范围",
+  "resource_ref": {
+    "type": "generation",
+    "id": "generation_38b7dab9477547f59777d5f50e92a698"
+  },
+  "result": null,
+  "error": {
+    "code": "content_uncertain",
+    "message": "第 2 页没有可读取文字（空页或扫描页），请提供文本版或缩小范围",
+    "retryable": false,
+    "details": {}
+  },
+  "diagnostic_asset_ids": [
+    "file_eaca4e31d68e44f39d1b84cdf6450501"
+  ],
+  "usage": {
+    "model_calls": 0,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "tokens_reported": false,
+    "elapsed_seconds": 0.5
+  },
+  "created_at": "2026-10-29T10:37:54.302560+00:00",
+  "updated_at": "2026-10-29T10:37:54.839356+00:00"
+}

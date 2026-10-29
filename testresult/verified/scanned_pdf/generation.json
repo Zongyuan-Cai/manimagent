@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0",
+  "generation_id": "generation_c7e4c4057932484b95cd93d645dc4389",
+  "output_mode": "text",
+  "source": {
+    "inputs": [
+      {
+        "type": "file",
+        "file_id": "file_adf637c86f58414f89fd818c40c08822",
+        "selection": null
+      }
+    ],
+    "parser_profile_id": null,
+    "input_mode": "auto",
+    "type": "inputs",
+    "instruction": "解答题目。",
+    "answer_profile_id": null
+  },
+  "material_ids": [],
+  "answer_id": null,
+  "stages": {
+    "material": {
+      "status": "needs_review",
+      "error": {
+        "code": "content_uncertain",
+        "message": "第 1 页没有可读取文字（空页或扫描页），请提供文本版或缩小范围；第 1 页包含图像或绘图，当前纯文字解析无法核对其内容；文件没有可用正文，请提供完整文本材料",
+        "retryable": false,
+        "details": {}
+      },
+      "diagnostic_asset_ids": [
+        "file_616a4e3a3774415495b2d0d93979b1e1"
+      ]
+    },
+    "answer": {
+      "status": "blocked",
+      "error": null,
+      "diagnostic_asset_ids": []
+    }
+  },
+  "active_job_id": "job_b3468ef6477844b38aa872dcfdece6c9",
+  "job_ids": [
+    "job_b3468ef6477844b38aa872dcfdece6c9"
+  ],
+  "created_at": "2026-10-29T10:37:53.250468+00:00",
+  "updated_at": "2026-10-29T10:37:53.763231+00:00"
+}

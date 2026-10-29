@@ -4,22 +4,26 @@ build-backend = "hatchling.build"
 
 [project]
 name = "manimagent"
-version = "0.1.0"
-description = "Text-to-Manim animations with bounded execution and visual review"
+version = "0.2.0"
+description = "Learning materials and questions to traceable Markdown answers"
 readme = "README.md"
 requires-python = ">=3.12,<3.13"
 dependencies = [
   "fastapi>=0.115,<1",
   "httpx>=0.28,<1",
-  "langgraph>=1.0,<2",
+  "markdown-it-py>=3,<5",
   "pydantic>=2.10,<3",
   "python-dotenv>=1.0,<2",
+  "python-multipart>=0.0.20,<1",
+  "pypdf>=6,<7",
+  "python-docx>=1.2,<2",
   "pyyaml>=6.0,<7",
   "uvicorn>=0.34,<1",
+  "mdit-py-plugins>=0.4,<1",
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=8,<10", "ruff>=0.11,<1"]
+dev = ["pytest>=8,<10", "ruff>=0.11,<1", "reportlab>=4,<5", "pillow>=11,<13", "httpx2>=2.13,<3"]
 
 [project.scripts]
 manimagent = "manimagent.cli:main"
@@ -27,9 +31,14 @@ manimagent = "manimagent.cli:main"
 [tool.hatch.build.targets.wheel]
 packages = ["src/manimagent"]
 
+[tool.hatch.build.targets.sdist]
+only-include = ["src/manimagent", "tests", "scripts", "docs", "README.md", "pyproject.toml", "uv.lock", "config.example.yaml", ".env.example"]
+
+[tool.hatch.build]
+exclude = ["/legacy_mvp", "/testmaterial", "/testresult", "/runs", "/config.yaml", "/.env", "/.venv-before-separation"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-markers = ["docker: requires the renderer image and a running Docker engine"]
 
 [tool.ruff]
 line-length = 100

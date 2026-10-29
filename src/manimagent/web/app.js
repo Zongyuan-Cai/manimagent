@@ -1,139 +1,170 @@
-const element = (id) => document.getElementById(id);
-const terminal = new Set(["completed", "needs_input", "needs_review", "failed", "interrupted"]);
-const stages = {
-  queued: "排队中", planning: "规划讲解", coding: "生成或修订代码",
-  rendering: "渲染预览", reviewing: "检查画面", finalizing: "正式渲染与检查", assembling: "合成视频",
-};
-const states = {
-  completed: "已完成", needs_input: "请补充输入", needs_review: "结果待检查",
-  failed: "生成失败", interrupted: "任务已中断",
-};
-let timer;
+const el = (id) => document.getElementById(id);
+const terminal = new Set(['completed', 'needs_input', 'needs_review', 'failed', 'interrupted']);
+const labels = {queued: '排队中', running: '处理中', completed: '已完成', needs_input: '需要补充材料', needs_review: '需要核对', failed: '失败', interrupted: '已中断'};
 let currentJob = null;
+let answer = null;
+let timer;
+let reusedMaterialIds = null;
+let fileRows = [];
 
-function countCharacters() {
-  const count = Array.from(element("text").value.trim()).length;
-  element("count").textContent = `${count} / 3000`;
-  return count;
-}
-
-async function requestJSON(url, options) {
+async function request(url, options) {
   const response = await fetch(url, options);
-  let data;
-  try {
-    data = await response.json();
-  } catch {
-    throw new Error("服务返回异常，请检查连接");
-  }
+  const data = await response.json();
   if (!response.ok) {
-    let message = typeof data.detail === "string" ? data.detail : "请输入 1 至 3000 个字符";
-    if (response.status === 503) message = "生成服务尚未就绪，请完成模型与渲染环境配置后重启服务。";
-    const error = new Error(message);
+    const error = new Error(data.error?.message || data.detail || '请求失败');
     error.status = response.status;
     throw error;
   }
   return data;
 }
-
-function releaseForm() {
-  clearTimeout(timer);
-  element("generate").disabled = false;
-  localStorage.removeItem("manimagent.job");
+function post(url, data) {
+  return request(url, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data)});
 }
-
-function showResults(data) {
-  element("result").replaceChildren();
-  element("result").classList.remove("empty");
-  element("artifacts").replaceChildren();
-  const videos = data.artifacts.filter((a) => ["final", "scene_video", "preview"].includes(a.kind));
-  const preferred = videos.find((a) => a.artifact_id === data.final_artifact_id)
-    || videos.find((a) => a.kind === "scene_video") || videos.at(-1);
-  if (preferred) {
-    const video = document.createElement("video");
-    video.controls = true;
-    video.preload = "metadata";
-    video.src = preferred.url;
-    element("result").append(video);
-  }
-  for (const artifact of data.artifacts) {
-    if (!["final", "scene_video", "preview", "report", "plan"].includes(artifact.kind)) continue;
-    const link = document.createElement("a");
-    link.className = "artifact";
-    link.href = `${artifact.url}?download=true`;
-    link.textContent = `${artifact.kind === "final" ? "下载视频" : "下载"} · ${artifact.label}`;
-    element("artifacts").append(link);
-  }
+function link(parent, title, url) {
+  const a = document.createElement('a');
+  a.textContent = title; a.href = url; a.className = 'artifact'; parent.append(a);
 }
+function release() { el('generate').disabled = false; clearTimeout(timer); }
 
-async function pollJob() {
-  try {
-    const data = await requestJSON(`/api/jobs/${currentJob}`);
-    element("status").style.display = "block";
-    element("status").textContent = states[data.status] || stages[data.stage] || "生成中";
-    element("message").textContent = data.message;
-    element("job").textContent = `任务 ${data.job_id} · 场景 ${data.completed_scenes} / ${data.total_scenes}`;
-    if (terminal.has(data.status)) {
-      releaseForm();
-      showResults(data);
-    } else {
-      timer = setTimeout(pollJob, 2000);
+el('files').addEventListener('change', () => {
+  reusedMaterialIds = null;
+  el('file-list').replaceChildren();
+  fileRows = Array.from(el('files').files).map((file) => {
+    const row = document.createElement('div'); row.className = 'file-row';
+    const name = document.createElement('span'); name.textContent = file.name; row.append(name);
+    const start = document.createElement('input'); const end = document.createElement('input');
+    if (file.name.toLowerCase().endsWith('.pdf')) {
+      for (const [input, label] of [[start, '起始页'], [end, '结束页']]) {
+        input.type = 'number'; input.min = '1'; input.placeholder = label; input.setAttribute('aria-label', `${file.name} ${label}`); row.append(input);
+      }
     }
-  } catch (error) {
-    if (error.status === 404) {
-      releaseForm();
-      element("message").textContent = "历史任务不存在，请重新提交。";
-    } else {
-      element("message").textContent = `${error.message}，正在重连…`;
-      timer = setTimeout(pollJob, 4000);
+    el('file-list').append(row);
+    return {file, start, end, uploaded: null};
+  });
+});
+el('material').addEventListener('input', () => { reusedMaterialIds = null; });
+
+async function showAnswer(id) {
+  if (answer?.answer_id === id) return;
+  const nextAnswer = await request(`/api/v2/answers/${id}`);
+  const htmlResponse = await fetch(`/api/v2/answers/${id}/html`);
+  if (!htmlResponse.ok) throw new Error('正文读取失败');
+  if (window.MathJax?.typesetClear) window.MathJax.typesetClear([el('result')]);
+  // Raw HTML is disabled and unsafe link protocols are rejected by the server renderer.
+  el('result').innerHTML = await htmlResponse.text();
+  if (window.MathJax?.startup?.promise) {
+    try {
+      await window.MathJax.startup.promise;
+      await window.MathJax.typesetPromise([el('result')]);
+    } catch { el('message').textContent = '部分公式未能排版，原始 LaTeX 可在 Markdown 中查看。'; }
+  }
+  el('actions').hidden = false; el('editor').hidden = true;
+  el('download').href = `/api/v2/answers/${id}/markdown?download=true`;
+  el('warnings').textContent = nextAnswer.warnings.map(w => w.message).join('；');
+  el('job').textContent = `回答版本 ${id}`;
+  el('source-list').replaceChildren();
+  for (const materialId of nextAnswer.material_ids) {
+    const material = await request(`/api/v2/materials/${materialId}`);
+    link(el('source-list'), `材料 ${materialId}`, `/api/v2/materials/${materialId}`);
+    for (const fileId of material.source_file_ids) {
+      const file = await request(`/api/v2/files/${fileId}`);
+      link(el('source-list'), `原件 ${file.filename}`, `/api/v2/files/${fileId}/content`);
+    }
+    for (const block of material.blocks) {
+      const item = document.createElement('pre');
+      item.id = block.block_id;
+      item.textContent = `${materialId}:${block.block_id}\n来源 ${JSON.stringify(block.source.locator)}\n${block.content}`;
+      el('source-list').append(item);
     }
   }
+  answer = nextAnswer;
+  el('sources').hidden = false;
+  localStorage.setItem('manimagent.answer', id);
 }
 
-element("text").addEventListener("input", countCharacters);
-element("example").addEventListener("click", () => {
-  element("text").value = "请用动画解释二维向量投影。用 a=(3,2)、b=(1,0) 举例，先展示两个向量，再展示投影和垂线，最后区分投影系数与投影向量。面向初学者讲解。";
-  countCharacters();
-  element("text").focus();
-});
-
-element("form").addEventListener("submit", async (event) => {
-  event.preventDefault();
-  element("error").textContent = "";
-  const count = countCharacters();
-  if (count < 1 || count > 3000) {
-    element("error").textContent = "请输入 1 至 3000 个字符";
-    return;
-  }
-  element("generate").disabled = true;
-  clearTimeout(timer);
-  element("message").textContent = "正在提交任务…";
+async function poll() {
   try {
-    const data = await requestJSON("/api/jobs", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text: element("text").value }),
-    });
-    element("result").replaceChildren();
-    element("artifacts").replaceChildren();
-    currentJob = data.job_id;
-    localStorage.setItem("manimagent.job", currentJob);
-    pollJob();
+    const job = await request(`/api/v2/jobs/${currentJob}`);
+    el('status').style.display = 'block';
+    el('status').textContent = labels[job.status] || job.status;
+    el('message').textContent = job.message;
+    if (job.resource_ref) {
+      const generation = await request(`/api/v2/generations/${job.resource_ref.id}`);
+      if (generation.answer_id) await showAnswer(generation.answer_id);
+    }
+    el('artifacts').replaceChildren();
+    for (const id of job.diagnostic_asset_ids) link(el('artifacts'), `诊断 ${id}`, `/api/v2/files/${id}/content`);
+    el('diagnostics').hidden = !job.diagnostic_asset_ids.length;
+    if (terminal.has(job.status)) {
+      if (!answer) el('result').textContent = '本次未发布完整回答，请根据提示补充或核对材料后重新提交。';
+      release();
+    } else { timer = setTimeout(poll, 1000); }
   } catch (error) {
-    element("message").textContent = "";
-    element("error").textContent = error.message;
-    element("generate").disabled = false;
+    el('message').textContent = error.message;
+    if (error.status === 404) { localStorage.removeItem('manimagent.textJob'); release(); }
+    else { timer = setTimeout(poll, 3000); }
   }
-});
-
-requestJSON("/api/health").then((data) => {
-  if (!data.ready) {
-    element("health").textContent = "生成服务尚未就绪，请先完成模型与渲染环境配置。";
-    element("health").style.display = "block";
-  }
-}).catch(() => {});
-
-const savedJob = localStorage.getItem("manimagent.job");
-if (savedJob && /^[a-f0-9]{32}$/.test(savedJob)) {
-  currentJob = savedJob;
-  element("generate").disabled = true;
-  pollJob();
 }
+
+el('form').addEventListener('submit', async (event) => {
+  event.preventDefault(); clearTimeout(timer); el('generate').disabled = true; el('error').textContent = '';
+  try {
+    const instruction = el('text').value;
+    let source;
+    if (reusedMaterialIds) source = {type: 'materials', material_ids: reusedMaterialIds, instruction};
+    else {
+      const inputs = [{type: 'text', text: instruction}];
+      if (el('material').value.trim()) inputs.push({type: 'text', text: el('material').value});
+      for (const row of fileRows) {
+        let selection;
+        if (row.start.value || row.end.value) {
+          const start = Number(row.start.value), end = Number(row.end.value);
+          if (!Number.isInteger(start) || !Number.isInteger(end) || start < 1 || end < start) throw new Error('请填写有效的起始页和结束页');
+          selection = {kind: 'pages', start, end};
+        }
+        if (!row.uploaded) {
+          const data = new FormData(); data.append('file', row.file);
+          el('message').textContent = `正在上传 ${row.file.name}`;
+          row.uploaded = await request('/api/v2/files', {method: 'POST', body: data});
+        }
+        inputs.push({type: 'file', file_id: row.uploaded.file_id, ...(selection ? {selection} : {})});
+      }
+      source = {type: 'inputs', inputs, instruction};
+    }
+    const job = await post('/api/v2/generations', {output_mode: 'text', source});
+    currentJob = job.job_id; answer = null;
+    el('result').textContent = '正在准备材料与文字回答…';
+    el('actions').hidden = true; el('sources').hidden = true; el('warnings').textContent = '';
+    el('job').textContent = `任务 ${currentJob}`;
+    localStorage.setItem('manimagent.textJob', currentJob); poll();
+  } catch (error) { el('error').textContent = error.message; el('message').textContent = ''; release(); }
+});
+el('example').onclick = () => { el('text').value = '给定 a=(3,2)、b=(1,0)，求 a 在 b 方向上的投影，并解释投影系数与投影向量的区别。'; };
+el('copy').onclick = async () => { try { await navigator.clipboard.writeText(answer.markdown); el('message').textContent = '正文已复制'; } catch { el('message').textContent = '复制失败，可下载 Markdown'; } };
+el('result').addEventListener('click', event => {
+  if (event.target.closest('a')?.getAttribute('href')?.startsWith('#block_')) el('sources').open = true;
+});
+el('edit').onclick = () => { el('revision').value = answer.markdown; el('editor').hidden = false; };
+el('cancel').onclick = () => { el('editor').hidden = true; };
+el('save').onclick = async () => {
+  el('save').disabled = true;
+  try {
+    const revised = await post('/api/v2/answers/revisions', {base_answer_id: answer.answer_id, markdown: el('revision').value});
+    await showAnswer(revised.answer_id);
+    localStorage.removeItem('manimagent.textJob');
+    el('message').textContent = '已保存新版本，旧回答保持可读';
+  } catch (error) { el('message').textContent = error.message; }
+  finally { el('save').disabled = false; }
+};
+el('reuse').onclick = () => { reusedMaterialIds = answer.material_ids; el('text').focus(); el('message').textContent = '已复用此回答的材料。修改问题后点击生成文字回答。'; };
+async function refreshHealth() {
+  const data = await request('/api/v2/health');
+  el('health').textContent = data.ready ? '' : `回答模型尚未就绪：${data.issues.join('；')}。可展开 LLM 配置完成设置；上传与独立解析仍可使用。`;
+  el('health').style.display = data.ready ? 'none' : 'block';
+  return data;
+}
+refreshHealth().catch(() => {});
+const savedJob = localStorage.getItem('manimagent.textJob');
+const savedAnswer = localStorage.getItem('manimagent.answer');
+if (savedJob && /^job_[a-f0-9]{32}$/.test(savedJob)) { currentJob = savedJob; el('generate').disabled = true; poll(); }
+else if (savedAnswer && /^answer_[a-f0-9]{32}$/.test(savedAnswer)) showAnswer(savedAnswer).catch(error => { el('message').textContent = error.message; });

@@ -1,0 +1,52 @@
+<h2>合并题意</h2>
+<p>三份材料给出的核心信息一致：</p>
+<ul>
+<li>第一份同名文件给出向量<br />
+[
+a=(3,2)
+]
+<a href="#block_ae542f1cea17483bbb142f126a60fd8e">来源 1</a></li>
+<li>第二份同名文件给出向量<br />
+[
+b=(2,0)
+]
+<a href="#block_e59121ab5ab348ef8681a7ca35e82e71">来源 2</a></li>
+<li>公式与表格材料再次给出 <span class="math">\(a=(3,2)\)</span>、<span class="math">\(b=(2,0)\)</span>，并给出投影公式<br />
+[
+c=\frac{a\cdot b}{b\cdot b},\qquad p=cb
+]
+<a href="#block_d210dbae3f1e4404b5a8752bba8e9371">来源 3</a>
+<a href="#block_8b0804cc74664389833ca6653c59e378">来源 4</a></li>
+</ul>
+<p>注意：前两份材料文件名同为“同名.txt”，但内容不同：一份给出 <span class="math">\(a\)</span>，一份给出 <span class="math">\(b\)</span>，因此应依据文件内容或文件标识区分，而不能仅凭文件名区分。</p>
+<h2>计算投影系数</h2>
+<p>由
+[
+a\cdot b=(3,2)\cdot(2,0)=3\cdot2+2\cdot0=6,
+]
+[
+b\cdot b=(2,0)\cdot(2,0)=2^2+0^2=4.
+]</p>
+<p>因此投影系数为
+[
+c=\frac{a\cdot b}{b\cdot b}
+=\frac{6}{4}
+=\frac{3}{2}.
+]</p>
+<h2>计算投影向量</h2>
+<p>由
+[
+p=cb,
+]
+得
+[
+p=\frac{3}{2}(2,0)=(3,0).
+]</p>
+<h2>结论</h2>
+<div class="math">\[
+\boxed{c=\frac{3}{2}}
+\]</div>
+<div class="math">\[
+\boxed{p=(3,0)}
+\]</div>
+<p>由于 <span class="math">\(b=(2,0)\)</span> 沿 <span class="math">\(x\)</span> 轴正方向，<span class="math">\(p=(3,0)\)</span> 表示 <span class="math">\(a=(3,2)\)</span> 在 <span class="math">\(b\)</span> 方向上的投影向量；其水平分量为 <span class="math">\(3\)</span>，而原向量 <span class="math">\(a\)</span> 的竖直分量 <span class="math">\(2\)</span> 与 <span class="math">\(b\)</span> 垂直，未被投影保留。</p>

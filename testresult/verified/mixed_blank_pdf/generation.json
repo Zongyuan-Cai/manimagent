@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0",
+  "generation_id": "generation_38b7dab9477547f59777d5f50e92a698",
+  "output_mode": "text",
+  "source": {
+    "inputs": [
+      {
+        "type": "file",
+        "file_id": "file_509ef5f241eb4548a31faa21da6a14ad",
+        "selection": null
+      }
+    ],
+    "parser_profile_id": null,
+    "input_mode": "auto",
+    "type": "inputs",
+    "instruction": "完整解释所有页。",
+    "answer_profile_id": null
+  },
+  "material_ids": [],
+  "answer_id": null,
+  "stages": {
+    "material": {
+      "status": "needs_review",
+      "error": {
+        "code": "content_uncertain",
+        "message": "第 2 页没有可读取文字（空页或扫描页），请提供文本版或缩小范围",
+        "retryable": false,
+        "details": {}
+      },
+      "diagnostic_asset_ids": [
+        "file_eaca4e31d68e44f39d1b84cdf6450501"
+      ]
+    },
+    "answer": {
+      "status": "blocked",
+      "error": null,
+      "diagnostic_asset_ids": []
+    }
+  },
+  "active_job_id": "job_8272528acd3a40a4a7356e44fbfe7b5a",
+  "job_ids": [
+    "job_8272528acd3a40a4a7356e44fbfe7b5a"
+  ],
+  "created_at": "2026-10-29T10:37:54.303573+00:00",
+  "updated_at": "2026-10-29T10:37:54.815444+00:00"
+}

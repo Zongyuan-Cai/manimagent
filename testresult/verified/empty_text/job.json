@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0",
+  "job_id": "job_dd64f952fcfe4eb6904c5ed6e905a019",
+  "kind": "generation",
+  "status": "needs_input",
+  "stage": "material",
+  "message": "文件没有可用正文，请提供完整文字材料",
+  "resource_ref": {
+    "type": "generation",
+    "id": "generation_df0c8d219c67449a8136dbd30f42222e"
+  },
+  "result": null,
+  "error": {
+    "code": "source_incomplete",
+    "message": "文件没有可用正文，请提供完整文字材料",
+    "retryable": false,
+    "details": {}
+  },
+  "diagnostic_asset_ids": [
+    "file_9080504665cd400a88a687a3db3a69b1"
+  ],
+  "usage": {
+    "model_calls": 0,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "tokens_reported": false,
+    "elapsed_seconds": 0.375
+  },
+  "created_at": "2026-10-29T10:37:58.614711+00:00",
+  "updated_at": "2026-10-29T10:37:59.022785+00:00"
+}

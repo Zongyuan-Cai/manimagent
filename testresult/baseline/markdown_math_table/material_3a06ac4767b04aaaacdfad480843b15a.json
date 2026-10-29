@@ -1,0 +1,75 @@
+{
+  "schema_version": "1.0",
+  "material_id": "material_3a06ac4767b04aaaacdfad480843b15a",
+  "source_file_ids": [
+    "file_40a3c737356c406584964c7f333f03be"
+  ],
+  "blocks": [
+    {
+      "block_id": "block_750f2516b8f64fc8ba5aa6e4d867c86e",
+      "kind": "heading",
+      "content": "# 投影公式",
+      "asset_ids": [],
+      "source": {
+        "input_index": 0,
+        "file_id": "file_40a3c737356c406584964c7f333f03be",
+        "locator": {
+          "line_start": 1,
+          "line_end": 1
+        },
+        "verification": "verified"
+      },
+      "review_state": "unverified"
+    },
+    {
+      "block_id": "block_9f8883be9a714c73b5cc7e31516719d1",
+      "kind": "text",
+      "content": "给定 $a=(3,2)$、$b=(2,0)$。",
+      "asset_ids": [],
+      "source": {
+        "input_index": 0,
+        "file_id": "file_40a3c737356c406584964c7f333f03be",
+        "locator": {
+          "line_start": 3,
+          "line_end": 3
+        },
+        "verification": "verified"
+      },
+      "review_state": "unverified"
+    },
+    {
+      "block_id": "block_aef2be72e2d64aef9e8551f6b89fbc0e",
+      "kind": "text",
+      "content": "$$c=\\frac{a\\cdot b}{b\\cdot b},\\qquad p=cb$$",
+      "asset_ids": [],
+      "source": {
+        "input_index": 0,
+        "file_id": "file_40a3c737356c406584964c7f333f03be",
+        "locator": {
+          "line_start": 5,
+          "line_end": 5
+        },
+        "verification": "verified"
+      },
+      "review_state": "unverified"
+    },
+    {
+      "block_id": "block_f1ec6ce369364c4f8ad00b5c2a386afe",
+      "kind": "text",
+      "content": "| 向量 | 坐标 |\n|---|---|\n| a | (3,2) |\n| b | (2,0) |",
+      "asset_ids": [],
+      "source": {
+        "input_index": 0,
+        "file_id": "file_40a3c737356c406584964c7f333f03be",
+        "locator": {
+          "line_start": 7,
+          "line_end": 10
+        },
+        "verification": "verified"
+      },
+      "review_state": "unverified"
+    }
+  ],
+  "warnings": [],
+  "created_at": "2026-10-29T10:23:36.596515+00:00"
+}

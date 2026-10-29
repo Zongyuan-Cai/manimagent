@@ -1,0 +1,7 @@
+{
+  "wheel_excludes_legacy_and_private": true,
+  "sdist_excludes_legacy_material_results_and_backup": true,
+  "current_version": "0.2.0",
+  "legacy_routes_absent": true,
+  "current_dependencies_exclude_langgraph": true
+}

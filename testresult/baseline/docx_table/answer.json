@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0",
+  "answer_id": "answer_f19a57c241be422fa2873f98ea427f88",
+  "material_ids": [
+    "material_66786d0fbccc4ed2b29e67e918800490"
+  ],
+  "derived_from_answer_id": null,
+  "title": "1. 投影系数",
+  "instruction": "按 DOCX 表格中的数据完整解答。",
+  "markdown": "按常见约定，计算向量 \\(a\\) 在向量 \\(b\\) 上的投影。表中给出  \n\\[\na=(3,2),\\qquad b=(2,0)\n\\]\n[[material_66786d0fbccc4ed2b29e67e918800490:block_289a7c8071bb446cb42c987580dd60fd]]。题目要求先给出投影系数，再给出投影向量，并解释二者区别 [[material_66786d0fbccc4ed2b29e67e918800490:block_081a7ff0ee704436bf7d3acc35a07bfc]]。\n\n## 1. 投影系数\n\n设投影向量为 \\(\\lambda b\\)，则\n\\[\na\\cdot b=3\\cdot 2+2\\cdot 0=6,\n\\]\n\\[\nb\\cdot b=2^2+0^2=4.\n\\]\n\n因此投影系数为\n\\[\n\\lambda=\\frac{a\\cdot b}{b\\cdot b}\n=\\frac{6}{4}\n=\\frac{3}{2}.\n\\]\n\n所以投影系数是\n\\[\n\\boxed{\\lambda=\\frac32}.\n\\]\n\n## 2. 投影向量\n\n向量 \\(a\\) 在 \\(b\\) 上的投影向量为\n\\[\n\\operatorname{proj}_{b}a=\\lambda b\n=\\frac32(2,0)\n=(3,0).\n\\]\n\n因此投影向量是\n\\[\n\\boxed{\\operatorname{proj}_{b}a=(3,0)}.\n\\]\n\n也可以验证：\n\\[\na=(3,2)=(3,0)+(0,2),\n\\]\n其中 \\((3,0)\\) 沿 \\(b\\) 的方向，\\((0,2)\\) 与 \\(b=(2,0)\\) 垂直。\n\n## 3. 投影系数与投影向量的区别\n\n- **投影系数** \\(\\lambda=\\frac32\\) 是一个**标量**，表示投影向量相对于向量 \\(b\\) 的缩放倍数：\n  \\[\n  \\operatorname{proj}_{b}a=\\lambda b.\n  \\]\n- **投影向量** \\((3,0)\\) 是一个**向量**，表示 \\(a\\) 在 \\(b\\) 所在直线方向上的分量。\n- 若把“投影长度”单独理解，则有向投影长度为\n  \\[\n  \\frac{a\\cdot b}{\\|b\\|}\n  =\\frac{6}{2}=3,\n  \\]\n  它等于 \\(\\lambda\\|b\\|=\\frac32\\cdot 2=3\\)。\n\n因此：\n\\[\n\\boxed{\\text{投影系数为 }\\frac32,\\qquad \\text{投影向量为 }(3,0).}\n\\]\n\n> 若题意是反过来求 \\(b\\) 在 \\(a\\) 上的投影，则投影系数为 \\(\\frac{b\\cdot a}{a\\cdot a}=\\frac{6}{13}\\)，投影向量为 \\(\\frac{6}{13}(3,2)=\\left(\\frac{18}{13},\\frac{12}{13}\\right)\\)。",
+  "steps": [
+    {
+      "step_id": "step_1",
+      "title": "1. 投影系数",
+      "content": "按常见约定，计算向量 \\(a\\) 在向量 \\(b\\) 上的投影。表中给出  \n\\[\na=(3,2),\\qquad b=(2,0)\n\\]\n[[material_66786d0fbccc4ed2b29e67e918800490:block_289a7c8071bb446cb42c987580dd60fd]]。题目要求先给出投影系数，再给出投影向量，并解释二者区别 [[material_66786d0fbccc4ed2b29e67e918800490:block_081a7ff0ee704436bf7d3acc35a07bfc]]。\n\n## 1. 投影系数\n\n设投影向量为 \\(\\lambda b\\)，则\n\\[\na\\cdot b=3\\cdot 2+2\\cdot 0=6,\n\\]\n\\[\nb\\cdot b=2^2+0^2=4.\n\\]\n\n因此投影系数为\n\\[\n\\lambda=\\frac{a\\cdot b}{b\\cdot b}\n=\\frac{6}{4}\n=\\frac{3}{2}.\n\\]\n\n所以投影系数是\n\\[\n\\boxed{\\lambda=\\frac32}.\n\\]\n\n## 2. 投影向量\n\n向量 \\(a\\) 在 \\(b\\) 上的投影向量为\n\\[\n\\operatorname{proj}_{b}a=\\lambda b\n=\\frac32(2,0)\n=(3,0).\n\\]\n\n因此投影向量是\n\\[\n\\boxed{\\operatorname{proj}_{b}a=(3,0)}.\n\\]\n\n也可以验证：\n\\[\na=(3,2)=(3,0)+(0,2),\n\\]\n其中 \\((3,0)\\) 沿 \\(b\\) 的方向，\\((0,2)\\) 与 \\(b=(2,0)\\) 垂直。\n\n## 3. 投影系数与投影向量的区别\n\n- **投影系数** \\(\\lambda=\\frac32\\) 是一个**标量**，表示投影向量相对于向量 \\(b\\) 的缩放倍数：\n  \\[\n  \\operatorname{proj}_{b}a=\\lambda b.\n  \\]\n- **投影向量** \\((3,0)\\) 是一个**向量**，表示 \\(a\\) 在 \\(b\\) 所在直线方向上的分量。\n- 若把“投影长度”单独理解，则有向投影长度为\n  \\[\n  \\frac{a\\cdot b}{\\|b\\|}\n  =\\frac{6}{2}=3,\n  \\]\n  它等于 \\(\\lambda\\|b\\|=\\frac32\\cdot 2=3\\)。\n\n因此：\n\\[\n\\boxed{\\text{投影系数为 }\\frac32,\\qquad \\text{投影向量为 }(3,0).}\n\\]\n\n> 若题意是反过来求 \\(b\\) 在 \\(a\\) 上的投影，则投影系数为 \\(\\frac{b\\cdot a}{a\\cdot a}=\\frac{6}{13}\\)，投影向量为 \\(\\frac{6}{13}(3,2)=\\left(\\frac{18}{13},\\frac{12}{13}\\right)\\)。",
+      "source_refs": [
+        {
+          "material_id": "material_66786d0fbccc4ed2b29e67e918800490",
+          "block_id": "block_289a7c8071bb446cb42c987580dd60fd"
+        },
+        {
+          "material_id": "material_66786d0fbccc4ed2b29e67e918800490",
+          "block_id": "block_081a7ff0ee704436bf7d3acc35a07bfc"
+        }
+      ],
+      "example_notes": []
+    }
+  ],
+  "warnings": [],
+  "created_at": "2026-10-29T10:24:28.685976+00:00"
+}

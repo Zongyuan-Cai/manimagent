@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0",
+  "generation_id": "generation_3113f7857d414176aaa984bf85fd5596",
+  "output_mode": "text",
+  "source": {
+    "inputs": [
+      {
+        "type": "file",
+        "file_id": "file_50d4c62aa4b242a092b89162cf9e18f5",
+        "selection": null
+      }
+    ],
+    "parser_profile_id": null,
+    "input_mode": "auto",
+    "type": "inputs",
+    "instruction": "计算材料中所要求的特征值。",
+    "answer_profile_id": null
+  },
+  "material_ids": [
+    "material_86aac4bfc21e4a3d80177184c5ec736a"
+  ],
+  "answer_id": null,
+  "stages": {
+    "material": {
+      "status": "completed",
+      "error": null,
+      "diagnostic_asset_ids": []
+    },
+    "answer": {
+      "status": "needs_input",
+      "error": {
+        "code": "source_incomplete",
+        "message": "材料中未提供矩阵的具体元素或阶数，缺少计算特征值所必需的信息；候选答案正确指出无法计算并请求补充矩阵。",
+        "retryable": false,
+        "details": {}
+      },
+      "diagnostic_asset_ids": [
+        "file_cbf9b580c5814edbb595d58e5a6a5542",
+        "file_0a23292b44f348d2812edc0a3c7062b3",
+        "file_c6b316704fb54acaa8146e482a5cd30c"
+      ]
+    }
+  },
+  "active_job_id": "job_fb93fa89dee74919a88f52f6a85332a7",
+  "job_ids": [
+    "job_fb93fa89dee74919a88f52f6a85332a7"
+  ],
+  "created_at": "2026-10-29T10:37:29.942561+00:00",
+  "updated_at": "2026-10-29T10:37:34.457687+00:00"
+}
