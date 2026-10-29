@@ -1,143 +1,140 @@
 # ManimAgent 文档总览
 
-更新日期：2026年10月29日
+更新日期：2026年10月29日。
 
-ManimAgent 从学习材料生成可独立阅读的回答，并按需将回答转成动画。近期围绕 LLM 接入、材料解析、文本回答和动画生成四项能力推进；长期记忆与个性化保留简要方向，暂不进入近期开发。
+## 版本与本次发布范围
 
-当前代码为 0.1.0 纯文本到动画 MVP，已有自动化与真实渲染验证记录。独立材料、回答、视频资源及 `/api/v2` 仍是后续设计；本次文档迁移不改变运行行为。真实模型生成质量的已记录验证范围见 [MVP 验证记录](MVP验证记录.md)。
+本分支只更新文档，已提交应用代码仍为 **0.1.0 纯文本到动画 MVP**，运行方法见[运行与配置](运行与配置.md)。已有 API、CLI、依赖、预算与检查基线保留在[历史动画 MVP 流程](mvp/动画MVP流程.md)，测试事实见[MVP 验证记录](MVP验证记录.md)。
+
+本地开发工作区已形成 0.2.0 文字链路阶段成果，并将旧动画迁移到独立 legacy_mvp；这些代码、配置、测试和报告尚未随本分支提交。文中以完整 Answer 为前提的设计不表示 GitHub 当前源码已经提供相应能力。
+
+正式版目标是一次提交、先展示完整文字，再自动生成同版本动画。**真实 TTS 合成暂缓，旁白稿、语义锚点、对象与事件绑定以及共同时间线现在就设计。** 未生成音频时只验证语义对应和估计排程，不声称真实同步精度已经通过。
 
 ## 文档入口
 
-| 主文档 | 维护内容 | 当前状态 |
-|---|---|---|
-| [01 LLM 接入与调用](01-LLM接入与调用.md) | 连接、协议、模型与角色配置、能力检测、统一调用和错误 | 当前为可配置 Chat Completions；多协议接入待实现 |
-| [02 材料输入与解析](02-材料输入与解析.md) | 上传、格式处理、解析路由、来源与统一材料结果 | 独立模块待实现；当前入口仅支持纯文本 |
-| [03 文本回答生成](03-文本回答生成.md) | 内容组织、检查、来源引用、独立回答与修订 | 待实现；当前讲解规划尚未拆成独立回答 |
-| [04 动画生成](04-动画生成.md) | 分镜、Manim、执行纠错、视觉检查、渲染、合成与后续配音 | 当前 MVP 已有基础流程；消费 Answer 的边界待迁移 |
-| [05 长期记忆与个性化](05-长期记忆与个性化.md) | 长期目标和基本原则 | 暂缓，近期不展开 |
+| 文档 | 内容与证据边界 |
+|---|---|
+| [音画对齐调研](research/音画对齐开源项目与论文调研.md) | 官方论文、固定提交源码、场景／句／书签／强制对齐比较；未运行复现 |
+| [动画 Pipeline](04-动画生成.md) | 正式版教学分析、旁白和画面计划、时间解析、有限渲染与失败边界 |
+| [Prompt 与检查规范](动画Prompt与检查规范.md) | 角色输入输出、题型差异、对象和时间证据、失败处理 |
+| [时长与生产验收](动画时长与生产验收.md) | 播放时长与墙钟预算、同步指标、固定样例与指标分母；数字均待实测 |
+| [开发计划](开发计划.md) | 从本地文字成果接入正式动画的实施步骤 |
+| [01 LLM 接入与调用](01-LLM接入与调用.md) | 连接、协议、模型角色、能力与错误设计 |
+| [02 材料输入与解析](02-材料输入与解析.md) | 原件、格式、来源、解析覆盖与 MaterialIR 设计 |
+| [03 文本回答生成](03-文本回答生成.md) | 独立正文、来源与版本；本地文字实现另行提交 |
+| [05 长期记忆与个性化](05-长期记忆与个性化.md) | 暂缓，不作为近期交付依赖 |
+| [运行与配置](运行与配置.md)、[历史动画基线](mvp/动画MVP流程.md) | 当前已提交 0.1.0 的运行行为和限制 |
 
-使用项目从 [运行与配置](运行与配置.md) 开始；实施顺序见 [开发计划](开发计划.md)；当前验证证据见 [MVP 验证记录](MVP验证记录.md)，回归输入见 [输入与验收样例](mvp/输入与验收样例.md)。
+材料与 LLM 的开源依据另见[文件上传与输入调研](research/开源Agent文件上传与LLM输入调研.md)。各模块维护内部契约，主流程与公共状态归本总览，性能数字集中维护在生产验收。
 
-LLM 配置的设计思想、字段与调用契约、开源源码依据及实施验收统一维护在 [LLM 接入与调用](01-LLM接入与调用.md)。
-
-文件上传与模型输入的正式设计分别维护在 [材料输入与解析](02-材料输入与解析.md)、[文本回答生成](03-文本回答生成.md)和 [LLM 接入与调用](01-LLM接入与调用.md)，具体细节旁附固定版本源码链接。逐项目比较与源码快照见 [开源 Agent 文件上传与 LLM 输入调研](research/开源Agent文件上传与LLM输入调研.md)。
-
-前四份主文档按“职责与边界、处理流程、输入输出、实现方案、当前状态与待办”组织。总览维护跨模块规则，各模块维护自己的数据契约与验收；开发计划集中维护实施顺序。
-
-## 模块关系与完整流程
+## 正式版模块关系（待实现）
 
 ```mermaid
-flowchart LR
-    F[上传原件 FileAsset] --> P[材料解析]
-    T[直接文本] --> P
-    P --> M[MaterialIR]
-    M --> A[回答生成]
-    Q[用户要求] --> A
-    A --> AN[独立保存 Answer]
-    AN --> R[阅读与修订回答]
-    AN --> V[按需生成动画]
-    V --> VR[VideoResult]
-    L[LLM 接入与调用] -.-> P
-    L -.-> A
-    L -.-> V
+flowchart TD
+    F[原件或直接文本] --> M[MaterialIR 与来源]
+    M --> A[完整 Markdown Answer]
+    Q[问题与本次要求] --> A
+    A --> R[全文先展示与下载]
+    A --> N[旁白和视觉语义节拍]
+    N --> E[cue 与对象及事件绑定]
+    E --> T[共同时间线解析]
+    T --> V[渲染与检查]
+    V --> VR[同版本 VideoResult]
+    R --> G[Generation 汇总]
+    VR --> G
 ```
 
-LLM 接入为各业务模块提供公共调用能力。材料解析决定采用哪种读取路径，LLM 模块负责相应协议与远端文件操作；回答模块决定讲解内容，动画模块将确定版本的回答转成画面。用户可以停在解析或回答完成的节点，各模块通过已保存的结果 ID 协作。
+LLM 模块负责统一调用；材料模块负责原件、解析与覆盖；回答模块负责完整解答；动画模块消费确定版本 Answer，并派生旁白、分镜和事件。GenerationService 负责阶段编排、结果发布与状态，不能替业务模块重新判断题设。
 
-| 结果 | 定义归属 | 下游用途 |
-|---|---|---|
-| FileAsset、MaterialIR | [材料输入与解析](02-材料输入与解析.md) | 原件与派生资产登记、带来源的统一材料 |
-| Answer | [文本回答生成](03-文本回答生成.md) | 独立展示、人工修订、动画输入 |
-| VideoResult | [动画生成](04-动画生成.md) | 视频、字幕及回答步骤到画面的映射 |
-| LLMRequest、LLMResponse、配置与能力记录 | [LLM 接入与调用](01-LLM接入与调用.md) | 各模块的模型调用 |
-| Job、Error | 本总览 | 跨模块执行状态与错误 |
+旁白是同一答案的表达派生物，与屏幕短句和公式显示分别保存映射。动画不重新解题、不静默改正文；答案有错时返回定位，由回答模块创建新版本。视频失败不撤销完整文字。
 
-上传原件只保存文件，不调用模型；向模型提供商上传临时文件由解析模块通过 LLM 模块完成。厂商文件 ID、SDK 对象和会话状态保留在适配层，下游使用本系统的材料与回答。
+时间线区分语义事件与具体秒数：当前用明确标记的估计时间预览；以后真实音频边界就绪再解析同一事件。实际视频总长、对象指向、动作触发和可见持续时间分别检查。2～6 分钟播放范围与视频阶段 P95 八分钟目标均为初始工程假设，详细口径和硬限见[生产验收](动画时长与生产验收.md)，不作为当前性能承诺。
 
-## 公共数据约定
+## 资源与版本
 
-- 公共结果均为可序列化 JSON，携带 `schema_version`，初始值为 `"1.0"`。破坏性字段或语义变化需要新契约版本，未知版本明确拒绝。
-- `file_id`、`material_id`、`answer_id`、`video_id` 和 `job_id` 由服务端生成，为不透明字符串。每个结果 ID 对应不可变内容；修改、重新解析或重新生成产生新 ID。
-- 文件及派生图片、音视频通过本系统的资产 ID 引用。公共契约不包含宿主机路径、厂商文件 ID、访问密钥或完整模型配置。
-- 时间采用带时区的 ISO 8601 字符串。可选字段省略时使用声明的默认值；没有默认值的可选结果字段使用 `null`。数组无内容时为 `[]`。
-- 每次执行保存输入引用、配置快照、实现版本、实际处理路径及使用量。用户配置通过服务端的 `profile_id` 引用，执行时解析为固定快照。
-- 所有引用均由服务端检查存在性与可访问性。来源位置无法可靠确定时允许为空，不补造页码、坐标或时间戳。
-
-## 后续任务与 HTTP 通用规则
-
-本节仅定义尚未实现的 `/api/v2`。各模块文档分别维护业务端点；公共任务查询为 `GET /api/v2/jobs/{job_id}`。当前 `/api/jobs` 的输入、状态和队列规则见 [动画生成](04-动画生成.md)，迁移前继续服务现有页面与 CLI。
-
-上传成功同步返回 201；解析、回答、视频和能力检测等长任务返回 202 与 Job。各模块独立检查依赖：上传不要求模型，回答不要求 Docker、字体或 TTS。页面分别显示材料、回答与视频状态，用户取得回答后可以结束流程。
-
-### Job 与 Error
-
-Job 字段：
-
-| 字段 | 类型 | 规则 |
-|---|---|---|
-| schema_version | string | 必填，`"1.0"` |
-| job_id | string | 必填，执行标识 |
-| kind | enum | 内容任务为 `parse`、`answer`、`video`；提供商控制面检测扩展为 `probe` |
-| status | enum | `queued`、`running`、`completed`、`needs_input`、`needs_review`、`failed`、`interrupted` |
-| stage | string | 必填，模块内当前阶段；用于显示，不控制下游业务 |
-| message | string | 必填，可直接展示的说明 |
-| result | object \| null | 必填；completed 时为 `{type, id}`，内容结果 type 为 `material`、`answer` 或 `video`，检测结果扩展为 `probe_report`，其他状态为 null |
-| error | Error \| null | 必填；需要处理的问题或失败原因，正常运行及完成时为 null |
-| diagnostic_asset_ids | string[] | 必填，日志、预览、候选结果等可用资产 |
-| created_at / updated_at | string | 必填，任务创建与更新时间 |
-
-终态为 completed、needs_input、needs_review、failed 或 interrupted。需要补充或核对材料时，客户端读取诊断产物、修正输入后提交新的解析或回答任务；视频任务指出已有 Answer 的内容问题时，可以通过回答修订创建新版本再生成视频。恢复能力实现前，服务重启后的未完成任务标为 interrupted，不宣称自动恢复。
-
-Error 为 `{code, message, retryable, details}`，details 是 JSON 对象，默认 `{}`，可记录相关 file_id、material_id、block_id 或 step_id。错误消息应说明可采取的动作，不能回显密钥。
-
-请求未被接受时，HTTP 错误响应统一为 `{error: Error}`：格式无效为 422，引用不存在或不可访问为 404，请求体超过上传上限为 413，媒体类型不接受为 415，队列满为 429，阶段依赖不可用为 503。任务接受后发生的问题写入 Job，GET 查询本身仍返回 200。
-
-首批错误码包括 `unsupported_file_input`、`parser_unavailable`、`source_incomplete`、`content_uncertain`、`invalid_reference`、`provider_auth_error`、`provider_quota_exceeded`、`provider_timeout`、`invalid_provider_response`、`budget_exceeded` 和 `render_failed`。适配器将厂商错误映射到这些业务错误，不向上游暴露厂商专属判断逻辑。
-
-## 存储、复用与失败隔离
-
-原件、解析结果、回答、视频结果和任务记录分别持久化。存储实现初期可以使用本地文件与清单，公共接口只依赖资源 ID 与仓储接口。
-
-复用判断以输入结果 ID 或文件内容摘要、选择范围、契约版本、实现版本和配置快照为依据。相同文件名不能作为复用依据；需要独立生成新候选时可直接创建新任务。自动缓存及请求幂等不属于首版接口承诺，客户端应保存已获得的 job_id，避免轮询期间重复提交。
-
-| 操作或故障 | 保留和复用的结果 |
+| 资源 | 内容与定义归属 |
 |---|---|
-| 更换解析策略或解析模型 | 原件复用，创建新 MaterialIR |
-| 修改问题或更换回答模型 | 已完成 MaterialIR 复用，创建新 Answer |
-| 人工编辑回答 | 保留旧 Answer，保存新的 Answer |
-| 调整视频配置或渲染失败后重试 | Answer 复用，创建新视频任务 |
-| 原生文件接口不支持并回退 | 保留原件与失败记录，由解析模块决定本地路径 |
-| 上游结果存在未解决的关键歧义 | 停在对应阶段，不自动启动下游生成 |
+| FileAsset、MaterialIR | 原件、派生资产、读取范围、块与来源；材料模块 |
+| Answer | 不可变完整正文、派生步骤与来源；回答模块 |
+| NarrationUnit、Cue、EventBinding、ResolvedTimeline | 同版正文的讲解表达、对象和事件、时间依据；动画内部设计 |
+| VideoResult | 通过检查的完整视频、answer_id、实测时长与步骤映射；动画模块 |
+| Generation | 一次提交的来源、结果引用、阶段状态和尝试历史；本总览 |
+| Job、Error | 有限执行、错误、诊断与状态；本总览 |
 
-资源删除和跨用户共享接口后续单独设计。在引入删除前，作为其他结果来源的材料与回答应持续可读取，保证来源追溯。
+公共结果采用 JSON，携带 schema_version；不兼容变更升级版本，未知版本拒绝。资源 ID 为服务端生成的不透明字符串。材料、答案和视频不可变；修改创建新 ID。Generation 与 Job 可更新执行状态。
 
-## 当前实现与技术位置
+资产只通过资源 ID 引用，不接受任意宿主路径、厂商文件 ID 或访问密钥。时间使用带时区 ISO 8601；deadline 用单调时钟。每次执行固定配置快照并保存正文／旁白／代码／时间／环境版本。缺失时间、定位或用量不能伪装成零或已核验。
 
-当前代码使用 Python 3.12、uv、Pydantic、FastAPI、LangGraph 和本地产物目录；Manim、LaTeX、中文字体、FFmpeg 与 ffprobe 固定在 Linux 渲染镜像。单 Worker 串行处理任务，简单 HTML/JavaScript 页面轮询进度。代码入口如下：
+## 正式版 Generation 与双输出（草案）
 
-| 代码 | 当前职责 | 对应主文档 |
-|---|---|---|
-| `src/manimagent/config.py`、`providers.py` | 模型角色、参数与 Chat Completions 调用 | LLM 接入与调用 |
-| `src/manimagent/schemas.py`、`agents.py` | MVP 输入、讲解规划、场景及检查结构 | 文本回答生成、动画生成 |
-| `src/manimagent/workflow.py` | 主流程与逐场景循环 | 动画生成 |
-| `src/manimagent/rendering.py`、`renderer_driver.py` | 宿主侧隔离协议、容器内渲染与合成 | 动画生成 |
-| `src/manimagent/api.py`、`cli.py`、`jobs.py`、`web/` | 页面、CLI、任务 API 与单 Worker | 总览、动画生成 |
-| `src/manimagent/artifacts.py`、`budget.py` | 产物清单、访问和运行预算 | 总览、动画生成 |
+本节不是当前 0.1.0 API。扩展入口拟为 `POST /api/v2/generations`，`output_mode: text_video` 表示双输出，另保留文字模式 `text`。video_profile_id 可省略，采用服务端默认配置。
 
-近期以同一后端中的模块边界拆分能力。数据库、向量检索、图数据库、独立消息队列、React 前端和 SSE 等旧设计候选尚未成为本次开发前提，需要实际需求和验证后另行决定。
+source 是互斥联合：
 
-## 旧文档内容去向
-
-| 原文档或内容 | 当前维护位置 |
+| type | 字段与用途 |
 |---|---|
-| 多 LLM 提供商接入设计、LLM 配置设计参考 | LLM 接入与调用，合并设计思想、协议、配置、能力、诊断、源码依据与实施验收 |
-| 模块解耦与接口设计 | 总览保留公共约定与 Job；材料、回答、视频契约分别迁入所属模块 |
-| MVP 设计、基础动画生成 | 动画生成，保留 0.1.0 输入、接口、预算、检查与产物规则 |
-| 完整视听讲解 | 材料与回答部分迁入各自模块；语音、字幕与时间线迁入动画生成 |
-| 技术栈与整体设计 | 当前技术位置归总览，解析、生成与视听设计归各模块；远期技术候选暂不落实 |
-| 总体开发计划、第一版开发计划 | 开发计划，统一近期顺序与交付要求 |
-| 长期记忆、个性化规划 | 合并为简要的长期记忆与个性化，暂停详细设计 |
-| 交互集成与局部更新 | 阶段页面编排归总览和开发计划；片段依赖与重建归动画生成 |
-| 评测优化与成果交付 | 模块验收与开发计划中的评测、交付要求 |
+| inputs | inputs、非空 instruction，及可选 parser／answer profile；先解析和回答，再生成视频 |
+| materials | material_ids、非空 instruction，及可选 answer profile；复用完整材料 |
+| answer | answer_id；复用已保存正文，不重跑 writer；未检查的修订版需补检 |
 
-原阶段与综合设计文档已合并，不再作为并行维护入口；历史详细草案可从 Git 历史查阅。运行说明、验证记录与输入样例继续保留。
+```json
+{
+  "output_mode": "text_video",
+  "source": {
+    "type": "inputs",
+    "inputs": [{"type": "text", "text": "a=(3,2)，b=(2,0)"}],
+    "instruction": "求 a 在 b 方向的投影，解释系数与投影向量的区别。"
+  },
+  "video_profile_id": null
+}
+```
+
+接受请求时原子创建 Generation 和 Job，返回 202。Generation 至少保存 generation_id、output_mode、source、material_ids、answer_id、video_id、stages、active_job_id、job_ids 和创建／更新时间；结果尚未就绪时 ID 为 null。stages 分 material、answer、video，每项包含 status、error 和诊断资产 ID。
+
+发布顺序：保存并校验完整 Answer → 登记 answer_id 并立即展示 → 执行视频 → 保存完整合格 VideoResult → 核对 answer_id 一致 → 登记 video_id 并完成。截断正文与失败视频只能是诊断候选，不发布为合格结果。
+
+| 情况 | 双输出整体状态与行为 |
+|---|---|
+| 材料或回答运行中 | queued／running；尚无完整正文时不发布候选为成功 |
+| 完整文字就绪，视频运行中 | running；全文可读、可下载 |
+| 两项均合格且版本一致 | completed |
+| 已有完整文字，视频失败、待核对、超预算或中断 | partial；保留 answer_id，video_id 为 null |
+| 材料／回答缺条件、待核对或失败 | needs_input／needs_review／failed；阻塞视频 |
+
+文字模式完整 Answer 保存即 completed，不使用 partial。partial 只用于双输出 Generation，独立 parse、answer、video Job 沿用自身状态。重启不自动续跑：有完整文字而视频未完成的双输出任务核对后记 partial，否则 interrupted；全部结果已持久化时核对后可完成。
+
+### 视频重试与页面
+
+拟议 `POST /api/v2/generations/{id}/video-retries` 接收 expected_job_id 与可选 video_profile_id，只接受已有完整文字且当前 Job 为 partial 的 Generation。expected_job_id 不符或并发重试原子返回 409。新 Job 只重做视频，保留原 answer_id、历史终态、诊断与累计用量；不重答材料。
+
+修改正文产生新 answer_id，以 source.type=answer 创建新 Generation；旧视频仍对应旧正文。已 completed 后更换视频配置也创建新 Generation。默认正式版页面一次提交、文字先可读、视频独立显示进度／失败／重试，明确版本关系。
+
+## 公共任务、错误与预算（目标契约）
+
+各模块独立检查依赖。上传不要求模型，回答不要求渲染器；双输出视频依赖不可用时仍保留文字生成机会。独立视频入口可在接受前拒绝依赖错误。单 Worker 不得等待另行排入同一队列的子任务形成死锁。
+
+Job 包含 schema_version、job_id、kind、status、stage、message、resource_ref、result、error、diagnostic_asset_ids、created_at、updated_at。kind 为 generation／parse／answer／video／probe；status 为 queued、running、completed、partial、needs_input、needs_review、failed、interrupted。generation 接受时 resource_ref 即指向 Generation；completed 才填写最终 result，partial 通过 resource_ref 读取完整文字。
+
+Error 为 code、message、retryable、details。接受前的 HTTP 错误：422 格式，404 引用不存在／不可访问，413 上传超限，415 类型不支持，409 并发冲突，429 队列满，503 必要依赖不可用；任务接受后的问题写入 Job，查询本身仍为 200。错误和日志不回显密钥。
+
+可使用 budget_exceeded、render_failed、content_uncertain、source_incomplete、invalid_reference、provider_timeout、invalid_provider_response、result_version_mismatch 等归一化错误。发布前版本冲突不得登记视频。
+
+播放秒数与生产墙钟秒数分别管理。排队、模型等待、检查、重试、合成、解码和落盘都计入父 deadline；子阶段不能重置总预算。预算不足优先减少装饰和停止美化，不删推理、缩短必要阅读、跳过检查或裁掉旁白。
+
+## 存储与复用
+
+原件、材料、答案、视频和执行记录分别保存。复用依据是内容摘要／资源版本、范围、prompt、模型、旁白、时间、渲染环境与质量配置，而非文件名。变更只使依赖结果失效，已有合格版本保持可读。
+
+当前不承诺跨任务自动缓存、幂等、断点恢复、删除或跨用户共享 API；客户端保存 job_id，避免轮询时重复提交。长期记忆与个性化、复杂调度和更多前端依赖不作为本阶段前置。
+
+## 当前已提交源码位置
+
+| 位置 | 职责 |
+|---|---|
+| src/manimagent/config.py、providers.py | 模型与调用 |
+| src/manimagent/schemas.py、agents.py、workflow.py | 0.1.0 规划、场景与逐场景循环 |
+| src/manimagent/rendering.py、renderer_driver.py | 隔离渲染、抽帧与合成 |
+| src/manimagent/api.py、cli.py、jobs.py、web/ | 0.1.0 页面、API、CLI 与 Worker |
+| src/manimagent/artifacts.py、budget.py | 产物、访问与预算 |
+
+本地 0.2.0 的答案／材料模块和 legacy_mvp 目录迁移另行提交。后续代码合入时再同步已实现状态与验证证据，不能用本次文档 PR 代替功能验收。
