@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0",
+  "job_id": "job_82282a6f92a640c7bbc228c44c103838",
+  "kind": "generation",
+  "status": "needs_input",
+  "stage": "answer",
+  "message": "材料只有“求图中三角形面积，图示为必要条件”这一句，未提供图形或边长、底高、坐标、角度等数据，无法确定并计算面积。候选解答正确指出缺少必要信息，但未给出题目结果；需补充图形或具体几何数据后才能求值。",
+  "resource_ref": {
+    "type": "generation",
+    "id": "generation_6ea8d8853a944bf7b52dae123b8a1696"
+  },
+  "result": null,
+  "error": {
+    "code": "source_incomplete",
+    "message": "材料只有“求图中三角形面积，图示为必要条件”这一句，未提供图形或边长、底高、坐标、角度等数据，无法确定并计算面积。候选解答正确指出缺少必要信息，但未给出题目结果；需补充图形或具体几何数据后才能求值。",
+    "retryable": false,
+    "details": {}
+  },
+  "diagnostic_asset_ids": [
+    "file_69c5dc7023cc4fd6b1aac2f10fc4861c",
+    "file_1b08c4f06d174201a3890fa0006d122e",
+    "file_c3c2ebea069c49b6ac1e0e066802b304",
+    "file_113bbc0b63a6401ab51113d2a2c8da3b"
+  ],
+  "usage": {
+    "model_calls": 2,
+    "input_tokens": 1176,
+    "output_tokens": 706,
+    "tokens_reported": true,
+    "elapsed_seconds": 6.812
+  },
+  "created_at": "2026-10-29T10:25:13.607663+00:00",
+  "updated_at": "2026-10-29T10:25:20.445685+00:00"
+}

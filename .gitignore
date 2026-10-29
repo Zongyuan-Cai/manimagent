@@ -7,6 +7,7 @@ config.yaml
 
 # Python
 .venv/
+.venv-before-separation/
 venv/
 __pycache__/
 *.py[cod]
@@ -28,6 +29,9 @@ media/
 uploads/
 data/private/
 *.log
+/testmaterial/超限.txt
+/testresult/.pytest_cache/
+/testresult/ci/
 
 # Local tooling
 .codex/

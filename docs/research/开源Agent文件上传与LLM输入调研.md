@@ -111,7 +111,9 @@ ManimAgent 已使用 LangGraph，可以借鉴其后端协议和分页读取思�
 
 ### 当前实现与既有设计
 
-当前运行代码只有纯文本生成请求，`GenerationRequest` 将文本限制为 1 至 3000 字符；API 没有材料上传端点。`ChatProvider.complete()` 把业务 payload 序列化成 user 文本，传入图片时追加 base64 `image_url` 内容块。因此现有视觉检查能力可供后续页面图像核对参考，但文档文件输入和多协议适配仍需单独实现。[请求校验](../../src/manimagent/schemas.py)、[API](../../src/manimagent/api.py)、[模型调用](../../src/manimagent/providers.py)
+以下基线与迁移步骤保留原设计上下文；本轮文字实现及已完成项请以[文字链路实现与覆盖检查](../文字链路实现与覆盖检查.md)为准。
+
+调研时的旧版运行代码只有纯文本生成请求，`GenerationRequest` 将文本限制为 1 至 3000 字符；API 没有材料上传端点。`ChatProvider.complete()` 把业务 payload 序列化成 user 文本，传入图片时追加 base64 `image_url` 内容块。因此现有视觉检查能力可供后续页面图像核对参考，但文档文件输入和多协议适配仍需单独实现。[请求校验](../../src/manimagent/schemas.py)、[API](../../src/manimagent/api.py)、[模型调用](../../src/manimagent/providers.py)
 
 现有[材料输入与解析设计](../02-材料输入与解析.md)已经规定原件、MaterialIR、来源位置、解析路由和待核对状态；[LLM 接入设计](../01-LLM接入与调用.md)已经规定 ProviderFileRef 与能力记录。可以沿用这些边界，将本次调研的做法用于具体实现。
 
@@ -126,11 +128,14 @@ ManimAgent 已使用 LangGraph，可以借鉴其后端协议和分页读取思�
   → 校验内容、来源和覆盖范围，保存 MaterialIR
   → ContextAssembler 根据问题和预算选取完整内容或内容块
   → answer_writer 与 answer_checker
-  → 保存带 source_refs 的 Answer
-  → 按需生成动画
+  → 保存并展示完整 Markdown Answer，派生 source_refs
+  → GenerationService 自动生成同一版本的动画
+  → 同一结果页保留文字与动画，失败时保留文字及阶段诊断
 ```
 
 这里的 `ContextAssembler` 是建议新增的内部组件，负责把已有 MaterialIR 变成一次模型调用所需的上下文。它属于回答模块；解析路由仍由材料模块决定，提供商请求格式仍由 LLM 适配层决定。
+
+本项目现已将默认目标统一为完整文字与动画双输出，主请求、部分完成和动画重试由 [文档总览](../index.md) 定义。本节只同步本项目的建议链路，不改变前文对外部项目的事实描述和源码依据。
 
 ### 三个独立的决定
 

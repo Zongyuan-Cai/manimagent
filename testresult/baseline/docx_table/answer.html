@@ -1,0 +1,60 @@
+<p>按常见约定，计算向量 <span class="math">\(a\)</span> 在向量 <span class="math">\(b\)</span> 上的投影。表中给出<br />
+[
+a=(3,2),\qquad b=(2,0)
+]
+<a href="#block_289a7c8071bb446cb42c987580dd60fd">来源 1</a>。题目要求先给出投影系数，再给出投影向量，并解释二者区别 <a href="#block_081a7ff0ee704436bf7d3acc35a07bfc">来源 2</a>。</p>
+<h2>1. 投影系数</h2>
+<p>设投影向量为 <span class="math">\(\lambda b\)</span>，则
+[
+a\cdot b=3\cdot 2+2\cdot 0=6,
+]
+[
+b\cdot b=2^2+0^2=4.
+]</p>
+<p>因此投影系数为
+[
+\lambda=\frac{a\cdot b}{b\cdot b}
+=\frac{6}{4}
+=\frac{3}{2}.
+]</p>
+<p>所以投影系数是
+[
+\boxed{\lambda=\frac32}.
+]</p>
+<h2>2. 投影向量</h2>
+<p>向量 <span class="math">\(a\)</span> 在 <span class="math">\(b\)</span> 上的投影向量为
+[
+\operatorname{proj}_{b}a=\lambda b
+=\frac32(2,0)
+=(3,0).
+]</p>
+<p>因此投影向量是
+[
+\boxed{\operatorname{proj}_{b}a=(3,0)}.
+]</p>
+<p>也可以验证：
+[
+a=(3,2)=(3,0)+(0,2),
+]
+其中 <span class="math">\((3,0)\)</span> 沿 <span class="math">\(b\)</span> 的方向，<span class="math">\((0,2)\)</span> 与 <span class="math">\(b=(2,0)\)</span> 垂直。</p>
+<h2>3. 投影系数与投影向量的区别</h2>
+<ul>
+<li><strong>投影系数</strong> <span class="math">\(\lambda=\frac32\)</span> 是一个<strong>标量</strong>，表示投影向量相对于向量 <span class="math">\(b\)</span> 的缩放倍数：
+[
+\operatorname{proj}_{b}a=\lambda b.
+]</li>
+<li><strong>投影向量</strong> <span class="math">\((3,0)\)</span> 是一个<strong>向量</strong>，表示 <span class="math">\(a\)</span> 在 <span class="math">\(b\)</span> 所在直线方向上的分量。</li>
+<li>若把“投影长度”单独理解，则有向投影长度为
+[
+\frac{a\cdot b}{|b|}
+=\frac{6}{2}=3,
+]
+它等于 <span class="math">\(\lambda\|b\|=\frac32\cdot 2=3\)</span>。</li>
+</ul>
+<p>因此：
+[
+\boxed{\text{投影系数为 }\frac32,\qquad \text{投影向量为 }(3,0).}
+]</p>
+<blockquote>
+<p>若题意是反过来求 <span class="math">\(b\)</span> 在 <span class="math">\(a\)</span> 上的投影，则投影系数为 <span class="math">\(\frac{b\cdot a}{a\cdot a}=\frac{6}{13}\)</span>，投影向量为 <span class="math">\(\frac{6}{13}(3,2)=\left(\frac{18}{13},\frac{12}{13}\right)\)</span>。</p>
+</blockquote>

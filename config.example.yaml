@@ -1,15 +1,16 @@
-runs_dir: runs
-renderer_image: manimagent-renderer:0.1.0
-target_seconds: 60
-max_scenes: 4
-max_execution_repairs: 2
-max_visual_revisions: 2
-max_candidates: 5
-render_timeout: 180
-scene_timeout: 300
+runs_dir: runs/current
+private_dir: runs/current/private
+max_upload_bytes: 20971520
+max_parse_pages: 100
+max_parse_chars: 200000
+max_archive_bytes: 52428800
+max_archive_entries: 2000
+parse_timeout: 60
+answer_context_tokens: 24000
+answer_check: true
 task_timeout: 900
 model_timeout: 90
-max_model_calls: 60
+max_model_calls: 12
 max_total_tokens: 200000
 max_waiting: 3
 models:
@@ -20,18 +21,7 @@ models:
     json_mode: true
     token_parameter: max_tokens
     max_output_tokens: 6000
-  vision:
-    base_url: ${MANIMAGENT_VISION_BASE_URL}
-    model: ${MANIMAGENT_VISION_MODEL}
-    api_key_env: MANIMAGENT_VISION_API_KEY
-    json_mode: true
-    token_parameter: max_tokens
-    max_output_tokens: 3000
-# Optional role overrides, otherwise text/vision are used:
-# roles:
-#   planner: text
-#   plan_checker: text
-#   coder: text
-#   execution_repair: text
-#   visual_reviser: text
-#   vision_checker: vision
+    context_window: 32000
+roles:
+  answer_writer: text
+  answer_checker: text

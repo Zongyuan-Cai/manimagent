@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "generation_id": "generation_9eba5a53f46d4eb993464ff58f65334e",
+  "output_mode": "text",
+  "source": {
+    "inputs": [
+      {
+        "type": "file",
+        "file_id": "file_eceaa69fd8b7444a9346f5b7240f32a0",
+        "selection": null
+      }
+    ],
+    "parser_profile_id": null,
+    "input_mode": "auto",
+    "type": "inputs",
+    "instruction": "完整解答材料题目，给出投影公式与区别。",
+    "answer_profile_id": null
+  },
+  "material_ids": [
+    "material_d472dc1c23dc4e2bb25bc43881e7229d"
+  ],
+  "answer_id": "answer_884b3995897c4c56a4df649cc5075c1a",
+  "stages": {
+    "material": {
+      "status": "completed",
+      "error": null,
+      "diagnostic_asset_ids": []
+    },
+    "answer": {
+      "status": "completed",
+      "error": null,
+      "diagnostic_asset_ids": []
+    }
+  },
+  "active_job_id": "job_5a988986a4e7480c8725b482c22c8066",
+  "job_ids": [
+    "job_5a988986a4e7480c8725b482c22c8066"
+  ],
+  "created_at": "2026-10-29T10:23:22.493681+00:00",
+  "updated_at": "2026-10-29T10:23:35.723875+00:00"
+}

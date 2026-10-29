@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "answer_id": "answer_67d28dbde1c341f98bbb977912290ec7",
+  "material_ids": [
+    "material_a39c39996ab94067a69de31cfa386f71"
+  ],
+  "derived_from_answer_id": null,
+  "title": "1. 若求 \\(\\mathbf b\\) 在 \\(\\mathbf a\\) 上的投影",
+  "instruction": "给定 a=(3,2)，b=(2,0)。求投影系数与投影向量。",
+  "markdown": "题设给出  \n\\[\n\\mathbf a=(3,2),\\qquad \\mathbf b=(2,0)\n\\]\n[[material_a39c39996ab94067a69de31cfa386f71:block_1589efa38f3f46728761769b7b77d23e]]\n\n先计算内积与模长平方：\n\\[\n\\mathbf a\\cdot\\mathbf b=3\\cdot 2+2\\cdot 0=6,\n\\]\n\\[\n\\|\\mathbf a\\|^2=3^2+2^2=13,\\qquad\n\\|\\mathbf b\\|^2=2^2+0^2=4.\n\\]\n\n题目未明确是“\\(\\mathbf b\\) 在 \\(\\mathbf a\\) 上的投影”还是“\\(\\mathbf a\\) 在 \\(\\mathbf b\\) 上的投影”，因此分两种常见约定说明。\n\n---\n\n### 1. 若求 \\(\\mathbf b\\) 在 \\(\\mathbf a\\) 上的投影\n\n投影系数为使投影向量等于 \\(\\lambda\\mathbf a\\) 的系数：\n\\[\n\\lambda=\\frac{\\mathbf a\\cdot\\mathbf b}{\\mathbf a\\cdot\\mathbf a}\n=\\frac{6}{13}.\n\\]\n投影向量为\n\\[\n\\operatorname{proj}_{\\mathbf a}\\mathbf b\n=\\lambda\\mathbf a\n=\\frac{6}{13}(3,2)\n=\\left(\\frac{18}{13},\\frac{12}{13}\\right).\n\\]\n\n若“投影”指标量有向投影长度，则为\n\\[\n\\frac{\\mathbf a\\cdot\\mathbf b}{\\|\\mathbf a\\|}\n=\\frac{6}{\\sqrt{13}}.\n\\]\n\n---\n\n### 2. 若求 \\(\\mathbf a\\) 在 \\(\\mathbf b\\) 上的投影\n\n投影系数为\n\\[\n\\lambda=\\frac{\\mathbf a\\cdot\\mathbf b}{\\mathbf b\\cdot\\mathbf b}\n=\\frac{6}{4}=\\frac32.\n\\]\n投影向量为\n\\[\n\\operatorname{proj}_{\\mathbf b}\\mathbf a\n=\\lambda\\mathbf b\n=\\frac32(2,0)\n=(3,0).\n\\]\n\n对应的标量有向投影长度为\n\\[\n\\frac{\\mathbf a\\cdot\\mathbf b}{\\|\\mathbf b\\|}\n=\\frac{6}{2}=3.\n\\]\n\n---\n\n因此，若按常见说法“求 \\(\\mathbf b\\) 在 \\(\\mathbf a\\) 上的投影”，则答案为  \n\\[\n\\boxed{\\lambda=\\frac{6}{13},\\qquad\n\\operatorname{proj}_{\\mathbf a}\\mathbf b\n=\\left(\\frac{18}{13},\\frac{12}{13}\\right)}\n\\]\n若按“求 \\(\\mathbf a\\) 在 \\(\\mathbf b\\) 上的投影”，则答案为  \n\\[\n\\boxed{\\lambda=\\frac32,\\qquad\n\\operatorname{proj}_{\\mathbf b}\\mathbf a=(3,0)}\n\\]\n\n注意：“投影系数”若指组合系数，则是 \\(\\frac{6}{13}\\) 或 \\(\\frac32\\)；若指标量投影长度，则分别是 \\(\\frac{6}{\\sqrt{13}}\\) 或 \\(3\\)。",
+  "steps": [
+    {
+      "step_id": "step_1",
+      "title": "1. 若求 \\(\\mathbf b\\) 在 \\(\\mathbf a\\) 上的投影",
+      "content": "题设给出  \n\\[\n\\mathbf a=(3,2),\\qquad \\mathbf b=(2,0)\n\\]\n[[material_a39c39996ab94067a69de31cfa386f71:block_1589efa38f3f46728761769b7b77d23e]]\n\n先计算内积与模长平方：\n\\[\n\\mathbf a\\cdot\\mathbf b=3\\cdot 2+2\\cdot 0=6,\n\\]\n\\[\n\\|\\mathbf a\\|^2=3^2+2^2=13,\\qquad\n\\|\\mathbf b\\|^2=2^2+0^2=4.\n\\]\n\n题目未明确是“\\(\\mathbf b\\) 在 \\(\\mathbf a\\) 上的投影”还是“\\(\\mathbf a\\) 在 \\(\\mathbf b\\) 上的投影”，因此分两种常见约定说明。\n\n---\n\n### 1. 若求 \\(\\mathbf b\\) 在 \\(\\mathbf a\\) 上的投影\n\n投影系数为使投影向量等于 \\(\\lambda\\mathbf a\\) 的系数：\n\\[\n\\lambda=\\frac{\\mathbf a\\cdot\\mathbf b}{\\mathbf a\\cdot\\mathbf a}\n=\\frac{6}{13}.\n\\]\n投影向量为\n\\[\n\\operatorname{proj}_{\\mathbf a}\\mathbf b\n=\\lambda\\mathbf a\n=\\frac{6}{13}(3,2)\n=\\left(\\frac{18}{13},\\frac{12}{13}\\right).\n\\]\n\n若“投影”指标量有向投影长度，则为\n\\[\n\\frac{\\mathbf a\\cdot\\mathbf b}{\\|\\mathbf a\\|}\n=\\frac{6}{\\sqrt{13}}.\n\\]\n\n---\n\n### 2. 若求 \\(\\mathbf a\\) 在 \\(\\mathbf b\\) 上的投影\n\n投影系数为\n\\[\n\\lambda=\\frac{\\mathbf a\\cdot\\mathbf b}{\\mathbf b\\cdot\\mathbf b}\n=\\frac{6}{4}=\\frac32.\n\\]\n投影向量为\n\\[\n\\operatorname{proj}_{\\mathbf b}\\mathbf a\n=\\lambda\\mathbf b\n=\\frac32(2,0)\n=(3,0).\n\\]\n\n对应的标量有向投影长度为\n\\[\n\\frac{\\mathbf a\\cdot\\mathbf b}{\\|\\mathbf b\\|}\n=\\frac{6}{2}=3.\n\\]\n\n---\n\n因此，若按常见说法“求 \\(\\mathbf b\\) 在 \\(\\mathbf a\\) 上的投影”，则答案为  \n\\[\n\\boxed{\\lambda=\\frac{6}{13},\\qquad\n\\operatorname{proj}_{\\mathbf a}\\mathbf b\n=\\left(\\frac{18}{13},\\frac{12}{13}\\right)}\n\\]\n若按“求 \\(\\mathbf a\\) 在 \\(\\mathbf b\\) 上的投影”，则答案为  \n\\[\n\\boxed{\\lambda=\\frac32,\\qquad\n\\operatorname{proj}_{\\mathbf b}\\mathbf a=(3,0)}\n\\]\n\n注意：“投影系数”若指组合系数，则是 \\(\\frac{6}{13}\\) 或 \\(\\frac32\\)；若指标量投影长度，则分别是 \\(\\frac{6}{\\sqrt{13}}\\) 或 \\(3\\)。",
+      "source_refs": [
+        {
+          "material_id": "material_a39c39996ab94067a69de31cfa386f71",
+          "block_id": "block_1589efa38f3f46728761769b7b77d23e"
+        }
+      ],
+      "example_notes": []
+    }
+  ],
+  "warnings": [],
+  "created_at": "2026-10-29T10:23:13.378068+00:00"
+}

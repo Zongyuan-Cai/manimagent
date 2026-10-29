@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0",
+  "job_id": "job_dbc23c06082641a58099142163962782",
+  "kind": "generation",
+  "status": "needs_input",
+  "stage": "material",
+  "message": "PDF 已加密，请上传未加密原件",
+  "resource_ref": {
+    "type": "generation",
+    "id": "generation_47701a26c0234cdb945569b071a9d1b1"
+  },
+  "result": null,
+  "error": {
+    "code": "source_incomplete",
+    "message": "PDF 已加密，请上传未加密原件",
+    "retryable": false,
+    "details": {}
+  },
+  "diagnostic_asset_ids": [
+    "file_9bdaa588625d4837af68096c671c005a"
+  ],
+  "usage": {
+    "model_calls": 0,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "tokens_reported": false,
+    "elapsed_seconds": 0.5
+  },
+  "created_at": "2026-10-29T10:25:22.337092+00:00",
+  "updated_at": "2026-10-29T10:25:22.875747+00:00"
+}

@@ -2,7 +2,9 @@
 
 更新日期：2026年10月29日
 
-状态：当前 0.1.0 支持可配置的 Chat Completions；本文的多协议、连接管理和能力检测为待实现设计。当前实际配置见 [运行与配置](运行与配置.md)，跨模块规则见 [文档总览](index.md)。
+状态：已增加按调用选择的普通 Markdown／结构化 JSON 输出，Chat 的 Bearer、自定义 API Key 头、无鉴权与完整生成 URL；回答角色独立检查、接受任务时固定配置。连接／绑定分层、多协议和能力探测仍为待实现设计。现有配置字段和验证范围见[文字链路实现与覆盖检查](文字链路实现与覆盖检查.md)。当前实际配置见 [运行与配置](运行与配置.md)，跨模块规则见 [文档总览](index.md)。
+
+当前已增加[LLM 界面配置](LLM界面配置.md)，使用独立的 `/api/v2/llm-settings` 读写和草稿测试，支持多模型、回答／检查角色、私有凭据保存与热应用；下文 ProviderConnection／ModelBinding 多协议管理仍为后续设计。
 
 本文统一维护设计思想、配置对象、调用契约、实施步骤与开源实现依据。上游实现通过固定提交和具体代码段链接引用，不直接复制源码。
 
@@ -11,6 +13,8 @@
 用户应能选择提供商、模型及各阶段使用的配置，也能添加没有预设的服务。适配结果必须覆盖文本、图片、文件、结构化输出、错误及使用量，不能只让一条简单文本请求成功。
 
 ### 当前实现
+
+以下基线与迁移步骤保留原设计上下文；本轮文字实现及已完成项请以[文字链路实现与覆盖检查](文字链路实现与覆盖检查.md)为准。
 
 当前实现已经支持按角色选择模型，但连接信息、模型参数和鉴权仍集中在同一条模型配置中：
 
@@ -21,7 +25,7 @@
 | `ChatProvider._post()` | 使用 httpx，统一超时，发送 Bearer 请求头 | 接收已解析的传输配置，不再固定一种鉴权 |
 | `ChatProvider.complete()` | Chat 消息、图片 data URL、JSON 校验、预算与有限重试 | 把协议编码、响应解码与调用执行职责分开 |
 
-当前 `base_url` 固定追加 `/chat/completions`，配置检查与请求执行均要求存在 API key。因此，当前能够配置第三方 Chat 兼容接口，但不能据此认定已支持 Responses、Messages、自定义鉴权或无鉴权服务。
+当前默认由 base_url 追加 /chat/completions，也支持 generate_url 完整地址；auth_mode 支持 bearer、api_key_header、none。Responses、Messages 等其他协议仍未实现。
 
 ### 主要设计思想
 
@@ -125,6 +129,8 @@ RoleProfile 为 `{profile_id, revision, roles}`，revision 从 1 开始；roles 
 
 任务接受时固定角色绑定、连接 revision、协议适配器版本、兼容规则版本、模型参数及能力记录引用。修改全局默认配置只影响新任务。凭据值在发送前解析且不进入日志；快照记录凭据引用，轮换凭据不改变该任务的目标服务或协议。凭据被撤销时允许任务明确失败，不能自动换成另一账户。
 
+双输出 generation 接受时固定材料、回答和视频三个阶段的配置；使用已有 answer_id 时跳过材料提取和回答调用。视频等待期间不读取新的全局默认配置。依赖检查按阶段进行，缺少渲染或视觉检查依赖不阻止已经可以执行的完整文字回答，整体部分完成规则由 [总览](index.md) 维护。
+
 ### 配置示例
 
 下例为未来配置草案，域名、模型名和能力声明均为占位示例，当前 config.py 尚不接受这些字段。预设连接和自定义连接使用相同结构。
@@ -211,6 +217,8 @@ probe(binding, scopes, context) -> ProbeReport
 文本、图片与文件块保持显式类型。适配器遇到无法表达的内容块返回 capability_unsupported，不允许只保留文字后把请求标为成功。streaming 与工具调用的公共事件契约后续单独扩展，首版可以只实现非流式生成并明确拒绝对应功能要求。
 
 JSON Schema 原生约束、JSON 对象模式与提示词后校验分别记录。业务需要结构化结果时，允许配置“提示词约束加校验”的执行路径；无论采用哪种路径，最终都通过本系统契约校验。截断、空输出、拒绝或工具调用未完成均不能直接作为完整 Answer 或检查报告。
+
+输出格式按本次调用选择。首轮内容回答的 answer_writer 使用普通文本，LLMRequest.output_schema 为空，直接返回 Markdown 与 LaTeX；调用层不追加“只返回 JSON”的提示，也不继承全局 JSON response_format。分镜、代码和检查报告可分别使用 schema 输出。当前 complete_text() 已实现普通文本路径，不继承 JSON 提示或 response_format；complete(schema=...) 继续用于检查和动画等结构化输出。
 
 调用失败统一抛出携带 LLMError 的异常，字段为 `{code, message, retryable, retry_after_seconds, trace_id, details}`，等待时间未知为 null，details 默认 `{}`。details 可含脱敏的上游状态码和请求标识，不能承载原始鉴权信息。首批分类包括 provider_auth_error、provider_quota_exceeded、provider_rate_limited、provider_unavailable、provider_timeout、model_unavailable、capability_unsupported、invalid_provider_response、output_truncated 与 budget_exceeded。材料解析模块将文件读取能力问题映射为既有 unsupported_file_input；其余分类按业务需要写入 v2 Error，不让业务层解析厂商原始错误体。
 
@@ -361,6 +369,8 @@ ProviderFileRef 为内部对象，至少包含 provider_id、连接 revision、�
 ### 使用量、日志与可追溯性
 
 每次调用记录 trace_id、job_id、阶段与角色、配置快照、连接与模型绑定、请求模型、上游报告模型、开始结束时间、HTTP 或业务错误码、重试与回退原因。上游报告模型标明为服务自报信息，不能写成已经验证的真实模型身份。
+
+双输出链路的记录另关联 generation_id 与实际 answer_id，区分回答主调用、检查、分镜和视频修复。整体尝试共用有限总预算，并保留阶段用量；视频失败不删除已发布文字，复用已有 Answer 不重新计作回答调用。
 
 输入、输出、缓存及推理 token 分别记录已知值；厂商未返回时保持 null。另存估算值与估算方法，避免将缺失值记成 0。无法取得实际用量时，调用次数与时间上限继续强制执行，并保留未核实成本；预算耗尽时停止。
 

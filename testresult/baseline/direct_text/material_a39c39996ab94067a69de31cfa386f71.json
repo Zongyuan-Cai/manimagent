@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0",
+  "material_id": "material_a39c39996ab94067a69de31cfa386f71",
+  "source_file_ids": [],
+  "blocks": [
+    {
+      "block_id": "block_1589efa38f3f46728761769b7b77d23e",
+      "kind": "text",
+      "content": "给定 a=(3,2)，b=(2,0)。求投影系数与投影向量。",
+      "asset_ids": [],
+      "source": {
+        "input_index": 0,
+        "file_id": null,
+        "locator": {
+          "line_start": 1,
+          "line_end": 1
+        },
+        "verification": "verified"
+      },
+      "review_state": "unverified"
+    }
+  ],
+  "warnings": [],
+  "created_at": "2026-10-29T10:23:04.212332+00:00"
+}

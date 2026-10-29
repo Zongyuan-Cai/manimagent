@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "answer_id": "answer_f88228e99e0f4d6c8a928612ca50ef6f",
+  "material_ids": [
+    "material_1c4f594b3ac643caae83454aeaed704b"
+  ],
+  "derived_from_answer_id": null,
+  "title": "1. 投影系数",
+  "instruction": "完整解答材料题目，给出投影公式与区别。",
+  "markdown": "原题给出向量  \n\\[\n\\mathbf a=(3,2),\\qquad \\mathbf b=(2,0),\n\\]\n求 \\(\\mathbf a\\) 在 \\(\\mathbf b\\) 方向上的投影系数与投影向量，并说明公式及区别[[material_1c4f594b3ac643caae83454aeaed704b:block_0e74fabb63a94d01a42f56669f67e9bf]]。\n\n## 1. 投影系数\n\n若“投影系数”指把投影向量写成 \\(\\mathbf b\\) 的倍数时的系数，即使得\n\\[\n\\operatorname{proj}_{\\mathbf b}\\mathbf a=c\\mathbf b\n\\]\n的标量 \\(c\\)，则\n\\[\nc=\\frac{\\mathbf a\\cdot\\mathbf b}{\\mathbf b\\cdot\\mathbf b}.\n\\]\n代入数据：\n\\[\n\\mathbf a\\cdot\\mathbf b=3\\cdot2+2\\cdot0=6,\n\\]\n\\[\n\\mathbf b\\cdot\\mathbf b=2^2+0^2=4.\n\\]\n因此\n\\[\nc=\\frac{6}{4}=\\frac32.\n\\]\n\n所以投影系数为\n\\[\n\\boxed{c=\\frac32}.\n\\]\n\n## 2. 投影向量\n\n投影向量公式为\n\\[\n\\operatorname{proj}_{\\mathbf b}\\mathbf a\n=\n\\frac{\\mathbf a\\cdot\\mathbf b}{\\mathbf b\\cdot\\mathbf b}\\,\\mathbf b.\n\\]\n代入得\n\\[\n\\operatorname{proj}_{\\mathbf b}\\mathbf a\n=\n\\frac32(2,0)\n=\n(3,0).\n\\]\n因此\n\\[\n\\boxed{\\operatorname{proj}_{\\mathbf b}\\mathbf a=(3,0)}.\n\\]\n\n也可以用单位向量表示。令\n\\[\n\\mathbf e_{\\mathbf b}=\\frac{\\mathbf b}{\\|\\mathbf b\\|}.\n\\]\n因为\n\\[\n\\|\\mathbf b\\|=\\sqrt{2^2+0^2}=2,\n\\]\n所以\n\\[\n\\mathbf e_{\\mathbf b}=\\frac{(2,0)}2=(1,0).\n\\]\n于是\n\\[\n\\operatorname{proj}_{\\mathbf b}\\mathbf a\n=\n(\\mathbf a\\cdot\\mathbf e_{\\mathbf b})\\mathbf e_{\\mathbf b}\n=\n(3)(1,0)\n=\n(3,0).\n\\]\n\n## 3. 验证\n\n原向量与投影向量之差为\n\\[\n\\mathbf a-\\operatorname{proj}_{\\mathbf b}\\mathbf a\n=\n(3,2)-(3,0)\n=\n(0,2).\n\\]\n它满足\n\\[\n(0,2)\\cdot(2,0)=0,\n\\]\n即该差向量与 \\(\\mathbf b\\) 垂直，符合正交投影的几何意义。\n\n## 4. 投影系数、数量投影与投影向量的区别\n\n| 名称 | 公式 | 本题结果 | 含义 |\n|---|---|---|---|\n| 投影系数 | \\(\\displaystyle c=\\frac{\\mathbf a\\cdot\\mathbf b}{\\mathbf b\\cdot\\mathbf b}\\) | \\(\\displaystyle \\frac32\\) | 投影向量是 \\(\\mathbf b\\) 的多少倍 |\n| 数量投影（有向投影长度） | \\(\\displaystyle \\mathbf a\\cdot\\mathbf e_{\\mathbf b}=\\frac{\\mathbf a\\cdot\\mathbf b}{\\|\\mathbf b\\|}\\) | \\(3\\) | 投影向量的有向长度 |\n| 投影向量 | \\(\\displaystyle \\operatorname{proj}_{\\mathbf b}\\mathbf a=\\frac{\\mathbf a\\cdot\\mathbf b}{\\mathbf b\\cdot\\mathbf b}\\mathbf b\\) | \\((3,0)\\) | 位于 \\(\\mathbf b\\) 所在直线上的实际向量 |\n\n因此，本题中：\n\n\\[\n\\boxed{\\text{投影系数}=\\frac32}\n\\]\n\n\\[\n\\boxed{\\text{数量投影}=3}\n\\]\n\n\\[\n\\boxed{\\text{投影向量}=(3,0)}\n\\]\n\n其中投影系数是一个标量，投影向量是一个向量；投影系数依赖所选方向向量 \\(\\mathbf b\\) 的长度，而投影向量不随 \\(\\mathbf b\\) 换成同方向的非零倍数而改变。",
+  "steps": [
+    {
+      "step_id": "step_1",
+      "title": "1. 投影系数",
+      "content": "原题给出向量  \n\\[\n\\mathbf a=(3,2),\\qquad \\mathbf b=(2,0),\n\\]\n求 \\(\\mathbf a\\) 在 \\(\\mathbf b\\) 方向上的投影系数与投影向量，并说明公式及区别[[material_1c4f594b3ac643caae83454aeaed704b:block_0e74fabb63a94d01a42f56669f67e9bf]]。\n\n## 1. 投影系数\n\n若“投影系数”指把投影向量写成 \\(\\mathbf b\\) 的倍数时的系数，即使得\n\\[\n\\operatorname{proj}_{\\mathbf b}\\mathbf a=c\\mathbf b\n\\]\n的标量 \\(c\\)，则\n\\[\nc=\\frac{\\mathbf a\\cdot\\mathbf b}{\\mathbf b\\cdot\\mathbf b}.\n\\]\n代入数据：\n\\[\n\\mathbf a\\cdot\\mathbf b=3\\cdot2+2\\cdot0=6,\n\\]\n\\[\n\\mathbf b\\cdot\\mathbf b=2^2+0^2=4.\n\\]\n因此\n\\[\nc=\\frac{6}{4}=\\frac32.\n\\]\n\n所以投影系数为\n\\[\n\\boxed{c=\\frac32}.\n\\]\n\n## 2. 投影向量\n\n投影向量公式为\n\\[\n\\operatorname{proj}_{\\mathbf b}\\mathbf a\n=\n\\frac{\\mathbf a\\cdot\\mathbf b}{\\mathbf b\\cdot\\mathbf b}\\,\\mathbf b.\n\\]\n代入得\n\\[\n\\operatorname{proj}_{\\mathbf b}\\mathbf a\n=\n\\frac32(2,0)\n=\n(3,0).\n\\]\n因此\n\\[\n\\boxed{\\operatorname{proj}_{\\mathbf b}\\mathbf a=(3,0)}.\n\\]\n\n也可以用单位向量表示。令\n\\[\n\\mathbf e_{\\mathbf b}=\\frac{\\mathbf b}{\\|\\mathbf b\\|}.\n\\]\n因为\n\\[\n\\|\\mathbf b\\|=\\sqrt{2^2+0^2}=2,\n\\]\n所以\n\\[\n\\mathbf e_{\\mathbf b}=\\frac{(2,0)}2=(1,0).\n\\]\n于是\n\\[\n\\operatorname{proj}_{\\mathbf b}\\mathbf a\n=\n(\\mathbf a\\cdot\\mathbf e_{\\mathbf b})\\mathbf e_{\\mathbf b}\n=\n(3)(1,0)\n=\n(3,0).\n\\]\n\n## 3. 验证\n\n原向量与投影向量之差为\n\\[\n\\mathbf a-\\operatorname{proj}_{\\mathbf b}\\mathbf a\n=\n(3,2)-(3,0)\n=\n(0,2).\n\\]\n它满足\n\\[\n(0,2)\\cdot(2,0)=0,\n\\]\n即该差向量与 \\(\\mathbf b\\) 垂直，符合正交投影的几何意义。\n\n## 4. 投影系数、数量投影与投影向量的区别\n\n| 名称 | 公式 | 本题结果 | 含义 |\n|---|---|---|---|\n| 投影系数 | \\(\\displaystyle c=\\frac{\\mathbf a\\cdot\\mathbf b}{\\mathbf b\\cdot\\mathbf b}\\) | \\(\\displaystyle \\frac32\\) | 投影向量是 \\(\\mathbf b\\) 的多少倍 |\n| 数量投影（有向投影长度） | \\(\\displaystyle \\mathbf a\\cdot\\mathbf e_{\\mathbf b}=\\frac{\\mathbf a\\cdot\\mathbf b}{\\|\\mathbf b\\|}\\) | \\(3\\) | 投影向量的有向长度 |\n| 投影向量 | \\(\\displaystyle \\operatorname{proj}_{\\mathbf b}\\mathbf a=\\frac{\\mathbf a\\cdot\\mathbf b}{\\mathbf b\\cdot\\mathbf b}\\mathbf b\\) | \\((3,0)\\) | 位于 \\(\\mathbf b\\) 所在直线上的实际向量 |\n\n因此，本题中：\n\n\\[\n\\boxed{\\text{投影系数}=\\frac32}\n\\]\n\n\\[\n\\boxed{\\text{数量投影}=3}\n\\]\n\n\\[\n\\boxed{\\text{投影向量}=(3,0)}\n\\]\n\n其中投影系数是一个标量，投影向量是一个向量；投影系数依赖所选方向向量 \\(\\mathbf b\\) 的长度，而投影向量不随 \\(\\mathbf b\\) 换成同方向的非零倍数而改变。",
+      "source_refs": [
+        {
+          "material_id": "material_1c4f594b3ac643caae83454aeaed704b",
+          "block_id": "block_0e74fabb63a94d01a42f56669f67e9bf"
+        }
+      ],
+      "example_notes": []
+    }
+  ],
+  "warnings": [],
+  "created_at": "2026-10-29T10:35:57.524425+00:00"
+}

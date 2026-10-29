@@ -1,0 +1,59 @@
+<p>题目给定<br />
+[
+\mathbf a=(3,2),\qquad \mathbf b=(2,0)
+]
+<a href="#block_14ff367200b2472e9ae881bdef4c64b5">来源 1</a>。</p>
+<p>先计算内积与模长平方：
+[
+\mathbf a\cdot\mathbf b=3\cdot2+2\cdot0=6,
+\qquad
+|\mathbf b|^2=\mathbf b\cdot\mathbf b=2^2+0^2=4.
+]</p>
+<h2>1. 投影系数</h2>
+<p>若“投影系数”指投影向量写成 <span class="math">\(c\mathbf b\)</span> 时的标量系数，则
+[
+c=\frac{\mathbf a\cdot\mathbf b}{\mathbf b\cdot\mathbf b}
+=\frac{6}{4}
+=\frac32.
+]
+因此
+[
+c=\frac32.
+]</p>
+<h2>2. 投影向量</h2>
+<p><span class="math">\(\mathbf a\)</span> 在 <span class="math">\(\mathbf b\)</span> 方向上的投影向量为
+[
+\operatorname{proj}<em>{\mathbf b}\mathbf a
+=c\mathbf b
+=\frac{\mathbf a\cdot\mathbf b}{\mathbf b\cdot\mathbf b}\mathbf b
+=\frac32(2,0)
+=(3,0).
+]
+所以
+[
+\boxed{\operatorname{proj}</em>{\mathbf b}\mathbf a=(3,0)}.
+]</p>
+<h2>3. 补充：若把“投影”理解为有向长度</h2>
+<p>有向数量投影为
+[
+\operatorname{comp}_{\mathbf b}\mathbf a
+=|\mathbf a|\cos\theta
+=\frac{\mathbf a\cdot\mathbf b}{|\mathbf b|}
+=\frac{6}{2}
+=3.
+]
+此时投影向量的长度为 <span class="math">\(3\)</span>，方向与 <span class="math">\(\mathbf b\)</span> 相同，故仍为
+[
+3\cdot \frac{\mathbf b}{|\mathbf b|}
+=3\cdot(1,0)
+=(3,0).
+]</p>
+<h2>4. 投影系数与投影向量的区别</h2>
+<ul>
+<li><strong>投影系数</strong> <span class="math">\(c=\frac32\)</span> 是一个标量，表示投影向量是 <span class="math">\(\mathbf b\)</span> 的多少倍。它本身没有方向。</li>
+<li><strong>投影向量</strong> <span class="math">\((3,0)\)</span> 是一个向量，既有大小又有方向，是由系数乘以原向量 <span class="math">\(\mathbf b\)</span> 得到的：
+[
+\operatorname{proj}_{\mathbf b}\mathbf a=c\mathbf b.
+]</li>
+<li>注意本题中 <span class="math">\(\|\mathbf b\|=2\neq1\)</span>，所以系数 <span class="math">\(\frac32\)</span> 并不等于有向数量投影 <span class="math">\(3\)</span>。只有当 <span class="math">\(\mathbf b\)</span> 是单位向量时，投影系数才等于有向数量投影。</li>
+</ul>

@@ -1,0 +1,50 @@
+<p>题设：<span class="math">\(a=(3,2)\)</span>，<span class="math">\(b=(2,0)\)</span>，求 <span class="math">\(a\)</span> 在 <span class="math">\(b\)</span> 方向上的投影系数与投影向量。<a href="#block_e98916c5e2b5433b86d9e26719cbf10d">来源 1</a></p>
+<p>先计算：</p>
+<div class="math">\[
+a\cdot b=3\cdot 2+2\cdot 0=6
+\]</div>
+<div class="math">\[
+\|b\|=\sqrt{2^2+0^2}=2,
+\qquad 
+\|b\|^2=b\cdot b=4
+\]</div>
+<p><span class="math">\(b\)</span> 方向的单位向量为</p>
+<div class="math">\[
+e_b=\frac{b}{\|b\|}=\frac{(2,0)}{2}=(1,0)
+\]</div>
+<p>因此 <span class="math">\(a\)</span> 在 <span class="math">\(b\)</span> 方向上的标量投影为</p>
+<div class="math">\[
+a\cdot e_b=(3,2)\cdot(1,0)=3
+\]</div>
+<p>投影向量为</p>
+<div class="math">\[
+\operatorname{proj}_b a=(a\cdot e_b)e_b=3(1,0)=(3,0)
+\]</div>
+<p>若“投影系数”定义为使投影向量写成 <span class="math">\(c b\)</span> 的系数，即</p>
+<div class="math">\[
+\operatorname{proj}_b a=c b
+\]</div>
+<p>则</p>
+<div class="math">\[
+c=\frac{a\cdot b}{b\cdot b}=\frac{6}{4}=\frac32
+\]</div>
+<p>并且</p>
+<div class="math">\[
+c b=\frac32(2,0)=(3,0)
+\]</div>
+<p><strong>结论：</strong></p>
+<ul>
+<li>若“投影系数”指沿 <span class="math">\(b\)</span> 分解的系数，则<br />
+[
+\boxed{c=\frac32}
+]</li>
+<li>若“投影系数”指标量投影，则<br />
+[
+\boxed{a\cdot e_b=3}
+]</li>
+<li>投影向量为<br />
+[
+\boxed{\operatorname{proj}_b a=(3,0)}
+]</li>
+</ul>
+<p>通常在线性代数中，“投影系数”多指 <span class="math">\(c=\dfrac{a\cdot b}{b\cdot b}\)</span>，本题即为 <span class="math">\(\boxed{\dfrac32}\)</span>；对应的投影向量仍为 <span class="math">\(\boxed{(3,0)}\)</span>。</p>

@@ -1,0 +1,65 @@
+<h2>题设</h2>
+<p>材料中的投影题为：给定<br />
+[
+\mathbf a=(3,2),\qquad \mathbf b=(2,0),
+]
+求投影系数 <span class="math">\(c\)</span> 与投影向量 <span class="math">\(\mathbf p\)</span>，并保留计算过程。<a href="#block_6699dfff324b466f8f069174d37443d3">来源 1</a></p>
+<p>通常“求 <span class="math">\(\mathbf a\)</span> 在 <span class="math">\(\mathbf b\)</span> 上的投影”指：把 <span class="math">\(\mathbf a\)</span> 分解为沿 <span class="math">\(\mathbf b\)</span> 方向的分量与垂直于 <span class="math">\(\mathbf b\)</span> 方向的分量，即
+[
+\mathbf a=c\mathbf b+\mathbf e,\qquad \mathbf e\perp \mathbf b.
+]
+其中 <span class="math">\(\mathbf p=c\mathbf b\)</span> 就是 <span class="math">\(\mathbf a\)</span> 在 <span class="math">\(\mathbf b\)</span> 上的投影向量。</p>
+<h2>计算投影系数</h2>
+<p>投影系数公式为
+[
+c=\frac{\mathbf a\cdot \mathbf b}{\mathbf b\cdot \mathbf b}.
+]</p>
+<p>先计算点积：
+[
+\mathbf a\cdot \mathbf b
+=3\cdot 2+2\cdot 0
+=6,
+]
+[
+\mathbf b\cdot \mathbf b
+=2^2+0^2
+=4.
+]</p>
+<p>因此
+[
+c=\frac{6}{4}=\frac32.
+]</p>
+<h2>计算投影向量</h2>
+<div class="math">\[
+\mathbf p=c\mathbf b
+=\frac32(2,0)
+=(3,0).
+\]</div>
+<p>所以
+[
+\boxed{c=\frac32,\qquad \mathbf p=(3,0).}
+]</p>
+<h2>几何解释与验证</h2>
+<p>向量 <span class="math">\(\mathbf b=(2,0)\)</span> 指向水平方向，因此 <span class="math">\(\mathbf a=(3,2)\)</span> 在 <span class="math">\(\mathbf b\)</span> 方向上的投影就是它的水平分量：
+[
+\mathbf p=(3,0).
+]
+垂直于 <span class="math">\(\mathbf b\)</span> 的分量为
+[
+\mathbf a-\mathbf p=(3,2)-(3,0)=(0,2),
+]
+而
+[
+(0,2)\cdot(2,0)=0,
+]
+说明该分量确实与 <span class="math">\(\mathbf b\)</span> 垂直。</p>
+<p>若把“投影系数”理解为带符号的投影长度，则
+[
+\frac{\mathbf a\cdot\mathbf b}{|\mathbf b|}
+=\frac{6}{2}=3,
+]
+它与上面的系数 <span class="math">\(c=\frac32\)</span> 相差一个因子 <span class="math">\(\|\mathbf b\|=2\)</span>。在题目同时要求“投影系数 <span class="math">\(c\)</span> 与投影向量 <span class="math">\(\mathbf p\)</span>”的常见语境下，取
+[
+\boxed{c=\frac32,\quad \mathbf p=(3,0)}
+]
+是合适的。</p>

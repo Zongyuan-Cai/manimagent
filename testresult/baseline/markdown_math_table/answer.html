@@ -1,0 +1,103 @@
+<h2>投影计算</h2>
+<p>给定<br />
+[
+a=(3,2),\qquad b=(2,0)
+]
+<a href="#block_9f8883be9a714c73b5cc7e31516719d1">来源 1</a></p>
+<p>按材料中的投影公式：
+[
+c=\frac{a\cdot b}{b\cdot b},\qquad p=cb
+]
+<a href="#block_aef2be72e2d64aef9e8551f6b89fbc0e">来源 2</a></p>
+<p>先计算点积：
+[
+a\cdot b=(3,2)\cdot(2,0)=3\cdot 2+2\cdot 0=6
+]</p>
+<div class="math">\[
+b\cdot b=(2,0)\cdot(2,0)=2^2+0^2=4
+\]</div>
+<p>因此投影系数为：
+[
+c=\frac{a\cdot b}{b\cdot b}=\frac{6}{4}=\frac{3}{2}
+]</p>
+<p>投影向量为：
+[
+p=cb=\frac{3}{2}(2,0)=(3,0)
+]</p>
+<p>所以，<span class="math">\(a\)</span> 在 <span class="math">\(b\)</span> 方向上的投影向量是：
+[
+\boxed{p=(3,0)}
+]
+对应的投影系数是：
+[
+\boxed{c=\frac{3}{2}}
+]</p>
+<p>可验证投影的垂直关系：
+[
+a-p=(3,2)-(3,0)=(0,2)
+]
+[
+(a-p)\cdot b=(0,2)\cdot(2,0)=0
+]
+说明 <span class="math">\(a-p\)</span> 与 <span class="math">\(b\)</span> 垂直，符合正交投影。</p>
+<h2>系数与向量对比</h2>
+<p>材料中给出的向量坐标为：</p>
+<table>
+<thead>
+<tr>
+<th>向量</th>
+<th>坐标</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="math">\(a\)</span></td>
+<td><span class="math">\((3,2)\)</span></td>
+</tr>
+<tr>
+<td><span class="math">\(b\)</span></td>
+<td><span class="math">\((2,0)\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><a href="#block_f1ec6ce369364c4f8ad00b5c2a386afe">来源 3</a></p>
+<p>对比计算结果如下：</p>
+<table>
+<thead>
+<tr>
+<th>对象</th>
+<th>符号</th>
+<th>类型</th>
+<th>计算式</th>
+<th>结果</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>投影系数</td>
+<td><span class="math">\(c\)</span></td>
+<td>标量</td>
+<td><span class="math">\(\dfrac{a\cdot b}{b\cdot b}\)</span></td>
+<td><span class="math">\(\dfrac{3}{2}\)</span></td>
+<td>表示沿 <span class="math">\(b\)</span> 方向缩放的比例</td>
+</tr>
+<tr>
+<td>投影向量</td>
+<td><span class="math">\(p\)</span></td>
+<td>二维向量</td>
+<td><span class="math">\(cb\)</span></td>
+<td><span class="math">\((3,0)\)</span></td>
+<td><span class="math">\(a\)</span> 在 <span class="math">\(b\)</span> 方向上的投影</td>
+</tr>
+<tr>
+<td>方向向量</td>
+<td><span class="math">\(b\)</span></td>
+<td>二维向量</td>
+<td>材料给定</td>
+<td><span class="math">\((2,0)\)</span></td>
+<td>投影所沿的方向</td>
+</tr>
+</tbody>
+</table>
+<p>由表可见，<span class="math">\(c=\frac32\)</span> 是一个标量系数，而 <span class="math">\(p=(3,0)\)</span> 是由该系数缩放 <span class="math">\(b\)</span> 后得到的向量。</p>

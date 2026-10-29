@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "material_id": "material_26bddad73bd0496a93b96c2008bc3c4c",
+  "source_file_ids": [
+    "file_edafb2eccec248238db6e524985442e2"
+  ],
+  "blocks": [
+    {
+      "block_id": "block_afd6e164c0814f71af49055996293d93",
+      "kind": "text",
+      "content": "求图中三角形面积，图示为必要条件。",
+      "asset_ids": [],
+      "source": {
+        "input_index": 0,
+        "file_id": "file_edafb2eccec248238db6e524985442e2",
+        "locator": {
+          "page": 1
+        },
+        "verification": "verified"
+      },
+      "review_state": "unverified"
+    }
+  ],
+  "warnings": [],
+  "created_at": "2026-10-29T10:25:14.118603+00:00"
+}

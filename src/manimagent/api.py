@@ -1,33 +1,44 @@
 from __future__ import annotations
 
-import mimetypes
 from contextlib import asynccontextmanager
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
+from starlette.exceptions import HTTPException
 
-from manimagent.artifacts import ArtifactStore
 from manimagent.config import Settings, load_settings
-from manimagent.jobs import JobManager, QueueFull
+from manimagent.content_store import ContentError
 from manimagent.providers import ChatProvider
-from manimagent.rendering import DockerRenderer
-from manimagent.schemas import GenerationRequest
-from manimagent.workflow import GenerationEngine
+from manimagent.text_api import UploadLimitMiddleware, text_router
+from manimagent.text_jobs import TextJobManager
 
 
-def build_engine(settings: Settings) -> GenerationEngine:
-    return GenerationEngine(
-        settings, ArtifactStore(settings.runs_dir), ChatProvider(settings), DockerRenderer(settings)
-    )
+class WebAssets(StaticFiles):
+    async def get_response(self, path: str, scope):
+        first_party = path in {"app.js", "llm-settings.js", "app.css"}
+        if first_party:
+            scope = {
+                **scope,
+                "headers": [
+                    (key, value)
+                    for key, value in scope["headers"]
+                    if key.lower() not in {b"if-none-match", b"if-modified-since"}
+                ],
+            }
+        response = await super().get_response(path, scope)
+        if first_party:
+            response.headers["Cache-Control"] = "no-store"
+        return response
 
 
-def create_app(settings: Settings | None = None, engine: GenerationEngine | None = None) -> FastAPI:
+def create_app(
+    settings: Settings | None = None, text_provider: ChatProvider | None = None
+) -> FastAPI:
     settings = settings or load_settings()
-    engine = engine or build_engine(settings)
-    manager = JobManager(engine)
+    manager = TextJobManager(settings, text_provider)
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
@@ -37,63 +48,54 @@ def create_app(settings: Settings | None = None, engine: GenerationEngine | None
         finally:
             manager.stop()
 
-    app = FastAPI(title="ManimAgent", version="0.1.0", lifespan=lifespan)
-    app.state.manager = manager
-    app.mount("/static", StaticFiles(directory=Path(__file__).parent / "web"), name="static")
-
-    @app.exception_handler(RequestValidationError)
-    async def invalid_input(request, exc):
-        # Do not echo invalid input, especially unpaired Unicode surrogates.
-        return JSONResponse(
-            status_code=422,
-            content={
-                "detail": "输入格式不正确：请仅提交 text 字符串，长度为 1 至 3000 个字符",
-            },
-        )
+    app = FastAPI(title="ManimAgent Text", version="0.2.0", lifespan=lifespan)
+    app.state.text_manager = manager
+    app.add_middleware(UploadLimitMiddleware, max_bytes=settings.max_upload_bytes)
+    app.include_router(text_router(manager))
+    web = Path(__file__).parent / "web"
+    app.mount("/static", WebAssets(directory=web), name="static")
 
     @app.get("/", include_in_schema=False)
     def index():
-        return FileResponse(Path(__file__).parent / "web" / "index.html", media_type="text/html")
-
-    @app.get("/api/health")
-    def health():
-        errors = engine.readiness()
-        return {"ready": not errors, "issues": errors}
-
-    @app.post("/api/jobs", status_code=202)
-    def submit(request: GenerationRequest):
-        errors = engine.readiness()
-        if errors:
-            raise HTTPException(503, detail="；".join(errors))
-        try:
-            manifest = manager.submit(request)
-        except QueueFull as exc:
-            raise HTTPException(429, detail=str(exc)) from exc
-        return {"job_id": manifest.job_id, "status": manifest.status}
-
-    def get_manifest(job_id: str):
-        try:
-            return engine.store.load(job_id)
-        except (FileNotFoundError, ValueError, OSError) as exc:
-            raise HTTPException(404, detail="任务不存在") from exc
-
-    @app.get("/api/jobs/{job_id}")
-    def status(job_id: str):
-        return engine.store.public(get_manifest(job_id))
-
-    @app.get("/api/jobs/{job_id}/artifacts/{artifact_id}")
-    def artifact(job_id: str, artifact_id: str, download: bool = False):
-        manifest = get_manifest(job_id)
-        try:
-            path = engine.store.resolve(manifest, artifact_id)
-        except (FileNotFoundError, ValueError, OSError) as exc:
-            raise HTTPException(404, detail="产物不存在") from exc
-        media_type = mimetypes.guess_type(path.name)[0] or "application/octet-stream"
         return FileResponse(
-            path,
-            media_type=media_type,
-            filename=path.name if download else None,
-            content_disposition_type="attachment" if download else "inline",
+            web / "index.html", media_type="text/html", headers={"Cache-Control": "no-store"}
+        )
+
+    @app.exception_handler(RequestValidationError)
+    async def invalid_input(request, exc):
+        message = (
+            "LLM 配置格式无效，请检查地址、模型、密钥和数值范围"
+            if request.url.path.startswith("/api/v2/llm-settings")
+            else "输入格式无效，请检查必填字段、文本、范围和资源 ID"
+        )
+        return JSONResponse(
+            status_code=422,
+            content={
+                "error": {
+                    "code": "invalid_request",
+                    "message": message,
+                    "retryable": False,
+                    "details": {},
+                }
+            },
+        )
+
+    @app.exception_handler(ContentError)
+    async def content_error(request, exc):
+        return JSONResponse(status_code=exc.http_status, content={"error": exc.error.model_dump()})
+
+    @app.exception_handler(HTTPException)
+    async def http_error(request, exc):
+        return JSONResponse(
+            status_code=exc.status_code,
+            content={
+                "error": {
+                    "code": "upload_too_large" if exc.status_code == 413 else "invalid_request",
+                    "message": str(exc.detail),
+                    "retryable": False,
+                    "details": {},
+                }
+            },
         )
 
     return app
