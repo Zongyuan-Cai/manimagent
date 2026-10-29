@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0",
+  "job_id": "job_ff33b46c906e41879c298423a30253b5",
+  "kind": "generation",
+  "status": "needs_input",
+  "stage": "material",
+  "message": "文件损坏或格式无法解析，请重新提供原件",
+  "resource_ref": {
+    "type": "generation",
+    "id": "generation_99b5f3ab3613494ca34d6a6845d8acce"
+  },
+  "result": null,
+  "error": {
+    "code": "invalid_file",
+    "message": "文件损坏或格式无法解析，请重新提供原件",
+    "retryable": false,
+    "details": {}
+  },
+  "diagnostic_asset_ids": [
+    "file_90ccdeb1094a438f863e8c0e8f017f19"
+  ],
+  "usage": {
+    "model_calls": 0,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "tokens_reported": false,
+    "elapsed_seconds": 0.438
+  },
+  "created_at": "2026-10-29T10:37:58.065945+00:00",
+  "updated_at": "2026-10-29T10:37:58.554383+00:00"
+}

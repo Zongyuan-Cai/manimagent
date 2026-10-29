@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "answer_id": "answer_6192b5004c134d93a94a3b53154ee3cf",
+  "material_ids": [
+    "material_eb0783686cf6458d8fb18ea3ffd8d650"
+  ],
+  "derived_from_answer_id": null,
+  "title": "题设",
+  "instruction": "解答 PDF 中的投影题并解释。",
+  "markdown": "## 题设\n\n材料中的投影题为：给定  \n\\[\n\\mathbf a=(3,2),\\qquad \\mathbf b=(2,0),\n\\]\n求投影系数 \\(c\\) 与投影向量 \\(\\mathbf p\\)，并保留计算过程。[[material_eb0783686cf6458d8fb18ea3ffd8d650:block_6699dfff324b466f8f069174d37443d3]]\n\n通常“求 \\(\\mathbf a\\) 在 \\(\\mathbf b\\) 上的投影”指：把 \\(\\mathbf a\\) 分解为沿 \\(\\mathbf b\\) 方向的分量与垂直于 \\(\\mathbf b\\) 方向的分量，即\n\\[\n\\mathbf a=c\\mathbf b+\\mathbf e,\\qquad \\mathbf e\\perp \\mathbf b.\n\\]\n其中 \\(\\mathbf p=c\\mathbf b\\) 就是 \\(\\mathbf a\\) 在 \\(\\mathbf b\\) 上的投影向量。\n\n## 计算投影系数\n\n投影系数公式为\n\\[\nc=\\frac{\\mathbf a\\cdot \\mathbf b}{\\mathbf b\\cdot \\mathbf b}.\n\\]\n\n先计算点积：\n\\[\n\\mathbf a\\cdot \\mathbf b\n=3\\cdot 2+2\\cdot 0\n=6,\n\\]\n\\[\n\\mathbf b\\cdot \\mathbf b\n=2^2+0^2\n=4.\n\\]\n\n因此\n\\[\nc=\\frac{6}{4}=\\frac32.\n\\]\n\n## 计算投影向量\n\n\\[\n\\mathbf p=c\\mathbf b\n=\\frac32(2,0)\n=(3,0).\n\\]\n\n所以\n\\[\n\\boxed{c=\\frac32,\\qquad \\mathbf p=(3,0).}\n\\]\n\n## 几何解释与验证\n\n向量 \\(\\mathbf b=(2,0)\\) 指向水平方向，因此 \\(\\mathbf a=(3,2)\\) 在 \\(\\mathbf b\\) 方向上的投影就是它的水平分量：\n\\[\n\\mathbf p=(3,0).\n\\]\n垂直于 \\(\\mathbf b\\) 的分量为\n\\[\n\\mathbf a-\\mathbf p=(3,2)-(3,0)=(0,2),\n\\]\n而\n\\[\n(0,2)\\cdot(2,0)=0,\n\\]\n说明该分量确实与 \\(\\mathbf b\\) 垂直。\n\n若把“投影系数”理解为带符号的投影长度，则\n\\[\n\\frac{\\mathbf a\\cdot\\mathbf b}{\\|\\mathbf b\\|}\n=\\frac{6}{2}=3,\n\\]\n它与上面的系数 \\(c=\\frac32\\) 相差一个因子 \\(\\|\\mathbf b\\|=2\\)。在题目同时要求“投影系数 \\(c\\) 与投影向量 \\(\\mathbf p\\)”的常见语境下，取\n\\[\n\\boxed{c=\\frac32,\\quad \\mathbf p=(3,0)}\n\\]\n是合适的。",
+  "steps": [
+    {
+      "step_id": "step_1",
+      "title": "题设",
+      "content": "## 题设\n\n材料中的投影题为：给定  \n\\[\n\\mathbf a=(3,2),\\qquad \\mathbf b=(2,0),\n\\]\n求投影系数 \\(c\\) 与投影向量 \\(\\mathbf p\\)，并保留计算过程。[[material_eb0783686cf6458d8fb18ea3ffd8d650:block_6699dfff324b466f8f069174d37443d3]]\n\n通常“求 \\(\\mathbf a\\) 在 \\(\\mathbf b\\) 上的投影”指：把 \\(\\mathbf a\\) 分解为沿 \\(\\mathbf b\\) 方向的分量与垂直于 \\(\\mathbf b\\) 方向的分量，即\n\\[\n\\mathbf a=c\\mathbf b+\\mathbf e,\\qquad \\mathbf e\\perp \\mathbf b.\n\\]\n其中 \\(\\mathbf p=c\\mathbf b\\) 就是 \\(\\mathbf a\\) 在 \\(\\mathbf b\\) 上的投影向量。\n\n## 计算投影系数\n\n投影系数公式为\n\\[\nc=\\frac{\\mathbf a\\cdot \\mathbf b}{\\mathbf b\\cdot \\mathbf b}.\n\\]\n\n先计算点积：\n\\[\n\\mathbf a\\cdot \\mathbf b\n=3\\cdot 2+2\\cdot 0\n=6,\n\\]\n\\[\n\\mathbf b\\cdot \\mathbf b\n=2^2+0^2\n=4.\n\\]\n\n因此\n\\[\nc=\\frac{6}{4}=\\frac32.\n\\]\n\n## 计算投影向量\n\n\\[\n\\mathbf p=c\\mathbf b\n=\\frac32(2,0)\n=(3,0).\n\\]\n\n所以\n\\[\n\\boxed{c=\\frac32,\\qquad \\mathbf p=(3,0).}\n\\]\n\n## 几何解释与验证\n\n向量 \\(\\mathbf b=(2,0)\\) 指向水平方向，因此 \\(\\mathbf a=(3,2)\\) 在 \\(\\mathbf b\\) 方向上的投影就是它的水平分量：\n\\[\n\\mathbf p=(3,0).\n\\]\n垂直于 \\(\\mathbf b\\) 的分量为\n\\[\n\\mathbf a-\\mathbf p=(3,2)-(3,0)=(0,2),\n\\]\n而\n\\[\n(0,2)\\cdot(2,0)=0,\n\\]\n说明该分量确实与 \\(\\mathbf b\\) 垂直。\n\n若把“投影系数”理解为带符号的投影长度，则\n\\[\n\\frac{\\mathbf a\\cdot\\mathbf b}{\\|\\mathbf b\\|}\n=\\frac{6}{2}=3,\n\\]\n它与上面的系数 \\(c=\\frac32\\) 相差一个因子 \\(\\|\\mathbf b\\|=2\\)。在题目同时要求“投影系数 \\(c\\) 与投影向量 \\(\\mathbf p\\)”的常见语境下，取\n\\[\n\\boxed{c=\\frac32,\\quad \\mathbf p=(3,0)}\n\\]\n是合适的。",
+      "source_refs": [
+        {
+          "material_id": "material_eb0783686cf6458d8fb18ea3ffd8d650",
+          "block_id": "block_6699dfff324b466f8f069174d37443d3"
+        }
+      ],
+      "example_notes": []
+    }
+  ],
+  "warnings": [],
+  "created_at": "2026-10-29T10:23:57.849547+00:00"
+}

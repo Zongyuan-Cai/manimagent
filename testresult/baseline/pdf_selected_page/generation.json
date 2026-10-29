@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0",
+  "generation_id": "generation_ab73254cfb76481a99fd42cb5eacbc07",
+  "output_mode": "text",
+  "source": {
+    "inputs": [
+      {
+        "type": "file",
+        "file_id": "file_bc6547d3777148a69d37d5851bd81f04",
+        "selection": {
+          "kind": "pages",
+          "start": 2,
+          "end": 2
+        }
+      }
+    ],
+    "parser_profile_id": null,
+    "input_mode": "auto",
+    "type": "inputs",
+    "instruction": "仅解答选定页中的投影题，不使用其他页的数据。",
+    "answer_profile_id": null
+  },
+  "material_ids": [
+    "material_188a8292379444ae8b6619f0e7181607"
+  ],
+  "answer_id": "answer_f943112112b94e53a07709f212b0c8a3",
+  "stages": {
+    "material": {
+      "status": "completed",
+      "error": null,
+      "diagnostic_asset_ids": []
+    },
+    "answer": {
+      "status": "completed",
+      "error": null,
+      "diagnostic_asset_ids": []
+    }
+  },
+  "active_job_id": "job_4179ff4bed234035957c8125cd653394",
+  "job_ids": [
+    "job_4179ff4bed234035957c8125cd653394"
+  ],
+  "created_at": "2026-10-29T10:24:01.528546+00:00",
+  "updated_at": "2026-10-29T10:24:13.465959+00:00"
+}

@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "answer_id": "answer_6db2449c6b2b447dbf43fead63f77bec",
+  "material_ids": [
+    "material_1c70cb40478b4aeb94f73c518ed01f6b"
+  ],
+  "derived_from_answer_id": null,
+  "title": "按材料计算投影",
+  "instruction": "按材料计算投影，保留公式，另用表格对比系数与向量。",
+  "markdown": "# 按材料计算投影\n\n材料给出 \\(a=(3,2)\\)、\\(b=(2,0)\\) [[material_1c70cb40478b4aeb94f73c518ed01f6b:block_7d18b815ca6a44f6aebd0efd5d4a1e19]]，投影公式为\n\n\\[\nc=\\frac{a\\cdot b}{b\\cdot b},\\qquad p=cb\n\\]\n\n[[material_1c70cb40478b4aeb94f73c518ed01f6b:block_035968d010944e03846f27c21fe6462b]]\n\n## 计算过程\n\n先计算点积：\n\n\\[\na\\cdot b=3\\cdot 2+2\\cdot 0=6\n\\]\n\n\\[\nb\\cdot b=2^2+0^2=4\n\\]\n\n因此系数为\n\n\\[\nc=\\frac{a\\cdot b}{b\\cdot b}\n=\\frac{6}{4}\n=\\frac{3}{2}\n\\]\n\n投影向量为\n\n\\[\np=cb=\\frac{3}{2}(2,0)=(3,0)\n\\]\n\n所以，\\(a\\) 在 \\(b\\) 上的投影向量是\n\n\\[\n\\boxed{p=(3,0)}\n\\]\n\n对应的标量系数是\n\n\\[\n\\boxed{c=\\frac{3}{2}}\n\\]\n\n## 系数与向量对比\n\n| 对象 | 数学表达 | 类型 | 计算 | 结果 |\n|---|---|---|---|---|\n| 投影系数 | \\(c=\\dfrac{a\\cdot b}{b\\cdot b}\\) | 标量 | \\(\\dfrac{6}{4}\\) | \\(\\dfrac{3}{2}\\) |\n| 投影向量 | \\(p=cb\\) | 二维向量 | \\(\\dfrac{3}{2}(2,0)\\) | \\((3,0)\\) |\n\n## 向量坐标对比\n\n材料中的向量坐标如下 [[material_1c70cb40478b4aeb94f73c518ed01f6b:block_20ae16cb2bc444578e93e83d4f52d33c]]：\n\n| 向量 | 坐标 | 说明 |\n|---|---|---|\n| \\(a\\) | \\((3,2)\\) | 被投影向量 |\n| \\(b\\) | \\((2,0)\\) | 投影方向向量 |\n| \\(p\\) | \\((3,0)\\) | \\(a\\) 在 \\(b\\) 上的投影向量 |\n\n## 校验\n\n\\[\na-p=(3,2)-(3,0)=(0,2)\n\\]\n\n并且\n\n\\[\n(a-p)\\cdot b=(0,2)\\cdot(2,0)=0\n\\]\n\n因此 \\(a-p\\) 与 \\(b\\) 垂直，说明 \\(p=(3,0)\\) 确实是 \\(a\\) 在 \\(b\\) 方向上的正交投影。",
+  "steps": [
+    {
+      "step_id": "step_1",
+      "title": "按材料计算投影",
+      "content": "# 按材料计算投影\n\n材料给出 \\(a=(3,2)\\)、\\(b=(2,0)\\) [[material_1c70cb40478b4aeb94f73c518ed01f6b:block_7d18b815ca6a44f6aebd0efd5d4a1e19]]，投影公式为\n\n\\[\nc=\\frac{a\\cdot b}{b\\cdot b},\\qquad p=cb\n\\]\n\n[[material_1c70cb40478b4aeb94f73c518ed01f6b:block_035968d010944e03846f27c21fe6462b]]\n\n## 计算过程\n\n先计算点积：\n\n\\[\na\\cdot b=3\\cdot 2+2\\cdot 0=6\n\\]\n\n\\[\nb\\cdot b=2^2+0^2=4\n\\]\n\n因此系数为\n\n\\[\nc=\\frac{a\\cdot b}{b\\cdot b}\n=\\frac{6}{4}\n=\\frac{3}{2}\n\\]\n\n投影向量为\n\n\\[\np=cb=\\frac{3}{2}(2,0)=(3,0)\n\\]\n\n所以，\\(a\\) 在 \\(b\\) 上的投影向量是\n\n\\[\n\\boxed{p=(3,0)}\n\\]\n\n对应的标量系数是\n\n\\[\n\\boxed{c=\\frac{3}{2}}\n\\]\n\n## 系数与向量对比\n\n| 对象 | 数学表达 | 类型 | 计算 | 结果 |\n|---|---|---|---|---|\n| 投影系数 | \\(c=\\dfrac{a\\cdot b}{b\\cdot b}\\) | 标量 | \\(\\dfrac{6}{4}\\) | \\(\\dfrac{3}{2}\\) |\n| 投影向量 | \\(p=cb\\) | 二维向量 | \\(\\dfrac{3}{2}(2,0)\\) | \\((3,0)\\) |\n\n## 向量坐标对比\n\n材料中的向量坐标如下 [[material_1c70cb40478b4aeb94f73c518ed01f6b:block_20ae16cb2bc444578e93e83d4f52d33c]]：\n\n| 向量 | 坐标 | 说明 |\n|---|---|---|\n| \\(a\\) | \\((3,2)\\) | 被投影向量 |\n| \\(b\\) | \\((2,0)\\) | 投影方向向量 |\n| \\(p\\) | \\((3,0)\\) | \\(a\\) 在 \\(b\\) 上的投影向量 |\n\n## 校验\n\n\\[\na-p=(3,2)-(3,0)=(0,2)\n\\]\n\n并且\n\n\\[\n(a-p)\\cdot b=(0,2)\\cdot(2,0)=0\n\\]\n\n因此 \\(a-p\\) 与 \\(b\\) 垂直，说明 \\(p=(3,0)\\) 确实是 \\(a\\) 在 \\(b\\) 方向上的正交投影。",
+      "source_refs": [
+        {
+          "material_id": "material_1c70cb40478b4aeb94f73c518ed01f6b",
+          "block_id": "block_7d18b815ca6a44f6aebd0efd5d4a1e19"
+        },
+        {
+          "material_id": "material_1c70cb40478b4aeb94f73c518ed01f6b",
+          "block_id": "block_035968d010944e03846f27c21fe6462b"
+        },
+        {
+          "material_id": "material_1c70cb40478b4aeb94f73c518ed01f6b",
+          "block_id": "block_20ae16cb2bc444578e93e83d4f52d33c"
+        }
+      ],
+      "example_notes": []
+    }
+  ],
+  "warnings": [],
+  "created_at": "2026-10-29T10:36:15.734899+00:00"
+}

@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0",
+  "answer_id": "answer_ba89fbf75eb646ab8b8df92058ea740b",
+  "material_ids": [
+    "material_5f1b0073ffae4f8593a8082a82bd624a"
+  ],
+  "derived_from_answer_id": "answer_b1ea2adebf124777b76e39e59e555403",
+  "title": "1. 数量投影（标量投影）",
+  "instruction": "完整给出投影系数和投影向量，并说明区别。",
+  "markdown": "已知 \\(\\mathbf a=(3,2)\\)，\\(\\mathbf b=(2,0)\\)，求 \\(\\mathbf a\\) 在 \\(\\mathbf b\\) 方向上的投影。[[material_5f1b0073ffae4f8593a8082a82bd624a:block_2137940836f54012a214f44222a73761]]\n\n先计算：\n\n\\[\n\\mathbf a\\cdot \\mathbf b=3\\cdot 2+2\\cdot 0=6,\n\\]\n\n\\[\n\\|\\mathbf b\\|=\\sqrt{2^2+0^2}=2,\\qquad \n\\|\\mathbf b\\|^2=4.\n\\]\n\n## 1. 数量投影（标量投影）\n\n\\(\\mathbf a\\) 在 \\(\\mathbf b\\) 方向上的数量投影为\n\n\\[\n\\operatorname{proj}_{\\mathbf b}\\mathbf a\n= \\|\\mathbf a\\|\\cos\\theta\n= \\frac{\\mathbf a\\cdot\\mathbf b}{\\|\\mathbf b\\|}\n= \\frac{6}{2}=3.\n\\]\n\n它表示 \\(\\mathbf a\\) 沿 \\(\\mathbf b\\) 方向的有向长度。\n\n## 2. 投影向量\n\n\\(\\mathbf b\\) 方向的单位向量为\n\n\\[\n\\mathbf e_{\\mathbf b}\n=\\frac{\\mathbf b}{\\|\\mathbf b\\|}\n=\\frac{(2,0)}{2}=(1,0).\n\\]\n\n因此投影向量为\n\n\\[\n\\operatorname{proj}_{\\mathbf b}^{\\text{vec}}\\mathbf a\n=(\\mathbf a\\cdot \\mathbf e_{\\mathbf b})\\mathbf e_{\\mathbf b}\n=\\frac{\\mathbf a\\cdot\\mathbf b}{\\|\\mathbf b\\|^2}\\mathbf b\n=\\frac{6}{4}(2,0)\n=\\frac32(2,0)\n=(3,0).\n\\]\n\n也可以验证：\n\n\\[\n\\mathbf a-(3,0)=(0,2),\n\\]\n\n而\n\n\\[\n(0,2)\\cdot (2,0)=0,\n\\]\n\n所以 \\((3,0)\\) 确实是 \\(\\mathbf a\\) 沿 \\(\\mathbf b\\) 方向的投影向量。\n\n## 3. 投影系数的两种常见约定\n\n“投影系数”在不同教材中可能有两种含义：\n\n### 约定一：相对于单位方向向量\n\n若把投影写成“数量投影 \\(\\times\\) 单位向量”，则系数就是数量投影：\n\n\\[\n\\operatorname{proj}_{\\mathbf b}\\mathbf a=3.\n\\]\n\n此时\n\n\\[\n\\text{投影向量}=3\\mathbf e_{\\mathbf b}\n=3(1,0)=(3,0).\n\\]\n\n### 约定二：相对于原向量 \\(\\mathbf b\\) 的线性组合系数\n\n若把 \\(\\mathbf a\\) 分解为\n\n\\[\n\\mathbf a=\\lambda\\mathbf b+\\mathbf a_\\perp,\n\\qquad \\mathbf a_\\perp\\perp\\mathbf b,\n\\]\n\n则\n\n\\[\n\\lambda=\\frac{\\mathbf a\\cdot\\mathbf b}{\\mathbf b\\cdot\\mathbf b}\n=\\frac{6}{4}=\\frac32.\n\\]\n\n此时\n\n\\[\n\\text{投影向量}=\\lambda\\mathbf b\n=\\frac32(2,0)=(3,0).\n\\]\n\n## 4. 区别\n\n- **投影系数是一个数**。它表示分解中某个方向上的“倍数”。\n  - 若以单位向量 \\(\\mathbf e_{\\mathbf b}\\) 为基底，系数为 \\(3\\)；\n  - 若以原向量 \\(\\mathbf b\\) 为基底，系数为 \\(\\dfrac32\\)。\n- **投影向量是一个向量**。它有方向，方向沿 \\(\\mathbf b\\)；若系数为负，则方向与 \\(\\mathbf b\\) 相反。本题投影向量为\n  \\[\n  (3,0).\n  \\]\n- 关系为：\n  \\[\n  \\text{投影向量}\n  =\\text{数量投影}\\times \\mathbf e_{\\mathbf b}\n  =\\frac{\\mathbf a\\cdot\\mathbf b}{\\|\\mathbf b\\|^2}\\mathbf b.\n  \\]\n\n因此本题中：\n\n\\[\n\\boxed{\\text{数量投影}=3}\n\\]\n\n\\[\n\\boxed{\\text{相对于 }\\mathbf b\\text{ 的投影系数}=\\frac32}\n\\]\n\n\\[\n\\boxed{\\text{投影向量}=(3,0)}\n\\]\n\n若把“投影系数”理解为相对于单位方向的系数，则它是 \\(3\\)，而不是 \\(\\frac32\\)。\n\n<script>window.test_should_not_run=1</script>",
+  "steps": [
+    {
+      "step_id": "step_1",
+      "title": "1. 数量投影（标量投影）",
+      "content": "已知 \\(\\mathbf a=(3,2)\\)，\\(\\mathbf b=(2,0)\\)，求 \\(\\mathbf a\\) 在 \\(\\mathbf b\\) 方向上的投影。[[material_5f1b0073ffae4f8593a8082a82bd624a:block_2137940836f54012a214f44222a73761]]\n\n先计算：\n\n\\[\n\\mathbf a\\cdot \\mathbf b=3\\cdot 2+2\\cdot 0=6,\n\\]\n\n\\[\n\\|\\mathbf b\\|=\\sqrt{2^2+0^2}=2,\\qquad \n\\|\\mathbf b\\|^2=4.\n\\]\n\n## 1. 数量投影（标量投影）\n\n\\(\\mathbf a\\) 在 \\(\\mathbf b\\) 方向上的数量投影为\n\n\\[\n\\operatorname{proj}_{\\mathbf b}\\mathbf a\n= \\|\\mathbf a\\|\\cos\\theta\n= \\frac{\\mathbf a\\cdot\\mathbf b}{\\|\\mathbf b\\|}\n= \\frac{6}{2}=3.\n\\]\n\n它表示 \\(\\mathbf a\\) 沿 \\(\\mathbf b\\) 方向的有向长度。\n\n## 2. 投影向量\n\n\\(\\mathbf b\\) 方向的单位向量为\n\n\\[\n\\mathbf e_{\\mathbf b}\n=\\frac{\\mathbf b}{\\|\\mathbf b\\|}\n=\\frac{(2,0)}{2}=(1,0).\n\\]\n\n因此投影向量为\n\n\\[\n\\operatorname{proj}_{\\mathbf b}^{\\text{vec}}\\mathbf a\n=(\\mathbf a\\cdot \\mathbf e_{\\mathbf b})\\mathbf e_{\\mathbf b}\n=\\frac{\\mathbf a\\cdot\\mathbf b}{\\|\\mathbf b\\|^2}\\mathbf b\n=\\frac{6}{4}(2,0)\n=\\frac32(2,0)\n=(3,0).\n\\]\n\n也可以验证：\n\n\\[\n\\mathbf a-(3,0)=(0,2),\n\\]\n\n而\n\n\\[\n(0,2)\\cdot (2,0)=0,\n\\]\n\n所以 \\((3,0)\\) 确实是 \\(\\mathbf a\\) 沿 \\(\\mathbf b\\) 方向的投影向量。\n\n## 3. 投影系数的两种常见约定\n\n“投影系数”在不同教材中可能有两种含义：\n\n### 约定一：相对于单位方向向量\n\n若把投影写成“数量投影 \\(\\times\\) 单位向量”，则系数就是数量投影：\n\n\\[\n\\operatorname{proj}_{\\mathbf b}\\mathbf a=3.\n\\]\n\n此时\n\n\\[\n\\text{投影向量}=3\\mathbf e_{\\mathbf b}\n=3(1,0)=(3,0).\n\\]\n\n### 约定二：相对于原向量 \\(\\mathbf b\\) 的线性组合系数\n\n若把 \\(\\mathbf a\\) 分解为\n\n\\[\n\\mathbf a=\\lambda\\mathbf b+\\mathbf a_\\perp,\n\\qquad \\mathbf a_\\perp\\perp\\mathbf b,\n\\]\n\n则\n\n\\[\n\\lambda=\\frac{\\mathbf a\\cdot\\mathbf b}{\\mathbf b\\cdot\\mathbf b}\n=\\frac{6}{4}=\\frac32.\n\\]\n\n此时\n\n\\[\n\\text{投影向量}=\\lambda\\mathbf b\n=\\frac32(2,0)=(3,0).\n\\]\n\n## 4. 区别\n\n- **投影系数是一个数**。它表示分解中某个方向上的“倍数”。\n  - 若以单位向量 \\(\\mathbf e_{\\mathbf b}\\) 为基底，系数为 \\(3\\)；\n  - 若以原向量 \\(\\mathbf b\\) 为基底，系数为 \\(\\dfrac32\\)。\n- **投影向量是一个向量**。它有方向，方向沿 \\(\\mathbf b\\)；若系数为负，则方向与 \\(\\mathbf b\\) 相反。本题投影向量为\n  \\[\n  (3,0).\n  \\]\n- 关系为：\n  \\[\n  \\text{投影向量}\n  =\\text{数量投影}\\times \\mathbf e_{\\mathbf b}\n  =\\frac{\\mathbf a\\cdot\\mathbf b}{\\|\\mathbf b\\|^2}\\mathbf b.\n  \\]\n\n因此本题中：\n\n\\[\n\\boxed{\\text{数量投影}=3}\n\\]\n\n\\[\n\\boxed{\\text{相对于 }\\mathbf b\\text{ 的投影系数}=\\frac32}\n\\]\n\n\\[\n\\boxed{\\text{投影向量}=(3,0)}\n\\]\n\n若把“投影系数”理解为相对于单位方向的系数，则它是 \\(3\\)，而不是 \\(\\frac32\\)。\n\n<script>window.test_should_not_run=1</script>",
+      "source_refs": [
+        {
+          "material_id": "material_5f1b0073ffae4f8593a8082a82bd624a",
+          "block_id": "block_2137940836f54012a214f44222a73761"
+        }
+      ],
+      "example_notes": []
+    }
+  ],
+  "warnings": [
+    {
+      "code": "user_revision_unchecked",
+      "message": "人工修订版本仅检查格式与来源，未重新执行模型内容检查",
+      "step_ids": [],
+      "source_refs": []
+    }
+  ],
+  "created_at": "2026-10-29T10:50:20.342454+00:00"
+}

@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "answer_id": "answer_57778117c03840b686525a599de96a34",
+  "material_ids": [
+    "material_b4afc80e48354ceaa90b6bfa42c082a7"
+  ],
+  "derived_from_answer_id": null,
+  "title": "文字解答",
+  "instruction": "给定 a=(3,2)，b=(2,0)。求 a 在 b 方向上的投影系数与投影向量。",
+  "markdown": "题设：\\(a=(3,2)\\)，\\(b=(2,0)\\)，求 \\(a\\) 在 \\(b\\) 方向上的投影系数与投影向量。[[material_b4afc80e48354ceaa90b6bfa42c082a7:block_e98916c5e2b5433b86d9e26719cbf10d]]\n\n先计算：\n\n\\[\na\\cdot b=3\\cdot 2+2\\cdot 0=6\n\\]\n\n\\[\n\\|b\\|=\\sqrt{2^2+0^2}=2,\n\\qquad \n\\|b\\|^2=b\\cdot b=4\n\\]\n\n\\(b\\) 方向的单位向量为\n\n\\[\ne_b=\\frac{b}{\\|b\\|}=\\frac{(2,0)}{2}=(1,0)\n\\]\n\n因此 \\(a\\) 在 \\(b\\) 方向上的标量投影为\n\n\\[\na\\cdot e_b=(3,2)\\cdot(1,0)=3\n\\]\n\n投影向量为\n\n\\[\n\\operatorname{proj}_b a=(a\\cdot e_b)e_b=3(1,0)=(3,0)\n\\]\n\n若“投影系数”定义为使投影向量写成 \\(c b\\) 的系数，即\n\n\\[\n\\operatorname{proj}_b a=c b\n\\]\n\n则\n\n\\[\nc=\\frac{a\\cdot b}{b\\cdot b}=\\frac{6}{4}=\\frac32\n\\]\n\n并且\n\n\\[\nc b=\\frac32(2,0)=(3,0)\n\\]\n\n**结论：**\n\n- 若“投影系数”指沿 \\(b\\) 分解的系数，则  \n  \\[\n  \\boxed{c=\\frac32}\n  \\]\n- 若“投影系数”指标量投影，则  \n  \\[\n  \\boxed{a\\cdot e_b=3}\n  \\]\n- 投影向量为  \n  \\[\n  \\boxed{\\operatorname{proj}_b a=(3,0)}\n  \\]\n\n通常在线性代数中，“投影系数”多指 \\(c=\\dfrac{a\\cdot b}{b\\cdot b}\\)，本题即为 \\(\\boxed{\\dfrac32}\\)；对应的投影向量仍为 \\(\\boxed{(3,0)}\\)。",
+  "steps": [
+    {
+      "step_id": "step_1",
+      "title": "文字解答",
+      "content": "题设：\\(a=(3,2)\\)，\\(b=(2,0)\\)，求 \\(a\\) 在 \\(b\\) 方向上的投影系数与投影向量。[[material_b4afc80e48354ceaa90b6bfa42c082a7:block_e98916c5e2b5433b86d9e26719cbf10d]]\n\n先计算：\n\n\\[\na\\cdot b=3\\cdot 2+2\\cdot 0=6\n\\]\n\n\\[\n\\|b\\|=\\sqrt{2^2+0^2}=2,\n\\qquad \n\\|b\\|^2=b\\cdot b=4\n\\]\n\n\\(b\\) 方向的单位向量为\n\n\\[\ne_b=\\frac{b}{\\|b\\|}=\\frac{(2,0)}{2}=(1,0)\n\\]\n\n因此 \\(a\\) 在 \\(b\\) 方向上的标量投影为\n\n\\[\na\\cdot e_b=(3,2)\\cdot(1,0)=3\n\\]\n\n投影向量为\n\n\\[\n\\operatorname{proj}_b a=(a\\cdot e_b)e_b=3(1,0)=(3,0)\n\\]\n\n若“投影系数”定义为使投影向量写成 \\(c b\\) 的系数，即\n\n\\[\n\\operatorname{proj}_b a=c b\n\\]\n\n则\n\n\\[\nc=\\frac{a\\cdot b}{b\\cdot b}=\\frac{6}{4}=\\frac32\n\\]\n\n并且\n\n\\[\nc b=\\frac32(2,0)=(3,0)\n\\]\n\n**结论：**\n\n- 若“投影系数”指沿 \\(b\\) 分解的系数，则  \n  \\[\n  \\boxed{c=\\frac32}\n  \\]\n- 若“投影系数”指标量投影，则  \n  \\[\n  \\boxed{a\\cdot e_b=3}\n  \\]\n- 投影向量为  \n  \\[\n  \\boxed{\\operatorname{proj}_b a=(3,0)}\n  \\]\n\n通常在线性代数中，“投影系数”多指 \\(c=\\dfrac{a\\cdot b}{b\\cdot b}\\)，本题即为 \\(\\boxed{\\dfrac32}\\)；对应的投影向量仍为 \\(\\boxed{(3,0)}\\)。",
+      "source_refs": [
+        {
+          "material_id": "material_b4afc80e48354ceaa90b6bfa42c082a7",
+          "block_id": "block_e98916c5e2b5433b86d9e26719cbf10d"
+        }
+      ],
+      "example_notes": []
+    }
+  ],
+  "warnings": [],
+  "created_at": "2026-10-29T10:35:43.361040+00:00"
+}

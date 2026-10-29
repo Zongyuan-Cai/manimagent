@@ -1,0 +1,37 @@
+<p>题目为：给定 <span class="math">\(\mathbf a=(3,2)\)</span>，<span class="math">\(\mathbf b=(2,0)\)</span>，求投影系数和投影向量 <a href="#block_12de89cebc9e4285bd8c4cb050723129">来源 1</a>。</p>
+<p>按通常理解，求 <span class="math">\(\mathbf a\)</span> 在 <span class="math">\(\mathbf b\)</span> 方向上的投影。</p>
+<p>先计算内积与模长平方：</p>
+<div class="math">\[
+\mathbf a\cdot \mathbf b
+=3\cdot 2+2\cdot 0=6
+\]</div>
+<div class="math">\[
+\mathbf b\cdot \mathbf b
+=2^2+0^2=4
+\]</div>
+<p>若投影系数定义为相对于向量 <span class="math">\(\mathbf b\)</span> 的系数，则</p>
+<div class="math">\[
+\lambda=\frac{\mathbf a\cdot \mathbf b}{\mathbf b\cdot \mathbf b}
+=\frac{6}{4}
+=\frac{3}{2}
+\]</div>
+<p>因此投影向量为</p>
+<div class="math">\[
+\operatorname{proj}_{\mathbf b}\mathbf a
+=\lambda \mathbf b
+=\frac{3}{2}(2,0)
+=(3,0)
+\]</div>
+<p>所以：</p>
+<div class="math">\[
+\boxed{\text{投影系数 } \lambda=\frac{3}{2}}
+\]</div>
+<div class="math">\[
+\boxed{\text{投影向量 } \operatorname{proj}_{\mathbf b}\mathbf a=(3,0)}
+\]</div>
+<p>补充说明：若把“投影系数”理解为沿 <span class="math">\(\mathbf b\)</span> 的<strong>单位方向</strong>的标量投影，则其为</p>
+<div class="math">\[
+\frac{\mathbf a\cdot \mathbf b}{\|\mathbf b\|}
+=\frac{6}{2}=3
+\]</div>
+<p>但投影向量仍为 <span class="math">\((3,0)\)</span>。</p>

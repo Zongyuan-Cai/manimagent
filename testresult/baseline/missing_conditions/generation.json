@@ -1,0 +1,51 @@
+{
+  "schema_version": "1.0",
+  "generation_id": "generation_54651f8740e64ebbb85e96b610683db0",
+  "output_mode": "text",
+  "source": {
+    "inputs": [
+      {
+        "type": "file",
+        "file_id": "file_e0dcd522088c4ced998e24f268e299a7",
+        "selection": null
+      }
+    ],
+    "parser_profile_id": null,
+    "input_mode": "auto",
+    "type": "inputs",
+    "instruction": "计算材料中所要求的特征值。",
+    "answer_profile_id": null
+  },
+  "material_ids": [
+    "material_14c46394b76947f38a4bcdf3974f1039"
+  ],
+  "answer_id": null,
+  "stages": {
+    "material": {
+      "status": "completed",
+      "error": null,
+      "diagnostic_asset_ids": []
+    },
+    "answer": {
+      "status": "needs_input",
+      "error": {
+        "code": "source_incomplete",
+        "message": "材料只提出计算矩阵特征值的请求，但未提供矩阵元素或维数，候选解答正确指出缺少必要数据，无法计算具体特征值。",
+        "retryable": false,
+        "details": {}
+      },
+      "diagnostic_asset_ids": [
+        "file_af9a9c07f56a401f8339fbb1bc3c339b",
+        "file_05e8ca0678074f1999c0703cff44ee01",
+        "file_512e7e91e5a74eb095dd83aaedf86475",
+        "file_5dc1342a26b64355bf0e92898d41eec4"
+      ]
+    }
+  },
+  "active_job_id": "job_954c9bca26414076a6e4618f6208439b",
+  "job_ids": [
+    "job_954c9bca26414076a6e4618f6208439b"
+  ],
+  "created_at": "2026-10-29T10:24:53.709844+00:00",
+  "updated_at": "2026-10-29T10:24:58.059085+00:00"
+}

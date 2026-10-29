@@ -1,0 +1,110 @@
+<p>题设为：给定向量 <span class="math">\(a=(3,2)\)</span>，<span class="math">\(b=(2,0)\)</span>，求 <span class="math">\(a\)</span> 在 <span class="math">\(b\)</span> 方向上的投影系数与投影向量，并写出公式、解释两者区别。<a href="#block_051c04a37ba944ef89d6ac10ce5287a8">来源 1</a></p>
+<h2>1. 投影公式</h2>
+<p>设 <span class="math">\(b\neq 0\)</span>。向量 <span class="math">\(a\)</span> 在 <span class="math">\(b\)</span> 方向上的正交投影向量为</p>
+<div class="math">\[
+\operatorname{proj}_{b}(a)
+=\frac{a\cdot b}{b\cdot b}\,b.
+\]</div>
+<p>其中标量</p>
+<div class="math">\[
+c=\frac{a\cdot b}{b\cdot b}
+\]</div>
+<p>称为用 <span class="math">\(b\)</span> 表示投影向量时的<strong>投影系数</strong>，于是</p>
+<div class="math">\[
+\operatorname{proj}_{b}(a)=c\,b.
+\]</div>
+<p>若把投影系数理解为“沿 <span class="math">\(b\)</span> 方向的有向投影长度”，则公式为</p>
+<div class="math">\[
+s=\frac{a\cdot b}{|b|}.
+\]</div>
+<p>此时若</p>
+<div class="math">\[
+e_b=\frac{b}{|b|}
+\]</div>
+<p>是 <span class="math">\(b\)</span> 方向的单位向量，则</p>
+<div class="math">\[
+\operatorname{proj}_{b}(a)=s\,e_b.
+\]</div>
+<h2>2. 代入计算</h2>
+<p>已知</p>
+<div class="math">\[
+a=(3,2),\qquad b=(2,0).
+\]</div>
+<p>先计算内积：</p>
+<div class="math">\[
+a\cdot b=3\cdot 2+2\cdot 0=6.
+\]</div>
+<p>再计算</p>
+<div class="math">\[
+b\cdot b=2^2+0^2=4,
+\qquad
+|b|=\sqrt{4}=2.
+\]</div>
+<p>因此投影系数为</p>
+<div class="math">\[
+c=\frac{a\cdot b}{b\cdot b}
+=\frac{6}{4}
+=\frac{3}{2}.
+\]</div>
+<p>于是投影向量为</p>
+<div class="math">\[
+\operatorname{proj}_{b}(a)
+=c\,b
+=\frac{3}{2}(2,0)
+=(3,0).
+\]</div>
+<p>若采用“有向投影长度”的定义，则</p>
+<div class="math">\[
+s=\frac{a\cdot b}{|b|}
+=\frac{6}{2}
+=3.
+\]</div>
+<p>单位方向向量为</p>
+<div class="math">\[
+e_b=\frac{b}{|b|}
+=\frac{(2,0)}{2}
+=(1,0),
+\]</div>
+<p>所以投影向量也可写成</p>
+<div class="math">\[
+\operatorname{proj}_{b}(a)=s e_b=3(1,0)=(3,0).
+\]</div>
+<h2>3. 答案</h2>
+<ul>
+<li>若“投影系数”指用 <span class="math">\(b\)</span> 表示投影向量的标量倍数，则</li>
+</ul>
+<div class="math">\[
+\boxed{c=\frac{3}{2}}
+\]</div>
+<ul>
+<li>若“投影系数”指沿 <span class="math">\(b\)</span> 方向的有向投影长度，则</li>
+</ul>
+<div class="math">\[
+\boxed{s=3}
+\]</div>
+<ul>
+<li>投影向量均为</li>
+</ul>
+<div class="math">\[
+\boxed{\operatorname{proj}_{b}(a)=(3,0)}
+\]</div>
+<h2>4. 投影系数与投影向量的区别</h2>
+<p>投影系数是一个数，只表示沿某个方向的“倍数”或有向长度；投影向量是一个向量，既有大小又有方向。</p>
+<p>具体来说，</p>
+<div class="math">\[
+c=\frac{3}{2}
+\]</div>
+<p>表示投影向量是 <span class="math">\(b\)</span> 的 <span class="math">\(\frac{3}{2}\)</span> 倍：</p>
+<div class="math">\[
+\operatorname{proj}_{b}(a)=\frac{3}{2}b.
+\]</div>
+<p>而</p>
+<div class="math">\[
+\operatorname{proj}_{b}(a)=(3,0)
+\]</div>
+<p>才是最终的投影向量。</p>
+<p>如果使用有向投影长度 <span class="math">\(s\)</span>，则 <span class="math">\(s=3\)</span> 表示投影向量沿 <span class="math">\(b\)</span> 方向的单位方向 <span class="math">\((1,0)\)</span> 长度为 <span class="math">\(3\)</span>，因此</p>
+<div class="math">\[
+\operatorname{proj}_{b}(a)=3(1,0)=(3,0).
+\]</div>
+<p>注意：本题中 <span class="math">\(b\)</span> 的长度为 <span class="math">\(2\)</span>，所以“标量倍数” <span class="math">\(\frac{3}{2}\)</span> 与“有向投影长度” <span class="math">\(3\)</span> 相差一个 <span class="math">\(|b|=2\)</span> 的因子。二者不矛盾，只是“投影系数”采用的定义不同。</p>

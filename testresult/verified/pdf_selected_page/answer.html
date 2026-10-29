@@ -1,0 +1,49 @@
+<p>选定页只给出<br />
+[
+a=(3,2),\qquad b=(2,0),
+]
+并要求求投影系数和投影向量 <a href="#block_3ca403374531490789d748da2b5ef594">来源 1</a>。该页未明示“谁投影到谁”，按常见顺序，先求 <span class="math">\(a\)</span> 在 <span class="math">\(b\)</span> 上的投影。</p>
+<p>设投影系数为 <span class="math">\(k\)</span>，投影向量为 <span class="math">\(p\)</span>，则<br />
+[
+k=\frac{a\cdot b}{b\cdot b},\qquad p=kb.
+]</p>
+<p>计算：
+[
+a\cdot b=3\cdot 2+2\cdot 0=6,
+]
+[
+b\cdot b=2^2+0^2=4.
+]
+因此
+[
+k=\frac{6}{4}=\frac32.
+]
+投影向量为
+[
+p=\frac32(2,0)=(3,0).
+]</p>
+<p>所以，<span class="math">\(a\)</span> 在 <span class="math">\(b\)</span> 上的投影系数为<br />
+[
+\boxed{\frac32},
+]
+投影向量为<br />
+[
+\boxed{(3,0)}.
+]</p>
+<p>验证：<span class="math">\(a-p=(3,2)-(3,0)=(0,2)\)</span>，且
+[
+(a-p)\cdot b=(0,2)\cdot(2,0)=0,
+]
+故 <span class="math">\((3,0)\)</span> 确为 <span class="math">\(a\)</span> 在 <span class="math">\(b\)</span> 方向上的正交投影向量。</p>
+<p>若题意反指“<span class="math">\(b\)</span> 在 <span class="math">\(a\)</span> 上的投影”，则投影系数为
+[
+\frac{a\cdot b}{a\cdot a}=\frac{6}{13},
+]
+投影向量为
+[
+\frac{6}{13}(3,2)=\left(\frac{18}{13},\frac{12}{13}\right).
+]
+但按通常“前一个向量投影到后一个向量上”的约定，答案应为<br />
+[
+\boxed{k=\frac32,\quad p=(3,0)}.
+]</p>

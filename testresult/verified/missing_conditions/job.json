@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0",
+  "job_id": "job_fb93fa89dee74919a88f52f6a85332a7",
+  "kind": "generation",
+  "status": "needs_input",
+  "stage": "answer",
+  "message": "材料中未提供矩阵的具体元素或阶数，缺少计算特征值所必需的信息；候选答案正确指出无法计算并请求补充矩阵。",
+  "resource_ref": {
+    "type": "generation",
+    "id": "generation_3113f7857d414176aaa984bf85fd5596"
+  },
+  "result": null,
+  "error": {
+    "code": "source_incomplete",
+    "message": "材料中未提供矩阵的具体元素或阶数，缺少计算特征值所必需的信息；候选答案正确指出无法计算并请求补充矩阵。",
+    "retryable": false,
+    "details": {}
+  },
+  "diagnostic_asset_ids": [
+    "file_cbf9b580c5814edbb595d58e5a6a5542",
+    "file_0a23292b44f348d2812edc0a3c7062b3",
+    "file_c6b316704fb54acaa8146e482a5cd30c"
+  ],
+  "usage": {
+    "model_calls": 2,
+    "input_tokens": 1495,
+    "output_tokens": 410,
+    "tokens_reported": true,
+    "elapsed_seconds": 4.5
+  },
+  "created_at": "2026-10-29T10:37:29.942561+00:00",
+  "updated_at": "2026-10-29T10:37:34.475010+00:00"
+}

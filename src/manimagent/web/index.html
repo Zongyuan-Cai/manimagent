@@ -1,21 +1,54 @@
 <!doctype html>
 <html lang="zh-CN">
+<head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ManimAgent · 把想法变成动画</title>
-<link rel="stylesheet" href="/static/app.css">
-<main>
-<header><div class="brand">Manim<span>Agent</span></div><div class="tag">文本 → 数学动画 <span class="badge">MVP 0.1</span></div></header>
-<h1>把一个知识点，<br>讲成一段动画。</h1>
-<p class="intro">写下想理解的概念或一道完整题目。系统会规划步骤、生成动画，并检查画面。</p>
+<title>ManimAgent · 文字解答</title>
+<link rel="stylesheet" href="/static/app.css?v=0.2.0">
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],packages:{'[-]':['autoload','require']}},options:{enableMenu:false},startup:{typeset:false}};</script>
+<script src="/static/vendor/tex-svg.js" defer></script>
+<script src="/static/app.js?v=0.2.0" defer></script>
+<script src="/static/llm-settings.js?v=0.2.0" defer></script>
+</head>
+<body><main>
+<header><div class="brand">Manim<span>Agent</span></div><div class="tag">问题与材料 → 完整文字解答</div></header>
+<h1>输入问题，阅读完整解答。</h1>
+<p class="intro">支持直接提问、粘贴材料，以及 TXT、Markdown、文本型 PDF、DOCX。当前阶段只生成文字。</p>
 <div id="health" role="status"></div>
-<div class="grid"><section class="panel"><h2>01　输入学习内容</h2>
-<form id="form"><label for="text">知识点、题目与本次讲解要求</label><textarea id="text" placeholder="例如：请用动画解释二维向量投影。用 a=(3,2)、b=(1,0) 举例，区分投影系数和投影向量。面向初学者，尽量少堆公式。" required></textarea>
-<div class="meta"><button type="button" class="example" id="example">试试向量投影</button><span id="count">0 / 3000</span></div>
-<button type="submit" id="generate">生成动画　↗</button><p id="error" role="alert"></p></form>
-<footer>只需纯文本，可包含数学符号与 LaTeX。请提供完整题设。<br>建议一次讲一个概念，目标时长约一分钟。</footer></section>
-<section class="panel"><h2>02　动画与生成结果</h2><div id="status" role="status"></div><div id="result" class="empty"><svg width="54" height="54" viewBox="0 0 54 54" fill="none"><rect x="4" y="9" width="46" height="34" rx="8" stroke="currentColor" stroke-width="1.5"/><path d="m23 19 12 7-12 8V19Z" fill="currentColor"/></svg><strong>你的动画将显示在这里</strong><p>生成包含规划、渲染与画面检查，通常需要一些时间。</p></div><div id="message"></div><div id="artifacts"></div><div class="stage" id="job"></div></section></div>
-<footer>自动检查用于改进生成质量。学习或引用时，请核对数学内容与适用条件。</footer>
-</main>
-<script src="/static/app.js" defer></script>
-</html>
+<details class="panel llm-panel" id="llm-settings">
+<summary><strong>LLM 配置</strong><span id="llm-state">正在读取…</span></summary>
+<p class="hint">支持 Chat Completions 兼容接口。保存后立即用于新的文字回答任务。</p>
+<form id="llm-form" autocomplete="off">
+<div id="llm-models"></div>
+<button type="button" class="secondary" id="llm-add">新增模型</button>
+<div class="llm-grid">
+<div><label for="llm-writer">回答模型</label><select id="llm-writer" required></select></div>
+<div><label for="llm-checker">内容检查模型</label><select id="llm-checker" required></select></div>
+<div><label for="llm-context">回答上下文总预算（含输出预留）</label><input id="llm-context" type="number" min="1024" max="2000000" required></div>
+</div>
+<label class="check-label"><input type="checkbox" id="llm-check-enabled">生成后执行内容检查</label>
+<p class="hint">API Key 留空保留原密钥。测试会向填写的接口发送简短请求，可能产生少量用量；测试结果只证明所测能力。</p>
+<button type="submit" id="llm-save">保存并应用</button>
+<button type="button" class="secondary" id="llm-reload">重新载入</button>
+<p id="llm-message" role="status" aria-live="polite"></p>
+</form></details>
+<section class="panel">
+<form id="form">
+<label for="text">问题与本次要求（必填）</label>
+<textarea id="text" required placeholder="例如：给定 a=(3,2)、b=(1,0)，求 a 在 b 方向上的投影，并解释投影系数和投影向量的区别。"></textarea>
+<label for="material">补充材料（可选）</label><textarea id="material" placeholder="可在这里粘贴相关题设、定义或讲义。"></textarea>
+<label for="files">附件（可多选；同名文件分别保留）</label>
+<input id="files" type="file" accept=".txt,.md,.markdown,.pdf,.docx" multiple>
+<div id="file-list"></div>
+<p class="hint">PDF 可为每个文件指定页码；留空读取全文。扫描件、题图和公式对象暂需提供可读文本。</p>
+<button type="submit" id="generate">生成文字回答</button><button type="button" class="secondary" id="example">填入示例</button>
+<p id="error" role="alert"></p></form></section>
+<section class="panel output"><h2>文字回答</h2>
+<div id="status" role="status" aria-live="polite"></div><p id="message"></p>
+<div id="actions" hidden><a id="download">下载 Markdown</a> <button id="copy" class="secondary">复制正文</button> <button id="edit" class="secondary">编辑</button> <button id="reuse" class="secondary">用相同材料重新回答</button></div>
+<div id="warnings"></div><article id="result">回答会显示在这里。</article>
+<div id="editor" hidden><label for="revision">完整 Markdown 正文（保留来源标记）</label><textarea id="revision"></textarea><button id="save">保存为新版本</button><button id="cancel" class="secondary">取消</button></div>
+<details id="sources" hidden><summary>材料与来源</summary><div id="source-list"></div></details>
+<details id="diagnostics" hidden><summary>输入、候选回答与检查记录</summary><div id="artifacts"></div></details>
+<div class="stage" id="job"></div></section>
+</main></body></html>

@@ -1,0 +1,86 @@
+[
+  {
+    "file": "same_a\\同名.txt",
+    "bytes": 17
+  },
+  {
+    "file": "same_b\\同名.txt",
+    "bytes": 17
+  },
+  {
+    "file": "不可信指令.txt",
+    "bytes": 207
+  },
+  {
+    "file": "不支持.csv",
+    "bytes": 10
+  },
+  {
+    "file": "中文题目.pdf",
+    "bytes": 2479
+  },
+  {
+    "file": "公式与表格.md",
+    "bytes": 162
+  },
+  {
+    "file": "公式对象.docx",
+    "bytes": 36944
+  },
+  {
+    "file": "内嵌图片.docx",
+    "bytes": 39495
+  },
+  {
+    "file": "分页材料.pdf",
+    "bytes": 3578
+  },
+  {
+    "file": "加密.pdf",
+    "bytes": 2493
+  },
+  {
+    "file": "扫描图片.png",
+    "bytes": 3953
+  },
+  {
+    "file": "扫描页.pdf",
+    "bytes": 4293
+  },
+  {
+    "file": "投影题.txt",
+    "bytes": 123
+  },
+  {
+    "file": "损坏.pdf",
+    "bytes": 34
+  },
+  {
+    "file": "段落与表格.docx",
+    "bytes": 36937
+  },
+  {
+    "file": "空文件.txt",
+    "bytes": 0
+  },
+  {
+    "file": "空白页.pdf",
+    "bytes": 2783
+  },
+  {
+    "file": "缺少条件.txt",
+    "bytes": 36
+  },
+  {
+    "file": "超限.txt",
+    "bytes": 20971521
+  },
+  {
+    "file": "错误编码.txt",
+    "bytes": 4
+  },
+  {
+    "file": "题图.pdf",
+    "bytes": 2423
+  }
+]

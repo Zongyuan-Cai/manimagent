@@ -1,0 +1,36 @@
+# Local configuration and credentials
+.env
+.env.*
+config.yaml
+!.env.example
+!.env.*.example
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+*.egg-info/
+
+# Frontend and builds
+node_modules/
+dist/
+build/
+
+# Runtime outputs and private learning data
+runs/
+media/
+uploads/
+data/private/
+*.log
+
+# Local tooling
+.codex/
+.idea/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,25 @@
+{
+  "mixed_upload": true,
+  "pdf_pages": [
+    2,
+    2
+  ],
+  "files": [
+    "分页材料.pdf",
+    "段落与表格.docx",
+    "公式与表格.md"
+  ],
+  "answer_id": "answer_9c1f3466b88f4e9ba04adbda974db198",
+  "job_id": "job_7ff4fe63df4d4f6c85e6877595cef514",
+  "rendered_math_count": 37,
+  "unrendered_math_count": 0,
+  "rendered_tables": 1,
+  "download_matches_saved_markdown": true,
+  "download_sha256": "51df72900cbbd0853967e1d53d3ff023b91332f7bc09daa3120825c6825ec010",
+  "source_link_expands_locations": true,
+  "scanned_status": "needs_review",
+  "scanned_model_calls": 0,
+  "unsupported_image_error_visible": true,
+  "failed_upload_progress_cleared": true,
+  "incomplete_job_no_loading_placeholder": true
+}

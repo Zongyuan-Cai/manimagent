@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "generation_id": "generation_8194a0a1547e4888b6da68fb52709328",
+  "output_mode": "text",
+  "source": {
+    "inputs": [
+      {
+        "type": "file",
+        "file_id": "file_c6b0caa6f08241d3a5e683efe073136a",
+        "selection": null
+      }
+    ],
+    "parser_profile_id": null,
+    "input_mode": "auto",
+    "type": "inputs",
+    "instruction": "按 DOCX 表格中的数据完整解答。",
+    "answer_profile_id": null
+  },
+  "material_ids": [
+    "material_66786d0fbccc4ed2b29e67e918800490"
+  ],
+  "answer_id": "answer_f19a57c241be422fa2873f98ea427f88",
+  "stages": {
+    "material": {
+      "status": "completed",
+      "error": null,
+      "diagnostic_asset_ids": []
+    },
+    "answer": {
+      "status": "completed",
+      "error": null,
+      "diagnostic_asset_ids": []
+    }
+  },
+  "active_job_id": "job_0f5234bf969e4c80bba067e7c37c3105",
+  "job_ids": [
+    "job_0f5234bf969e4c80bba067e7c37c3105"
+  ],
+  "created_at": "2026-10-29T10:24:13.699933+00:00",
+  "updated_at": "2026-10-29T10:24:36.243376+00:00"
+}

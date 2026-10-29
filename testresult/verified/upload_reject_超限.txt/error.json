@@ -1,0 +1,8 @@
+{
+  "error": {
+    "code": "upload_too_large",
+    "message": "文件超过上传上限，请缩小文件",
+    "retryable": false,
+    "details": {}
+  }
+}

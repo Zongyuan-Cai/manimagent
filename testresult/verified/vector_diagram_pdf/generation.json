@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0",
+  "generation_id": "generation_5f5f169ec034463695ee601ecacd78e9",
+  "output_mode": "text",
+  "source": {
+    "inputs": [
+      {
+        "type": "file",
+        "file_id": "file_d29549d6b6724d24b926866397b7f57b",
+        "selection": null
+      }
+    ],
+    "parser_profile_id": null,
+    "input_mode": "auto",
+    "type": "inputs",
+    "instruction": "求题目结果。",
+    "answer_profile_id": null
+  },
+  "material_ids": [],
+  "answer_id": null,
+  "stages": {
+    "material": {
+      "status": "needs_review",
+      "error": {
+        "code": "content_uncertain",
+        "message": "第 1 页包含图像或绘图，当前纯文字解析无法核对其内容",
+        "retryable": false,
+        "details": {}
+      },
+      "diagnostic_asset_ids": [
+        "file_97525a027d5b410fa1e4ef2063a3a00c"
+      ]
+    },
+    "answer": {
+      "status": "blocked",
+      "error": null,
+      "diagnostic_asset_ids": []
+    }
+  },
+  "active_job_id": "job_1ff88c8c599245e59547cf9405644ebb",
+  "job_ids": [
+    "job_1ff88c8c599245e59547cf9405644ebb"
+  ],
+  "created_at": "2026-10-29T10:37:55.362984+00:00",
+  "updated_at": "2026-10-29T10:37:55.855697+00:00"
+}

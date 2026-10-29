@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0",
+  "generation_id": "generation_bcc61cad666b48d3951671a91f127774",
+  "output_mode": "text",
+  "source": {
+    "inputs": [
+      {
+        "type": "file",
+        "file_id": "file_e41ed3ef603a46ed942074410e346bef",
+        "selection": null
+      }
+    ],
+    "parser_profile_id": null,
+    "input_mode": "auto",
+    "type": "inputs",
+    "instruction": "解答题目。",
+    "answer_profile_id": null
+  },
+  "material_ids": [],
+  "answer_id": null,
+  "stages": {
+    "material": {
+      "status": "needs_review",
+      "error": {
+        "code": "content_uncertain",
+        "message": "文件没有可用正文，请提供完整文本材料",
+        "retryable": false,
+        "details": {}
+      },
+      "diagnostic_asset_ids": [
+        "file_4ae69aca52074a708602a9908ed9ab0f"
+      ]
+    },
+    "answer": {
+      "status": "blocked",
+      "error": null,
+      "diagnostic_asset_ids": []
+    }
+  },
+  "active_job_id": "job_1ea1880c6ee7456aba3b12ead9c34bf5",
+  "job_ids": [
+    "job_1ea1880c6ee7456aba3b12ead9c34bf5"
+  ],
+  "created_at": "2026-10-29T10:25:24.451291+00:00",
+  "updated_at": "2026-10-29T10:25:24.860514+00:00"
+}

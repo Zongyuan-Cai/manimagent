@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0",
+  "job_id": "job_1b88ea8391eb46d5b178e2945d8b556d",
+  "kind": "generation",
+  "status": "needs_review",
+  "stage": "material",
+  "message": "DOCX 包含公式对象、图片、嵌入对象或特殊内容，当前解析不能保证完整，请提供文本版",
+  "resource_ref": {
+    "type": "generation",
+    "id": "generation_6ac8a9d2f74a4f21b40b1c25002dcdc5"
+  },
+  "result": null,
+  "error": {
+    "code": "content_uncertain",
+    "message": "DOCX 包含公式对象、图片、嵌入对象或特殊内容，当前解析不能保证完整，请提供文本版",
+    "retryable": false,
+    "details": {}
+  },
+  "diagnostic_asset_ids": [
+    "file_06b4d80549fe4ba0872b475c5b172e9d"
+  ],
+  "usage": {
+    "model_calls": 0,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "tokens_reported": false,
+    "elapsed_seconds": 0.453
+  },
+  "created_at": "2026-10-29T10:37:55.910419+00:00",
+  "updated_at": "2026-10-29T10:37:56.402583+00:00"
+}

@@ -1,0 +1,8 @@
+{
+  "error": {
+    "code": "unsupported_file_input",
+    "message": "只接受 TXT、Markdown、PDF、DOCX 文件",
+    "retryable": false,
+    "details": {}
+  }
+}

@@ -1,21 +1,34 @@
 name: PR validation
+
 on:
   pull_request:
   push:
     branches: [main]
   merge_group:
   workflow_dispatch:
+
 permissions:
   contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
+
+env:
+  PYTHONUTF8: "1"
+  UV_NO_PROGRESS: "1"
+
 jobs:
-  test:
-    runs-on: ubuntu-latest
+  current:
+    name: Current (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
@@ -23,21 +36,103 @@ jobs:
           version: "0.13.1"
           python-version: "3.12"
           enable-cache: true
-      - run: uv sync --locked --extra dev
-      - run: uv run --no-sync ruff check src tests
-      - run: uv run --no-sync ruff format --check src tests
-      - run: uv run --no-sync python -m pytest -q -m "not docker"
-      - run: uv build
+          cache-dependency-glob: uv.lock
+      - name: Install locked dependencies
+        run: uv sync --locked --extra dev
+      - name: Python lint and format
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          uv run --no-sync ruff check src tests scripts
+          uv run --no-sync ruff format --check src tests scripts
+      - name: JavaScript syntax
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          node --check src/manimagent/web/app.js
+          node --check src/manimagent/web/llm-settings.js
+      - name: Current regression tests
+        run: uv run --no-sync python -m pytest -q --junitxml=testresult/ci/current.xml
+      - name: Save test report
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: tests-${{ matrix.os }}
+          path: testresult/ci/current.xml
+          if-no-files-found: ignore
+          retention-days: 7
+
+  legacy:
+    name: Legacy MVP
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: legacy_mvp
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with:
+          version: "0.13.1"
+          python-version: "3.12"
+          enable-cache: true
+          cache-dependency-glob: legacy_mvp/uv.lock
+      - name: Install isolated legacy dependencies
+        run: uv sync --locked --extra dev
+      - name: Legacy regression tests (no Docker)
+        run: uv run --no-sync python -m pytest -q -m "not docker" --junitxml=../testresult/ci/legacy.xml
+      - name: Save test report
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: tests-legacy
+          path: testresult/ci/legacy.xml
+          if-no-files-found: ignore
+          retention-days: 7
+
+  package:
+    name: Installable package
+    needs: current
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with:
+          version: "0.13.1"
+          python-version: "3.12"
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+      - name: Check dependency lock
+        run: uv lock --check
+      - name: Build current distributions
+        run: uv build --out-dir dist/current
+      - name: Check archive isolation and run installed applications
+        run: uv run --no-project --python 3.12 python scripts/check_distribution.py dist/current
+      - name: Save verified packages for review
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: current-distributions
+          path: |
+            dist/current/*.whl
+            dist/current/*.tar.gz
+          if-no-files-found: error
+          retention-days: 7
 
   required:
     name: PR checks
     if: always()
-    needs: test
+    needs: [current, legacy, package]
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:
-      - name: Require validation to succeed
+      - name: Require every validation job to succeed
         env:
-          RESULT: ${{ needs.test.result }}
-        run: test "$RESULT" = success
-
+          RESULTS: ${{ join(needs.*.result, ',') }}
+        run: |
+          if [[ "$RESULTS" != "success,success,success" ]]; then
+            printf 'Validation jobs did not all succeed: %s\n' "$RESULTS"
+            exit 1
+          fi

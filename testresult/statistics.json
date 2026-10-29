@@ -1,0 +1,20 @@
+{
+  "baseline": {
+    "passed": 16,
+    "total": 21,
+    "calls": 20,
+    "input_tokens": 21209,
+    "output_tokens": 19817
+  },
+  "verified": {
+    "passed": 21,
+    "total": 21,
+    "calls": 18,
+    "input_tokens": 23167,
+    "output_tokens": 20484
+  },
+  "supplemental": {
+    "passed": 8,
+    "total": 8
+  }
+}

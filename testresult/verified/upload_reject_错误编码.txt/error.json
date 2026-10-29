@@ -1,0 +1,8 @@
+{
+  "error": {
+    "code": "unsupported_encoding",
+    "message": "文本文件必须使用 UTF-8 编码",
+    "retryable": false,
+    "details": {}
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "schema_version": "1.0",
+  "generation_id": "generation_79f2c3d129594b25910c9e2bdd9c2fac",
+  "output_mode": "text",
+  "source": {
+    "inputs": [
+      {
+        "type": "file",
+        "file_id": "file_bb40527dfc444aeaa81a9c40f59a3603",
+        "selection": null
+      },
+      {
+        "type": "file",
+        "file_id": "file_b1fd65b91f374d2b917ca00caaa518b3",
+        "selection": null
+      },
+      {
+        "type": "file",
+        "file_id": "file_b113c9dd021e46d1a8c419c0f6cceffb",
+        "selection": null
+      }
+    ],
+    "parser_profile_id": null,
+    "input_mode": "auto",
+    "type": "inputs",
+    "instruction": "合并三份材料，求投影系数与投影向量，并引用两个同名文件。",
+    "answer_profile_id": null
+  },
+  "material_ids": [
+    "material_7acf379afeed48e48954988f6964fdda"
+  ],
+  "answer_id": "answer_9012984441ba4430b3a3a5c8663904ed",
+  "stages": {
+    "material": {
+      "status": "completed",
+      "error": null,
+      "diagnostic_asset_ids": []
+    },
+    "answer": {
+      "status": "completed",
+      "error": null,
+      "diagnostic_asset_ids": []
+    }
+  },
+  "active_job_id": "job_d6859f60224a44549453da8dc917aef0",
+  "job_ids": [
+    "job_d6859f60224a44549453da8dc917aef0"
+  ],
+  "created_at": "2026-10-29T10:37:19.781584+00:00",
+  "updated_at": "2026-10-29T10:37:29.376733+00:00"
+}

@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "material_id": "material_47b6f7bb057c442f95316d60e69e907c",
+  "source_file_ids": [
+    "file_e02ee4787e4e451b9084de5e309ae259"
+  ],
+  "blocks": [
+    {
+      "block_id": "block_7cc35611d5f94c10a6496525015474c3",
+      "kind": "text",
+      "content": "向量投影练习\n给定 a=(3,2)，b=(2,0)。\n求 a 在 b 方向上的投影系数 c 与投影向量 p。",
+      "asset_ids": [],
+      "source": {
+        "input_index": 0,
+        "file_id": "file_e02ee4787e4e451b9084de5e309ae259",
+        "locator": {
+          "page": 1
+        },
+        "verification": "verified"
+      },
+      "review_state": "unverified"
+    }
+  ],
+  "warnings": [],
+  "created_at": "2026-10-29T10:36:20.031307+00:00"
+}

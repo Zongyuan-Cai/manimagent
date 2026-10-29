@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0",
+  "generation_id": "generation_47701a26c0234cdb945569b071a9d1b1",
+  "output_mode": "text",
+  "source": {
+    "inputs": [
+      {
+        "type": "file",
+        "file_id": "file_33b06e88263045fd82b29141615708c5",
+        "selection": null
+      }
+    ],
+    "parser_profile_id": null,
+    "input_mode": "auto",
+    "type": "inputs",
+    "instruction": "解答题目。",
+    "answer_profile_id": null
+  },
+  "material_ids": [],
+  "answer_id": null,
+  "stages": {
+    "material": {
+      "status": "needs_input",
+      "error": {
+        "code": "source_incomplete",
+        "message": "PDF 已加密，请上传未加密原件",
+        "retryable": false,
+        "details": {}
+      },
+      "diagnostic_asset_ids": [
+        "file_9bdaa588625d4837af68096c671c005a"
+      ]
+    },
+    "answer": {
+      "status": "blocked",
+      "error": null,
+      "diagnostic_asset_ids": []
+    }
+  },
+  "active_job_id": "job_dbc23c06082641a58099142163962782",
+  "job_ids": [
+    "job_dbc23c06082641a58099142163962782"
+  ],
+  "created_at": "2026-10-29T10:25:22.337092+00:00",
+  "updated_at": "2026-10-29T10:25:22.849169+00:00"
+}

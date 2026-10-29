@@ -1,0 +1,342 @@
+{
+  "started_at": "2026-10-29T10:23:04.168435+00:00",
+  "endpoint": "https://api.deepseek.com",
+  "model": "deepseek-flash",
+  "label": "baseline",
+  "cases": [
+    {
+      "name": "direct_text",
+      "files": [],
+      "expected": "completed",
+      "passed": false,
+      "status": "completed",
+      "usage": {
+        "model_calls": 2,
+        "input_tokens": 1825,
+        "output_tokens": 2807,
+        "tokens_reported": true,
+        "elapsed_seconds": 18.047
+      },
+      "job_id": "job_2c66a35137b6473f8b79299f0f53aec6",
+      "failure": "",
+      "elapsed_seconds": 18.235
+    },
+    {
+      "name": "utf8_txt",
+      "files": [
+        "投影题.txt"
+      ],
+      "expected": "completed",
+      "passed": true,
+      "status": "completed",
+      "usage": {
+        "model_calls": 2,
+        "input_tokens": 2212,
+        "output_tokens": 2192,
+        "tokens_reported": true,
+        "elapsed_seconds": 13.219
+      },
+      "job_id": "job_5a988986a4e7480c8725b482c22c8066",
+      "elapsed_seconds": 13.765
+    },
+    {
+      "name": "markdown_math_table",
+      "files": [
+        "公式与表格.md"
+      ],
+      "expected": "completed",
+      "passed": true,
+      "status": "completed",
+      "usage": {
+        "model_calls": 2,
+        "input_tokens": 2955,
+        "output_tokens": 2165,
+        "tokens_reported": true,
+        "elapsed_seconds": 13.156
+      },
+      "job_id": "job_d79ef2470430473eb6be78e1a64778f5",
+      "elapsed_seconds": 13.704
+    },
+    {
+      "name": "chinese_pdf",
+      "files": [
+        "中文题目.pdf"
+      ],
+      "expected": "completed",
+      "passed": false,
+      "status": "completed",
+      "usage": {
+        "model_calls": 2,
+        "input_tokens": 1819,
+        "output_tokens": 1720,
+        "tokens_reported": true,
+        "elapsed_seconds": 11.25
+      },
+      "job_id": "job_b54395134e7d4a1fbf6f120932ed14da",
+      "failure": "",
+      "elapsed_seconds": 11.64
+    },
+    {
+      "name": "pdf_selected_page",
+      "files": [
+        "分页材料.pdf"
+      ],
+      "expected": "completed",
+      "passed": true,
+      "status": "completed",
+      "usage": {
+        "model_calls": 2,
+        "input_tokens": 1508,
+        "output_tokens": 1840,
+        "tokens_reported": true,
+        "elapsed_seconds": 11.922
+      },
+      "job_id": "job_4179ff4bed234035957c8125cd653394",
+      "elapsed_seconds": 12.172
+    },
+    {
+      "name": "docx_table",
+      "files": [
+        "段落与表格.docx"
+      ],
+      "expected": "completed",
+      "passed": true,
+      "status": "completed",
+      "usage": {
+        "model_calls": 2,
+        "input_tokens": 2834,
+        "output_tokens": 3315,
+        "tokens_reported": true,
+        "elapsed_seconds": 22.532
+      },
+      "job_id": "job_0f5234bf969e4c80bba067e7c37c3105",
+      "elapsed_seconds": 22.766
+    },
+    {
+      "name": "mixed_duplicate_names",
+      "files": [
+        "same_a/同名.txt",
+        "same_b/同名.txt",
+        "公式与表格.md"
+      ],
+      "expected": "completed",
+      "passed": false,
+      "status": "needs_input",
+      "usage": {
+        "model_calls": 2,
+        "input_tokens": 3784,
+        "output_tokens": 2360,
+        "tokens_reported": true,
+        "elapsed_seconds": 16.844
+      },
+      "job_id": "job_6486f6d1cdf24786ad727744220c0734",
+      "failure": "expected completed, got needs_input: {'code': 'source_incomplete', 'message': '投影系数与投影向量的计算正确，来源块引用也合法；但材料仅提供来源文件 ID，没有文件名，无法确认并引用“两个同名文件”。该要求缺少必要信息，需补充文件名或明确指出哪两个文件同名。', 'retryable': False, 'details': {}}",
+      "elapsed_seconds": 17.25
+    },
+    {
+      "name": "missing_conditions",
+      "files": [
+        "缺少条件.txt"
+      ],
+      "expected": "needs_input",
+      "passed": true,
+      "status": "needs_input",
+      "usage": {
+        "model_calls": 2,
+        "input_tokens": 1249,
+        "output_tokens": 440,
+        "tokens_reported": true,
+        "elapsed_seconds": 4.328
+      },
+      "job_id": "job_954c9bca26414076a6e4618f6208439b",
+      "elapsed_seconds": 4.593
+    },
+    {
+      "name": "untrusted_instructions",
+      "files": [
+        "不可信指令.txt"
+      ],
+      "expected": "completed",
+      "passed": false,
+      "status": "completed",
+      "usage": {
+        "model_calls": 2,
+        "input_tokens": 1847,
+        "output_tokens": 2272,
+        "tokens_reported": true,
+        "elapsed_seconds": 14.016
+      },
+      "job_id": "job_3dd86e92994f49019f0e5f03da78212c",
+      "failure": "",
+      "elapsed_seconds": 14.188
+    },
+    {
+      "name": "scanned_pdf",
+      "files": [
+        "扫描页.pdf"
+      ],
+      "expected": "needs_review",
+      "passed": true,
+      "status": "needs_review",
+      "usage": {
+        "model_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "tokens_reported": false,
+        "elapsed_seconds": 0.39
+      },
+      "job_id": "job_22e4abd0a7b84dec857fd7e8373e0ae9",
+      "elapsed_seconds": 0.562
+    },
+    {
+      "name": "mixed_blank_pdf",
+      "files": [
+        "空白页.pdf"
+      ],
+      "expected": "needs_review",
+      "passed": true,
+      "status": "needs_review",
+      "usage": {
+        "model_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "tokens_reported": false,
+        "elapsed_seconds": 0.469
+      },
+      "job_id": "job_c2e5afb8bcaa48d7aed6c3c22968301d",
+      "elapsed_seconds": 0.547
+    },
+    {
+      "name": "vector_diagram_pdf",
+      "files": [
+        "题图.pdf"
+      ],
+      "expected": "needs_review",
+      "passed": false,
+      "status": "needs_input",
+      "usage": {
+        "model_calls": 2,
+        "input_tokens": 1176,
+        "output_tokens": 706,
+        "tokens_reported": true,
+        "elapsed_seconds": 6.812
+      },
+      "job_id": "job_82282a6f92a640c7bbc228c44c103838",
+      "failure": "expected needs_review, got needs_input: {'code': 'source_incomplete', 'message': '材料只有“求图中三角形面积，图示为必要条件”这一句，未提供图形或边长、底高、坐标、角度等数据，无法确定并计算面积。候选解答正确指出缺少必要信息，但未给出题目结果；需补充图形或具体几何数据后才能求值。', 'retryable': False, 'details': {}}",
+      "elapsed_seconds": 7.125
+    },
+    {
+      "name": "docx_equation",
+      "files": [
+        "公式对象.docx"
+      ],
+      "expected": "needs_review",
+      "passed": true,
+      "status": "needs_review",
+      "usage": {
+        "model_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "tokens_reported": false,
+        "elapsed_seconds": 0.5
+      },
+      "job_id": "job_2dc628371c544569adacc551eafd9aa5",
+      "elapsed_seconds": 1.063
+    },
+    {
+      "name": "docx_image",
+      "files": [
+        "内嵌图片.docx"
+      ],
+      "expected": "needs_review",
+      "passed": true,
+      "status": "needs_review",
+      "usage": {
+        "model_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "tokens_reported": false,
+        "elapsed_seconds": 0.484
+      },
+      "job_id": "job_d75edb3028f34e95a7f7e84b122ae0c5",
+      "elapsed_seconds": 0.547
+    },
+    {
+      "name": "encrypted_pdf",
+      "files": [
+        "加密.pdf"
+      ],
+      "expected": "needs_input",
+      "passed": true,
+      "status": "needs_input",
+      "usage": {
+        "model_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "tokens_reported": false,
+        "elapsed_seconds": 0.5
+      },
+      "job_id": "job_dbc23c06082641a58099142163962782",
+      "elapsed_seconds": 1.047
+    },
+    {
+      "name": "corrupt_pdf",
+      "files": [
+        "损坏.pdf"
+      ],
+      "expected": "needs_input",
+      "passed": true,
+      "status": "needs_input",
+      "usage": {
+        "model_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "tokens_reported": false,
+        "elapsed_seconds": 0.469
+      },
+      "job_id": "job_16496008e2f94c52aa945134272debf0",
+      "elapsed_seconds": 1.062
+    },
+    {
+      "name": "empty_text",
+      "files": [
+        "空文件.txt"
+      ],
+      "expected": "needs_review",
+      "passed": true,
+      "status": "needs_review",
+      "usage": {
+        "model_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "tokens_reported": false,
+        "elapsed_seconds": 0.407
+      },
+      "job_id": "job_1ea1880c6ee7456aba3b12ead9c34bf5",
+      "elapsed_seconds": 0.547
+    },
+    {
+      "name": "upload_reject_错误编码.txt",
+      "expected_http": 415,
+      "passed": true
+    },
+    {
+      "name": "upload_reject_不支持.csv",
+      "expected_http": 415,
+      "passed": true
+    },
+    {
+      "name": "upload_reject_扫描图片.png",
+      "expected_http": 415,
+      "passed": true
+    },
+    {
+      "name": "upload_reject_超限.txt",
+      "expected_http": 413,
+      "passed": true
+    }
+  ],
+  "finished_at": "2026-10-29T10:25:25.471075+00:00",
+  "passed": 16,
+  "total": 21
+}

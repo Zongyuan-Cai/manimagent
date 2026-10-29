@@ -1,0 +1,109 @@
+{
+  "schema_version": "1.0",
+  "material_id": "material_7acf379afeed48e48954988f6964fdda",
+  "source_file_ids": [
+    "file_bb40527dfc444aeaa81a9c40f59a3603",
+    "file_b1fd65b91f374d2b917ca00caaa518b3",
+    "file_b113c9dd021e46d1a8c419c0f6cceffb"
+  ],
+  "blocks": [
+    {
+      "block_id": "block_ae542f1cea17483bbb142f126a60fd8e",
+      "kind": "text",
+      "content": "向量 a=(3,2)。",
+      "asset_ids": [],
+      "source": {
+        "input_index": 0,
+        "file_id": "file_bb40527dfc444aeaa81a9c40f59a3603",
+        "locator": {
+          "line_start": 1,
+          "line_end": 1
+        },
+        "verification": "verified"
+      },
+      "review_state": "unverified"
+    },
+    {
+      "block_id": "block_e59121ab5ab348ef8681a7ca35e82e71",
+      "kind": "text",
+      "content": "向量 b=(2,0)。",
+      "asset_ids": [],
+      "source": {
+        "input_index": 1,
+        "file_id": "file_b1fd65b91f374d2b917ca00caaa518b3",
+        "locator": {
+          "line_start": 1,
+          "line_end": 1
+        },
+        "verification": "verified"
+      },
+      "review_state": "unverified"
+    },
+    {
+      "block_id": "block_0ac1732ba9a243a882f6296f2d2c4da7",
+      "kind": "heading",
+      "content": "# 投影公式",
+      "asset_ids": [],
+      "source": {
+        "input_index": 2,
+        "file_id": "file_b113c9dd021e46d1a8c419c0f6cceffb",
+        "locator": {
+          "line_start": 1,
+          "line_end": 1
+        },
+        "verification": "verified"
+      },
+      "review_state": "unverified"
+    },
+    {
+      "block_id": "block_d210dbae3f1e4404b5a8752bba8e9371",
+      "kind": "text",
+      "content": "给定 $a=(3,2)$、$b=(2,0)$。",
+      "asset_ids": [],
+      "source": {
+        "input_index": 2,
+        "file_id": "file_b113c9dd021e46d1a8c419c0f6cceffb",
+        "locator": {
+          "line_start": 3,
+          "line_end": 3
+        },
+        "verification": "verified"
+      },
+      "review_state": "unverified"
+    },
+    {
+      "block_id": "block_8b0804cc74664389833ca6653c59e378",
+      "kind": "text",
+      "content": "$$c=\\frac{a\\cdot b}{b\\cdot b},\\qquad p=cb$$",
+      "asset_ids": [],
+      "source": {
+        "input_index": 2,
+        "file_id": "file_b113c9dd021e46d1a8c419c0f6cceffb",
+        "locator": {
+          "line_start": 5,
+          "line_end": 5
+        },
+        "verification": "verified"
+      },
+      "review_state": "unverified"
+    },
+    {
+      "block_id": "block_8b068a326ba3493a8cc87777f9a5dc79",
+      "kind": "text",
+      "content": "| 向量 | 坐标 |\n|---|---|\n| a | (3,2) |\n| b | (2,0) |",
+      "asset_ids": [],
+      "source": {
+        "input_index": 2,
+        "file_id": "file_b113c9dd021e46d1a8c419c0f6cceffb",
+        "locator": {
+          "line_start": 7,
+          "line_end": 10
+        },
+        "verification": "verified"
+      },
+      "review_state": "unverified"
+    }
+  ],
+  "warnings": [],
+  "created_at": "2026-10-29T10:37:20.898099+00:00"
+}

@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0",
+  "generation_id": "generation_753e78a9685b4248916b480b11525ded",
+  "output_mode": "text",
+  "source": {
+    "inputs": [
+      {
+        "type": "file",
+        "file_id": "file_b65e95f250134f0a81d9a395950414f6",
+        "selection": null
+      }
+    ],
+    "parser_profile_id": null,
+    "input_mode": "auto",
+    "type": "inputs",
+    "instruction": "解答题目。",
+    "answer_profile_id": null
+  },
+  "material_ids": [],
+  "answer_id": null,
+  "stages": {
+    "material": {
+      "status": "needs_input",
+      "error": {
+        "code": "invalid_file",
+        "message": "文件损坏或格式无法解析，请重新提供原件",
+        "retryable": false,
+        "details": {}
+      },
+      "diagnostic_asset_ids": [
+        "file_f492374bb2c848a0a27f934da4d6a791"
+      ]
+    },
+    "answer": {
+      "status": "blocked",
+      "error": null,
+      "diagnostic_asset_ids": []
+    }
+  },
+  "active_job_id": "job_16496008e2f94c52aa945134272debf0",
+  "job_ids": [
+    "job_16496008e2f94c52aa945134272debf0"
+  ],
+  "created_at": "2026-10-29T10:25:23.392610+00:00",
+  "updated_at": "2026-10-29T10:25:23.885270+00:00"
+}
