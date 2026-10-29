@@ -1,0 +1,40 @@
+[build-system]
+requires = ["hatchling>=1.26"]
+build-backend = "hatchling.build"
+
+[project]
+name = "manimagent"
+version = "0.1.0"
+description = "Text-to-Manim animations with bounded execution and visual review"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "fastapi>=0.115,<1",
+  "httpx>=0.28,<1",
+  "langgraph>=1.0,<2",
+  "pydantic>=2.10,<3",
+  "python-dotenv>=1.0,<2",
+  "pyyaml>=6.0,<7",
+  "uvicorn>=0.34,<1",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<10", "ruff>=0.11,<1"]
+
+[project.scripts]
+manimagent = "manimagent.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/manimagent"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["docker: requires the renderer image and a running Docker engine"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["E501"]

@@ -1,47 +1,49 @@
-# ManimAgent
+# ManimAgent 0.2.0
 
-面向长期学习记忆的个性化可视化教育智能体。
+当前开发版本提供“问题与文件输入 → 可追溯材料 → 完整 Markdown 回答”。支持 UTF-8 TXT、Markdown、文本型 PDF（可选页）和 DOCX；提供来源引用、内容检查、公式与表格展示、下载和人工修订。本阶段不生成动画。
 
-项目近期围绕 LLM 接入、材料输入与解析、独立文本回答和动画生成组织开发。配音与音画同步按后续需求扩展，长期学习记忆和个性化暂缓。
+## 运行
 
-当前提供 0.1.0 MVP：纯文本输入、讲解规划、逐场景 Manim 生成、执行纠错、VLM 检查与修订、正式渲染及视频合成，包含本地网页、任务 API 与 CLI。配音为后续扩展，学习记忆与个性化暂缓。
+需要 Python 3.12 和 uv，无需 Docker：
 
-## 快速运行
-
-需要 Python 3.12、uv 和运行中的 Docker Engine；Windows 使用 Docker Desktop 的 Linux 容器模式。
-
-```bash
+```powershell
 uv sync --frozen --extra dev
-docker build -f docker/renderer.Dockerfile -t manimagent-renderer:0.1.0 .
-```
-
-复制 .env.example 为 .env，填写文本模型与视觉模型的接口地址、模型名和密钥。需要修改预算或角色配置时，再复制 config.example.yaml 为 config.yaml。
-
-```bash
-uv run manimagent doctor
 uv run manimagent serve
 ```
 
-打开 http://127.0.0.1:8000。Windows 已有项目环境时，也可直接运行 .\.venv\Scripts\manimagent.exe serve。完整说明见[运行与配置](docs/运行与配置.md)。
+打开 http://127.0.0.1:8000，在“LLM 配置”填写服务地址、模型和 API Key，测试并保存。也可以使用 `.env` 与 `config.yaml` 提供初始配置。当前模型配置为 DeepSeek 官方 `deepseek-flash`，密钥仅保存在本机私有凭据存储中。
 
-不配置模型也可运行 uv run manimagent smoke，验证真实渲染环境。测试范围和当前限制见[MVP 验证记录](docs/MVP验证记录.md)。
+```powershell
+uv run manimagent doctor
+uv run manimagent answer --question "求 a 在 b 方向上的投影" --file notes.pdf --output answer.md
+```
 
-## 文档与开发方向
+详细使用与边界见[运行与配置](docs/运行与配置.md)、[LLM 界面配置](docs/LLM界面配置.md)。
 
-统一入口见 [文档总览](docs/index.md)。文档按能力组织，近期推进前四项，长期记忆与个性化暂缓。
+PR 自动运行 Windows／Linux 回归、代码检查与独立安装包验证，结果统一汇总为 `PR checks`。配置与合并门槛见 [PR 流水线](docs/PR流水线.md)。
 
-| 模块 | 设计文档 |
-|---|---|
-| 多厂商、多协议与统一模型调用 | [LLM 接入与调用](docs/01-LLM接入与调用.md) |
-| 文件上传、格式解析与来源保留 | [材料输入与解析](docs/02-材料输入与解析.md) |
-| 独立回答、来源引用与修订 | [文本回答生成](docs/03-文本回答生成.md) |
-| 分镜、Manim、检查、渲染与合成 | [动画生成](docs/04-动画生成.md) |
-| 长期学习证据与个性化方向，暂缓 | [长期记忆与个性化](docs/05-长期记忆与个性化.md) |
+## 当前版本与历史 MVP
 
-[开发计划](docs/开发计划.md) 维护实施顺序；[运行与配置](docs/运行与配置.md) 说明当前 MVP 用法；[MVP 验证记录](docs/MVP验证记录.md) 和 [输入与验收样例](docs/mvp/输入与验收样例.md) 保留运行证据与回归基线。
+| 项目 | 当前开发版本 | 历史动画 MVP |
+|---|---|---|
+| 项目根目录 | 本目录 | `legacy_mvp/` |
+| 版本 | 0.2.0 | 独立冻结的 0.1.0 |
+| 虚拟环境与锁文件 | `.venv/`、`uv.lock` | 自有 `.venv/`、`uv.lock` |
+| 默认端口 | 8000 | 8001 |
+| 默认数据 | `runs/current/private/` | `legacy_mvp/runs/` |
+| API 与命令 | `/api/v2`；serve、answer、doctor | 原 `/api/jobs`；generate、smoke、doctor |
+| 自动化测试 | `tests/unit/`、`tests/integration/` | `legacy_mvp/tests/` |
 
-当前独立材料、回答、视频资源和 `/api/v2` 仍是后续设计，0.1.0 继续使用纯文本到动画的原有入口。
+当前程序不导入历史动画模块，不包含 LangGraph／Docker 依赖和旧 API。历史程序只在[独立归档项目](legacy_mvp/README.md)中运行，不与当前版本混装到同一虚拟环境。当前发布包排除历史项目、测试材料、结果和私有数据。
 
-## 参考项目
+## 测试与审查
 
-动画生成与视觉检查参考 [Paper2Manim](https://github.com/jwj1342/Paper2Manim)。学习者长期记忆与个性化教学规划按本项目的目标独立设计。
+```powershell
+uv run python -m pytest -q
+uv run ruff check src tests scripts
+uv run ruff format --check src tests scripts
+```
+
+`testmaterial/` 保存可复现的上传样本，`testresult/` 保存真实测试证据与报告；`scripts/create_test_materials.py` 可重建材料，`scripts/test_deepseek_e2e.py` 显式运行真实模型测试，会使用服务已配置的模型和用量，CI 不自动执行。密钥不会写入材料、报告或日志。
+
+本轮[真实测试报告](testresult/测试报告.md)与[代码审查](testresult/代码审查.md)维护验证结果、修复与剩余边界。长期完整文字／动画双输出、记忆与个性化仍属于[设计文档](docs/index.md)的后续工作。
