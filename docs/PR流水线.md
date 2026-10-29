@@ -20,7 +20,11 @@ CI 不需要任何 LLM 密钥，不读取本机私有配置，不运行 `scripts
 
 ## 设置合并门槛
 
-工作流文件推送到 GitHub 并至少运行一次后，在仓库 Settings → Rules → Rulesets 为 `main` 配置：
+2026-10-29 已通过 GitHub API 为 `main` 启用分支保护：必须通过 PR 修改，`PR checks` 必须由 GitHub Actions 提供且通过，提交需与主分支同步；规则对管理员生效，禁止强推与删除。独立审批数量为 0，不要求单人仓库另找审批者。
+
+主分支已安装通用的 `PR checks` 汇总门禁。当前文字版的完整检查通过[临时 PR #3](https://github.com/Zongyuan-Cai/manimagent/pull/3)验证，测试 PR 按要求关闭、不合并；主分支在当前开发版正式合入前继续使用原 MVP 测试。
+
+后续可在仓库 Settings → Branches → `main` 的分支保护（或 Rules → Rulesets）维护：
 
 1. Require a pull request before merging。
 2. Require status checks to pass，选择 **PR checks**。
