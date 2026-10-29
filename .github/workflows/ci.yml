@@ -1,10 +1,19 @@
-name: MVP checks
-on: [push, pull_request]
+name: PR validation
+on:
+  pull_request:
+  push:
+    branches: [main]
+  merge_group:
+  workflow_dispatch:
 permissions:
   contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
@@ -14,8 +23,21 @@ jobs:
           version: "0.13.1"
           python-version: "3.12"
           enable-cache: true
-      - run: uv sync --frozen --extra dev
-      - run: uv run --frozen ruff check src tests
-      - run: uv run --frozen ruff format --check src tests
-      - run: uv run --frozen pytest -q -m "not docker"
+      - run: uv sync --locked --extra dev
+      - run: uv run --no-sync ruff check src tests
+      - run: uv run --no-sync ruff format --check src tests
+      - run: uv run --no-sync python -m pytest -q -m "not docker"
       - run: uv build
+
+  required:
+    name: PR checks
+    if: always()
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Require validation to succeed
+        env:
+          RESULT: ${{ needs.test.result }}
+        run: test "$RESULT" = success
+
