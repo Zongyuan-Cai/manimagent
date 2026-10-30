@@ -98,7 +98,20 @@ def parse_file(
                     f"第 {number} 页没有可读取文字（空页或扫描页），请提供文本版或缩小范围"
                 )
             # Vector diagrams and raster images cannot silently disappear from a math problem.
-            graphic_ops = {b"Do", b"INLINE IMAGE", b"sh", b"S", b"s", b"f", b"f*", b"B", b"B*"}
+            graphic_ops = {
+                b"Do",
+                b"INLINE IMAGE",
+                b"sh",
+                b"S",
+                b"s",
+                b"f",
+                b"F",
+                b"f*",
+                b"B",
+                b"B*",
+                b"b",
+                b"b*",
+            }
             if contents is not None and any(op in graphic_ops for _, op in contents.operations):
                 issues.append(f"第 {number} 页包含图像或绘图，当前纯文字解析无法核对其内容")
             if "\ufffd" in text or any(0xE000 <= ord(c) <= 0xF8FF for c in text):
@@ -133,6 +146,35 @@ def parse_file(
             issues.append(
                 "DOCX 包含公式对象、图片、嵌入对象或特殊内容，当前解析不能保证完整，请提供文本版"
             )
+        # Paragraph.text drops math-relevant run formatting and legacy symbol glyphs.
+        # Do not let a model guess whether flattened 'x2' meant x squared or 2*x.
+        if root.xpath(".//w:vertAlign[@w:val='superscript' or @w:val='subscript'] | .//w:sym"):
+            issues.append(
+                "DOCX 包含上下标或特殊符号，纯文本会丢失数学含义，请提供明确的文本或 LaTeX"
+            )
+        # Formatting can be inherited from a used character/paragraph/table style.
+        # Ignore unused styles: a template may contain many unrelated math styles.
+        from docx.oxml.ns import qn
+
+        styles = {style.style_id: style for style in document.styles}
+        pending = list(root.xpath(".//w:rStyle/@w:val | .//w:pStyle/@w:val | .//w:tblStyle/@w:val"))
+        pending.extend(
+            style.get(qn("w:styleId"))
+            for style in document.styles.element.xpath(
+                "./w:style[@w:default='1' or @w:default='true' or @w:default='on']"
+            )
+        )
+        visited = set()
+        while pending:
+            style_id = pending.pop()
+            if style_id in visited or style_id not in styles:
+                continue
+            visited.add(style_id)
+            style = styles[style_id]
+            if style.element.xpath(".//w:vertAlign[@w:val='superscript' or @w:val='subscript']"):
+                issues.append("DOCX 使用的样式包含上下标，纯文本会丢失数学含义，请提供文本或 LaTeX")
+                break
+            pending.extend(style.element.xpath("./w:basedOn/@w:val"))
         paragraph = 0
         units = 0
         for item in document.iter_inner_content():

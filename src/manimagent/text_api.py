@@ -6,6 +6,7 @@ from starlette.concurrency import run_in_threadpool
 from starlette.datastructures import UploadFile
 from starlette.exceptions import HTTPException
 
+from manimagent.animation_models import VideoPlan, VideoRequest, VideoResult
 from manimagent.answers import AnswerService
 from manimagent.budget import BudgetExceeded
 from manimagent.content_store import ContentError
@@ -111,6 +112,8 @@ def text_router(manager: TextJobManager) -> APIRouter:
             "ready": not issues,
             "issues": issues,
             "output_mode": "text",
+            "output_modes": ["text", "both"],
+            "video_issues": manager.renderer.preflight(),
             "formats": ["txt", "md", "pdf", "docx"],
             "limits": {
                 "max_upload_bytes": manager.settings.max_upload_bytes,
@@ -212,5 +215,41 @@ def text_router(manager: TextJobManager) -> APIRouter:
     @router.get("/jobs/{job_id}", response_model=Job)
     def job(job_id: str):
         return store.load("jobs", job_id, Job)
+
+    @router.post("/videos", status_code=202, response_model=Job)
+    def create_video(request: VideoRequest):
+        return manager.submit("video", request)
+
+    @router.get("/videos/{video_id}", response_model=VideoResult)
+    def get_video(video_id: str):
+        return store.load("videos", video_id, VideoResult)
+
+    @router.get("/videos/{video_id}/plan", response_model=VideoPlan)
+    def get_video_plan(video_id: str):
+        video = store.load("videos", video_id, VideoResult)
+        return store.load("video_plans", video.plan_id, VideoPlan)
+
+    @router.get("/videos/{video_id}/content")
+    def video_content(video_id: str, download: bool = False):
+        video = store.load("videos", video_id, VideoResult)
+        asset = store.verify_file(video.video_asset_id)
+        return FileResponse(
+            store.file_path(asset.file_id),
+            media_type="video/mp4",
+            filename="teaching.mp4" if download else None,
+            headers={"X-Content-Type-Options": "nosniff"},
+        )
+
+    @router.get("/videos/{video_id}/frames/{index}")
+    def frame_content(video_id: str, index: int):
+        video = store.load("videos", video_id, VideoResult)
+        if not 0 <= index < len(video.frame_mapping):
+            raise ContentError("invalid_reference", "关键帧不存在", 404)
+        asset = store.verify_file(video.frame_mapping[index]["asset_id"])
+        return FileResponse(
+            store.file_path(asset.file_id),
+            media_type="image/png",
+            headers={"X-Content-Type-Options": "nosniff"},
+        )
 
     return router

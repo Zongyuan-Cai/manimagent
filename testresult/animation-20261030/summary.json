@@ -1,0 +1,63 @@
+{
+  "attempts": 9,
+  "completed": 2,
+  "model_calls": 32,
+  "input_tokens": 322132,
+  "output_tokens": 83486,
+  "automated_tests": 112,
+  "selected_example": {
+    "passed": true,
+    "model": "deepseek-flash",
+    "provider": "https://api.deepseek.com",
+    "status": "completed",
+    "job_id": "job_0ce3ad13fef14f5c9318243bf459ef7a",
+    "answer_id": "answer_a1581222d0be416fa90439901a4d9b0f",
+    "usage": {
+      "model_calls": 2,
+      "input_tokens": 32583,
+      "output_tokens": 3934,
+      "tokens_reported": true,
+      "elapsed_seconds": 186.578
+    },
+    "elapsed_seconds": 186.781,
+    "error": null,
+    "video_id": "video_5dd1f5bee3c54488811e68302961349b",
+    "media": {
+      "width": 1280,
+      "height": 720,
+      "fps": 30.0,
+      "codec": "h264",
+      "pix_fmt": "yuv420p",
+      "duration_seconds": 294.8,
+      "audio_streams": 0,
+      "decoded_frames": 8844
+    },
+    "scene_count": 6,
+    "beat_count": 24,
+    "sha256": "78a68834ae37f67e8c3a8d195431a221b9196cbc695ab492030409baadeeb0f3"
+  },
+  "stage_render_seconds": 108.609,
+  "peak_render_memory_mb": 453.46,
+  "source_sha256": {
+    "src/manimagent/animation.py": "8fc2997c9162de69158c7ef6cffd073566c4a69ce197573fa7c16f75c9d0ce80",
+    "src/manimagent/animation_driver.py": "e46cb89a33394a4ecb4016f85fbb74f63c79d4af2fee6c6bc62ec77fb4dca339",
+    "src/manimagent/animation_models.py": "480a8174a7468ca20876e94c27126312f2e6b4432af6e68d05459e6d04aa2c6b",
+    "src/manimagent/animation_renderer.py": "c62a6f3d6eb93cca319977f857cff453f305e1521c424c2f887fefd8cd2b1674",
+    "src/manimagent/answers.py": "73e3e43c8671fe6a19face8aa110d35f1617996f867bfdeafb6dbdee817cdc3f",
+    "src/manimagent/api.py": "759dc362b68a151a8f0da5de27341568a34d5216d1ad186d93af0b602b084786",
+    "src/manimagent/budget.py": "a8844b234d2a464fb12e68feb0992d3a9474f3e98c291e6b79440b9a8ff634ce",
+    "src/manimagent/cli.py": "ffec6a4637fb01b2d0bd1731a11e6b7d81ad599e9c2b8a6a893d6f1262722128",
+    "src/manimagent/config.py": "acc7e72ff4a748c50e5bc87324645e1ee3d29eb9b80a07705159e0d878035557",
+    "src/manimagent/content_store.py": "95e2e67e4bcba1aa618d8b0b18564020744f945e09d42527544f3760816f309e",
+    "src/manimagent/llm_settings.py": "467b80282d31446b635ddf25b76dc7734f1f4d503657e1e3846e465d56b8b7e6",
+    "src/manimagent/markdown_view.py": "b4374b56c11b74ecbc59e2c2b3903236ee3c7cc88a1fe039b046728410f1eea4",
+    "src/manimagent/materials.py": "354dafc77a5aa6c984b9bc711d5574bcec92c3d78c992bb42661c59b49b71bf6",
+    "src/manimagent/parse_worker.py": "6d0f636e6634444870c486aaff8aeb7a5af38b7125f8862f0121f367481a1bd5",
+    "src/manimagent/providers.py": "3afcc69429fd0e95bb2c43c26d4038c92ba729d5d358a41d0614fb6d96a46329",
+    "src/manimagent/schemas.py": "dd2b1c354e2b9c002c5ad38b8b86bec78d147659c82a9005e3eb87e353ffadf4",
+    "src/manimagent/text_api.py": "399d895cd450f8923f96858c55d5822a7abfc49b0e142a3f4507a5f9dc128ef3",
+    "src/manimagent/text_jobs.py": "794b865cdee643ca7c8819d3c37d5eeeb520ce1b7127648783922b745beec53d",
+    "src/manimagent/__init__.py": "46d851571d9d5682fcb8ff7d6292afe73e4d5082e0f4571a3a5a121d6e4ce3c4",
+    "src/manimagent/__main__.py": "2cbece14fa4b3597d490620b0d0d9ab65a7bae2df80a5a971f9fe3d320ea9e66"
+  }
+}

@@ -1,11 +1,13 @@
 const el = (id) => document.getElementById(id);
-const terminal = new Set(['completed', 'needs_input', 'needs_review', 'failed', 'interrupted']);
-const labels = {queued: '排队中', running: '处理中', completed: '已完成', needs_input: '需要补充材料', needs_review: '需要核对', failed: '失败', interrupted: '已中断'};
+const terminal = new Set(['completed', 'partial', 'needs_input', 'needs_review', 'failed', 'interrupted']);
+const labels = {queued: '排队中', running: '处理中', completed: '已完成', partial: '文字已保存，动画未完成', needs_input: '需要补充材料', needs_review: '需要核对', failed: '失败', interrupted: '已中断'};
 let currentJob = null;
 let answer = null;
 let timer;
 let reusedMaterialIds = null;
 let fileRows = [];
+let currentVideo = null;
+let animationResumeJob = null;
 
 async function request(url, options) {
   const response = await fetch(url, options);
@@ -24,7 +26,19 @@ function link(parent, title, url) {
   const a = document.createElement('a');
   a.textContent = title; a.href = url; a.className = 'artifact'; parent.append(a);
 }
-function release() { el('generate').disabled = false; clearTimeout(timer); }
+function release() { el('generate').disabled = false; el('animate').disabled = false; clearTimeout(timer); }
+
+async function showVideo(id) {
+  if (currentVideo === id) return;
+  const video = await request(`/api/v2/videos/${id}`);
+  el('video-panel').hidden = false; el('video-player').hidden = false; el('video-actions').hidden = false;
+  el('video-player').src = `/api/v2/videos/${id}/content`;
+  el('video-download').href = `/api/v2/videos/${id}/content?download=true`;
+  el('video-plan').href = `/api/v2/videos/${id}/plan`;
+  el('video-message').textContent = `${Math.round(video.duration_seconds)} 秒 · 720p / 30 fps · 无声 · ${video.frame_mapping.length} 个关键节拍`;
+  currentVideo = id;
+  localStorage.setItem('manimagent.video', id);
+}
 
 el('files').addEventListener('change', () => {
   reusedMaterialIds = null;
@@ -46,6 +60,7 @@ el('material').addEventListener('input', () => { reusedMaterialIds = null; });
 
 async function showAnswer(id) {
   if (answer?.answer_id === id) return;
+  animationResumeJob = null;
   const nextAnswer = await request(`/api/v2/answers/${id}`);
   const htmlResponse = await fetch(`/api/v2/answers/${id}/html`);
   if (!htmlResponse.ok) throw new Error('正文读取失败');
@@ -88,14 +103,18 @@ async function poll() {
     el('status').style.display = 'block';
     el('status').textContent = labels[job.status] || job.status;
     el('message').textContent = job.message;
-    if (job.resource_ref) {
+    if (job.resource_ref?.type === 'generation') {
       const generation = await request(`/api/v2/generations/${job.resource_ref.id}`);
       if (generation.answer_id) await showAnswer(generation.answer_id);
+      if (generation.video_id) await showVideo(generation.video_id);
     }
+    if (job.result?.type === 'video') await showVideo(job.result.id);
+    if (job.stage === 'video' && !currentVideo) { el('video-panel').hidden = false; el('video-message').textContent = job.message; }
     el('artifacts').replaceChildren();
     for (const id of job.diagnostic_asset_ids) link(el('artifacts'), `诊断 ${id}`, `/api/v2/files/${id}/content`);
     el('diagnostics').hidden = !job.diagnostic_asset_ids.length;
     if (terminal.has(job.status)) {
+      animationResumeJob = job.stage === 'video' && ['video_pacing', 'video_plan_check', 'render_layout', 'render_failed', 'render_timeout', 'output_truncated'].includes(job.error?.code) ? currentJob : null;
       if (!answer) el('result').textContent = '本次未发布完整回答，请根据提示补充或核对材料后重新提交。';
       release();
     } else { timer = setTimeout(poll, 1000); }
@@ -107,7 +126,7 @@ async function poll() {
 }
 
 el('form').addEventListener('submit', async (event) => {
-  event.preventDefault(); clearTimeout(timer); el('generate').disabled = true; el('error').textContent = '';
+  event.preventDefault(); clearTimeout(timer); el('generate').disabled = true; el('animate').disabled = true; el('error').textContent = '';
   try {
     const instruction = el('text').value;
     let source;
@@ -131,15 +150,27 @@ el('form').addEventListener('submit', async (event) => {
       }
       source = {type: 'inputs', inputs, instruction};
     }
-    const job = await post('/api/v2/generations', {output_mode: 'text', source});
-    currentJob = job.job_id; answer = null;
+    const job = await post('/api/v2/generations', {output_mode: el('output-mode').value, source});
+    currentJob = job.job_id; answer = null; currentVideo = null;
+    el('video-panel').hidden = true; el('video-player').hidden = true; el('video-actions').hidden = true;
+    el('video-player').removeAttribute('src'); localStorage.removeItem('manimagent.video');
     el('result').textContent = '正在准备材料与文字回答…';
     el('actions').hidden = true; el('sources').hidden = true; el('warnings').textContent = '';
     el('job').textContent = `任务 ${currentJob}`;
     localStorage.setItem('manimagent.textJob', currentJob); poll();
   } catch (error) { el('error').textContent = error.message; el('message').textContent = ''; release(); }
 });
-el('example').onclick = () => { el('text').value = '给定 a=(3,2)、b=(1,0)，求 a 在 b 方向上的投影，并解释投影系数与投影向量的区别。'; };
+el('example').onclick = () => { el('text').value = '给定 a=(3,2)、b=(2,0)，求 a 在 b 方向上的投影。解释 b≠0 的前提、正交依据、投影系数与投影向量的区别，并验证残差与 b 正交。面向首次学习投影的学生完整推导。'; };
+el('animate').onclick = async () => {
+  if (!answer) return;
+  el('animate').disabled = true; el('generate').disabled = true;
+  try {
+    const job = await post('/api/v2/videos', {answer_id: answer.answer_id, ...(animationResumeJob ? {resume_job_id: animationResumeJob} : {})});
+    currentJob = job.job_id; currentVideo = null;
+    el('video-panel').hidden = false; el('video-player').hidden = true; el('video-actions').hidden = true;
+    localStorage.setItem('manimagent.textJob', currentJob); poll();
+  } catch (error) { el('message').textContent = error.message; release(); }
+};
 el('copy').onclick = async () => { try { await navigator.clipboard.writeText(answer.markdown); el('message').textContent = '正文已复制'; } catch { el('message').textContent = '复制失败，可下载 Markdown'; } };
 el('result').addEventListener('click', event => {
   if (event.target.closest('a')?.getAttribute('href')?.startsWith('#block_')) el('sources').open = true;
@@ -151,7 +182,8 @@ el('save').onclick = async () => {
   try {
     const revised = await post('/api/v2/answers/revisions', {base_answer_id: answer.answer_id, markdown: el('revision').value});
     await showAnswer(revised.answer_id);
-    localStorage.removeItem('manimagent.textJob');
+    localStorage.removeItem('manimagent.textJob'); localStorage.removeItem('manimagent.video');
+    currentVideo = null; el('video-panel').hidden = true;
     el('message').textContent = '已保存新版本，旧回答保持可读';
   } catch (error) { el('message').textContent = error.message; }
   finally { el('save').disabled = false; }
@@ -159,8 +191,8 @@ el('save').onclick = async () => {
 el('reuse').onclick = () => { reusedMaterialIds = answer.material_ids; el('text').focus(); el('message').textContent = '已复用此回答的材料。修改问题后点击生成文字回答。'; };
 async function refreshHealth() {
   const data = await request('/api/v2/health');
-  el('health').textContent = data.ready ? '' : `回答模型尚未就绪：${data.issues.join('；')}。可展开 LLM 配置完成设置；上传与独立解析仍可使用。`;
-  el('health').style.display = data.ready ? 'none' : 'block';
+  el('health').textContent = data.ready ? (data.video_issues?.length ? data.video_issues.join('；') : '') : `回答模型尚未就绪：${data.issues.join('；')}。可展开 LLM 配置完成设置；上传与独立解析仍可使用。`;
+  el('health').style.display = data.ready && !data.video_issues?.length ? 'none' : 'block';
   return data;
 }
 refreshHealth().catch(() => {});
@@ -168,3 +200,9 @@ const savedJob = localStorage.getItem('manimagent.textJob');
 const savedAnswer = localStorage.getItem('manimagent.answer');
 if (savedJob && /^job_[a-f0-9]{32}$/.test(savedJob)) { currentJob = savedJob; el('generate').disabled = true; poll(); }
 else if (savedAnswer && /^answer_[a-f0-9]{32}$/.test(savedAnswer)) showAnswer(savedAnswer).catch(error => { el('message').textContent = error.message; });
+const savedVideo = localStorage.getItem('manimagent.video');
+if (savedVideo && /^video_[a-f0-9]{32}$/.test(savedVideo)) showVideo(savedVideo).catch(() => localStorage.removeItem('manimagent.video'));
+const sharedResult = new URLSearchParams(window.location.search);
+const sharedAnswer = sharedResult.get('answer_id'), sharedVideo = sharedResult.get('video_id');
+if (sharedAnswer && /^answer_[a-f0-9]{32}$/.test(sharedAnswer)) showAnswer(sharedAnswer).catch(error => { el('message').textContent = error.message; });
+if (sharedVideo && /^video_[a-f0-9]{32}$/.test(sharedVideo)) showVideo(sharedVideo).catch(error => { el('video-message').textContent = error.message; });

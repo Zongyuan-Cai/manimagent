@@ -1,0 +1,1509 @@
+{
+  "answer_id": "answer_a1581222d0be416fa90439901a4d9b0f",
+  "answer_hash": "4d23d45289b3bf4b9f33459a1af7f87a2097051de759ec56dd4023e01b481105",
+  "plan_id": "plan_3a19308b6f87403cbc5614e49f931c94",
+  "prompt_version": "silent-templates-2",
+  "time_source": "estimated",
+  "audio": "not_generated",
+  "visual_model_review": "not_run",
+  "review_mode": "trusted_template_geometry_and_layout",
+  "plan_check": {
+    "decision": "pass",
+    "message": "全部41个教学单元均由屏幕文字、公式或图形承接，坐标、量类型与结论与固定答案一致，未发现数学或节奏问题。",
+    "units": [
+      {
+        "unit_id": "u001",
+        "decision": "pass",
+        "scene_ids": [
+          "S1_Setup"
+        ],
+        "evidence": "S1的B1屏幕文字与公式写出a=(3,2)、b=(2,0)并说明求正交投影，图中有两向量。"
+      },
+      {
+        "unit_id": "u002",
+        "decision": "pass",
+        "scene_ids": [
+          "S1_Setup"
+        ],
+        "evidence": "S1的B2屏幕文字说明投影沿b方向定义、b=0无方向且公式会除以零，必须b≠0。"
+      },
+      {
+        "unit_id": "u003",
+        "decision": "pass",
+        "scene_ids": [
+          "S1_Setup"
+        ],
+        "evidence": "S1的B3屏幕文字与公式b=(2,0)≠(0,0)确认前提满足。"
+      },
+      {
+        "unit_id": "u004",
+        "decision": "pass",
+        "scene_ids": [
+          "S2_Geometry"
+        ],
+        "evidence": "S2的B1同起点O作图与B2过a终点作垂线得垂足、O到垂足的p，公式p=(3,0)。"
+      },
+      {
+        "unit_id": "u005",
+        "decision": "pass",
+        "scene_ids": [
+          "S2_Geometry"
+        ],
+        "evidence": "S2的B3屏幕文字指出残差a-p正交投影要求垂直于b所在直线，并画出红色残差。"
+      },
+      {
+        "unit_id": "u006",
+        "decision": "pass",
+        "scene_ids": [
+          "S2_Geometry"
+        ],
+        "evidence": "S2的B3公式(a-p) perp b与(a-p) cdot b=0明确写出等价点积条件。"
+      },
+      {
+        "unit_id": "u007",
+        "decision": "pass",
+        "scene_ids": [
+          "S2_Geometry"
+        ],
+        "evidence": "S2的B4屏幕文字说明垂足为最近点、最近等价连线垂直，是列点积方程的根据。"
+      },
+      {
+        "unit_id": "u008",
+        "decision": "pass",
+        "scene_ids": [
+          "S3_Formula"
+        ],
+        "evidence": "S3的b1屏幕文字说明p落在b所在直线上，因此是b的倍数，设p=c·b。"
+      },
+      {
+        "unit_id": "u009",
+        "decision": "pass",
+        "scene_ids": [
+          "S3_Formula"
+        ],
+        "evidence": "S3的b1公式p = c b完整呈现设元式。"
+      },
+      {
+        "unit_id": "u010",
+        "decision": "pass",
+        "scene_ids": [
+          "S3_Formula"
+        ],
+        "evidence": "S3的b2屏幕文字说明代入正交条件(a-p)·b=0。"
+      },
+      {
+        "unit_id": "u011",
+        "decision": "pass",
+        "scene_ids": [
+          "S3_Formula"
+        ],
+        "evidence": "S3的b2公式(a - c b) \\cdot b = 0写出代入结果。"
+      },
+      {
+        "unit_id": "u012",
+        "decision": "pass",
+        "scene_ids": [
+          "S3_Formula"
+        ],
+        "evidence": "S3的b3屏幕文字说明利用点积线性性展开。"
+      },
+      {
+        "unit_id": "u013",
+        "decision": "pass",
+        "scene_ids": [
+          "S3_Formula"
+        ],
+        "evidence": "S3的b3公式a \\cdot b - c (b \\cdot b) = 0写出展开并令其为零。"
+      },
+      {
+        "unit_id": "u014",
+        "decision": "pass",
+        "scene_ids": [
+          "S3_Formula"
+        ],
+        "evidence": "S3的b4屏幕文字说明因b≠0，b·b>0，可除以b·b。"
+      },
+      {
+        "unit_id": "u015",
+        "decision": "pass",
+        "scene_ids": [
+          "S3_Formula"
+        ],
+        "evidence": "S3的b4公式c = (a·b)/(b·b)完整给出解出的系数。"
+      },
+      {
+        "unit_id": "u016",
+        "decision": "pass",
+        "scene_ids": [
+          "S3_Formula"
+        ],
+        "evidence": "S3的b5屏幕文字说明将c代回p=cb得到投影向量公式。"
+      },
+      {
+        "unit_id": "u017",
+        "decision": "pass",
+        "scene_ids": [
+          "S3_Formula"
+        ],
+        "evidence": "S3的b5公式p = (a·b)/(b·b) b写出投影向量一般公式。"
+      },
+      {
+        "unit_id": "u018",
+        "decision": "pass",
+        "scene_ids": [
+          "S3_Formula"
+        ],
+        "evidence": "S3的b5屏幕文字声明这就是正交投影的系数公式。"
+      },
+      {
+        "unit_id": "u019",
+        "decision": "pass",
+        "scene_ids": [
+          "S4_Compute"
+        ],
+        "evidence": "S4的B1标题与屏幕文字“先算点积a·b”承接计算a·b。"
+      },
+      {
+        "unit_id": "u020",
+        "decision": "pass",
+        "scene_ids": [
+          "S4_Compute"
+        ],
+        "evidence": "S4的B1公式a·b=3×2+2×0=6+0=6给出结果6。"
+      },
+      {
+        "unit_id": "u021",
+        "decision": "pass",
+        "scene_ids": [
+          "S4_Compute"
+        ],
+        "evidence": "S4的B2屏幕文字“再算b·b”承接计算b·b。"
+      },
+      {
+        "unit_id": "u022",
+        "decision": "pass",
+        "scene_ids": [
+          "S4_Compute"
+        ],
+        "evidence": "S4的B2公式b·b=2×2+0×0=4给出结果4。"
+      },
+      {
+        "unit_id": "u023",
+        "decision": "pass",
+        "scene_ids": [
+          "S4_Compute"
+        ],
+        "evidence": "S4的B2屏幕文字提到用模长平方验证，公式‖b‖=2, b·b=‖b‖²=4。"
+      },
+      {
+        "unit_id": "u024",
+        "decision": "pass",
+        "scene_ids": [
+          "S4_Compute"
+        ],
+        "evidence": "S4的B3屏幕文字“求系数c”并提及代入系数公式。"
+      },
+      {
+        "unit_id": "u025",
+        "decision": "pass",
+        "scene_ids": [
+          "S4_Compute"
+        ],
+        "evidence": "S4的B3公式c=6/4=3/2给出系数结果。"
+      },
+      {
+        "unit_id": "u026",
+        "decision": "pass",
+        "scene_ids": [
+          "S4_Compute"
+        ],
+        "evidence": "S4的B4屏幕文字“投影向量p=cb”承接求p。"
+      },
+      {
+        "unit_id": "u027",
+        "decision": "pass",
+        "scene_ids": [
+          "S4_Compute"
+        ],
+        "evidence": "S4的B4公式p=cb=(3/2)(2,0)=(3,0)完整呈现代入。"
+      },
+      {
+        "unit_id": "u028",
+        "decision": "pass",
+        "scene_ids": [
+          "S4_Compute"
+        ],
+        "evidence": "S4的B4屏幕文字说明投影向量p=cb代入后得p=(3,0)，即正交投影向量。"
+      },
+      {
+        "unit_id": "u029",
+        "decision": "pass",
+        "scene_ids": [
+          "S4_Compute"
+        ],
+        "evidence": "S4的B4公式末行p=(3,0)给出投影向量结论。"
+      },
+      {
+        "unit_id": "u030",
+        "decision": "pass",
+        "scene_ids": [
+          "S5_Concepts"
+        ],
+        "evidence": "S5的B1屏幕文字列出三个不同量：标量系数c、标量投影长度、投影向量p。"
+      },
+      {
+        "unit_id": "u031",
+        "decision": "pass",
+        "scene_ids": [
+          "S5_Concepts"
+        ],
+        "evidence": "S5的B1与B2、B3以公式与文字给出c=3/2、标量投影长度3及二者类型区分。"
+      },
+      {
+        "unit_id": "u032",
+        "decision": "pass",
+        "scene_ids": [
+          "S5_Concepts"
+        ],
+        "evidence": "S5的B3屏幕文字以c乘b的模得3说明三者关系。"
+      },
+      {
+        "unit_id": "u033",
+        "decision": "pass",
+        "scene_ids": [
+          "S5_Concepts"
+        ],
+        "evidence": "S5的B3公式c‖b‖=3/2×2=3与B4屏幕文字3·(1,0)=(3,0)承接关系。"
+      },
+      {
+        "unit_id": "u034",
+        "decision": "pass",
+        "scene_ids": [
+          "S5_Concepts"
+        ],
+        "evidence": "S5的B2屏幕文字强调c=3/2是纯数非投影长度，B4强调向量(3,0)与c不同。"
+      },
+      {
+        "unit_id": "u035",
+        "decision": "pass",
+        "scene_ids": [
+          "S6_Verify"
+        ],
+        "evidence": "S6的b1屏幕文字“验证正交性，先求残差a-p”承接验证步骤开头。"
+      },
+      {
+        "unit_id": "u036",
+        "decision": "pass",
+        "scene_ids": [
+          "S6_Verify"
+        ],
+        "evidence": "S6的b1公式a-p=(3,2)-(3,0)=(0,2)写出残差。"
+      },
+      {
+        "unit_id": "u037",
+        "decision": "pass",
+        "scene_ids": [
+          "S6_Verify"
+        ],
+        "evidence": "S6的b2屏幕文字说明把残差(0,2)与b=(2,0)作点积。"
+      },
+      {
+        "unit_id": "u038",
+        "decision": "pass",
+        "scene_ids": [
+          "S6_Verify"
+        ],
+        "evidence": "S6的b2公式(a-p)·b=0×2+2×0=0给出点积为0。"
+      },
+      {
+        "unit_id": "u039",
+        "decision": "pass",
+        "scene_ids": [
+          "S6_Verify"
+        ],
+        "evidence": "S6的b3屏幕文字与公式说明点积为0故a-p⊥b，垂足正确并与正交条件一致。"
+      },
+      {
+        "unit_id": "u040",
+        "decision": "pass",
+        "scene_ids": [
+          "S6_Verify"
+        ],
+        "evidence": "S6的b4屏幕文字汇总前提成立、a·b=6、b·b=4、c=3/2、p=(3,0)、长度3。"
+      },
+      {
+        "unit_id": "u041",
+        "decision": "pass",
+        "scene_ids": [
+          "S6_Verify"
+        ],
+        "evidence": "S6的b4屏幕文字与公式p=(3,0),|p|=3给出最终投影与有向长度结论。"
+      }
+    ],
+    "problem_scene_ids": []
+  },
+  "scenes": [
+    {
+      "scene_id": "S1_Setup",
+      "plan_hash": "ce542b7e254a31c009dfcbef43e96976b7e2856a6eb4bf70fa0273cc5ca5791e",
+      "offset_seconds": 0.0,
+      "status": "success",
+      "video_path": "scene.mp4",
+      "media": {
+        "width": 1280,
+        "height": 720,
+        "fps": 30.0,
+        "codec": "h264",
+        "pix_fmt": "yuv420p",
+        "duration_seconds": 33.96666666666667,
+        "audio_streams": 0
+      },
+      "events": [
+        {
+          "beat_id": "B1_Given",
+          "unit_ids": [
+            "u001"
+          ],
+          "start_seconds": 0.0,
+          "stable_seconds": 0.9999999999999999,
+          "cue_seconds": 1.0,
+          "end_seconds": 11.566666666666668,
+          "screen_text": "给定a=(3,2)、b=(2,0)，求a在b方向上的正交投影。",
+          "formulas": [
+            "a=(3,2), b=(2,0)"
+          ],
+          "objects": [
+            "vec_a",
+            "vec_b"
+          ],
+          "caption_bounds": {
+            "left": -4.34072267,
+            "right": 4.34072267,
+            "bottom": -3.0259961,
+            "top": -2.6340039
+          },
+          "content_bounds": {
+            "left": -5.63493655,
+            "right": 6.348212283974068,
+            "bottom": -1.7215820250000002,
+            "top": 1.9453125
+          },
+          "time_source": "estimated",
+          "frame_seconds": 1.5999999999999999
+        },
+        {
+          "beat_id": "B2_Nonzero",
+          "unit_ids": [
+            "u002"
+          ],
+          "start_seconds": 11.566666666666668,
+          "stable_seconds": 12.599999999999998,
+          "cue_seconds": 12.599999999999998,
+          "end_seconds": 23.9,
+          "screen_text": "投影沿b方向定义，b=0无方向且公式会出现除以零，所以必须b≠0。",
+          "formulas": [
+            "b\\neq 0"
+          ],
+          "objects": [
+            "vec_a",
+            "vec_b"
+          ],
+          "caption_bounds": {
+            "left": -5.806933625,
+            "right": 5.806933625,
+            "bottom": -3.0202343750000002,
+            "top": -2.639765625
+          },
+          "content_bounds": {
+            "left": -5.63493655,
+            "right": 4.247674102672588,
+            "bottom": -1.7215820250000002,
+            "top": 1.945507825
+          },
+          "time_source": "estimated",
+          "frame_seconds": 13.199999999999998
+        },
+        {
+          "beat_id": "B3_Check",
+          "unit_ids": [
+            "u003"
+          ],
+          "start_seconds": 23.9,
+          "stable_seconds": 24.933333333333383,
+          "cue_seconds": 24.933333333333383,
+          "end_seconds": 33.96666666666674,
+          "screen_text": "本题b=(2,0)不是零向量，前提满足，可以正常求投影。",
+          "formulas": [
+            "b=(2,0)\\neq(0,0)"
+          ],
+          "objects": [
+            "vec_a",
+            "vec_b"
+          ],
+          "caption_bounds": {
+            "left": -4.618701175,
+            "right": 4.618701175,
+            "bottom": -3.026191425,
+            "top": -2.633808575
+          },
+          "content_bounds": {
+            "left": -5.63493655,
+            "right": 5.9838130816471,
+            "bottom": -1.7215820250000002,
+            "top": 1.946289075
+          },
+          "time_source": "estimated",
+          "frame_seconds": 25.533333333333385
+        }
+      ],
+      "frames": [
+        {
+          "path": "frame_000.png",
+          "requested_seconds": 1.5999999999999999,
+          "actual_seconds": 1.6
+        },
+        {
+          "path": "frame_001.png",
+          "requested_seconds": 13.199999999999998,
+          "actual_seconds": 13.2
+        },
+        {
+          "path": "frame_002.png",
+          "requested_seconds": 25.533333333333385,
+          "actual_seconds": 25.533333333333335
+        }
+      ],
+      "font": "Microsoft YaHei",
+      "wall_seconds": 12.625,
+      "peak_memory_mb": 438.43,
+      "renderer_hash": "e46cb89a33394a4ecb4016f85fbb74f63c79d4af2fee6c6bc62ec77fb4dca339"
+    },
+    {
+      "scene_id": "S2_Geometry",
+      "plan_hash": "ce542b7e254a31c009dfcbef43e96976b7e2856a6eb4bf70fa0273cc5ca5791e",
+      "offset_seconds": 33.96666666666667,
+      "status": "success",
+      "video_path": "scene.mp4",
+      "media": {
+        "width": 1280,
+        "height": 720,
+        "fps": 30.0,
+        "codec": "h264",
+        "pix_fmt": "yuv420p",
+        "duration_seconds": 46.266666666666666,
+        "audio_streams": 0
+      },
+      "events": [
+        {
+          "beat_id": "B1",
+          "unit_ids": [
+            "u004"
+          ],
+          "start_seconds": 0.0,
+          "stable_seconds": 0.9999999999999999,
+          "cue_seconds": 1.0,
+          "end_seconds": 10.3,
+          "screen_text": "把a与b的起点都放在O，b=(2,0)确定一条水平直线。",
+          "formulas": [
+            "a=(3,2), b=(2,0)"
+          ],
+          "objects": [
+            "origin",
+            "line_b",
+            "vec_b",
+            "vec_a"
+          ],
+          "caption_bounds": {
+            "left": -4.426074245,
+            "right": 4.426074245,
+            "bottom": -3.026386725,
+            "top": -2.633613275
+          },
+          "content_bounds": {
+            "left": -5.63493655,
+            "right": 6.348212283974068,
+            "bottom": -1.7215820250000002,
+            "top": 1.947265625
+          },
+          "time_source": "estimated",
+          "frame_seconds": 1.5999999999999999
+        },
+        {
+          "beat_id": "B2",
+          "unit_ids": [
+            "u004"
+          ],
+          "start_seconds": 10.3,
+          "stable_seconds": 11.33333333333333,
+          "cue_seconds": 11.33333333333333,
+          "end_seconds": 21.199999999999996,
+          "screen_text": "过a的终点作b所在直线的垂线，交点为垂足，O到垂足的向量就是p。",
+          "formulas": [
+            "p=(3,0)"
+          ],
+          "objects": [
+            "origin",
+            "line_b",
+            "vec_b",
+            "vec_a",
+            "foot",
+            "vec_p",
+            "perp_seg"
+          ],
+          "caption_bounds": {
+            "left": -5.820507825000001,
+            "right": 5.820507825000001,
+            "bottom": -3.041328125,
+            "top": -2.618671875
+          },
+          "content_bounds": {
+            "left": -5.63493655,
+            "right": 4.653365323575239,
+            "bottom": -1.7215820250000002,
+            "top": 1.945898425
+          },
+          "time_source": "estimated",
+          "frame_seconds": 11.93333333333333
+        },
+        {
+          "beat_id": "B3",
+          "unit_ids": [
+            "u005",
+            "u006"
+          ],
+          "start_seconds": 21.199999999999996,
+          "stable_seconds": 22.23333333333338,
+          "cue_seconds": 22.23333333333338,
+          "end_seconds": 33.76666666666674,
+          "screen_text": "a减p就是残差，从垂足指向a终点；正交投影要求它垂直于b所在直线。",
+          "formulas": [
+            "(a-p) perp b",
+            "(a-p) cdot b=0"
+          ],
+          "objects": [
+            "line_b",
+            "vec_b",
+            "vec_a",
+            "vec_p",
+            "residual"
+          ],
+          "caption_bounds": {
+            "left": -5.958593775000001,
+            "right": 5.958593775000001,
+            "bottom": -3.0425,
+            "top": -2.6175
+          },
+          "content_bounds": {
+            "left": -5.63493655,
+            "right": 5.684250685024217,
+            "bottom": -1.7215820250000002,
+            "top": 1.94453125
+          },
+          "time_source": "estimated",
+          "frame_seconds": 22.833333333333382
+        },
+        {
+          "beat_id": "B4",
+          "unit_ids": [
+            "u005",
+            "u006",
+            "u007"
+          ],
+          "start_seconds": 33.76666666666674,
+          "stable_seconds": 34.80000000000001,
+          "cue_seconds": 34.80000000000001,
+          "end_seconds": 46.26666666666665,
+          "screen_text": "垂足是直线上离a终点最近的点，最近意味着连线与直线垂直，这是用点积列方程的根据。",
+          "formulas": [
+            "dot(a-p,b)=0"
+          ],
+          "objects": [
+            "line_b",
+            "vec_b",
+            "vec_a",
+            "vec_p",
+            "residual",
+            "foot"
+          ],
+          "caption_bounds": {
+            "left": -6.2,
+            "right": 6.2,
+            "bottom": -2.9871457202601426,
+            "top": -2.6728542797398576
+          },
+          "content_bounds": {
+            "left": -5.63493655,
+            "right": 5.685116847323216,
+            "bottom": -1.7215820250000002,
+            "top": 1.9455078000000001
+          },
+          "time_source": "estimated",
+          "frame_seconds": 35.40000000000001
+        }
+      ],
+      "frames": [
+        {
+          "path": "frame_000.png",
+          "requested_seconds": 1.5999999999999999,
+          "actual_seconds": 1.6
+        },
+        {
+          "path": "frame_001.png",
+          "requested_seconds": 11.93333333333333,
+          "actual_seconds": 11.933333333333334
+        },
+        {
+          "path": "frame_002.png",
+          "requested_seconds": 22.833333333333382,
+          "actual_seconds": 22.833333333333332
+        },
+        {
+          "path": "frame_003.png",
+          "requested_seconds": 35.40000000000001,
+          "actual_seconds": 35.4
+        }
+      ],
+      "font": "Microsoft YaHei",
+      "wall_seconds": 18.515,
+      "peak_memory_mb": 441.25,
+      "renderer_hash": "e46cb89a33394a4ecb4016f85fbb74f63c79d4af2fee6c6bc62ec77fb4dca339"
+    },
+    {
+      "scene_id": "S3_Formula",
+      "plan_hash": "ce542b7e254a31c009dfcbef43e96976b7e2856a6eb4bf70fa0273cc5ca5791e",
+      "offset_seconds": 80.23333333333333,
+      "status": "success",
+      "video_path": "scene.mp4",
+      "media": {
+        "width": 1280,
+        "height": 720,
+        "fps": 30.0,
+        "codec": "h264",
+        "pix_fmt": "yuv420p",
+        "duration_seconds": 69.36666666666666,
+        "audio_streams": 0
+      },
+      "events": [
+        {
+          "beat_id": "b1",
+          "unit_ids": [
+            "u008",
+            "u009"
+          ],
+          "start_seconds": 0.0,
+          "stable_seconds": 0.9999999999999999,
+          "cue_seconds": 1.5,
+          "end_seconds": 12.100000000000001,
+          "screen_text": "p是a的正交投影，落在b所在直线上，因此p是b的某个倍数，设p=c·b。",
+          "formulas": [
+            "p = c b"
+          ],
+          "objects": [
+            "vec_a",
+            "vec_b",
+            "line_b",
+            "vec_p",
+            "residual"
+          ],
+          "caption_bounds": {
+            "left": -6.045214875000001,
+            "right": 6.045214875000001,
+            "bottom": -3.041914075,
+            "top": -2.618085925
+          },
+          "content_bounds": {
+            "left": -6.053686549999999,
+            "right": 4.8791504,
+            "bottom": -1.7215820250000002,
+            "top": 1.945898425
+          },
+          "time_source": "estimated",
+          "frame_seconds": 1.5999999999999999
+        },
+        {
+          "beat_id": "b2",
+          "unit_ids": [
+            "u010",
+            "u011"
+          ],
+          "start_seconds": 12.100000000000001,
+          "stable_seconds": 13.133333333333331,
+          "cue_seconds": 13.133333333333331,
+          "end_seconds": 25.999999999999996,
+          "screen_text": "投影要求残差a-p与b正交，所以(a-p)·b=0；把p=c·b代入得到(a-cb)·b=0。",
+          "formulas": [
+            "(a - c b) \\cdot b = 0"
+          ],
+          "objects": [
+            "vec_a",
+            "vec_b",
+            "vec_p",
+            "residual"
+          ],
+          "caption_bounds": {
+            "left": -6.199999999999999,
+            "right": 6.199999999999999,
+            "bottom": -3.0364760997528273,
+            "top": -2.623523900247173
+          },
+          "content_bounds": {
+            "left": -6.053686549999999,
+            "right": 5.580616786402663,
+            "bottom": -1.7215820250000002,
+            "top": 1.945117175
+          },
+          "time_source": "estimated",
+          "frame_seconds": 13.73333333333333
+        },
+        {
+          "beat_id": "b3",
+          "unit_ids": [
+            "u012",
+            "u013"
+          ],
+          "start_seconds": 25.999999999999996,
+          "stable_seconds": 27.03333333333338,
+          "cue_seconds": 27.03333333333338,
+          "end_seconds": 41.26666666666674,
+          "screen_text": "利用点积线性性展开：(a-cb)·b = a·b - c(b·b)。令其为零，得到a·b - c(b·b)=0。",
+          "formulas": [
+            "a \\cdot b - c (b \\cdot b) = 0"
+          ],
+          "objects": [
+            "vec_a",
+            "vec_b",
+            "vec_p",
+            "residual"
+          ],
+          "caption_bounds": {
+            "left": -6.2,
+            "right": 6.2,
+            "bottom": -3.008978639089294,
+            "top": -2.6510213609107063
+          },
+          "content_bounds": {
+            "left": -6.053686549999999,
+            "right": 6.031731427538111,
+            "bottom": -1.7215820250000002,
+            "top": 1.9455078000000001
+          },
+          "time_source": "estimated",
+          "frame_seconds": 27.633333333333383
+        },
+        {
+          "beat_id": "b4",
+          "unit_ids": [
+            "u014",
+            "u015"
+          ],
+          "start_seconds": 41.26666666666674,
+          "stable_seconds": 42.30000000000001,
+          "cue_seconds": 42.30000000000001,
+          "end_seconds": 54.63333333333332,
+          "screen_text": "因b≠0，b·b>0，可除以b·b，解出标量系数c = (a·b)/(b·b)。",
+          "formulas": [
+            "c = \\frac{a \\cdot b}{b \\cdot b}"
+          ],
+          "objects": [
+            "vec_b"
+          ],
+          "caption_bounds": {
+            "left": -5.075830075,
+            "right": 5.075830075,
+            "bottom": -3.0251172,
+            "top": -2.6348828
+          },
+          "content_bounds": {
+            "left": -6.053686549999999,
+            "right": 4.245703125,
+            "bottom": -1.7215820250000002,
+            "top": 1.9466797
+          },
+          "time_source": "estimated",
+          "frame_seconds": 42.90000000000001
+        },
+        {
+          "beat_id": "b5",
+          "unit_ids": [
+            "u016",
+            "u017",
+            "u018"
+          ],
+          "start_seconds": 54.63333333333332,
+          "stable_seconds": 55.66666666666659,
+          "cue_seconds": 55.66666666666659,
+          "end_seconds": 69.36666666666656,
+          "screen_text": "将c代回p=cb，得到正交投影向量p = (a·b)/(b·b) · b，这就是系数公式。",
+          "formulas": [
+            "p = \\frac{a \\cdot b}{b \\cdot b} b"
+          ],
+          "objects": [
+            "vec_a",
+            "vec_b",
+            "vec_p"
+          ],
+          "caption_bounds": {
+            "left": -6.121386725,
+            "right": 6.121386725,
+            "bottom": -3.041328125,
+            "top": -2.618671875
+          },
+          "content_bounds": {
+            "left": -6.053686549999999,
+            "right": 4.5524658,
+            "bottom": -1.7215820250000002,
+            "top": 1.945507825
+          },
+          "time_source": "estimated",
+          "frame_seconds": 56.266666666666595
+        }
+      ],
+      "frames": [
+        {
+          "path": "frame_000.png",
+          "requested_seconds": 1.5999999999999999,
+          "actual_seconds": 1.6
+        },
+        {
+          "path": "frame_001.png",
+          "requested_seconds": 13.73333333333333,
+          "actual_seconds": 13.733333333333333
+        },
+        {
+          "path": "frame_002.png",
+          "requested_seconds": 27.633333333333383,
+          "actual_seconds": 27.633333333333333
+        },
+        {
+          "path": "frame_003.png",
+          "requested_seconds": 42.90000000000001,
+          "actual_seconds": 42.9
+        },
+        {
+          "path": "frame_004.png",
+          "requested_seconds": 56.266666666666595,
+          "actual_seconds": 56.266666666666666
+        }
+      ],
+      "font": "Microsoft YaHei",
+      "wall_seconds": 23.203,
+      "peak_memory_mb": 439.73,
+      "renderer_hash": "e46cb89a33394a4ecb4016f85fbb74f63c79d4af2fee6c6bc62ec77fb4dca339"
+    },
+    {
+      "scene_id": "S4_Compute",
+      "plan_hash": "ce542b7e254a31c009dfcbef43e96976b7e2856a6eb4bf70fa0273cc5ca5791e",
+      "offset_seconds": 149.6,
+      "status": "success",
+      "video_path": "scene.mp4",
+      "media": {
+        "width": 1280,
+        "height": 720,
+        "fps": 30.0,
+        "codec": "h264",
+        "pix_fmt": "yuv420p",
+        "duration_seconds": 41.9,
+        "audio_streams": 0
+      },
+      "events": [
+        {
+          "beat_id": "B1",
+          "unit_ids": [
+            "u019",
+            "u020"
+          ],
+          "start_seconds": 0.0,
+          "stable_seconds": 1.0,
+          "cue_seconds": 1.0,
+          "end_seconds": 9.566666666666668,
+          "screen_text": "先算点积a·b：分量相乘再相加，得6。",
+          "formulas": [
+            "a\\cdot b=3\\times2+2\\times0",
+            "a\\cdot b=6+0=6"
+          ],
+          "objects": [],
+          "caption_bounds": {
+            "left": -3.172924825,
+            "right": 3.172924825,
+            "bottom": -3.019648425,
+            "top": -2.640351575
+          },
+          "content_bounds": {
+            "left": -3.4852172482196204,
+            "right": 3.4852172482196204,
+            "bottom": -0.54,
+            "top": 1.94609375
+          },
+          "time_source": "estimated",
+          "frame_seconds": 1.6
+        },
+        {
+          "beat_id": "B2",
+          "unit_ids": [
+            "u021",
+            "u022",
+            "u023"
+          ],
+          "start_seconds": 9.566666666666668,
+          "stable_seconds": 10.6,
+          "cue_seconds": 10.6,
+          "end_seconds": 19.766666666666666,
+          "screen_text": "再算b·b：b与自身点积，也可用模长平方验证。",
+          "formulas": [
+            "b\\cdot b=2\\times2+0\\times0=4",
+            "\\Vert b\\Vert=2,\\ b\\cdot b=\\Vert b\\Vert^2=4"
+          ],
+          "objects": [],
+          "caption_bounds": {
+            "left": -3.974877925,
+            "right": 3.974877925,
+            "bottom": -3.01984375,
+            "top": -2.64015625
+          },
+          "content_bounds": {
+            "left": -4.197441209592249,
+            "right": 4.197441209592249,
+            "bottom": -0.54,
+            "top": 1.94609375
+          },
+          "time_source": "estimated",
+          "frame_seconds": 11.2
+        },
+        {
+          "beat_id": "B3",
+          "unit_ids": [
+            "u024",
+            "u025"
+          ],
+          "start_seconds": 19.766666666666666,
+          "stable_seconds": 20.80000000000003,
+          "cue_seconds": 20.80000000000003,
+          "end_seconds": 31.333333333333385,
+          "screen_text": "代入系数公式c=(a·b)/(b·b)，得c=6/4=3/2。",
+          "formulas": [
+            "c=\\frac{a\\cdot b}{b\\cdot b}",
+            "c=\\frac{6}{4}=\\frac{3}{2}"
+          ],
+          "objects": [],
+          "caption_bounds": {
+            "left": -3.780566425,
+            "right": 3.780566425,
+            "bottom": -3.0258008,
+            "top": -2.6341992000000003
+          },
+          "content_bounds": {
+            "left": -0.9468369767136462,
+            "right": 0.9468369767136462,
+            "bottom": -0.54,
+            "top": 1.946289075
+          },
+          "time_source": "estimated",
+          "frame_seconds": 21.40000000000003
+        },
+        {
+          "beat_id": "B4",
+          "unit_ids": [
+            "u026",
+            "u027",
+            "u028",
+            "u029"
+          ],
+          "start_seconds": 31.333333333333385,
+          "stable_seconds": 32.36666666666675,
+          "cue_seconds": 32.36666666666675,
+          "end_seconds": 41.900000000000055,
+          "screen_text": "投影向量p=cb，代入c和b，得p=(3,0)。",
+          "formulas": [
+            "p=cb=\\frac{3}{2}(2,0)",
+            "p=(3,0)"
+          ],
+          "objects": [],
+          "caption_bounds": {
+            "left": -3.386303725,
+            "right": 3.386303725,
+            "bottom": -3.040351575,
+            "top": -2.6196484250000003
+          },
+          "content_bounds": {
+            "left": -1.7184612673150057,
+            "right": 1.7184612673150057,
+            "bottom": -0.54,
+            "top": 1.967773425
+          },
+          "time_source": "estimated",
+          "frame_seconds": 32.966666666666754
+        }
+      ],
+      "frames": [
+        {
+          "path": "frame_000.png",
+          "requested_seconds": 1.6,
+          "actual_seconds": 1.6
+        },
+        {
+          "path": "frame_001.png",
+          "requested_seconds": 11.2,
+          "actual_seconds": 11.2
+        },
+        {
+          "path": "frame_002.png",
+          "requested_seconds": 21.40000000000003,
+          "actual_seconds": 21.4
+        },
+        {
+          "path": "frame_003.png",
+          "requested_seconds": 32.966666666666754,
+          "actual_seconds": 32.96666666666667
+        }
+      ],
+      "font": "Microsoft YaHei",
+      "wall_seconds": 14.813,
+      "peak_memory_mb": 437.42,
+      "renderer_hash": "e46cb89a33394a4ecb4016f85fbb74f63c79d4af2fee6c6bc62ec77fb4dca339"
+    },
+    {
+      "scene_id": "S5_Concepts",
+      "plan_hash": "ce542b7e254a31c009dfcbef43e96976b7e2856a6eb4bf70fa0273cc5ca5791e",
+      "offset_seconds": 191.5,
+      "status": "success",
+      "video_path": "scene.mp4",
+      "media": {
+        "width": 1280,
+        "height": 720,
+        "fps": 30.0,
+        "codec": "h264",
+        "pix_fmt": "yuv420p",
+        "duration_seconds": 50.96666666666667,
+        "audio_streams": 0
+      },
+      "events": [
+        {
+          "beat_id": "B1_ThreeObjects",
+          "unit_ids": [
+            "u030",
+            "u031"
+          ],
+          "start_seconds": 0.0,
+          "stable_seconds": 0.9999999999999999,
+          "cue_seconds": 2.75,
+          "end_seconds": 13.2,
+          "screen_text": "本题出现三个不同量：标量系数c、标量投影长度、投影向量p；后者才是向量。",
+          "formulas": [
+            "c=\\frac{a\\cdot b}{b\\cdot b}=\\frac{3}{2}",
+            "p=cb=(3,0)"
+          ],
+          "objects": [
+            "vec_a",
+            "vec_b",
+            "vec_p"
+          ],
+          "caption_bounds": {
+            "left": -6.2,
+            "right": 6.2,
+            "bottom": -3.0264291965692283,
+            "top": -2.633570803430772
+          },
+          "content_bounds": {
+            "left": -5.63493655,
+            "right": 5.374668428750404,
+            "bottom": -1.7215820250000002,
+            "top": 1.94609375
+          },
+          "time_source": "estimated",
+          "frame_seconds": 1.5999999999999999
+        },
+        {
+          "beat_id": "B2_Coefficient",
+          "unit_ids": [
+            "u031"
+          ],
+          "start_seconds": 13.2,
+          "stable_seconds": 14.233333333333329,
+          "cue_seconds": 14.233333333333329,
+          "end_seconds": 25.699999999999996,
+          "screen_text": "c由a·b除以b·b得到，依赖b的长度；c=3/2表示沿b放大倍数，是纯数。",
+          "formulas": [
+            "c=\\frac{a\\cdot b}{b\\cdot b}=\\frac{6}{4}=\\frac{3}{2}"
+          ],
+          "objects": [
+            "vec_a",
+            "vec_b",
+            "vec_p"
+          ],
+          "caption_bounds": {
+            "left": -5.994628925,
+            "right": 5.994628925,
+            "bottom": -3.0219921750000003,
+            "top": -2.638007825
+          },
+          "content_bounds": {
+            "left": -5.63493655,
+            "right": 4.95446775,
+            "bottom": -1.7215820250000002,
+            "top": 1.948828125
+          },
+          "time_source": "estimated",
+          "frame_seconds": 14.833333333333329
+        },
+        {
+          "beat_id": "B3_ScalarLength",
+          "unit_ids": [
+            "u031",
+            "u032",
+            "u033"
+          ],
+          "start_seconds": 25.699999999999996,
+          "stable_seconds": 26.73333333333338,
+          "cue_seconds": 29.58461538461538,
+          "end_seconds": 38.46666666666674,
+          "screen_text": "投影长度=c乘b的模，得3/2乘2等于3；它是带符号的纯数，不是向量。",
+          "formulas": [
+            "a\\cdot\\hat b=\\frac{a\\cdot b}{\\Vert b\\Vert}=\\frac{6}{2}=3",
+            "c\\Vert b\\Vert=\\frac{3}{2}\\times 2=3"
+          ],
+          "objects": [
+            "vec_b",
+            "vec_p",
+            "pt_unit"
+          ],
+          "caption_bounds": {
+            "left": -6.01743165,
+            "right": 6.01743165,
+            "bottom": -3.0219921750000003,
+            "top": -2.638007825
+          },
+          "content_bounds": {
+            "left": -5.63493655,
+            "right": 5.128660353275602,
+            "bottom": -1.7215820250000002,
+            "top": 1.9470703
+          },
+          "time_source": "estimated",
+          "frame_seconds": 27.333333333333382
+        },
+        {
+          "beat_id": "B4_ProjectionVector",
+          "unit_ids": [
+            "u033",
+            "u034"
+          ],
+          "start_seconds": 38.46666666666674,
+          "stable_seconds": 39.500000000000014,
+          "cue_seconds": 42.21666666666674,
+          "end_seconds": 50.966666666666654,
+          "screen_text": "投影长度乘单位方向得投影向量：3乘(1,0)等于(3,0)；与c=3/2不同。",
+          "formulas": [
+            "p=3\\cdot(1,0)=(3,0)"
+          ],
+          "objects": [
+            "vec_p",
+            "pt_tip"
+          ],
+          "caption_bounds": {
+            "left": -5.810937525000001,
+            "right": 5.810937525000001,
+            "bottom": -3.0271679750000002,
+            "top": -2.632832025
+          },
+          "content_bounds": {
+            "left": -5.63493655,
+            "right": 6.19429792418943,
+            "bottom": -1.7215820250000002,
+            "top": 1.946289075
+          },
+          "time_source": "estimated",
+          "frame_seconds": 40.100000000000016
+        }
+      ],
+      "frames": [
+        {
+          "path": "frame_000.png",
+          "requested_seconds": 1.5999999999999999,
+          "actual_seconds": 1.6
+        },
+        {
+          "path": "frame_001.png",
+          "requested_seconds": 14.833333333333329,
+          "actual_seconds": 14.833333333333334
+        },
+        {
+          "path": "frame_002.png",
+          "requested_seconds": 27.333333333333382,
+          "actual_seconds": 27.333333333333332
+        },
+        {
+          "path": "frame_003.png",
+          "requested_seconds": 40.100000000000016,
+          "actual_seconds": 40.1
+        }
+      ],
+      "font": "Microsoft YaHei",
+      "wall_seconds": 19.922,
+      "peak_memory_mb": 453.46,
+      "renderer_hash": "e46cb89a33394a4ecb4016f85fbb74f63c79d4af2fee6c6bc62ec77fb4dca339"
+    },
+    {
+      "scene_id": "S6_Verify",
+      "plan_hash": "ce542b7e254a31c009dfcbef43e96976b7e2856a6eb4bf70fa0273cc5ca5791e",
+      "offset_seconds": 242.46666666666667,
+      "status": "success",
+      "video_path": "scene.mp4",
+      "media": {
+        "width": 1280,
+        "height": 720,
+        "fps": 30.0,
+        "codec": "h264",
+        "pix_fmt": "yuv420p",
+        "duration_seconds": 52.333333333333336,
+        "audio_streams": 0
+      },
+      "events": [
+        {
+          "beat_id": "b1_residual",
+          "unit_ids": [
+            "u035",
+            "u036"
+          ],
+          "start_seconds": 0.0,
+          "stable_seconds": 0.9999999999999999,
+          "cue_seconds": 3.0,
+          "end_seconds": 12.899999999999999,
+          "screen_text": "验证正交性，先求残差a-p。用a=(3,2)减p=(3,0)，x分量抵消，只剩y分量2。",
+          "formulas": [
+            "a-p=(3,2)-(3,0)=(0,2)"
+          ],
+          "objects": [
+            "vec_b",
+            "vec_a",
+            "vec_p",
+            "vec_res"
+          ],
+          "caption_bounds": {
+            "left": -6.2,
+            "right": 6.2,
+            "bottom": -3.03398508802749,
+            "top": -2.62601491197251
+          },
+          "content_bounds": {
+            "left": -5.55118655,
+            "right": 6.375,
+            "bottom": -1.7215820250000002,
+            "top": 1.94785155
+          },
+          "time_source": "estimated",
+          "frame_seconds": 1.5999999999999999
+        },
+        {
+          "beat_id": "b2_dotzero",
+          "unit_ids": [
+            "u037",
+            "u038"
+          ],
+          "start_seconds": 12.899999999999999,
+          "stable_seconds": 13.933333333333328,
+          "cue_seconds": 15.534615384615384,
+          "end_seconds": 25.633333333333326,
+          "screen_text": "把残差(0,2)与b=(2,0)作点积：对应分量相乘再相加，两项都是零，结果为0。",
+          "formulas": [
+            "(a-p)\\cdot b=0\\times 2+2\\times 0=0"
+          ],
+          "objects": [
+            "vec_b",
+            "vec_a",
+            "vec_p",
+            "vec_res",
+            "mark_rt"
+          ],
+          "caption_bounds": {
+            "left": -6.2,
+            "right": 6.2,
+            "bottom": -3.0184681178690873,
+            "top": -2.641531882130913
+          },
+          "content_bounds": {
+            "left": -5.55118655,
+            "right": 6.375,
+            "bottom": -1.7215820250000002,
+            "top": 1.946875
+          },
+          "time_source": "estimated",
+          "frame_seconds": 14.533333333333328
+        },
+        {
+          "beat_id": "b3_orthogonal",
+          "unit_ids": [
+            "u039"
+          ],
+          "start_seconds": 25.633333333333326,
+          "stable_seconds": 26.66666666666671,
+          "cue_seconds": 26.66666666666671,
+          "end_seconds": 37.3333333333334,
+          "screen_text": "点积为0说明a-p垂直于b，残差落在b所在直线的垂线上，垂足位置正确。",
+          "formulas": [
+            "(a-p)\\cdot b=0\\Rightarrow a-p\\perp b"
+          ],
+          "objects": [
+            "vec_b",
+            "line_b",
+            "vec_a",
+            "vec_p",
+            "vec_res",
+            "mark_rt"
+          ],
+          "caption_bounds": {
+            "left": -6.179174800000001,
+            "right": 6.179174800000001,
+            "bottom": -3.0425,
+            "top": -2.6175
+          },
+          "content_bounds": {
+            "left": -5.55118655,
+            "right": 6.375,
+            "bottom": -1.7215820250000002,
+            "top": 1.946484375
+          },
+          "time_source": "estimated",
+          "frame_seconds": 27.266666666666712
+        },
+        {
+          "beat_id": "b4_conclusion",
+          "unit_ids": [
+            "u040",
+            "u041"
+          ],
+          "start_seconds": 37.3333333333334,
+          "stable_seconds": 38.366666666666674,
+          "cue_seconds": 38.366666666666674,
+          "end_seconds": 52.333333333333314,
+          "screen_text": "前提b≠0成立；a·b=6，b·b=4，系数c=3/2，投影向量p=(3,0)，有向投影长度3。",
+          "formulas": [
+            "c=\\frac{6}{4}=\\frac{3}{2}",
+            "p=(3,0),|p|=3"
+          ],
+          "objects": [
+            "vec_b",
+            "vec_a",
+            "vec_p",
+            "vec_res"
+          ],
+          "caption_bounds": {
+            "left": -6.2,
+            "right": 6.2,
+            "bottom": -3.0193708377869224,
+            "top": -2.6406291622130778
+          },
+          "content_bounds": {
+            "left": -5.55118655,
+            "right": 5.68033125,
+            "bottom": -1.7215820250000002,
+            "top": 1.944921875
+          },
+          "time_source": "estimated",
+          "frame_seconds": 38.966666666666676
+        }
+      ],
+      "frames": [
+        {
+          "path": "frame_000.png",
+          "requested_seconds": 1.5999999999999999,
+          "actual_seconds": 1.6
+        },
+        {
+          "path": "frame_001.png",
+          "requested_seconds": 14.533333333333328,
+          "actual_seconds": 14.533333333333333
+        },
+        {
+          "path": "frame_002.png",
+          "requested_seconds": 27.266666666666712,
+          "actual_seconds": 27.266666666666666
+        },
+        {
+          "path": "frame_003.png",
+          "requested_seconds": 38.966666666666676,
+          "actual_seconds": 38.96666666666667
+        }
+      ],
+      "font": "Microsoft YaHei",
+      "wall_seconds": 19.531,
+      "peak_memory_mb": 452.36,
+      "renderer_hash": "e46cb89a33394a4ecb4016f85fbb74f63c79d4af2fee6c6bc62ec77fb4dca339"
+    }
+  ],
+  "final": {
+    "status": "success",
+    "video_path": "complete.mp4",
+    "media": {
+      "width": 1280,
+      "height": 720,
+      "fps": 30.0,
+      "codec": "h264",
+      "pix_fmt": "yuv420p",
+      "duration_seconds": 294.8,
+      "audio_streams": 0,
+      "decoded_frames": 8844
+    },
+    "frames": [
+      {
+        "path": "frame_000.png",
+        "requested_seconds": 33.86666666666667,
+        "actual_seconds": 33.86666666666667
+      },
+      {
+        "path": "frame_001.png",
+        "requested_seconds": 34.06666666666667,
+        "actual_seconds": 34.06666666666667
+      },
+      {
+        "path": "frame_002.png",
+        "requested_seconds": 80.13333333333334,
+        "actual_seconds": 80.13333333333334
+      },
+      {
+        "path": "frame_003.png",
+        "requested_seconds": 80.33333333333333,
+        "actual_seconds": 80.33333333333333
+      },
+      {
+        "path": "frame_004.png",
+        "requested_seconds": 149.5,
+        "actual_seconds": 149.5
+      },
+      {
+        "path": "frame_005.png",
+        "requested_seconds": 149.7,
+        "actual_seconds": 149.7
+      },
+      {
+        "path": "frame_006.png",
+        "requested_seconds": 191.4,
+        "actual_seconds": 191.4
+      },
+      {
+        "path": "frame_007.png",
+        "requested_seconds": 191.6,
+        "actual_seconds": 191.6
+      },
+      {
+        "path": "frame_008.png",
+        "requested_seconds": 242.36666666666667,
+        "actual_seconds": 242.36666666666667
+      },
+      {
+        "path": "frame_009.png",
+        "requested_seconds": 242.56666666666666,
+        "actual_seconds": 242.56666666666666
+      },
+      {
+        "path": "frame_010.png",
+        "requested_seconds": 294.3,
+        "actual_seconds": 294.3
+      }
+    ],
+    "wall_seconds": 1.672,
+    "peak_memory_mb": 78.41,
+    "renderer_hash": "e46cb89a33394a4ecb4016f85fbb74f63c79d4af2fee6c6bc62ec77fb4dca339"
+  },
+  "repairs": 0,
+  "wall_seconds": 186.437
+}

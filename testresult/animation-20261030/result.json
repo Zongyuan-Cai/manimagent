@@ -1,0 +1,31 @@
+{
+  "passed": true,
+  "model": "deepseek-flash",
+  "provider": "https://api.deepseek.com",
+  "status": "completed",
+  "job_id": "job_0ce3ad13fef14f5c9318243bf459ef7a",
+  "answer_id": "answer_a1581222d0be416fa90439901a4d9b0f",
+  "usage": {
+    "model_calls": 2,
+    "input_tokens": 32583,
+    "output_tokens": 3934,
+    "tokens_reported": true,
+    "elapsed_seconds": 186.578
+  },
+  "elapsed_seconds": 186.781,
+  "error": null,
+  "video_id": "video_5dd1f5bee3c54488811e68302961349b",
+  "media": {
+    "width": 1280,
+    "height": 720,
+    "fps": 30.0,
+    "codec": "h264",
+    "pix_fmt": "yuv420p",
+    "duration_seconds": 294.8,
+    "audio_streams": 0,
+    "decoded_frames": 8844
+  },
+  "scene_count": 6,
+  "beat_count": 24,
+  "sha256": "78a68834ae37f67e8c3a8d195431a221b9196cbc695ab492030409baadeeb0f3"
+}

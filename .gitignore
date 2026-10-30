@@ -32,6 +32,8 @@ data/private/
 /testmaterial/超限.txt
 /testresult/.pytest_cache/
 /testresult/ci/
+# Per-run captures stay local; sanitized review evidence in each review root is versioned.
+/testresult/review-*/*/
 
 # Local tooling
 .codex/

@@ -24,6 +24,7 @@ class ModelConfig(BaseModel):
     api_key_header: str = "X-API-Key"
     generate_url: str = ""
     context_window: int = Field(default=32000, ge=1024)
+    thinking: Literal["default", "disabled", "enabled"] = "default"
 
     @field_validator("base_url", "generate_url")
     @classmethod
@@ -67,6 +68,14 @@ class Settings(BaseModel):
     max_model_calls: int = Field(default=60, ge=1)
     max_total_tokens: int = Field(default=200000, ge=1000)
     max_waiting: int = Field(default=3, ge=0, le=20)
+    video_timeout: float = Field(default=600, gt=0, le=600)
+    video_render_timeout: float = Field(default=90, gt=0, le=90)
+    video_queue_timeout: float = Field(default=120, gt=0, le=120)
+    video_max_model_calls: int = Field(default=24, ge=1, le=24)
+    video_max_output_tokens: int = Field(default=10000, ge=2048, le=16000)
+    video_context_tokens: int = Field(default=96000, ge=8000)
+    video_font: str = "auto"
+    video_memory_mb: int = Field(default=2048, ge=512, le=4096)
     models: dict[str, ModelConfig] = Field(default_factory=dict)
     roles: dict[str, str] = Field(default_factory=dict)
 
@@ -77,8 +86,9 @@ class Settings(BaseModel):
         return self
 
     def model_for(self, role: str) -> ModelConfig:
-        default = "text"
-        return self.models.get(self.roles.get(role, default), ModelConfig())
+        fallback = "answer_checker" if role == "plan_checker" else "answer_writer"
+        binding = self.roles.get(role, self.roles.get(fallback, "text"))
+        return self.models.get(binding, ModelConfig())
 
     def configuration_errors(
         self,

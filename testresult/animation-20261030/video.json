@@ -1,0 +1,791 @@
+{
+  "schema_version": "1.0",
+  "video_id": "video_5dd1f5bee3c54488811e68302961349b",
+  "answer_id": "answer_a1581222d0be416fa90439901a4d9b0f",
+  "answer_hash": "4d23d45289b3bf4b9f33459a1af7f87a2097051de759ec56dd4023e01b481105",
+  "plan_id": "plan_3a19308b6f87403cbc5614e49f931c94",
+  "video_asset_id": "file_70595b2cda3949049ad566fe2fd50478",
+  "subtitle_asset_id": null,
+  "audio_asset_id": null,
+  "duration_seconds": 294.8,
+  "time_source": "estimated",
+  "review_mode": "trusted_template_geometry_and_layout",
+  "visual_model_review": "not_run",
+  "step_mapping": [
+    {
+      "step_id": "step_1",
+      "scene_ids": [
+        "S1_Setup",
+        "S2_Geometry",
+        "S3_Formula",
+        "S4_Compute",
+        "S5_Concepts",
+        "S6_Verify"
+      ],
+      "start_seconds": 0,
+      "end_seconds": 294.8
+    }
+  ],
+  "unit_mapping": [
+    {
+      "unit_id": "u001",
+      "start": 0,
+      "end": 231,
+      "sha256": "a8ac314179c191cf442ac19fc3a02583d8d7271b806fd6fdd19c795a81f8c96b",
+      "intervals": [
+        {
+          "scene_id": "S1_Setup",
+          "beat_id": "B1_Given",
+          "start_seconds": 0.0,
+          "end_seconds": 11.5667
+        }
+      ]
+    },
+    {
+      "unit_id": "u002",
+      "start": 232,
+      "end": 405,
+      "sha256": "5623b4b5580801f560c4ba9558669b40daf045b40262b27d5534050e0330bb13",
+      "intervals": [
+        {
+          "scene_id": "S1_Setup",
+          "beat_id": "B2_Nonzero",
+          "start_seconds": 11.5667,
+          "end_seconds": 23.9
+        }
+      ]
+    },
+    {
+      "unit_id": "u003",
+      "start": 406,
+      "end": 444,
+      "sha256": "9663b3c76dd7fe29ee2d525b20d5186b479ef6233573685cefa77f54de18a4af",
+      "intervals": [
+        {
+          "scene_id": "S1_Setup",
+          "beat_id": "B3_Check",
+          "start_seconds": 23.9,
+          "end_seconds": 33.9667
+        }
+      ]
+    },
+    {
+      "unit_id": "u004",
+      "start": 445,
+      "end": 608,
+      "sha256": "14a2aacfa4b2b354f65faaac85c2209e6f28fde6d72321ad79d030f0af74a9ca",
+      "intervals": [
+        {
+          "scene_id": "S2_Geometry",
+          "beat_id": "B1",
+          "start_seconds": 33.9667,
+          "end_seconds": 44.2667
+        },
+        {
+          "scene_id": "S2_Geometry",
+          "beat_id": "B2",
+          "start_seconds": 44.2667,
+          "end_seconds": 55.1667
+        }
+      ]
+    },
+    {
+      "unit_id": "u005",
+      "start": 609,
+      "end": 652,
+      "sha256": "efc4eb496cdca6ba9fe06a8c98cbe7dfbd588425900ca320d9b9f96fc6aaf868",
+      "intervals": [
+        {
+          "scene_id": "S2_Geometry",
+          "beat_id": "B3",
+          "start_seconds": 55.1667,
+          "end_seconds": 67.7333
+        },
+        {
+          "scene_id": "S2_Geometry",
+          "beat_id": "B4",
+          "start_seconds": 67.7333,
+          "end_seconds": 80.2333
+        }
+      ]
+    },
+    {
+      "unit_id": "u006",
+      "start": 653,
+      "end": 718,
+      "sha256": "c6b514a1cc57b95311a6897851a46cbc0b78a2463131f123832018bf6ac0ad45",
+      "intervals": [
+        {
+          "scene_id": "S2_Geometry",
+          "beat_id": "B3",
+          "start_seconds": 55.1667,
+          "end_seconds": 67.7333
+        },
+        {
+          "scene_id": "S2_Geometry",
+          "beat_id": "B4",
+          "start_seconds": 67.7333,
+          "end_seconds": 80.2333
+        }
+      ]
+    },
+    {
+      "unit_id": "u007",
+      "start": 719,
+      "end": 772,
+      "sha256": "bb6e9bebb5c0f9350334474a39302c204591d20a4b1056a3ad74391ac2502401",
+      "intervals": [
+        {
+          "scene_id": "S2_Geometry",
+          "beat_id": "B4",
+          "start_seconds": 67.7333,
+          "end_seconds": 80.2333
+        }
+      ]
+    },
+    {
+      "unit_id": "u008",
+      "start": 773,
+      "end": 844,
+      "sha256": "a762aa640e34690aa3b72644cbb502027314512f11cd0aabc34da85bbac3d245",
+      "intervals": [
+        {
+          "scene_id": "S3_Formula",
+          "beat_id": "b1",
+          "start_seconds": 80.2333,
+          "end_seconds": 92.3333
+        }
+      ]
+    },
+    {
+      "unit_id": "u009",
+      "start": 845,
+      "end": 857,
+      "sha256": "424453ce87b077cbdeb75ea5a9ca9e1a651f85ef4cb2f6877c482736aa78f94f",
+      "intervals": [
+        {
+          "scene_id": "S3_Formula",
+          "beat_id": "b1",
+          "start_seconds": 80.2333,
+          "end_seconds": 92.3333
+        }
+      ]
+    },
+    {
+      "unit_id": "u010",
+      "start": 858,
+      "end": 885,
+      "sha256": "c99c4b6a5c25d3062c63ee706c9f51ecaac137a44836c254e5c7ff0be4b9e9a0",
+      "intervals": [
+        {
+          "scene_id": "S3_Formula",
+          "beat_id": "b2",
+          "start_seconds": 92.3333,
+          "end_seconds": 106.2333
+        }
+      ]
+    },
+    {
+      "unit_id": "u011",
+      "start": 886,
+      "end": 909,
+      "sha256": "0318bd34ada5812550ad30a849fed7a01893102c3f63dffe83c83182f99becca",
+      "intervals": [
+        {
+          "scene_id": "S3_Formula",
+          "beat_id": "b2",
+          "start_seconds": 92.3333,
+          "end_seconds": 106.2333
+        }
+      ]
+    },
+    {
+      "unit_id": "u012",
+      "start": 910,
+      "end": 922,
+      "sha256": "b6a8f4402a5476ce1868540c95a4c0ac04d3c8a6250d28647dc715a14d3ff599",
+      "intervals": [
+        {
+          "scene_id": "S3_Formula",
+          "beat_id": "b3",
+          "start_seconds": 106.2333,
+          "end_seconds": 121.5
+        }
+      ]
+    },
+    {
+      "unit_id": "u013",
+      "start": 923,
+      "end": 955,
+      "sha256": "6fdde0cdd853dfd1067067cdd58e67ebf73bda6b4dbf1e9d4fc438888c2949d5",
+      "intervals": [
+        {
+          "scene_id": "S3_Formula",
+          "beat_id": "b3",
+          "start_seconds": 106.2333,
+          "end_seconds": 121.5
+        }
+      ]
+    },
+    {
+      "unit_id": "u014",
+      "start": 956,
+      "end": 1028,
+      "sha256": "5f128e07dc3222f8b605cddd9a1430cc8b9a43e3ccdaba07d347bae79e415a89",
+      "intervals": [
+        {
+          "scene_id": "S3_Formula",
+          "beat_id": "b4",
+          "start_seconds": 121.5,
+          "end_seconds": 134.8667
+        }
+      ]
+    },
+    {
+      "unit_id": "u015",
+      "start": 1029,
+      "end": 1072,
+      "sha256": "513a8bca9d3b6e7ec0b36cd41575766a2443933eeefb30c108e6d36cb2b58058",
+      "intervals": [
+        {
+          "scene_id": "S3_Formula",
+          "beat_id": "b4",
+          "start_seconds": 121.5,
+          "end_seconds": 134.8667
+        }
+      ]
+    },
+    {
+      "unit_id": "u016",
+      "start": 1073,
+      "end": 1081,
+      "sha256": "f5ff7d428a6a8a786d75b43f0d080adbba8b555c6debba6b24e8181d024d4c89",
+      "intervals": [
+        {
+          "scene_id": "S3_Formula",
+          "beat_id": "b5",
+          "start_seconds": 134.8667,
+          "end_seconds": 149.6
+        }
+      ]
+    },
+    {
+      "unit_id": "u017",
+      "start": 1082,
+      "end": 1131,
+      "sha256": "1d25b46280c2bc812b09a783071ea123cc292ce317c8cafc1375cbb4ed035bc1",
+      "intervals": [
+        {
+          "scene_id": "S3_Formula",
+          "beat_id": "b5",
+          "start_seconds": 134.8667,
+          "end_seconds": 149.6
+        }
+      ]
+    },
+    {
+      "unit_id": "u018",
+      "start": 1132,
+      "end": 1146,
+      "sha256": "e9f11c32b0798a4f1b10100f1fb2489eca2cf5a601147a7239e56ebb1f3c025c",
+      "intervals": [
+        {
+          "scene_id": "S3_Formula",
+          "beat_id": "b5",
+          "start_seconds": 134.8667,
+          "end_seconds": 149.6
+        }
+      ]
+    },
+    {
+      "unit_id": "u019",
+      "start": 1147,
+      "end": 1184,
+      "sha256": "e1e04d39c1e0b48aebff0e25352ecf514de36d49f10e150615fe7f8730cfd674",
+      "intervals": [
+        {
+          "scene_id": "S4_Compute",
+          "beat_id": "B1",
+          "start_seconds": 149.6,
+          "end_seconds": 159.1667
+        }
+      ]
+    },
+    {
+      "unit_id": "u020",
+      "start": 1185,
+      "end": 1227,
+      "sha256": "caa4a53de90b4971989dddc08f976a48872515e3fd7ead84a8fc6a50f1bf1e8e",
+      "intervals": [
+        {
+          "scene_id": "S4_Compute",
+          "beat_id": "B1",
+          "start_seconds": 149.6,
+          "end_seconds": 159.1667
+        }
+      ]
+    },
+    {
+      "unit_id": "u021",
+      "start": 1228,
+      "end": 1253,
+      "sha256": "e0d8b7bac29991cb526170591b5c6b3c6a9ef807038b31e96bd4afd088a64779",
+      "intervals": [
+        {
+          "scene_id": "S4_Compute",
+          "beat_id": "B2",
+          "start_seconds": 159.1667,
+          "end_seconds": 169.3667
+        }
+      ]
+    },
+    {
+      "unit_id": "u022",
+      "start": 1254,
+      "end": 1296,
+      "sha256": "b29ddd54942cffa3a30716d7de8be16a858a271954bcc03053ff19fbd969c8cb",
+      "intervals": [
+        {
+          "scene_id": "S4_Compute",
+          "beat_id": "B2",
+          "start_seconds": 159.1667,
+          "end_seconds": 169.3667
+        }
+      ]
+    },
+    {
+      "unit_id": "u023",
+      "start": 1297,
+      "end": 1361,
+      "sha256": "d078dccca1c27b7adf31ad020b6fd39c79ff1300c891799ac707abe684faae4d",
+      "intervals": [
+        {
+          "scene_id": "S4_Compute",
+          "beat_id": "B2",
+          "start_seconds": 159.1667,
+          "end_seconds": 169.3667
+        }
+      ]
+    },
+    {
+      "unit_id": "u024",
+      "start": 1362,
+      "end": 1382,
+      "sha256": "e5a08c955bb2918d924309bba2e6d55028a674fef952ef98ac64e2d5a34536a3",
+      "intervals": [
+        {
+          "scene_id": "S4_Compute",
+          "beat_id": "B3",
+          "start_seconds": 169.3667,
+          "end_seconds": 180.9333
+        }
+      ]
+    },
+    {
+      "unit_id": "u025",
+      "start": 1383,
+      "end": 1442,
+      "sha256": "6eb934d3ca1c51198d1f391860fa6259bd8ec5909a8f9f71555f8a8c1d3cf525",
+      "intervals": [
+        {
+          "scene_id": "S4_Compute",
+          "beat_id": "B3",
+          "start_seconds": 169.3667,
+          "end_seconds": 180.9333
+        }
+      ]
+    },
+    {
+      "unit_id": "u026",
+      "start": 1443,
+      "end": 1465,
+      "sha256": "558c60484e43bc229af5e63ad83785f6190815b91d84602033a1480c382def2b",
+      "intervals": [
+        {
+          "scene_id": "S4_Compute",
+          "beat_id": "B4",
+          "start_seconds": 180.9333,
+          "end_seconds": 191.5
+        }
+      ]
+    },
+    {
+      "unit_id": "u027",
+      "start": 1466,
+      "end": 1501,
+      "sha256": "3a3146f14f3715779c999fc936866270f8abbdec54fdee090c2384899485e509",
+      "intervals": [
+        {
+          "scene_id": "S4_Compute",
+          "beat_id": "B4",
+          "start_seconds": 180.9333,
+          "end_seconds": 191.5
+        }
+      ]
+    },
+    {
+      "unit_id": "u028",
+      "start": 1502,
+      "end": 1530,
+      "sha256": "3be13a3078ff8840e35ca17c5cdedee84193349b4b4b347f3f50bb16ab186899",
+      "intervals": [
+        {
+          "scene_id": "S4_Compute",
+          "beat_id": "B4",
+          "start_seconds": 180.9333,
+          "end_seconds": 191.5
+        }
+      ]
+    },
+    {
+      "unit_id": "u029",
+      "start": 1531,
+      "end": 1554,
+      "sha256": "2cf75754e29cf44c91ba5a8b835ba5c5df25153eea614cf0dd5039039e7105fc",
+      "intervals": [
+        {
+          "scene_id": "S4_Compute",
+          "beat_id": "B4",
+          "start_seconds": 180.9333,
+          "end_seconds": 191.5
+        }
+      ]
+    },
+    {
+      "unit_id": "u030",
+      "start": 1555,
+      "end": 1594,
+      "sha256": "7f8d49ba95ec77e7cd724564a511f8fb72f5489dbe82e5642e0b260e292b8e41",
+      "intervals": [
+        {
+          "scene_id": "S5_Concepts",
+          "beat_id": "B1_ThreeObjects",
+          "start_seconds": 191.5,
+          "end_seconds": 204.7
+        }
+      ]
+    },
+    {
+      "unit_id": "u031",
+      "start": 1595,
+      "end": 1925,
+      "sha256": "8b14554f8fb90655e673fddb8f5857b149626eeecf94bb6fc839166c54c97192",
+      "intervals": [
+        {
+          "scene_id": "S5_Concepts",
+          "beat_id": "B1_ThreeObjects",
+          "start_seconds": 191.5,
+          "end_seconds": 204.7
+        },
+        {
+          "scene_id": "S5_Concepts",
+          "beat_id": "B2_Coefficient",
+          "start_seconds": 204.7,
+          "end_seconds": 217.2
+        },
+        {
+          "scene_id": "S5_Concepts",
+          "beat_id": "B3_ScalarLength",
+          "start_seconds": 217.2,
+          "end_seconds": 229.9667
+        }
+      ]
+    },
+    {
+      "unit_id": "u032",
+      "start": 1926,
+      "end": 1933,
+      "sha256": "d70fd2963feb0032f6dc641221fcddb00b931d62d93e9f56933426486a2ab066",
+      "intervals": [
+        {
+          "scene_id": "S5_Concepts",
+          "beat_id": "B3_ScalarLength",
+          "start_seconds": 217.2,
+          "end_seconds": 229.9667
+        }
+      ]
+    },
+    {
+      "unit_id": "u033",
+      "start": 1934,
+      "end": 2061,
+      "sha256": "e9e030238b237dd227db1a72111d9d701dc7c3454c85bb4193bbbdd500869833",
+      "intervals": [
+        {
+          "scene_id": "S5_Concepts",
+          "beat_id": "B3_ScalarLength",
+          "start_seconds": 217.2,
+          "end_seconds": 229.9667
+        },
+        {
+          "scene_id": "S5_Concepts",
+          "beat_id": "B4_ProjectionVector",
+          "start_seconds": 229.9667,
+          "end_seconds": 242.4667
+        }
+      ]
+    },
+    {
+      "unit_id": "u034",
+      "start": 2062,
+      "end": 2229,
+      "sha256": "1ef2e7114e49e38b3d1812d5e390d90b1cd280501ae684f3a128e95372398fc4",
+      "intervals": [
+        {
+          "scene_id": "S5_Concepts",
+          "beat_id": "B4_ProjectionVector",
+          "start_seconds": 229.9667,
+          "end_seconds": 242.4667
+        }
+      ]
+    },
+    {
+      "unit_id": "u035",
+      "start": 2230,
+      "end": 2269,
+      "sha256": "b25deea184528ed5c3c209795a93ee258de91674176823ab27d115a474ecb6f8",
+      "intervals": [
+        {
+          "scene_id": "S6_Verify",
+          "beat_id": "b1_residual",
+          "start_seconds": 242.4667,
+          "end_seconds": 255.3667
+        }
+      ]
+    },
+    {
+      "unit_id": "u036",
+      "start": 2270,
+      "end": 2299,
+      "sha256": "ccb386f067da3b6cf2a581a09ad83217517bd0d174a49deaeb22ab6b566c4dfb",
+      "intervals": [
+        {
+          "scene_id": "S6_Verify",
+          "beat_id": "b1_residual",
+          "start_seconds": 242.4667,
+          "end_seconds": 255.3667
+        }
+      ]
+    },
+    {
+      "unit_id": "u037",
+      "start": 2300,
+      "end": 2320,
+      "sha256": "53fc3ec632b36e6ae8336d69833c5ce34c48055cb3f072b96e37ad08c4ee045c",
+      "intervals": [
+        {
+          "scene_id": "S6_Verify",
+          "beat_id": "b2_dotzero",
+          "start_seconds": 255.3667,
+          "end_seconds": 268.1
+        }
+      ]
+    },
+    {
+      "unit_id": "u038",
+      "start": 2321,
+      "end": 2379,
+      "sha256": "e7afa0d0d0d88b397db56f3db3f58008743bcd77c050728f5b04f49d5791fed2",
+      "intervals": [
+        {
+          "scene_id": "S6_Verify",
+          "beat_id": "b2_dotzero",
+          "start_seconds": 255.3667,
+          "end_seconds": 268.1
+        }
+      ]
+    },
+    {
+      "unit_id": "u039",
+      "start": 2380,
+      "end": 2501,
+      "sha256": "ffcffcb13c63373f282f3c8fce52fe886d5cf75c48c1243644894e4f05211a7c",
+      "intervals": [
+        {
+          "scene_id": "S6_Verify",
+          "beat_id": "b3_orthogonal",
+          "start_seconds": 268.1,
+          "end_seconds": 279.8
+        }
+      ]
+    },
+    {
+      "unit_id": "u040",
+      "start": 2502,
+      "end": 2726,
+      "sha256": "e1160173c39729ffd3ce675439ab795d6e653386a47ee7ff842314b50d169c2b",
+      "intervals": [
+        {
+          "scene_id": "S6_Verify",
+          "beat_id": "b4_conclusion",
+          "start_seconds": 279.8,
+          "end_seconds": 294.8
+        }
+      ]
+    },
+    {
+      "unit_id": "u041",
+      "start": 2727,
+      "end": 2795,
+      "sha256": "afa509c4227a0141cfc9e3e0d5a390c810dd6699dabe30e64fee927320c7229b",
+      "intervals": [
+        {
+          "scene_id": "S6_Verify",
+          "beat_id": "b4_conclusion",
+          "start_seconds": 279.8,
+          "end_seconds": 294.8
+        }
+      ]
+    }
+  ],
+  "report_asset_ids": [
+    "file_72cce245d605458cb26f611545189dce"
+  ],
+  "frame_mapping": [
+    {
+      "scene_id": "S1_Setup",
+      "beat_id": "B1_Given",
+      "asset_id": "file_ce83dae603c84109b329a2d25091973a",
+      "seconds": 1.6
+    },
+    {
+      "scene_id": "S1_Setup",
+      "beat_id": "B2_Nonzero",
+      "asset_id": "file_21ac6ee3e2604215bfeba7e2f7435d4e",
+      "seconds": 13.2
+    },
+    {
+      "scene_id": "S1_Setup",
+      "beat_id": "B3_Check",
+      "asset_id": "file_6e2c62d3a4994ab5b9a2ed25355fbcb3",
+      "seconds": 25.5333
+    },
+    {
+      "scene_id": "S2_Geometry",
+      "beat_id": "B1",
+      "asset_id": "file_1026c6ba57634366862ed0eb4da89ec2",
+      "seconds": 35.5667
+    },
+    {
+      "scene_id": "S2_Geometry",
+      "beat_id": "B2",
+      "asset_id": "file_76d0f63142454258a5b4ce0ab4d6b704",
+      "seconds": 45.9
+    },
+    {
+      "scene_id": "S2_Geometry",
+      "beat_id": "B3",
+      "asset_id": "file_0f1f15d5493542b280140e7119f61fc1",
+      "seconds": 56.8
+    },
+    {
+      "scene_id": "S2_Geometry",
+      "beat_id": "B4",
+      "asset_id": "file_eb4a3603705248aaae6b74415e603e99",
+      "seconds": 69.3667
+    },
+    {
+      "scene_id": "S3_Formula",
+      "beat_id": "b1",
+      "asset_id": "file_e155775281c54c1fbd5293a5111168cc",
+      "seconds": 81.8333
+    },
+    {
+      "scene_id": "S3_Formula",
+      "beat_id": "b2",
+      "asset_id": "file_68af8f16f0db43d4ac8c0ec8adbe4789",
+      "seconds": 93.9667
+    },
+    {
+      "scene_id": "S3_Formula",
+      "beat_id": "b3",
+      "asset_id": "file_a474fee6e44542e6a55bfe74ba549a03",
+      "seconds": 107.8667
+    },
+    {
+      "scene_id": "S3_Formula",
+      "beat_id": "b4",
+      "asset_id": "file_a43ab91408bb4db29ec96edaebb3a5f6",
+      "seconds": 123.1333
+    },
+    {
+      "scene_id": "S3_Formula",
+      "beat_id": "b5",
+      "asset_id": "file_9f805cfe6740453e8c3ac39d0c8e407e",
+      "seconds": 136.5
+    },
+    {
+      "scene_id": "S4_Compute",
+      "beat_id": "B1",
+      "asset_id": "file_a05eff78aeb544bdbae197ad2356b2f0",
+      "seconds": 151.2
+    },
+    {
+      "scene_id": "S4_Compute",
+      "beat_id": "B2",
+      "asset_id": "file_164791bc6167434eb24b6abd88adf2da",
+      "seconds": 160.8
+    },
+    {
+      "scene_id": "S4_Compute",
+      "beat_id": "B3",
+      "asset_id": "file_16db042a7222427ba5281965a040c487",
+      "seconds": 171.0
+    },
+    {
+      "scene_id": "S4_Compute",
+      "beat_id": "B4",
+      "asset_id": "file_5675cf4b426f4fd086f7cd8dcad79cb1",
+      "seconds": 182.5667
+    },
+    {
+      "scene_id": "S5_Concepts",
+      "beat_id": "B1_ThreeObjects",
+      "asset_id": "file_1873b02b914c42fd940029a284c523b1",
+      "seconds": 193.1
+    },
+    {
+      "scene_id": "S5_Concepts",
+      "beat_id": "B2_Coefficient",
+      "asset_id": "file_edf228c8a2a8477686358d0f22face1c",
+      "seconds": 206.3333
+    },
+    {
+      "scene_id": "S5_Concepts",
+      "beat_id": "B3_ScalarLength",
+      "asset_id": "file_b07c521f1d794ca799800bf438d78659",
+      "seconds": 218.8333
+    },
+    {
+      "scene_id": "S5_Concepts",
+      "beat_id": "B4_ProjectionVector",
+      "asset_id": "file_6cede86679d64b17b325675d0d7ec873",
+      "seconds": 231.6
+    },
+    {
+      "scene_id": "S6_Verify",
+      "beat_id": "b1_residual",
+      "asset_id": "file_5feb5422081349daa5f2aa642994633d",
+      "seconds": 244.0667
+    },
+    {
+      "scene_id": "S6_Verify",
+      "beat_id": "b2_dotzero",
+      "asset_id": "file_333f714614a243ada2845c4715edfedf",
+      "seconds": 257.0
+    },
+    {
+      "scene_id": "S6_Verify",
+      "beat_id": "b3_orthogonal",
+      "asset_id": "file_c5138e321c884c54ac8841e03f2d1786",
+      "seconds": 269.7333
+    },
+    {
+      "scene_id": "S6_Verify",
+      "beat_id": "b4_conclusion",
+      "asset_id": "file_283f80f56ac04a7485b24ae727288c53",
+      "seconds": 281.4333
+    }
+  ],
+  "created_at": "2026-10-30T14:22:37.749502+00:00"
+}

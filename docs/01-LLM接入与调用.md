@@ -1,10 +1,12 @@
 # LLM 接入与调用
 
-更新日期：2026年10月29日
+更新日期：2026年10月30日
 
 状态：已增加按调用选择的普通 Markdown／结构化 JSON 输出，Chat 的 Bearer、自定义 API Key 头、无鉴权与完整生成 URL；回答角色独立检查、接受任务时固定配置。连接／绑定分层、多协议和能力探测仍为待实现设计。现有配置字段和验证范围见[文字链路实现与覆盖检查](文字链路实现与覆盖检查.md)。当前实际配置见 [运行与配置](运行与配置.md)，跨模块规则见 [文档总览](index.md)。
 
 当前已增加[LLM 界面配置](LLM界面配置.md)，使用独立的 `/api/v2/llm-settings` 读写和草稿测试，支持多模型、回答／检查角色、私有凭据保存与热应用；下文 ProviderConnection／ModelBinding 多协议管理仍为后续设计。
+
+2026-10-30 的[真实复测](../testresult/review-20261030/真实测试报告.md)验证了 DeepSeek 的多种地址、鉴权、token 参数和 JSON 模式，并验证两个角色独立配置、保存及重启恢复。此次真实厂商数为 1；同一服务的不同配置不能当作跨厂商兼容性证据。
 
 本文统一维护设计思想、配置对象、调用契约、实施步骤与开源实现依据。上游实现通过固定提交和具体代码段链接引用，不直接复制源码。
 
@@ -21,9 +23,9 @@
 | 当前代码 | 已有能力 | 下一步需要拆开的内容 |
 |---|---|---|
 | `src/manimagent/config.py` 的 `ModelConfig` | `base_url`、`model`、`api_key_env`、JSON 模式与 token 参数 | 连接、协议、鉴权策略、模型绑定与兼容规则 |
-| `Settings.model_for()` | `roles` 引用模型配置，默认使用 text 或 vision | 保留业务角色，改为解析模型绑定 |
-| `ChatProvider._post()` | 使用 httpx，统一超时，发送 Bearer 请求头 | 接收已解析的传输配置，不再固定一种鉴权 |
-| `ChatProvider.complete()` | Chat 消息、图片 data URL、JSON 校验、预算与有限重试 | 把协议编码、响应解码与调用执行职责分开 |
+| `Settings.model_for()` | writer／checker 的 `roles` 引用模型配置，默认使用 text | 保留业务角色，改为解析模型绑定 |
+| `ChatProvider._post()` | 使用 httpx，统一超时；Bearer、自定义 API Key 头或无鉴权 | 继续拆分传输配置与协议适配 |
+| `ChatProvider.complete_text()`／`complete()` | Markdown／结构化 JSON、完整性校验、预算与有限重试 | 把协议编码、响应解码与调用执行职责分开；图片输入尚未实现 |
 
 当前默认由 base_url 追加 /chat/completions，也支持 generate_url 完整地址；auth_mode 支持 bearer、api_key_header、none。Responses、Messages 等其他协议仍未实现。
 

@@ -52,7 +52,7 @@ class Usage(BaseModel):
 
 
 class Ref(Contract):
-    type: Literal["generation", "material", "answer"]
+    type: Literal["generation", "material", "answer", "video"]
     id: ResourceID
 
 
@@ -197,8 +197,7 @@ class AnswerSource(Contract):
 
 
 class TextGenerationRequest(Contract):
-    # Text completion has its own completion rule; video is deliberately not scheduled.
-    output_mode: Literal["text"] = "text"
+    output_mode: Literal["text", "both"] = "text"
     source: Annotated[InputsSource | MaterialsSource | AnswerSource, Field(discriminator="type")]
 
 
@@ -220,10 +219,11 @@ class StageState(Contract):
 class Generation(Contract):
     schema_version: Literal["1.0"] = "1.0"
     generation_id: ResourceID
-    output_mode: Literal["text"] = "text"
+    output_mode: Literal["text", "both"] = "text"
     source: dict
     material_ids: list[ResourceID] = Field(default_factory=list)
     answer_id: ResourceID | None = None
+    video_id: ResourceID | None = None
     stages: dict[str, StageState] = Field(
         default_factory=lambda: {"material": StageState(), "answer": StageState()}
     )
@@ -236,9 +236,16 @@ class Generation(Contract):
 class Job(Contract):
     schema_version: Literal["1.0"] = "1.0"
     job_id: ResourceID
-    kind: Literal["generation", "parse", "answer"]
+    kind: Literal["generation", "parse", "answer", "video"]
     status: Literal[
-        "queued", "running", "completed", "needs_input", "needs_review", "failed", "interrupted"
+        "queued",
+        "running",
+        "completed",
+        "partial",
+        "needs_input",
+        "needs_review",
+        "failed",
+        "interrupted",
     ] = "queued"
     stage: str = "queued"
     message: str = "等待处理"

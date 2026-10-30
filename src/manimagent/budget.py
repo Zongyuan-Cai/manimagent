@@ -18,6 +18,15 @@ class Budget:
         self.started = time.monotonic()
         self.deadline = self.started + settings.task_timeout
         self.stop = stop
+        self.retry_allowance: int | None = None
+
+    def allow_retry(self) -> bool:
+        if self.retry_allowance is None:
+            return True
+        if self.retry_allowance <= 0:
+            return False
+        self.retry_allowance -= 1
+        return True
 
     def remaining(self, deadline: float | None = None) -> float:
         if self.stop is not None and self.stop.is_set():

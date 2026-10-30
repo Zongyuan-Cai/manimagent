@@ -1,0 +1,2699 @@
+{
+  "schema_version": "1.0",
+  "plan_id": "plan_3a19308b6f87403cbc5614e49f931c94",
+  "answer_id": "answer_a1581222d0be416fa90439901a4d9b0f",
+  "answer_hash": "4d23d45289b3bf4b9f33459a1af7f87a2097051de759ec56dd4023e01b481105",
+  "narration_hash": "e4e63fb90e6f957bf3e572b6439561e50aaa62a9e0502802ca9d7373cae87495",
+  "timing_revision": 1,
+  "prompt_version": "silent-templates-2",
+  "template_version": "native-manim-1",
+  "profile_id": "standard_silent",
+  "time_source": "estimated",
+  "outline": {
+    "status": "ready",
+    "message": "按a=(3,2)、b=(2,0)完整推导正交投影，先讲前提与几何，再推公式、计算、辨析、验证。",
+    "title": "求向量在方向上的正交投影",
+    "audience": "具备向量基础、首次学习正交投影的学生",
+    "difficulty": "basic",
+    "difficulty_reason": "只需二维点积与一次系数代入，概念新但计算简单。",
+    "duration_reason": "需铺开前提、几何、公式推导、数值计算、三量区分与验证，约5分钟。",
+    "scenes": [
+      {
+        "scene_id": "S1_Setup",
+        "title": "题目与前提",
+        "objective": "明确题目目标，并说明b≠0是投影有意义的前提。",
+        "unit_ids": [
+          "u001",
+          "u002",
+          "u003"
+        ],
+        "beat_count": 3
+      },
+      {
+        "scene_id": "S2_Geometry",
+        "title": "投影与垂足",
+        "objective": "用垂足理解投影向量，并写出残差与b正交的条件。",
+        "unit_ids": [
+          "u004",
+          "u005",
+          "u006",
+          "u007"
+        ],
+        "beat_count": 4
+      },
+      {
+        "scene_id": "S3_Formula",
+        "title": "推导系数公式",
+        "objective": "设p=cb，由正交条件展开点积并解出c。",
+        "unit_ids": [
+          "u008",
+          "u009",
+          "u010",
+          "u011",
+          "u012",
+          "u013",
+          "u014",
+          "u015",
+          "u016",
+          "u017",
+          "u018"
+        ],
+        "beat_count": 5
+      },
+      {
+        "scene_id": "S4_Compute",
+        "title": "逐项代入计算",
+        "objective": "算出a·b、b·b、c与投影向量p。",
+        "unit_ids": [
+          "u019",
+          "u020",
+          "u021",
+          "u022",
+          "u023",
+          "u024",
+          "u025",
+          "u026",
+          "u027",
+          "u028",
+          "u029"
+        ],
+        "beat_count": 4
+      },
+      {
+        "scene_id": "S5_Concepts",
+        "title": "三个量要分清",
+        "objective": "区分标量系数、标量投影长度与投影向量。",
+        "unit_ids": [
+          "u030",
+          "u031",
+          "u032",
+          "u033",
+          "u034"
+        ],
+        "beat_count": 4
+      },
+      {
+        "scene_id": "S6_Verify",
+        "title": "残差验证与结论",
+        "objective": "用(a-p)·b=0验证正交性并汇总答案。",
+        "unit_ids": [
+          "u035",
+          "u036",
+          "u037",
+          "u038",
+          "u039",
+          "u040",
+          "u041"
+        ],
+        "beat_count": 4
+      }
+    ]
+  },
+  "teaching_units": [
+    {
+      "unit_id": "u001",
+      "start": 0,
+      "end": 231,
+      "text": "# 求 \\(a=(3,2)\\) 在 \\(b=(2,0)\\) 方向上的正交投影\n\n题目给定 \\(a=(3,2)\\)、\\(b=(2,0)\\)，要求完整求出 \\(a\\) 在 \\(b\\) 方向上的正交投影 [[material_04e6bbecb45e49b7bb5d462321ae0ecf:block_feafe326c7fb43009ae8c5bbdb84b63c]]。下面按“前提 → 几何意义 → 公式推导 → 逐项计算 → 概念区分 → 验证”的顺序展开。\n",
+      "sha256": "a8ac314179c191cf442ac19fc3a02583d8d7271b806fd6fdd19c795a81f8c96b"
+    },
+    {
+      "unit_id": "u002",
+      "start": 232,
+      "end": 405,
+      "text": "## 1. 前提：\\(b\\neq 0\\)\n\n“\\(a\\) 在 \\(b\\) 方向上的投影”这一说法，只有在 \\(b\\) 是非零向量时才有意义。因为投影要沿着 \\(b\\) 所确定的直线方向走，而 \\(b=0\\) 时不产生任何方向；同时下面的公式会出现除以 \\(b\\cdot b\\)，而 \\(b=0\\) 时 \\(b\\cdot b=0\\)，无法作除数。\n",
+      "sha256": "5623b4b5580801f560c4ba9558669b40daf045b40262b27d5534050e0330bb13"
+    },
+    {
+      "unit_id": "u003",
+      "start": 406,
+      "end": 444,
+      "text": "本题 \\(b=(2,0)\\neq(0,0)\\)，前提满足，可以正常求投影。\n",
+      "sha256": "9663b3c76dd7fe29ee2d525b20d5186b479ef6233573685cefa77f54de18a4af"
+    },
+    {
+      "unit_id": "u004",
+      "start": 445,
+      "end": 608,
+      "text": "## 2. 几何意义：投影与垂足\n\n设 \\(p\\) 是 \\(a\\) 在 \\(b\\) 方向上的正交投影向量。几何上，把 \\(a\\) 的起点与 \\(b\\) 的起点放在同一点 \\(O\\)，过 \\(a\\) 的终点作 \\(b\\) 所在直线的垂线，垂线与该直线的交点就是**垂足**。从 \\(O\\) 指向这个垂足的向量就是 \\(p\\)。\n",
+      "sha256": "14a2aacfa4b2b354f65faaac85c2209e6f28fde6d72321ad79d030f0af74a9ca"
+    },
+    {
+      "unit_id": "u005",
+      "start": 609,
+      "end": 652,
+      "text": "正交投影的关键特征是：**残差 \\(a-p\\) 垂直于 \\(b\\) 所在直线**，即\n",
+      "sha256": "efc4eb496cdca6ba9fe06a8c98cbe7dfbd588425900ca320d9b9f96fc6aaf868"
+    },
+    {
+      "unit_id": "u006",
+      "start": 653,
+      "end": 718,
+      "text": "\\[\n(a-p)\\perp b \\quad\\Longleftrightarrow\\quad (a-p)\\cdot b=0.\n\\]\n",
+      "sha256": "c6b514a1cc57b95311a6897851a46cbc0b78a2463131f123832018bf6ac0ad45"
+    },
+    {
+      "unit_id": "u007",
+      "start": 719,
+      "end": 772,
+      "text": "这正是后面推导系数公式的依据：垂足是直线上离 \\(a\\) 终点最近的点，而“最近”等价于连线与直线垂直。\n",
+      "sha256": "bb6e9bebb5c0f9350334474a39302c204591d20a4b1056a3ad74391ac2502401"
+    },
+    {
+      "unit_id": "u008",
+      "start": 773,
+      "end": 844,
+      "text": "## 3. 设 \\(p=cb\\)，由正交条件推导系数公式\n\n因为 \\(p\\) 落在 \\(b\\) 所确定的直线上，所以存在实数 \\(c\\) 使\n",
+      "sha256": "a762aa640e34690aa3b72644cbb502027314512f11cd0aabc34da85bbac3d245"
+    },
+    {
+      "unit_id": "u009",
+      "start": 845,
+      "end": 857,
+      "text": "\\[\np=cb.\n\\]\n",
+      "sha256": "424453ce87b077cbdeb75ea5a9ca9e1a651f85ef4cb2f6877c482736aa78f94f"
+    },
+    {
+      "unit_id": "u010",
+      "start": 858,
+      "end": 885,
+      "text": "代入正交条件 \\((a-p)\\cdot b=0\\)：\n",
+      "sha256": "c99c4b6a5c25d3062c63ee706c9f51ecaac137a44836c254e5c7ff0be4b9e9a0"
+    },
+    {
+      "unit_id": "u011",
+      "start": 886,
+      "end": 909,
+      "text": "\\[\n(a-cb)\\cdot b=0.\n\\]\n",
+      "sha256": "0318bd34ada5812550ad30a849fed7a01893102c3f63dffe83c83182f99becca"
+    },
+    {
+      "unit_id": "u012",
+      "start": 910,
+      "end": 922,
+      "text": "利用点积的线性性展开：\n",
+      "sha256": "b6a8f4402a5476ce1868540c95a4c0ac04d3c8a6250d28647dc715a14d3ff599"
+    },
+    {
+      "unit_id": "u013",
+      "start": 923,
+      "end": 955,
+      "text": "\\[\na\\cdot b-c\\,(b\\cdot b)=0.\n\\]\n",
+      "sha256": "6fdde0cdd853dfd1067067cdd58e67ebf73bda6b4dbf1e9d4fc438888c2949d5"
+    },
+    {
+      "unit_id": "u014",
+      "start": 956,
+      "end": 1028,
+      "text": "由于 \\(b\\neq 0\\)，有 \\(b\\cdot b=\\lVert b\\rVert^2>0\\)，可以两边除以 \\(b\\cdot b\\)，得到\n",
+      "sha256": "5f128e07dc3222f8b605cddd9a1430cc8b9a43e3ccdaba07d347bae79e415a89"
+    },
+    {
+      "unit_id": "u015",
+      "start": 1029,
+      "end": 1072,
+      "text": "\\[\n\\boxed{c=\\frac{a\\cdot b}{b\\cdot b}}.\n\\]\n",
+      "sha256": "513a8bca9d3b6e7ec0b36cd41575766a2443933eeefb30c108e6d36cb2b58058"
+    },
+    {
+      "unit_id": "u016",
+      "start": 1073,
+      "end": 1081,
+      "text": "于是投影向量为\n",
+      "sha256": "f5ff7d428a6a8a786d75b43f0d080adbba8b555c6debba6b24e8181d024d4c89"
+    },
+    {
+      "unit_id": "u017",
+      "start": 1082,
+      "end": 1131,
+      "text": "\\[\n\\boxed{p=cb=\\frac{a\\cdot b}{b\\cdot b}\\,b}.\n\\]\n",
+      "sha256": "1d25b46280c2bc812b09a783071ea123cc292ce317c8cafc1375cbb4ed035bc1"
+    },
+    {
+      "unit_id": "u018",
+      "start": 1132,
+      "end": 1146,
+      "text": "这就是正交投影的系数公式。\n",
+      "sha256": "e9f11c32b0798a4f1b10100f1fb2489eca2cf5a601147a7239e56ebb1f3c025c"
+    },
+    {
+      "unit_id": "u019",
+      "start": 1147,
+      "end": 1184,
+      "text": "## 4. 逐项计算\n\n**(1) 计算 \\(a\\cdot b\\)：**\n",
+      "sha256": "e1e04d39c1e0b48aebff0e25352ecf514de36d49f10e150615fe7f8730cfd674"
+    },
+    {
+      "unit_id": "u020",
+      "start": 1185,
+      "end": 1227,
+      "text": "\\[\na\\cdot b=3\\times 2+2\\times 0=6+0=6.\n\\]\n",
+      "sha256": "caa4a53de90b4971989dddc08f976a48872515e3fd7ead84a8fc6a50f1bf1e8e"
+    },
+    {
+      "unit_id": "u021",
+      "start": 1228,
+      "end": 1253,
+      "text": "**(2) 计算 \\(b\\cdot b\\)：**\n",
+      "sha256": "e0d8b7bac29991cb526170591b5c6b3c6a9ef807038b31e96bd4afd088a64779"
+    },
+    {
+      "unit_id": "u022",
+      "start": 1254,
+      "end": 1296,
+      "text": "\\[\nb\\cdot b=2\\times 2+0\\times 0=4+0=4.\n\\]\n",
+      "sha256": "b29ddd54942cffa3a30716d7de8be16a858a271954bcc03053ff19fbd969c8cb"
+    },
+    {
+      "unit_id": "u023",
+      "start": 1297,
+      "end": 1361,
+      "text": "也可用模长验证：\\(\\lVert b\\rVert=2\\)，故 \\(b\\cdot b=\\lVert b\\rVert^2=4\\)。\n",
+      "sha256": "d078dccca1c27b7adf31ad020b6fd39c79ff1300c891799ac707abe684faae4d"
+    },
+    {
+      "unit_id": "u024",
+      "start": 1362,
+      "end": 1382,
+      "text": "**(3) 计算系数 \\(c\\)：**\n",
+      "sha256": "e5a08c955bb2918d924309bba2e6d55028a674fef952ef98ac64e2d5a34536a3"
+    },
+    {
+      "unit_id": "u025",
+      "start": 1383,
+      "end": 1442,
+      "text": "\\[\nc=\\frac{a\\cdot b}{b\\cdot b}=\\frac{6}{4}=\\frac{3}{2}.\n\\]\n",
+      "sha256": "6eb934d3ca1c51198d1f391860fa6259bd8ec5909a8f9f71555f8a8c1d3cf525"
+    },
+    {
+      "unit_id": "u026",
+      "start": 1443,
+      "end": 1465,
+      "text": "**(4) 计算投影向量 \\(p\\)：**\n",
+      "sha256": "558c60484e43bc229af5e63ad83785f6190815b91d84602033a1480c382def2b"
+    },
+    {
+      "unit_id": "u027",
+      "start": 1466,
+      "end": 1501,
+      "text": "\\[\np=cb=\\frac{3}{2}(2,0)=(3,0).\n\\]\n",
+      "sha256": "3a3146f14f3715779c999fc936866270f8abbdec54fdee090c2384899485e509"
+    },
+    {
+      "unit_id": "u028",
+      "start": 1502,
+      "end": 1530,
+      "text": "即 \\(a\\) 在 \\(b\\) 方向上的正交投影向量为\n",
+      "sha256": "3be13a3078ff8840e35ca17c5cdedee84193349b4b4b347f3f50bb16ab186899"
+    },
+    {
+      "unit_id": "u029",
+      "start": 1531,
+      "end": 1554,
+      "text": "\\[\n\\boxed{p=(3,0)}.\n\\]\n",
+      "sha256": "2cf75754e29cf44c91ba5a8b835ba5c5df25153eea614cf0dd5039039e7105fc"
+    },
+    {
+      "unit_id": "u030",
+      "start": 1555,
+      "end": 1594,
+      "text": "## 5. 区分三个容易混淆的量\n\n这道题里出现了三个不同的对象，必须分清：\n",
+      "sha256": "7f8d49ba95ec77e7cd724564a511f8fb72f5489dbe82e5642e0b260e292b8e41"
+    },
+    {
+      "unit_id": "u031",
+      "start": 1595,
+      "end": 1925,
+      "text": "| 名称 | 符号与公式 | 本题数值 | 类型 |\n|---|---|---|---|\n| 标量系数 | \\(c=\\dfrac{a\\cdot b}{b\\cdot b}\\) | \\(\\dfrac{3}{2}\\) | 纯数，表示沿 \\(b\\) 方向“放大多少倍” |\n| 标量投影长度（带符号） | \\(a\\cdot \\hat b=\\dfrac{a\\cdot b}{\\lVert b\\rVert}=\\lVert a\\rVert\\cos\\theta\\) | \\(\\dfrac{6}{2}=3\\) | 纯数，表示投影的有向长度 |\n| 投影向量 | \\(p=cb=\\dfrac{a\\cdot b}{b\\cdot b}\\,b\\) | \\((3,0)\\) | 向量 |\n",
+      "sha256": "8b14554f8fb90655e673fddb8f5857b149626eeecf94bb6fc839166c54c97192"
+    },
+    {
+      "unit_id": "u032",
+      "start": 1926,
+      "end": 1933,
+      "text": "三者关系是：\n",
+      "sha256": "d70fd2963feb0032f6dc641221fcddb00b931d62d93e9f56933426486a2ab066"
+    },
+    {
+      "unit_id": "u033",
+      "start": 1934,
+      "end": 2061,
+      "text": "- 标量投影长度 \\(=\\;c\\,\\lVert b\\rVert=\\dfrac{3}{2}\\times 2=3\\)；\n- 投影向量 \\(=\\bigl(\\text{标量投影长度}\\bigr)\\cdot \\hat b=3\\cdot(1,0)=(3,0)\\)。\n",
+      "sha256": "e9e030238b237dd227db1a72111d9d701dc7c3454c85bb4193bbbdd500869833"
+    },
+    {
+      "unit_id": "u034",
+      "start": 2062,
+      "end": 2229,
+      "text": "注意 \\(c=\\frac32\\) 本身**不是**投影长度，它依赖 \\(b\\) 的长度；只有乘上 \\(\\lVert b\\rVert\\) 之后才得到与 \\(b\\) 缩放无关的投影长度 \\(3\\)。本题 \\(b\\) 与 \\(x\\) 轴同向，\\(\\hat b=(1,0)\\)，所以投影向量就是 \\((3,0)\\)，投影长度为 \\(3\\)。\n",
+      "sha256": "1ef2e7114e49e38b3d1812d5e390d90b1cd280501ae684f3a128e95372398fc4"
+    },
+    {
+      "unit_id": "u035",
+      "start": 2230,
+      "end": 2269,
+      "text": "## 6. 用残差 \\(a-p\\) 与 \\(b\\) 的点积验证\n\n先算残差：\n",
+      "sha256": "b25deea184528ed5c3c209795a93ee258de91674176823ab27d115a474ecb6f8"
+    },
+    {
+      "unit_id": "u036",
+      "start": 2270,
+      "end": 2299,
+      "text": "\\[\na-p=(3,2)-(3,0)=(0,2).\n\\]\n",
+      "sha256": "ccb386f067da3b6cf2a581a09ad83217517bd0d174a49deaeb22ab6b566c4dfb"
+    },
+    {
+      "unit_id": "u037",
+      "start": 2300,
+      "end": 2320,
+      "text": "再与 \\(b=(2,0)\\) 作点积：\n",
+      "sha256": "53fc3ec632b36e6ae8336d69833c5ce34c48055cb3f072b96e37ad08c4ee045c"
+    },
+    {
+      "unit_id": "u038",
+      "start": 2321,
+      "end": 2379,
+      "text": "\\[\n(a-p)\\cdot b=(0,2)\\cdot(2,0)=0\\times 2+2\\times 0=0.\n\\]\n",
+      "sha256": "e7afa0d0d0d88b397db56f3db3f58008743bcd77c050728f5b04f49d5791fed2"
+    },
+    {
+      "unit_id": "u039",
+      "start": 2380,
+      "end": 2501,
+      "text": "点积为 \\(0\\)，说明 \\(a-p\\perp b\\)，即残差确实垂直于 \\(b\\) 所在直线，垂足位置正确。这与 §2 的正交条件一致，也反向验证了系数公式 \\(c=\\frac{a\\cdot b}{b\\cdot b}\\) 的推导没有问题。\n",
+      "sha256": "ffcffcb13c63373f282f3c8fce52fe886d5cf75c48c1243644894e4f05211a7c"
+    },
+    {
+      "unit_id": "u040",
+      "start": 2502,
+      "end": 2726,
+      "text": "## 7. 结论汇总\n\n- 前提 \\(b=(2,0)\\neq 0\\) 成立，投影有意义。\n- \\(a\\cdot b=6\\)，\\(b\\cdot b=4\\)，系数 \\(c=\\dfrac{6}{4}=\\dfrac{3}{2}\\)。\n- 投影向量 \\(p=(3,0)\\)。\n- 标量投影长度 \\(=3\\)，标量系数 \\(=\\dfrac{3}{2}\\)，二者不同。\n- 残差 \\(a-p=(0,2)\\)，且 \\((a-p)\\cdot b=0\\)，验证通过。\n",
+      "sha256": "e1160173c39729ffd3ce675439ab795d6e653386a47ee7ff842314b50d169c2b"
+    },
+    {
+      "unit_id": "u041",
+      "start": 2727,
+      "end": 2795,
+      "text": "因此，**\\(a=(3,2)\\) 在 \\(b=(2,0)\\) 方向上的正交投影为 \\((3,0)\\)**，其有向投影长度为 \\(3\\)。",
+      "sha256": "afa509c4227a0141cfc9e3e0d5a390c810dd6699dabe30e64fee927320c7229b"
+    }
+  ],
+  "scenes": [
+    {
+      "scene_id": "S1_Setup",
+      "title": "题目与前提",
+      "objective": "明确题目目标，并说明b≠0是投影有意义的前提。",
+      "unit_ids": [
+        "u001",
+        "u002",
+        "u003"
+      ],
+      "beat_count": 3,
+      "beats": [
+        {
+          "beat_id": "B1_Given",
+          "unit_ids": [
+            "u001"
+          ],
+          "headline": "题目与目标",
+          "screen_text": "给定a=(3,2)、b=(2,0)，求a在b方向上的正交投影。",
+          "formulas": [
+            "a=(3,2), b=(2,0)"
+          ],
+          "spoken_text": "题目给定向量a等于(3,2)，向量b等于(2,0)。目标是求出a在b方向上的正交投影。",
+          "cue_text": "题目给定向量a",
+          "cue_objects": [
+            "vec_a",
+            "vec_b"
+          ],
+          "reading_reason": "屏幕文字列出已知向量和问题目标，约20字，阅读约4秒，加公式理解约4秒，共8秒。",
+          "diagram": {
+            "kind": "plane",
+            "x_range": [
+              -1.0,
+              4.0
+            ],
+            "y_range": [
+              -1.0,
+              3.0
+            ],
+            "objects": [
+              {
+                "object_id": "vec_a",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    3.0,
+                    2.0
+                  ]
+                ],
+                "label": "a",
+                "color": "blue",
+                "radius": 0.2
+              },
+              {
+                "object_id": "vec_b",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    2.0,
+                    0.0
+                  ]
+                ],
+                "label": "b",
+                "color": "gold",
+                "radius": 0.2
+              }
+            ],
+            "matrix": []
+          },
+          "start_seconds": 0.0,
+          "stable_seconds": 1.0,
+          "end_seconds": 11.6,
+          "narration_end_seconds": 10.576923076923077,
+          "cue_seconds": 1.0,
+          "time_source": "estimated"
+        },
+        {
+          "beat_id": "B2_Nonzero",
+          "unit_ids": [
+            "u002"
+          ],
+          "headline": "前提b≠0",
+          "screen_text": "投影沿b方向定义，b=0无方向且公式会出现除以零，所以必须b≠0。",
+          "formulas": [
+            "b\\neq 0"
+          ],
+          "spoken_text": "投影要沿b方向定义，b=0时没有方向，同时公式会出现除以b·b，因此必须要求b不等于零。",
+          "cue_text": "投影要沿b方向定义",
+          "cue_objects": [
+            "vec_a",
+            "vec_b"
+          ],
+          "reading_reason": "屏幕文字约30字，阅读约6秒，公式理解约4秒，共10秒。",
+          "diagram": {
+            "kind": "plane",
+            "x_range": [
+              -1.0,
+              4.0
+            ],
+            "y_range": [
+              -1.0,
+              3.0
+            ],
+            "objects": [
+              {
+                "object_id": "vec_a",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    3.0,
+                    2.0
+                  ]
+                ],
+                "label": "a",
+                "color": "blue",
+                "radius": 0.2
+              },
+              {
+                "object_id": "vec_b",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    2.0,
+                    0.0
+                  ]
+                ],
+                "label": "b",
+                "color": "gold",
+                "radius": 0.2
+              }
+            ],
+            "matrix": []
+          },
+          "start_seconds": 11.6,
+          "stable_seconds": 12.6,
+          "end_seconds": 23.933333333333334,
+          "narration_end_seconds": 22.907692307692308,
+          "cue_seconds": 12.6,
+          "time_source": "estimated"
+        },
+        {
+          "beat_id": "B3_Check",
+          "unit_ids": [
+            "u003"
+          ],
+          "headline": "本题满足前提",
+          "screen_text": "本题b=(2,0)不是零向量，前提满足，可以正常求投影。",
+          "formulas": [
+            "b=(2,0)\\neq(0,0)"
+          ],
+          "spoken_text": "本题b等于(2,0)，不是零向量，前提满足，因此可以正常求投影。",
+          "cue_text": "本题b等于(2,0)",
+          "cue_objects": [
+            "vec_b"
+          ],
+          "reading_reason": "屏幕文字约25字，阅读约5秒，公式理解约3秒，共8秒。",
+          "diagram": {
+            "kind": "plane",
+            "x_range": [
+              -1.0,
+              4.0
+            ],
+            "y_range": [
+              -1.0,
+              3.0
+            ],
+            "objects": [
+              {
+                "object_id": "vec_a",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    3.0,
+                    2.0
+                  ]
+                ],
+                "label": "a",
+                "color": "blue",
+                "radius": 0.2
+              },
+              {
+                "object_id": "vec_b",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    2.0,
+                    0.0
+                  ]
+                ],
+                "label": "b",
+                "color": "gold",
+                "radius": 0.2
+              }
+            ],
+            "matrix": []
+          },
+          "start_seconds": 23.933333333333334,
+          "stable_seconds": 24.933333333333334,
+          "end_seconds": 34.03333333333333,
+          "narration_end_seconds": 31.587179487179487,
+          "cue_seconds": 24.933333333333334,
+          "time_source": "estimated"
+        }
+      ],
+      "duration_seconds": 34.033333
+    },
+    {
+      "scene_id": "S2_Geometry",
+      "title": "投影与垂足",
+      "objective": "用垂足理解投影向量，并写出残差与b正交的条件。",
+      "unit_ids": [
+        "u004",
+        "u005",
+        "u006",
+        "u007"
+      ],
+      "beat_count": 4,
+      "beats": [
+        {
+          "beat_id": "B1",
+          "unit_ids": [
+            "u004"
+          ],
+          "headline": "同起点放置向量",
+          "screen_text": "把a与b的起点都放在O，b=(2,0)确定一条水平直线。",
+          "formulas": [
+            "a=(3,2), b=(2,0)"
+          ],
+          "spoken_text": "先把 a 与 b 的起点都放在同一点 O，b 确定一条水平直线。",
+          "cue_text": "先把 a 与 b 的起点都放在同一点",
+          "cue_objects": [
+            "vec_a",
+            "vec_b",
+            "line_b",
+            "origin"
+          ],
+          "reading_reason": "短句交代放置方式，同时给出两向量坐标，便于对齐图形。",
+          "diagram": {
+            "kind": "plane",
+            "x_range": [
+              -1.0,
+              4.0
+            ],
+            "y_range": [
+              -1.0,
+              3.0
+            ],
+            "objects": [
+              {
+                "object_id": "origin",
+                "kind": "point",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ]
+                ],
+                "label": "O",
+                "color": "white",
+                "radius": 0.2
+              },
+              {
+                "object_id": "line_b",
+                "kind": "dashed",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    4.0,
+                    0.0
+                  ]
+                ],
+                "label": "b所在直线",
+                "color": "muted",
+                "radius": 0.2
+              },
+              {
+                "object_id": "vec_b",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    2.0,
+                    0.0
+                  ]
+                ],
+                "label": "b",
+                "color": "teal",
+                "radius": 0.2
+              },
+              {
+                "object_id": "vec_a",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    3.0,
+                    2.0
+                  ]
+                ],
+                "label": "a",
+                "color": "blue",
+                "radius": 0.2
+              }
+            ],
+            "matrix": []
+          },
+          "start_seconds": 0.0,
+          "stable_seconds": 1.0,
+          "end_seconds": 10.3,
+          "narration_end_seconds": 7.538461538461538,
+          "cue_seconds": 1.0,
+          "time_source": "estimated"
+        },
+        {
+          "beat_id": "B2",
+          "unit_ids": [
+            "u004"
+          ],
+          "headline": "作垂线得垂足",
+          "screen_text": "过a的终点作b所在直线的垂线，交点为垂足，O到垂足的向量就是p。",
+          "formulas": [
+            "p=(3,0)"
+          ],
+          "spoken_text": "过 a 的终点作 b 所在直线的垂线，交点就是垂足，从 O 指向垂足的向量就是 p。",
+          "cue_text": "过 a 的终点作 b 所在直线的垂线",
+          "cue_objects": [
+            "vec_a",
+            "vec_b",
+            "line_b",
+            "foot",
+            "vec_p",
+            "perp_seg"
+          ],
+          "reading_reason": "一句话说明垂足作法与p的定义，配图可直接对照，约需数秒定位。",
+          "diagram": {
+            "kind": "plane",
+            "x_range": [
+              -1.0,
+              4.0
+            ],
+            "y_range": [
+              -1.0,
+              3.0
+            ],
+            "objects": [
+              {
+                "object_id": "origin",
+                "kind": "point",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ]
+                ],
+                "label": "O",
+                "color": "white",
+                "radius": 0.2
+              },
+              {
+                "object_id": "line_b",
+                "kind": "dashed",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    4.0,
+                    0.0
+                  ]
+                ],
+                "label": "b所在直线",
+                "color": "muted",
+                "radius": 0.2
+              },
+              {
+                "object_id": "vec_b",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    2.0,
+                    0.0
+                  ]
+                ],
+                "label": "b",
+                "color": "teal",
+                "radius": 0.2
+              },
+              {
+                "object_id": "vec_a",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    3.0,
+                    2.0
+                  ]
+                ],
+                "label": "a",
+                "color": "blue",
+                "radius": 0.2
+              },
+              {
+                "object_id": "foot",
+                "kind": "point",
+                "points": [
+                  [
+                    3.0,
+                    0.0
+                  ]
+                ],
+                "label": "垂足",
+                "color": "gold",
+                "radius": 0.2
+              },
+              {
+                "object_id": "vec_p",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    3.0,
+                    0.0
+                  ]
+                ],
+                "label": "p",
+                "color": "gold",
+                "radius": 0.2
+              },
+              {
+                "object_id": "perp_seg",
+                "kind": "segment",
+                "points": [
+                  [
+                    3.0,
+                    2.0
+                  ],
+                  [
+                    3.0,
+                    0.0
+                  ]
+                ],
+                "label": "垂线",
+                "color": "red",
+                "radius": 0.2
+              }
+            ],
+            "matrix": []
+          },
+          "start_seconds": 10.3,
+          "stable_seconds": 11.3,
+          "end_seconds": 21.200000000000003,
+          "narration_end_seconds": 19.838461538461537,
+          "cue_seconds": 11.3,
+          "time_source": "estimated"
+        },
+        {
+          "beat_id": "B3",
+          "unit_ids": [
+            "u005",
+            "u006"
+          ],
+          "headline": "残差垂直于直线",
+          "screen_text": "a减p就是残差，从垂足指向a终点；正交投影要求它垂直于b所在直线。",
+          "formulas": [
+            "(a-p) perp b",
+            "(a-p) cdot b=0"
+          ],
+          "spoken_text": "a 减 p 就是残差，正交投影要求残差垂直于 b 所在直线，等价于点积为零。",
+          "cue_text": "a 减 p 就是残差",
+          "cue_objects": [
+            "vec_a",
+            "vec_b",
+            "vec_p",
+            "residual"
+          ],
+          "reading_reason": "推出正交条件并给出点积形式，公式短，需少量理解时间。",
+          "diagram": {
+            "kind": "plane",
+            "x_range": [
+              -1.0,
+              4.0
+            ],
+            "y_range": [
+              -1.0,
+              3.0
+            ],
+            "objects": [
+              {
+                "object_id": "line_b",
+                "kind": "dashed",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    4.0,
+                    0.0
+                  ]
+                ],
+                "label": "b所在直线",
+                "color": "muted",
+                "radius": 0.2
+              },
+              {
+                "object_id": "vec_b",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    2.0,
+                    0.0
+                  ]
+                ],
+                "label": "b",
+                "color": "teal",
+                "radius": 0.2
+              },
+              {
+                "object_id": "vec_a",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    3.0,
+                    2.0
+                  ]
+                ],
+                "label": "a",
+                "color": "blue",
+                "radius": 0.2
+              },
+              {
+                "object_id": "vec_p",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    3.0,
+                    0.0
+                  ]
+                ],
+                "label": "p",
+                "color": "gold",
+                "radius": 0.2
+              },
+              {
+                "object_id": "residual",
+                "kind": "vector",
+                "points": [
+                  [
+                    3.0,
+                    0.0
+                  ],
+                  [
+                    3.0,
+                    2.0
+                  ]
+                ],
+                "label": "a-p",
+                "color": "red",
+                "radius": 0.2
+              }
+            ],
+            "matrix": []
+          },
+          "start_seconds": 21.200000000000003,
+          "stable_seconds": 22.200000000000003,
+          "end_seconds": 33.800000000000004,
+          "narration_end_seconds": 30.103846153846156,
+          "cue_seconds": 22.200000000000003,
+          "time_source": "estimated"
+        },
+        {
+          "beat_id": "B4",
+          "unit_ids": [
+            "u005",
+            "u006",
+            "u007"
+          ],
+          "headline": "垂足即最近点",
+          "screen_text": "垂足是直线上离a终点最近的点，最近意味着连线与直线垂直，这是用点积列方程的根据。",
+          "formulas": [
+            "dot(a-p,b)=0"
+          ],
+          "spoken_text": "垂足是直线上离 a 终点最近的点，最近等价于连线垂直于直线，这就是后面用点积列方程的根据。",
+          "cue_text": "垂足是直线上离 a 终点最近的点",
+          "cue_objects": [
+            "vec_a",
+            "vec_b",
+            "vec_p",
+            "residual",
+            "foot"
+          ],
+          "reading_reason": "收束几何直觉并指明理由，句子稍长，配图辅助阅读。",
+          "diagram": {
+            "kind": "plane",
+            "x_range": [
+              -1.0,
+              4.0
+            ],
+            "y_range": [
+              -1.0,
+              3.0
+            ],
+            "objects": [
+              {
+                "object_id": "line_b",
+                "kind": "dashed",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    4.0,
+                    0.0
+                  ]
+                ],
+                "label": "b所在直线",
+                "color": "muted",
+                "radius": 0.2
+              },
+              {
+                "object_id": "vec_b",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    2.0,
+                    0.0
+                  ]
+                ],
+                "label": "b",
+                "color": "teal",
+                "radius": 0.2
+              },
+              {
+                "object_id": "vec_a",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    3.0,
+                    2.0
+                  ]
+                ],
+                "label": "a",
+                "color": "blue",
+                "radius": 0.2
+              },
+              {
+                "object_id": "vec_p",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    3.0,
+                    0.0
+                  ]
+                ],
+                "label": "p",
+                "color": "gold",
+                "radius": 0.2
+              },
+              {
+                "object_id": "residual",
+                "kind": "vector",
+                "points": [
+                  [
+                    3.0,
+                    0.0
+                  ],
+                  [
+                    3.0,
+                    2.0
+                  ]
+                ],
+                "label": "a-p",
+                "color": "red",
+                "radius": 0.2
+              },
+              {
+                "object_id": "foot",
+                "kind": "point",
+                "points": [
+                  [
+                    3.0,
+                    0.0
+                  ]
+                ],
+                "label": "垂足",
+                "color": "gold",
+                "radius": 0.2
+              }
+            ],
+            "matrix": []
+          },
+          "start_seconds": 33.800000000000004,
+          "stable_seconds": 34.800000000000004,
+          "end_seconds": 46.300000000000004,
+          "narration_end_seconds": 44.93461538461539,
+          "cue_seconds": 34.800000000000004,
+          "time_source": "estimated"
+        }
+      ],
+      "duration_seconds": 46.3
+    },
+    {
+      "scene_id": "S3_Formula",
+      "title": "推导系数公式",
+      "objective": "设p=cb，由正交条件展开点积并解出c。",
+      "unit_ids": [
+        "u008",
+        "u009",
+        "u010",
+        "u011",
+        "u012",
+        "u013",
+        "u014",
+        "u015",
+        "u016",
+        "u017",
+        "u018"
+      ],
+      "beat_count": 5,
+      "beats": [
+        {
+          "beat_id": "b1",
+          "unit_ids": [
+            "u008",
+            "u009"
+          ],
+          "headline": "设投影在b直线上",
+          "screen_text": "p是a的正交投影，落在b所在直线上，因此p是b的某个倍数，设p=c·b。",
+          "formulas": [
+            "p = c b"
+          ],
+          "spoken_text": "因为p落在b所确定的直线上，所以存在实数c，使p等于c乘以b。",
+          "cue_text": "p落在b所确定的直线上",
+          "cue_objects": [
+            "vec_b",
+            "vec_a",
+            "vec_p",
+            "line_b"
+          ],
+          "reading_reason": "先说明p在b直线上，才能设倍数关系；公式一行，易于阅读。",
+          "diagram": {
+            "kind": "plane",
+            "x_range": [
+              -1.0,
+              5.0
+            ],
+            "y_range": [
+              -1.0,
+              3.0
+            ],
+            "objects": [
+              {
+                "object_id": "vec_a",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    3.0,
+                    2.0
+                  ]
+                ],
+                "label": "a",
+                "color": "blue",
+                "radius": 0.2
+              },
+              {
+                "object_id": "vec_b",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    2.0,
+                    0.0
+                  ]
+                ],
+                "label": "b",
+                "color": "gold",
+                "radius": 0.2
+              },
+              {
+                "object_id": "line_b",
+                "kind": "segment",
+                "points": [
+                  [
+                    -0.5,
+                    0.0
+                  ],
+                  [
+                    4.5,
+                    0.0
+                  ]
+                ],
+                "label": "b所在直线",
+                "color": "muted",
+                "radius": 0.2
+              },
+              {
+                "object_id": "vec_p",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    3.0,
+                    0.0
+                  ]
+                ],
+                "label": "p",
+                "color": "teal",
+                "radius": 0.2
+              },
+              {
+                "object_id": "residual",
+                "kind": "dashed",
+                "points": [
+                  [
+                    3.0,
+                    0.0
+                  ],
+                  [
+                    3.0,
+                    2.0
+                  ]
+                ],
+                "label": "a-p",
+                "color": "red",
+                "radius": 0.2
+              }
+            ],
+            "matrix": []
+          },
+          "start_seconds": 0.0,
+          "stable_seconds": 1.0,
+          "end_seconds": 12.133333333333333,
+          "narration_end_seconds": 8.807692307692307,
+          "cue_seconds": 1.5,
+          "time_source": "estimated"
+        },
+        {
+          "beat_id": "b2",
+          "unit_ids": [
+            "u010",
+            "u011"
+          ],
+          "headline": "代入正交条件",
+          "screen_text": "投影要求残差a-p与b正交，所以(a-p)·b=0；把p=c·b代入得到(a-cb)·b=0。",
+          "formulas": [
+            "(a - c b) \\cdot b = 0"
+          ],
+          "spoken_text": "正交条件要求残差a减p与b的点积为零；把p等于c乘b代入，得到a减cb与b的点积等于零。",
+          "cue_text": "正交条件要求残差",
+          "cue_objects": [
+            "vec_a",
+            "vec_b",
+            "vec_p",
+            "residual"
+          ],
+          "reading_reason": "只做一步代入，文字解释依据；公式简短。",
+          "diagram": {
+            "kind": "plane",
+            "x_range": [
+              -1.0,
+              5.0
+            ],
+            "y_range": [
+              -1.0,
+              3.0
+            ],
+            "objects": [
+              {
+                "object_id": "vec_a",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    3.0,
+                    2.0
+                  ]
+                ],
+                "label": "a",
+                "color": "blue",
+                "radius": 0.2
+              },
+              {
+                "object_id": "vec_b",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    2.0,
+                    0.0
+                  ]
+                ],
+                "label": "b",
+                "color": "gold",
+                "radius": 0.2
+              },
+              {
+                "object_id": "vec_p",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    3.0,
+                    0.0
+                  ]
+                ],
+                "label": "p",
+                "color": "teal",
+                "radius": 0.2
+              },
+              {
+                "object_id": "residual",
+                "kind": "dashed",
+                "points": [
+                  [
+                    3.0,
+                    0.0
+                  ],
+                  [
+                    3.0,
+                    2.0
+                  ]
+                ],
+                "label": "a-p",
+                "color": "red",
+                "radius": 0.2
+              }
+            ],
+            "matrix": []
+          },
+          "start_seconds": 12.133333333333333,
+          "stable_seconds": 13.133333333333333,
+          "end_seconds": 26.03333333333333,
+          "narration_end_seconds": 24.344871794871793,
+          "cue_seconds": 13.133333333333333,
+          "time_source": "estimated"
+        },
+        {
+          "beat_id": "b3",
+          "unit_ids": [
+            "u012",
+            "u013"
+          ],
+          "headline": "展开点积",
+          "screen_text": "利用点积线性性展开：(a-cb)·b = a·b - c(b·b)。令其为零，得到a·b - c(b·b)=0。",
+          "formulas": [
+            "a \\cdot b - c (b \\cdot b) = 0"
+          ],
+          "spoken_text": "利用点积的线性性，把a减cb与b的点积展开为a点b减去c乘以b点b；令它等于零。",
+          "cue_text": "利用点积的线性性",
+          "cue_objects": [
+            "vec_a",
+            "vec_b",
+            "vec_p",
+            "residual"
+          ],
+          "reading_reason": "解释展开步骤；公式只有一项，理解迅速。",
+          "diagram": {
+            "kind": "plane",
+            "x_range": [
+              -1.0,
+              5.0
+            ],
+            "y_range": [
+              -1.0,
+              3.0
+            ],
+            "objects": [
+              {
+                "object_id": "vec_a",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    3.0,
+                    2.0
+                  ]
+                ],
+                "label": "a",
+                "color": "blue",
+                "radius": 0.2
+              },
+              {
+                "object_id": "vec_b",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    2.0,
+                    0.0
+                  ]
+                ],
+                "label": "b",
+                "color": "gold",
+                "radius": 0.2
+              },
+              {
+                "object_id": "vec_p",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    3.0,
+                    0.0
+                  ]
+                ],
+                "label": "p",
+                "color": "teal",
+                "radius": 0.2
+              },
+              {
+                "object_id": "residual",
+                "kind": "dashed",
+                "points": [
+                  [
+                    3.0,
+                    0.0
+                  ],
+                  [
+                    3.0,
+                    2.0
+                  ]
+                ],
+                "label": "a-p",
+                "color": "red",
+                "radius": 0.2
+              }
+            ],
+            "matrix": []
+          },
+          "start_seconds": 26.03333333333333,
+          "stable_seconds": 27.03333333333333,
+          "end_seconds": 41.33333333333333,
+          "narration_end_seconds": 37.11025641025641,
+          "cue_seconds": 27.03333333333333,
+          "time_source": "estimated"
+        },
+        {
+          "beat_id": "b4",
+          "unit_ids": [
+            "u014",
+            "u015"
+          ],
+          "headline": "解出系数c",
+          "screen_text": "因b≠0，b·b>0，可除以b·b，解出标量系数c = (a·b)/(b·b)。",
+          "formulas": [
+            "c = \\frac{a \\cdot b}{b \\cdot b}"
+          ],
+          "spoken_text": "由于b不是零向量，b点b大于零，所以可以两边除以b点b，解得系数c等于a点b除以b点b。",
+          "cue_text": "由于b不是零向量",
+          "cue_objects": [
+            "vec_b"
+          ],
+          "reading_reason": "强调前提b≠0后方可除；公式为最终系数公式。",
+          "diagram": {
+            "kind": "plane",
+            "x_range": [
+              -1.0,
+              5.0
+            ],
+            "y_range": [
+              -1.0,
+              3.0
+            ],
+            "objects": [
+              {
+                "object_id": "vec_b",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    2.0,
+                    0.0
+                  ]
+                ],
+                "label": "b",
+                "color": "gold",
+                "radius": 0.2
+              }
+            ],
+            "matrix": []
+          },
+          "start_seconds": 41.33333333333333,
+          "stable_seconds": 42.33333333333333,
+          "end_seconds": 54.699999999999996,
+          "narration_end_seconds": 53.679487179487175,
+          "cue_seconds": 42.33333333333333,
+          "time_source": "estimated"
+        },
+        {
+          "beat_id": "b5",
+          "unit_ids": [
+            "u016",
+            "u017",
+            "u018"
+          ],
+          "headline": "投影向量公式",
+          "screen_text": "将c代回p=cb，得到正交投影向量p = (a·b)/(b·b) · b，这就是系数公式。",
+          "formulas": [
+            "p = \\frac{a \\cdot b}{b \\cdot b} b"
+          ],
+          "spoken_text": "把系数c代回投影式p等于cb，得到投影向量p等于a点b除以b点b再乘以b，这就是正交投影的系数公式。",
+          "cue_text": "把系数c代回投影式",
+          "cue_objects": [
+            "vec_a",
+            "vec_b",
+            "vec_p"
+          ],
+          "reading_reason": "完成公式推导并回指投影向量，公式包含分数，阅读稍缓。",
+          "diagram": {
+            "kind": "plane",
+            "x_range": [
+              -1.0,
+              5.0
+            ],
+            "y_range": [
+              -1.0,
+              3.0
+            ],
+            "objects": [
+              {
+                "object_id": "vec_a",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    3.0,
+                    2.0
+                  ]
+                ],
+                "label": "a",
+                "color": "blue",
+                "radius": 0.2
+              },
+              {
+                "object_id": "vec_b",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    2.0,
+                    0.0
+                  ]
+                ],
+                "label": "b",
+                "color": "gold",
+                "radius": 0.2
+              },
+              {
+                "object_id": "vec_p",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    3.0,
+                    0.0
+                  ]
+                ],
+                "label": "p",
+                "color": "teal",
+                "radius": 0.2
+              }
+            ],
+            "matrix": []
+          },
+          "start_seconds": 54.699999999999996,
+          "stable_seconds": 55.699999999999996,
+          "end_seconds": 69.43333333333332,
+          "narration_end_seconds": 68.41153846153846,
+          "cue_seconds": 55.699999999999996,
+          "time_source": "estimated"
+        }
+      ],
+      "duration_seconds": 69.433333
+    },
+    {
+      "scene_id": "S4_Compute",
+      "title": "逐项代入计算",
+      "objective": "算出a·b、b·b、c与投影向量p。",
+      "unit_ids": [
+        "u019",
+        "u020",
+        "u021",
+        "u022",
+        "u023",
+        "u024",
+        "u025",
+        "u026",
+        "u027",
+        "u028",
+        "u029"
+      ],
+      "beat_count": 4,
+      "beats": [
+        {
+          "beat_id": "B1",
+          "unit_ids": [
+            "u019",
+            "u020"
+          ],
+          "headline": "计算a·b",
+          "screen_text": "先算点积a·b：分量相乘再相加，得6。",
+          "formulas": [
+            "a\\cdot b=3\\times2+2\\times0",
+            "a\\cdot b=6+0=6"
+          ],
+          "spoken_text": "先算点积a·b，分量相乘再相加，得到六。",
+          "cue_text": "先算点积",
+          "cue_objects": [],
+          "reading_reason": "屏幕文字和两行公式共约30字符，阅读约6秒，加上理解点积计算约4秒。",
+          "diagram": {
+            "kind": "none",
+            "x_range": [
+              -1.0,
+              5.0
+            ],
+            "y_range": [
+              -1.0,
+              4.0
+            ],
+            "objects": [],
+            "matrix": []
+          },
+          "start_seconds": 0.0,
+          "stable_seconds": 1.0,
+          "end_seconds": 9.6,
+          "narration_end_seconds": 5.269230769230769,
+          "cue_seconds": 1.0,
+          "time_source": "estimated"
+        },
+        {
+          "beat_id": "B2",
+          "unit_ids": [
+            "u021",
+            "u022",
+            "u023"
+          ],
+          "headline": "计算b·b",
+          "screen_text": "再算b·b：b与自身点积，也可用模长平方验证。",
+          "formulas": [
+            "b\\cdot b=2\\times2+0\\times0=4",
+            "\\Vert b\\Vert=2,\\ b\\cdot b=\\Vert b\\Vert^2=4"
+          ],
+          "spoken_text": "再算b·b，b与自身点积，得四；也可用模长平方验证。",
+          "cue_text": "再算b·b",
+          "cue_objects": [],
+          "reading_reason": "屏幕文字约25字符，公式两行约40字符，阅读约13秒，理解模长验证约3秒。",
+          "diagram": {
+            "kind": "none",
+            "x_range": [
+              -1.0,
+              5.0
+            ],
+            "y_range": [
+              -1.0,
+              4.0
+            ],
+            "objects": [],
+            "matrix": []
+          },
+          "start_seconds": 9.6,
+          "stable_seconds": 10.6,
+          "end_seconds": 19.799999999999997,
+          "narration_end_seconds": 16.253846153846155,
+          "cue_seconds": 10.6,
+          "time_source": "estimated"
+        },
+        {
+          "beat_id": "B3",
+          "unit_ids": [
+            "u024",
+            "u025"
+          ],
+          "headline": "求系数c",
+          "screen_text": "代入系数公式c=(a·b)/(b·b)，得c=6/4=3/2。",
+          "formulas": [
+            "c=\\frac{a\\cdot b}{b\\cdot b}",
+            "c=\\frac{6}{4}=\\frac{3}{2}"
+          ],
+          "spoken_text": "代入系数公式c等于a·b除以b·b，得到二分之三。",
+          "cue_text": "代入系数公式",
+          "cue_objects": [],
+          "reading_reason": "屏幕文字约30字符，公式两行约30字符，阅读约12秒，理解代入约4秒。",
+          "diagram": {
+            "kind": "none",
+            "x_range": [
+              -1.0,
+              5.0
+            ],
+            "y_range": [
+              -1.0,
+              4.0
+            ],
+            "objects": [],
+            "matrix": []
+          },
+          "start_seconds": 19.799999999999997,
+          "stable_seconds": 20.799999999999997,
+          "end_seconds": 31.4,
+          "narration_end_seconds": 26.72307692307692,
+          "cue_seconds": 20.799999999999997,
+          "time_source": "estimated"
+        },
+        {
+          "beat_id": "B4",
+          "unit_ids": [
+            "u026",
+            "u027",
+            "u028",
+            "u029"
+          ],
+          "headline": "求投影向量p",
+          "screen_text": "投影向量p=cb，代入c和b，得p=(3,0)。",
+          "formulas": [
+            "p=cb=\\frac{3}{2}(2,0)",
+            "p=(3,0)"
+          ],
+          "spoken_text": "投影向量p等于c乘b，代入后得到三零。",
+          "cue_text": "投影向量p",
+          "cue_objects": [],
+          "reading_reason": "屏幕文字约25字符，公式两行约25字符，阅读约10秒，理解投影向量约3秒。",
+          "diagram": {
+            "kind": "none",
+            "x_range": [
+              -1.0,
+              5.0
+            ],
+            "y_range": [
+              -1.0,
+              4.0
+            ],
+            "objects": [],
+            "matrix": []
+          },
+          "start_seconds": 31.4,
+          "stable_seconds": 32.4,
+          "end_seconds": 42.0,
+          "narration_end_seconds": 37.05384615384615,
+          "cue_seconds": 32.4,
+          "time_source": "estimated"
+        }
+      ],
+      "duration_seconds": 42.0
+    },
+    {
+      "scene_id": "S5_Concepts",
+      "title": "三个量要分清",
+      "objective": "区分标量系数、标量投影长度与投影向量。",
+      "unit_ids": [
+        "u030",
+        "u031",
+        "u032",
+        "u033",
+        "u034"
+      ],
+      "beat_count": 4,
+      "beats": [
+        {
+          "beat_id": "B1_ThreeObjects",
+          "unit_ids": [
+            "u030",
+            "u031"
+          ],
+          "headline": "三个对象要分清",
+          "screen_text": "本题出现三个不同量：标量系数c、标量投影长度、投影向量p；后者才是向量。",
+          "formulas": [
+            "c=\\frac{a\\cdot b}{b\\cdot b}=\\frac{3}{2}",
+            "p=cb=(3,0)"
+          ],
+          "spoken_text": "这道题里出现了三个不同的对象，必须分清：标量系数是二分之三，标量投影长度是三，投影向量是三零。",
+          "cue_text": "三个不同的对象",
+          "cue_objects": [
+            "vec_p"
+          ],
+          "reading_reason": "先立三个名称，公式短，留时间对照图形记忆。",
+          "diagram": {
+            "kind": "plane",
+            "x_range": [
+              -1.0,
+              4.0
+            ],
+            "y_range": [
+              -1.0,
+              3.0
+            ],
+            "objects": [
+              {
+                "object_id": "vec_a",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    3.0,
+                    2.0
+                  ]
+                ],
+                "label": "a=(3,2)",
+                "color": "blue",
+                "radius": 0.2
+              },
+              {
+                "object_id": "vec_b",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    2.0,
+                    0.0
+                  ]
+                ],
+                "label": "b=(2,0)",
+                "color": "teal",
+                "radius": 0.2
+              },
+              {
+                "object_id": "vec_p",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    3.0,
+                    0.0
+                  ]
+                ],
+                "label": "p=(3,0)",
+                "color": "gold",
+                "radius": 0.2
+              }
+            ],
+            "matrix": []
+          },
+          "start_seconds": 0.0,
+          "stable_seconds": 1.0,
+          "end_seconds": 13.2,
+          "narration_end_seconds": 11.5,
+          "cue_seconds": 2.75,
+          "time_source": "estimated"
+        },
+        {
+          "beat_id": "B2_Coefficient",
+          "unit_ids": [
+            "u031"
+          ],
+          "headline": "标量系数不是长度",
+          "screen_text": "c由a·b除以b·b得到，依赖b的长度；c=3/2表示沿b放大倍数，是纯数。",
+          "formulas": [
+            "c=\\frac{a\\cdot b}{b\\cdot b}=\\frac{6}{4}=\\frac{3}{2}"
+          ],
+          "spoken_text": "标量系数由点积比得出，等于二分之三，它只是沿b方向的放大倍数，不是投影长度。",
+          "cue_text": "标量系数",
+          "cue_objects": [
+            "vec_b",
+            "vec_p"
+          ],
+          "reading_reason": "强调系数为纯数，与图中向量对照，避免把3/2当长度。",
+          "diagram": {
+            "kind": "plane",
+            "x_range": [
+              -1.0,
+              4.0
+            ],
+            "y_range": [
+              -1.0,
+              3.0
+            ],
+            "objects": [
+              {
+                "object_id": "vec_a",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    3.0,
+                    2.0
+                  ]
+                ],
+                "label": "a=(3,2)",
+                "color": "blue",
+                "radius": 0.2
+              },
+              {
+                "object_id": "vec_b",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    2.0,
+                    0.0
+                  ]
+                ],
+                "label": "b=(2,0)",
+                "color": "teal",
+                "radius": 0.2
+              },
+              {
+                "object_id": "vec_p",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    3.0,
+                    0.0
+                  ]
+                ],
+                "label": "p=cb",
+                "color": "gold",
+                "radius": 0.2
+              }
+            ],
+            "matrix": []
+          },
+          "start_seconds": 13.2,
+          "stable_seconds": 14.2,
+          "end_seconds": 25.7,
+          "narration_end_seconds": 22.834615384615383,
+          "cue_seconds": 14.2,
+          "time_source": "estimated"
+        },
+        {
+          "beat_id": "B3_ScalarLength",
+          "unit_ids": [
+            "u031",
+            "u032",
+            "u033"
+          ],
+          "headline": "标量投影长度",
+          "screen_text": "投影长度=c乘b的模，得3/2乘2等于3；它是带符号的纯数，不是向量。",
+          "formulas": [
+            "a\\cdot\\hat b=\\frac{a\\cdot b}{\\Vert b\\Vert}=\\frac{6}{2}=3",
+            "c\\Vert b\\Vert=\\frac{3}{2}\\times 2=3"
+          ],
+          "spoken_text": "把系数乘上b的模，就得到标量投影长度，等于二分之三乘二，也就是三。",
+          "cue_text": "标量投影长度",
+          "cue_objects": [
+            "vec_b",
+            "vec_p"
+          ],
+          "reading_reason": "两条短等式展示两种算法，配图看清3是长度而非箭头。",
+          "diagram": {
+            "kind": "plane",
+            "x_range": [
+              -1.0,
+              4.0
+            ],
+            "y_range": [
+              -1.0,
+              3.0
+            ],
+            "objects": [
+              {
+                "object_id": "vec_b",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    2.0,
+                    0.0
+                  ]
+                ],
+                "label": "b=(2,0)",
+                "color": "teal",
+                "radius": 0.2
+              },
+              {
+                "object_id": "vec_p",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    3.0,
+                    0.0
+                  ]
+                ],
+                "label": "p=(3,0)",
+                "color": "gold",
+                "radius": 0.2
+              },
+              {
+                "object_id": "pt_unit",
+                "kind": "point",
+                "points": [
+                  [
+                    1.0,
+                    0.0
+                  ]
+                ],
+                "label": "b方向单位点",
+                "color": "white",
+                "radius": 0.2
+              }
+            ],
+            "matrix": []
+          },
+          "start_seconds": 25.7,
+          "stable_seconds": 26.7,
+          "end_seconds": 38.5,
+          "narration_end_seconds": 34.08461538461538,
+          "cue_seconds": 29.584615384615383,
+          "time_source": "estimated"
+        },
+        {
+          "beat_id": "B4_ProjectionVector",
+          "unit_ids": [
+            "u033",
+            "u034"
+          ],
+          "headline": "投影向量是箭头",
+          "screen_text": "投影长度乘单位方向得投影向量：3乘(1,0)等于(3,0)；与c=3/2不同。",
+          "formulas": [
+            "p=3\\cdot(1,0)=(3,0)"
+          ],
+          "spoken_text": "投影长度乘单位方向，得到投影向量三零；它与系数二分之三不同，是真正的向量。",
+          "cue_text": "投影向量",
+          "cue_objects": [
+            "vec_p"
+          ],
+          "reading_reason": "最后落到向量结果，短公式与图中红色箭头对应，收束三个量。",
+          "diagram": {
+            "kind": "plane",
+            "x_range": [
+              -1.0,
+              4.0
+            ],
+            "y_range": [
+              -1.0,
+              3.0
+            ],
+            "objects": [
+              {
+                "object_id": "vec_p",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    3.0,
+                    0.0
+                  ]
+                ],
+                "label": "p=(3,0)",
+                "color": "red",
+                "radius": 0.2
+              },
+              {
+                "object_id": "pt_tip",
+                "kind": "point",
+                "points": [
+                  [
+                    3.0,
+                    0.0
+                  ]
+                ],
+                "label": "垂足",
+                "color": "gold",
+                "radius": 0.2
+              }
+            ],
+            "matrix": []
+          },
+          "start_seconds": 38.5,
+          "stable_seconds": 39.5,
+          "end_seconds": 51.0,
+          "narration_end_seconds": 47.75,
+          "cue_seconds": 42.25,
+          "time_source": "estimated"
+        }
+      ],
+      "duration_seconds": 51.0
+    },
+    {
+      "scene_id": "S6_Verify",
+      "title": "残差验证与结论",
+      "objective": "用(a-p)·b=0验证正交性并汇总答案。",
+      "unit_ids": [
+        "u035",
+        "u036",
+        "u037",
+        "u038",
+        "u039",
+        "u040",
+        "u041"
+      ],
+      "beat_count": 4,
+      "beats": [
+        {
+          "beat_id": "b1_residual",
+          "unit_ids": [
+            "u035",
+            "u036"
+          ],
+          "headline": "先算残差",
+          "screen_text": "验证正交性，先求残差a-p。用a=(3,2)减p=(3,0)，x分量抵消，只剩y分量2。",
+          "formulas": [
+            "a-p=(3,2)-(3,0)=(0,2)"
+          ],
+          "spoken_text": "验证投影是否正确，先算残差。用a减去p，得到向量a-p等于(0,2)。",
+          "cue_text": "先算残差",
+          "cue_objects": [
+            "vec_a",
+            "vec_p",
+            "vec_res"
+          ],
+          "reading_reason": "一句话说明验证目的与减法，公式一行短，留出看图与计算时间。",
+          "diagram": {
+            "kind": "plane",
+            "x_range": [
+              -1.0,
+              5.0
+            ],
+            "y_range": [
+              -1.0,
+              4.0
+            ],
+            "objects": [
+              {
+                "object_id": "vec_b",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    2.0,
+                    0.0
+                  ]
+                ],
+                "label": "b",
+                "color": "blue",
+                "radius": 0.2
+              },
+              {
+                "object_id": "vec_a",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    3.0,
+                    2.0
+                  ]
+                ],
+                "label": "a",
+                "color": "teal",
+                "radius": 0.2
+              },
+              {
+                "object_id": "vec_p",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    3.0,
+                    0.0
+                  ]
+                ],
+                "label": "p",
+                "color": "gold",
+                "radius": 0.2
+              },
+              {
+                "object_id": "vec_res",
+                "kind": "vector",
+                "points": [
+                  [
+                    3.0,
+                    0.0
+                  ],
+                  [
+                    3.0,
+                    2.0
+                  ]
+                ],
+                "label": "a-p",
+                "color": "red",
+                "radius": 0.2
+              }
+            ],
+            "matrix": []
+          },
+          "start_seconds": 0.0,
+          "stable_seconds": 1.0,
+          "end_seconds": 12.9,
+          "narration_end_seconds": 8.557692307692307,
+          "cue_seconds": 3.0,
+          "time_source": "estimated"
+        },
+        {
+          "beat_id": "b2_dotzero",
+          "unit_ids": [
+            "u037",
+            "u038"
+          ],
+          "headline": "残差与b点积",
+          "screen_text": "把残差(0,2)与b=(2,0)作点积：对应分量相乘再相加，两项都是零，结果为0。",
+          "formulas": [
+            "(a-p)\\cdot b=0\\times 2+2\\times 0=0"
+          ],
+          "spoken_text": "再把残差与b作点积，等于零乘二加二乘零，结果为零。",
+          "cue_text": "作点积",
+          "cue_objects": [
+            "vec_b",
+            "vec_res"
+          ],
+          "reading_reason": "展示点积两步乘法，结果为零是本节关键，需留出核对分量时间。",
+          "diagram": {
+            "kind": "plane",
+            "x_range": [
+              -1.0,
+              5.0
+            ],
+            "y_range": [
+              -1.0,
+              4.0
+            ],
+            "objects": [
+              {
+                "object_id": "vec_b",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    2.0,
+                    0.0
+                  ]
+                ],
+                "label": "b",
+                "color": "blue",
+                "radius": 0.2
+              },
+              {
+                "object_id": "vec_a",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    3.0,
+                    2.0
+                  ]
+                ],
+                "label": "a",
+                "color": "teal",
+                "radius": 0.2
+              },
+              {
+                "object_id": "vec_p",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    3.0,
+                    0.0
+                  ]
+                ],
+                "label": "p",
+                "color": "gold",
+                "radius": 0.2
+              },
+              {
+                "object_id": "vec_res",
+                "kind": "vector",
+                "points": [
+                  [
+                    3.0,
+                    0.0
+                  ],
+                  [
+                    3.0,
+                    2.0
+                  ]
+                ],
+                "label": "a-p",
+                "color": "red",
+                "radius": 0.2
+              },
+              {
+                "object_id": "mark_rt",
+                "kind": "point",
+                "points": [
+                  [
+                    3.0,
+                    0.0
+                  ]
+                ],
+                "label": "垂足",
+                "color": "white",
+                "radius": 0.2
+              }
+            ],
+            "matrix": []
+          },
+          "start_seconds": 12.9,
+          "stable_seconds": 13.9,
+          "end_seconds": 25.633333333333333,
+          "narration_end_seconds": 19.534615384615385,
+          "cue_seconds": 15.534615384615385,
+          "time_source": "estimated"
+        },
+        {
+          "beat_id": "b3_orthogonal",
+          "unit_ids": [
+            "u039"
+          ],
+          "headline": "正交即垂足正确",
+          "screen_text": "点积为0说明a-p垂直于b，残差落在b所在直线的垂线上，垂足位置正确。",
+          "formulas": [
+            "(a-p)\\cdot b=0\\Rightarrow a-p\\perp b"
+          ],
+          "spoken_text": "点积为零，说明残差与b垂直，垂足位置正确，与前面的正交条件一致。",
+          "cue_text": "点积为零",
+          "cue_objects": [
+            "vec_b",
+            "vec_res",
+            "mark_rt"
+          ],
+          "reading_reason": "由点积为零推出垂直，是验证的核心结论，公式短且需对照图中直角位置。",
+          "diagram": {
+            "kind": "plane",
+            "x_range": [
+              -1.0,
+              5.0
+            ],
+            "y_range": [
+              -1.0,
+              4.0
+            ],
+            "objects": [
+              {
+                "object_id": "vec_b",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    2.0,
+                    0.0
+                  ]
+                ],
+                "label": "b",
+                "color": "blue",
+                "radius": 0.2
+              },
+              {
+                "object_id": "line_b",
+                "kind": "dashed",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    4.5,
+                    0.0
+                  ]
+                ],
+                "label": "b所在直线",
+                "color": "muted",
+                "radius": 0.2
+              },
+              {
+                "object_id": "vec_a",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    3.0,
+                    2.0
+                  ]
+                ],
+                "label": "a",
+                "color": "teal",
+                "radius": 0.2
+              },
+              {
+                "object_id": "vec_p",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    3.0,
+                    0.0
+                  ]
+                ],
+                "label": "p",
+                "color": "gold",
+                "radius": 0.2
+              },
+              {
+                "object_id": "vec_res",
+                "kind": "vector",
+                "points": [
+                  [
+                    3.0,
+                    0.0
+                  ],
+                  [
+                    3.0,
+                    2.0
+                  ]
+                ],
+                "label": "a-p",
+                "color": "red",
+                "radius": 0.2
+              },
+              {
+                "object_id": "mark_rt",
+                "kind": "point",
+                "points": [
+                  [
+                    3.0,
+                    0.0
+                  ]
+                ],
+                "label": "垂足",
+                "color": "white",
+                "radius": 0.2
+              }
+            ],
+            "matrix": []
+          },
+          "start_seconds": 25.633333333333333,
+          "stable_seconds": 26.633333333333333,
+          "end_seconds": 37.36666666666667,
+          "narration_end_seconds": 33.76794871794872,
+          "cue_seconds": 26.633333333333333,
+          "time_source": "estimated"
+        },
+        {
+          "beat_id": "b4_conclusion",
+          "unit_ids": [
+            "u040",
+            "u041"
+          ],
+          "headline": "结论汇总",
+          "screen_text": "前提b≠0成立；a·b=6，b·b=4，系数c=3/2，投影向量p=(3,0)，有向投影长度3。",
+          "formulas": [
+            "c=\\frac{6}{4}=\\frac{3}{2}",
+            "p=(3,0),|p|=3"
+          ],
+          "spoken_text": "最后汇总：系数c等于二分之三，投影向量p等于(3,0)，有向投影长度为三。",
+          "cue_text": "最后汇总",
+          "cue_objects": [
+            "vec_a",
+            "vec_b",
+            "vec_p",
+            "vec_res"
+          ],
+          "reading_reason": "汇总多个结论数值较多，拆成两行短公式，给足逐项核对与收束时间。",
+          "diagram": {
+            "kind": "plane",
+            "x_range": [
+              -1.0,
+              5.0
+            ],
+            "y_range": [
+              -1.0,
+              4.0
+            ],
+            "objects": [
+              {
+                "object_id": "vec_b",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    2.0,
+                    0.0
+                  ]
+                ],
+                "label": "b",
+                "color": "blue",
+                "radius": 0.2
+              },
+              {
+                "object_id": "vec_a",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    3.0,
+                    2.0
+                  ]
+                ],
+                "label": "a",
+                "color": "teal",
+                "radius": 0.2
+              },
+              {
+                "object_id": "vec_p",
+                "kind": "vector",
+                "points": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    3.0,
+                    0.0
+                  ]
+                ],
+                "label": "p=(3,0)",
+                "color": "gold",
+                "radius": 0.2
+              },
+              {
+                "object_id": "vec_res",
+                "kind": "vector",
+                "points": [
+                  [
+                    3.0,
+                    0.0
+                  ],
+                  [
+                    3.0,
+                    2.0
+                  ]
+                ],
+                "label": "a-p",
+                "color": "red",
+                "radius": 0.2
+              }
+            ],
+            "matrix": []
+          },
+          "start_seconds": 37.36666666666667,
+          "stable_seconds": 38.36666666666667,
+          "end_seconds": 52.36666666666667,
+          "narration_end_seconds": 46.40512820512821,
+          "cue_seconds": 38.36666666666667,
+          "time_source": "estimated"
+        }
+      ],
+      "duration_seconds": 52.366667
+    }
+  ],
+  "duration_seconds": 295.133333
+}

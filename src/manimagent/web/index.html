@@ -3,17 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ManimAgent · 文字解答</title>
-<link rel="stylesheet" href="/static/app.css?v=0.2.0">
+<title>ManimAgent · 文字与教学动画</title>
+<link rel="stylesheet" href="/static/app.css?v=0.3.0">
 <script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],packages:{'[-]':['autoload','require']}},options:{enableMenu:false},startup:{typeset:false}};</script>
 <script src="/static/vendor/tex-svg.js" defer></script>
-<script src="/static/app.js?v=0.2.0" defer></script>
-<script src="/static/llm-settings.js?v=0.2.0" defer></script>
+<script src="/static/app.js?v=0.3.0" defer></script>
+<script src="/static/llm-settings.js?v=0.3.0" defer></script>
 </head>
 <body><main>
-<header><div class="brand">Manim<span>Agent</span></div><div class="tag">问题与材料 → 完整文字解答</div></header>
-<h1>输入问题，阅读完整解答。</h1>
-<p class="intro">支持直接提问、粘贴材料，以及 TXT、Markdown、文本型 PDF、DOCX。当前阶段只生成文字。</p>
+<header><div class="brand">Manim<span>Agent</span></div><div class="tag">完整解答 · 分块教学动画</div></header>
+<h1>从问题，到看得懂的推导。</h1>
+<p class="intro">输入问题或材料，先阅读完整解答，再按教学单元逐块生成无声动画。支持 TXT、Markdown、文本型 PDF、DOCX。</p>
 <div id="health" role="status"></div>
 <details class="panel llm-panel" id="llm-settings">
 <summary><strong>LLM 配置</strong><span id="llm-state">正在读取…</span></summary>
@@ -24,6 +24,9 @@
 <div class="llm-grid">
 <div><label for="llm-writer">回答模型</label><select id="llm-writer" required></select></div>
 <div><label for="llm-checker">内容检查模型</label><select id="llm-checker" required></select></div>
+<div><label for="llm-planner">动画规划模型</label><select id="llm-planner" required></select></div>
+<div><label for="llm-scene">分块生成模型</label><select id="llm-scene" required></select></div>
+<div><label for="llm-plan-checker">动画计划检查模型</label><select id="llm-plan-checker" required></select></div>
 <div><label for="llm-context">回答上下文总预算（含输出预留）</label><input id="llm-context" type="number" min="1024" max="2000000" required></div>
 </div>
 <label class="check-label"><input type="checkbox" id="llm-check-enabled">生成后执行内容检查</label>
@@ -41,14 +44,21 @@
 <input id="files" type="file" accept=".txt,.md,.markdown,.pdf,.docx" multiple>
 <div id="file-list"></div>
 <p class="hint">PDF 可为每个文件指定页码；留空读取全文。扫描件、题图和公式对象暂需提供可读文本。</p>
-<button type="submit" id="generate">生成文字回答</button><button type="button" class="secondary" id="example">填入示例</button>
+<label for="output-mode">输出内容</label><select id="output-mode"><option value="both">完整文字与无声教学动画</option><option value="text">仅完整文字</option></select>
+<p class="hint">动画使用本地模板，通常 2～6 分钟；没有配音。文字会先显示，动画失败时文字仍保留。</p>
+<button type="submit" id="generate">开始生成</button><button type="button" class="secondary" id="example">填入示例</button>
 <p id="error" role="alert"></p></form></section>
 <section class="panel output"><h2>文字回答</h2>
 <div id="status" role="status" aria-live="polite"></div><p id="message"></p>
-<div id="actions" hidden><a id="download">下载 Markdown</a> <button id="copy" class="secondary">复制正文</button> <button id="edit" class="secondary">编辑</button> <button id="reuse" class="secondary">用相同材料重新回答</button></div>
+<div id="actions" hidden><a id="download">下载 Markdown</a> <button id="copy" class="secondary">复制正文</button> <button id="edit" class="secondary">编辑</button> <button id="reuse" class="secondary">用相同材料重新回答</button> <button id="animate" class="secondary">用此回答生成动画</button></div>
 <div id="warnings"></div><article id="result">回答会显示在这里。</article>
 <div id="editor" hidden><label for="revision">完整 Markdown 正文（保留来源标记）</label><textarea id="revision"></textarea><button id="save">保存为新版本</button><button id="cancel" class="secondary">取消</button></div>
 <details id="sources" hidden><summary>材料与来源</summary><div id="source-list"></div></details>
 <details id="diagnostics" hidden><summary>输入、候选回答与检查记录</summary><div id="artifacts"></div></details>
 <div class="stage" id="job"></div></section>
+<section id="video-panel" class="panel" hidden><h2>无声教学动画</h2>
+<p id="video-message" role="status"></p><video id="video-player" controls preload="metadata" style="width:100%;border-radius:12px" hidden></video>
+<div id="video-actions" hidden><a id="video-download">下载 MP4</a> · <a id="video-plan">查看教学计划与时间线</a></div>
+<p class="hint">画面与旁白稿共用估计时间线；当前没有音频，不代表已完成实际音画同步。检查范围为受约束模板的几何、布局及媒体，不包含视觉模型复核。</p>
+</section>
 </main></body></html>

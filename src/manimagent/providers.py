@@ -109,6 +109,8 @@ class ChatProvider:
         ]
         last_error: ProviderError = InvalidResponse("模型结果无效")
         for attempt in range(2):
+            if attempt and not budget.allow_retry():
+                break
             timeout = budget.before_call(deadline)
             body = {
                 "model": cfg.model,
@@ -117,6 +119,8 @@ class ChatProvider:
             }
             if cfg.json_mode and schema:
                 body["response_format"] = {"type": "json_object"}
+            if cfg.thinking != "default":
+                body["thinking"] = {"type": cfg.thinking}
             if self.trace:
                 self.trace(
                     {"role": role, "attempt": attempt + 1, "event": "request", "request": body}

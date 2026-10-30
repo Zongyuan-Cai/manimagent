@@ -4,6 +4,8 @@ import hashlib
 import json
 import os
 import re
+import shutil
+import threading
 import uuid
 import zipfile
 from pathlib import Path
@@ -13,6 +15,15 @@ from pydantic import BaseModel
 
 from manimagent.config import Settings
 from manimagent.schemas import Error, FileAsset
+
+# All stores in one service process share the same atomic JSON publication lock.
+# Windows readers can otherwise race os.replace and fail with sharing violations.
+_JSON_IO_LOCK = threading.RLock()
+
+
+def read_json_bytes(path: Path) -> bytes:
+    with _JSON_IO_LOCK:
+        return path.read_bytes()
 
 
 def new_id(prefix: str) -> str:
@@ -34,7 +45,17 @@ class ContentStore:
         self.root.mkdir(parents=True, exist_ok=True)
 
     def path(self, collection: str, identifier: str, suffix: str = ".json") -> Path:
-        if collection not in {"files", "materials", "answers", "jobs", "generations", "records"}:
+        if collection not in {
+            "files",
+            "materials",
+            "answers",
+            "jobs",
+            "generations",
+            "records",
+            "videos",
+            "video_plans",
+            "answer_checks",
+        }:
             raise ValueError("未知资源集合")
         if not re.fullmatch(r"[a-z]+_[a-f0-9]{32}", identifier):
             raise ContentError("invalid_reference", "资源不存在", 404)
@@ -50,19 +71,20 @@ class ContentStore:
                 json.dump(data, stream, ensure_ascii=False, indent=2)
                 stream.flush()
                 os.fsync(stream.fileno())
-            os.replace(temporary, path)
+            with _JSON_IO_LOCK:
+                os.replace(temporary, path)
         finally:
             temporary.unlink(missing_ok=True)
 
     def load(self, collection: str, identifier: str, schema):
         try:
-            return schema.model_validate_json(self.path(collection, identifier).read_bytes())
+            return schema.model_validate_json(read_json_bytes(self.path(collection, identifier)))
         except FileNotFoundError as exc:
             raise ContentError("invalid_reference", "资源不存在", 404) from exc
 
     def load_record(self, identifier: str) -> dict:
         try:
-            value = json.loads(self.path("records", identifier).read_bytes())
+            value = json.loads(read_json_bytes(self.path("records", identifier)))
         except FileNotFoundError as exc:
             raise ContentError("invalid_reference", "执行记录不存在", 404) from exc
         if not isinstance(value, dict):
@@ -156,6 +178,34 @@ class ContentStore:
             ),
         )
         return identifier
+
+    def generated_file(self, source: Path, filename: str, media_type: str) -> FileAsset:
+        """Register trusted renderer output, separate from the user upload whitelist."""
+        if not source.is_file() or not 0 < source.stat().st_size <= 256 * 1024 * 1024:
+            raise ContentError("invalid_render", "渲染产物不存在或超过 256 MiB 限额")
+        identifier = new_id("file")
+        target = self.file_path(identifier)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        temporary = target.with_suffix(".tmp")
+        try:
+            shutil.copyfile(source, temporary)
+            with temporary.open("rb") as stream:
+                checksum = hashlib.file_digest(stream, "sha256").hexdigest()
+            os.replace(temporary, target)
+            asset = FileAsset(
+                file_id=identifier,
+                filename=filename,
+                media_type=media_type,
+                size_bytes=target.stat().st_size,
+                sha256=checksum,
+            )
+            self.save("files", identifier, asset)
+            return asset
+        except BaseException:
+            target.unlink(missing_ok=True)
+            raise
+        finally:
+            temporary.unlink(missing_ok=True)
 
     def verify_file(self, identifier: str) -> FileAsset:
         asset = self.load("files", identifier, FileAsset)

@@ -35,10 +35,12 @@ class WebAssets(StaticFiles):
 
 
 def create_app(
-    settings: Settings | None = None, text_provider: ChatProvider | None = None
+    settings: Settings | None = None,
+    text_provider: ChatProvider | None = None,
+    animation_renderer=None,
 ) -> FastAPI:
     settings = settings or load_settings()
-    manager = TextJobManager(settings, text_provider)
+    manager = TextJobManager(settings, text_provider, animation_renderer)
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
@@ -48,7 +50,7 @@ def create_app(
         finally:
             manager.stop()
 
-    app = FastAPI(title="ManimAgent Text", version="0.2.0", lifespan=lifespan)
+    app = FastAPI(title="ManimAgent", version="0.3.0", lifespan=lifespan)
     app.state.text_manager = manager
     app.add_middleware(UploadLimitMiddleware, max_bytes=settings.max_upload_bytes)
     app.include_router(text_router(manager))

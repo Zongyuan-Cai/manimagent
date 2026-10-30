@@ -10,9 +10,17 @@ answer_context_tokens: 24000
 answer_check: true
 task_timeout: 900
 model_timeout: 90
-max_model_calls: 12
-max_total_tokens: 200000
+max_model_calls: 30
+max_total_tokens: 300000
 max_waiting: 3
+video_timeout: 600
+video_render_timeout: 90
+video_queue_timeout: 120
+video_max_model_calls: 24
+video_max_output_tokens: 10000
+video_context_tokens: 96000
+video_font: auto
+video_memory_mb: 2048
 models:
   text:
     base_url: ${MANIMAGENT_TEXT_BASE_URL}
@@ -21,7 +29,11 @@ models:
     json_mode: true
     token_parameter: max_tokens
     max_output_tokens: 6000
-    context_window: 32000
+    context_window: 128000
+    thinking: default  # DeepSeek supports disabled; enable this only after verifying the service.
 roles:
   answer_writer: text
   answer_checker: text
+  video_planner: text
+  scene_generator: text
+  plan_checker: text

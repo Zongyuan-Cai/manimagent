@@ -22,7 +22,7 @@ function llmSelect(card, parent, key, label, value, choices) {
 }
 
 function updateRoleOptions() {
-  for (const id of ['llm-writer', 'llm-checker']) {
+  for (const id of ['llm-writer', 'llm-checker', 'llm-planner', 'llm-scene', 'llm-plan-checker']) {
     const selection = el(id).value;
     el(id).replaceChildren();
     for (const card of llmCards) {
@@ -57,6 +57,7 @@ function renderModelCard(identifier, model) {
   const context = llmInput(card, advancedGrid, 'context_window', '模型上下文上限（token）', cfg.context_window, 'number'); context.min = '1024'; context.required = true;
   llmSelect(card, advancedGrid, 'token_parameter', '输出长度参数', cfg.token_parameter, [['max_tokens', 'max_tokens'], ['max_completion_tokens', 'max_completion_tokens']]);
   llmSelect(card, advancedGrid, 'json_mode', '检查报告 JSON 模式', String(cfg.json_mode), [['true', '使用 response_format'], ['false', '提示词约束并校验']]);
+  llmSelect(card, advancedGrid, 'thinking', '思考模式（仅用于已确认支持的接口）', cfg.thinking || 'default', [['default', '接口默认，不发送参数'], ['disabled', '关闭 thinking'], ['enabled', '启用 thinking']]);
   const controls = document.createElement('div'); controls.className = 'llm-tests';
   const status = document.createElement('p'); status.className = 'llm-test-status'; status.setAttribute('role', 'status'); card.status = status;
   for (const [scope, title] of [['text', '测试文本调用'], ['structured', '测试结构化输出']]) {
@@ -97,6 +98,7 @@ function displayLLMSettings(data) {
   for (const [identifier, model] of Object.entries(data.models)) renderModelCard(identifier, model);
   updateRoleOptions();
   el('llm-writer').value = data.roles.answer_writer; el('llm-checker').value = data.roles.answer_checker;
+  el('llm-planner').value = data.roles.video_planner; el('llm-scene').value = data.roles.scene_generator; el('llm-plan-checker').value = data.roles.plan_checker;
   el('llm-context').value = data.answer_context_tokens; el('llm-check-enabled').checked = data.answer_check;
 }
 
@@ -127,7 +129,7 @@ el('llm-form').addEventListener('submit', async event => {
     const models = Object.fromEntries(llmCards.map(card => [card.identifier, readModelDraft(card)]));
     const response = await request('/api/v2/llm-settings', {method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({
       expected_revision: llmRevision, models,
-      roles: {answer_writer: el('llm-writer').value, answer_checker: el('llm-checker').value},
+      roles: {answer_writer: el('llm-writer').value, answer_checker: el('llm-checker').value, video_planner: el('llm-planner').value, scene_generator: el('llm-scene').value, plan_checker: el('llm-plan-checker').value},
       answer_check: el('llm-check-enabled').checked, answer_context_tokens: Number(el('llm-context').value),
     })});
     displayLLMSettings(response);

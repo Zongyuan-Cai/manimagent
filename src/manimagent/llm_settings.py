@@ -49,6 +49,9 @@ class RoleSelection(BaseModel):
     model_config = ConfigDict(extra="forbid")
     answer_writer: ModelID
     answer_checker: ModelID
+    video_planner: ModelID | None = None
+    scene_generator: ModelID | None = None
+    plan_checker: ModelID | None = None
 
 
 class LLMSettingsUpdate(BaseModel):
@@ -61,7 +64,10 @@ class LLMSettingsUpdate(BaseModel):
 
     @model_validator(mode="after")
     def references_exist(self):
-        if any(identifier not in self.models for identifier in self.roles.model_dump().values()):
+        if any(
+            identifier not in self.models
+            for identifier in self.roles.model_dump(exclude_none=True).values()
+        ):
             raise ValueError("回答角色引用了不存在的模型")
         return self
 
@@ -201,8 +207,19 @@ class LLMSettingsStore:
                 "revision": saved["revision"],
                 "models": models,
                 "roles": {
-                    role: settings.roles.get(role, default)
-                    for role in ("answer_writer", "answer_checker")
+                    role: settings.roles.get(
+                        role,
+                        settings.roles.get(
+                            "answer_checker" if role == "plan_checker" else "answer_writer", default
+                        ),
+                    )
+                    for role in (
+                        "answer_writer",
+                        "answer_checker",
+                        "video_planner",
+                        "scene_generator",
+                        "plan_checker",
+                    )
                 },
                 "answer_check": settings.answer_check,
                 "answer_context_tokens": settings.answer_context_tokens,
@@ -238,7 +255,7 @@ class LLMSettingsStore:
                     }
                     cfg.api_key_env = reference
                 updated.models[identifier] = cfg
-            updated.roles.update(request.roles.model_dump())
+            updated.roles.update(request.roles.model_dump(exclude_none=True))
             updated.answer_check = request.answer_check
             updated.answer_context_tokens = request.answer_context_tokens
             # Write new credentials first, then commit their references. Old references remain
@@ -251,9 +268,7 @@ class LLMSettingsStore:
                     "models": {
                         identifier: cfg.model_dump() for identifier, cfg in updated.models.items()
                     },
-                    "roles": {
-                        role: updated.roles[role] for role in ("answer_writer", "answer_checker")
-                    },
+                    "roles": dict(updated.roles),
                     "answer_check": updated.answer_check,
                     "answer_context_tokens": updated.answer_context_tokens,
                 },

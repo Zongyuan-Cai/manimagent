@@ -1,0 +1,32 @@
+{
+  "date": "2026-10-30",
+  "method": "Manual reading of representative final answers, separate from automated contract checks and model checker decisions.",
+  "representative_cases_read": [
+    "projection_docx", "linear_pdf", "quadratic_md", "derivative_text",
+    "integral_pdf", "probability_docx", "determinant_txt", "table_docx",
+    "mixed_sources", "injection", "code_output", "symbolic_formula",
+    "concept", "long_material", "long_answer"
+  ],
+  "content_findings": [
+    {
+      "case": "derivative_text",
+      "severity": "P2",
+      "status": "open_model_quality",
+      "observation": "The computed derivative f'(2)=10 is correct, but the Chinese explanation calls the differential an instantaneous rate of change, conflating a differential with a derivative. The same-model checker passed this candidate.",
+      "implication": "The 110 passing automated workflow assertions are not a measured mathematical or conceptual accuracy rate. Expand human-labeled concept evaluations and compare independently configured checker models."
+    }
+  ],
+  "long_answer": {
+    "questions": 32,
+    "equations_checked_against_known_results": 32,
+    "all_equations_correct": true,
+    "characters": 1881,
+    "qualification": "Commutativity is used as a consistency check, not an independent proof of each arithmetic result; arithmetic results were separately checked against the known sums."
+  },
+  "long_material": {
+    "record_count": 100,
+    "expected_sum": 5050,
+    "reported_sum": 5050,
+    "first_middle_last_records_correct": true
+  }
+}

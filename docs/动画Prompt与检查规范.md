@@ -1,5 +1,7 @@
 # 动画 Prompt 与检查规范
 
+**2026-10-30 实现增补：** 运行提示词现位于 [animation.py](../src/manimagent/animation.py)。已实现 planner、scene_generator 与 plan_checker，模板确定生成画面，不调用自由代码 coder 或 VLM。实际行为见[动画实现与本地运行](动画实现与本地运行.md)，下面其余角色仍为设计目标。
+
 更新日期：2026年10月29日。状态：正式版设计，尚未写入运行中的 prompt。当前文字 prompt 位于 [answers.py](../src/manimagent/answers.py)，历史动画 prompt 位于 [legacy_mvp/agents.py](../legacy_mvp/src/manimagent/agents.py)。总体流程见[动画生成](04-动画生成.md)。TTS 合成暂缓，但旁白派生稿、语义锚点和音画契约现在就要纳入规划，依据见[音画对齐调研](research/音画对齐开源项目与论文调研.md)。
 
 ## 1 先固定职责，再编写提示词

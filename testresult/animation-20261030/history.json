@@ -1,0 +1,2598 @@
+[
+  {
+    "run": "animation-acceptance-20261030",
+    "job": {
+      "schema_version": "1.0",
+      "job_id": "job_320193094e9f464db906a828a878a649",
+      "kind": "generation",
+      "status": "partial",
+      "stage": "video",
+      "message": "文字已保存；动画未完成：教学时间解析为 365.1 秒，未落在120～360秒范围；不能补空等凑时长",
+      "resource_ref": {
+        "type": "generation",
+        "id": "generation_89236719fe4a4a138a2cdcec0c89bf1e"
+      },
+      "result": {
+        "type": "generation",
+        "id": "generation_89236719fe4a4a138a2cdcec0c89bf1e"
+      },
+      "error": {
+        "code": "video_pacing",
+        "message": "教学时间解析为 365.1 秒，未落在120～360秒范围；不能补空等凑时长",
+        "retryable": false,
+        "details": {}
+      },
+      "diagnostic_asset_ids": [
+        "file_48911b11c72c4abb8c2693162228837a",
+        "file_c912e0bedcdd463c907362a2a8d694eb",
+        "file_e1e88099183841be90366b46e713a60c",
+        "file_2622b34230a846ae9520d0ca55d15aed",
+        "file_97325e12dd434d6bbcade6e62bb6fd0d",
+        "file_55b11a9e72d244e19c78d2b5f48db50a",
+        "file_b145d91658f34db68f679e0edfe64d7c",
+        "file_56c6e8bd3d63487997a54c256aa2f929",
+        "file_fe32f768ddde4672be82a3868e576445",
+        "file_2917cf2fe5314e01892bcb074993e3dc",
+        "file_ded562b85c6946ba86b44f057e51912a"
+      ],
+      "usage": {
+        "model_calls": 10,
+        "input_tokens": 86870,
+        "output_tokens": 43986,
+        "tokens_reported": true,
+        "elapsed_seconds": 225.25
+      },
+      "created_at": "2026-10-30T08:39:57.132896+00:00",
+      "updated_at": "2026-10-30T08:43:42.472686+00:00"
+    },
+    "accepted_at": "2026-10-30T08:39:57.132896+00:00",
+    "answer_ready_at": "2026-10-30T08:40:16.534763+00:00",
+    "video_started_at": "2026-10-30T08:40:16.546953+00:00",
+    "terminal_at": "2026-10-30T08:43:42.413169+00:00",
+    "resumed_from_job_id": null,
+    "plan_checks": [],
+    "rendered_scenes": [],
+    "model_events": [
+      {
+        "role": "answer_writer",
+        "attempt": 1,
+        "event": "request",
+        "request": {
+          "model": "deepseek-flash",
+          "max_tokens": 6000
+        },
+        "system_sha256": "b181fe663a64af738d6b02f7ae0b9af278d9579a5dbb0fdce15cd22519b3e46d"
+      },
+      {
+        "role": "answer_writer",
+        "attempt": 1,
+        "event": "http_response",
+        "http_status": 200
+      },
+      {
+        "role": "answer_writer",
+        "attempt": 1,
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 733,
+          "completion_tokens": 3155,
+          "total_tokens": 3888,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 1411
+          },
+          "prompt_cache_hit_tokens": 0,
+          "prompt_cache_miss_tokens": 733
+        }
+      },
+      {
+        "role": "answer_checker",
+        "attempt": 1,
+        "event": "request",
+        "request": {
+          "model": "deepseek-flash",
+          "max_tokens": 6000,
+          "response_format": {
+            "type": "json_object"
+          }
+        },
+        "system_sha256": "08f3295beb7db40131ae251aac583f70d4fc63cf40895098c32fde8f97be1309"
+      },
+      {
+        "role": "answer_checker",
+        "attempt": 1,
+        "event": "http_response",
+        "http_status": 200
+      },
+      {
+        "role": "answer_checker",
+        "attempt": 1,
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 3158,
+          "completion_tokens": 629,
+          "total_tokens": 3787,
+          "prompt_tokens_details": {
+            "cached_tokens": 128
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 567
+          },
+          "prompt_cache_hit_tokens": 128,
+          "prompt_cache_miss_tokens": 3030
+        }
+      },
+      {
+        "role": "video_planner",
+        "attempt": 1,
+        "event": "request",
+        "request": {
+          "model": "deepseek-flash",
+          "max_tokens": 10000,
+          "response_format": {
+            "type": "json_object"
+          }
+        },
+        "system_sha256": "f2a033da28237fe81636c2a726b408a3a4fc813c28aceb11340de6aa92a434e2"
+      },
+      {
+        "role": "video_planner",
+        "attempt": 1,
+        "event": "http_response",
+        "http_status": 200
+      },
+      {
+        "role": "video_planner",
+        "attempt": 1,
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 8336,
+          "completion_tokens": 2923,
+          "total_tokens": 11259,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 2255
+          },
+          "prompt_cache_hit_tokens": 0,
+          "prompt_cache_miss_tokens": 8336
+        }
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "event": "request",
+        "request": {
+          "model": "deepseek-flash",
+          "max_tokens": 10000,
+          "response_format": {
+            "type": "json_object"
+          }
+        },
+        "system_sha256": "6c58cd8dced113c0beda9c5bbda87c2aaf16ca5e254a7c36d6306976b2c1c3ab"
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "event": "http_response",
+        "http_status": 200
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 10487,
+          "completion_tokens": 3189,
+          "total_tokens": 13676,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 2444
+          },
+          "prompt_cache_hit_tokens": 0,
+          "prompt_cache_miss_tokens": 10487
+        }
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "event": "request",
+        "request": {
+          "model": "deepseek-flash",
+          "max_tokens": 10000,
+          "response_format": {
+            "type": "json_object"
+          }
+        },
+        "system_sha256": "6c58cd8dced113c0beda9c5bbda87c2aaf16ca5e254a7c36d6306976b2c1c3ab"
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "event": "http_response",
+        "http_status": 200
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 10569,
+          "completion_tokens": 7060,
+          "total_tokens": 17629,
+          "prompt_tokens_details": {
+            "cached_tokens": 9728
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 5432
+          },
+          "prompt_cache_hit_tokens": 9728,
+          "prompt_cache_miss_tokens": 841
+        }
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "event": "request",
+        "request": {
+          "model": "deepseek-flash",
+          "max_tokens": 10000,
+          "response_format": {
+            "type": "json_object"
+          }
+        },
+        "system_sha256": "6c58cd8dced113c0beda9c5bbda87c2aaf16ca5e254a7c36d6306976b2c1c3ab"
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "event": "http_response",
+        "http_status": 200
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 10381,
+          "completion_tokens": 5213,
+          "total_tokens": 15594,
+          "prompt_tokens_details": {
+            "cached_tokens": 9728
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 4204
+          },
+          "prompt_cache_hit_tokens": 9728,
+          "prompt_cache_miss_tokens": 653
+        }
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "event": "request",
+        "request": {
+          "model": "deepseek-flash",
+          "max_tokens": 10000,
+          "response_format": {
+            "type": "json_object"
+          }
+        },
+        "system_sha256": "6c58cd8dced113c0beda9c5bbda87c2aaf16ca5e254a7c36d6306976b2c1c3ab"
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "event": "http_response",
+        "http_status": 200
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 10802,
+          "completion_tokens": 3854,
+          "total_tokens": 14656,
+          "prompt_tokens_details": {
+            "cached_tokens": 9728
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 2842
+          },
+          "prompt_cache_hit_tokens": 9728,
+          "prompt_cache_miss_tokens": 1074
+        }
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "event": "request",
+        "request": {
+          "model": "deepseek-flash",
+          "max_tokens": 10000,
+          "response_format": {
+            "type": "json_object"
+          }
+        },
+        "system_sha256": "6c58cd8dced113c0beda9c5bbda87c2aaf16ca5e254a7c36d6306976b2c1c3ab"
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "event": "http_response",
+        "http_status": 200
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 10422,
+          "completion_tokens": 8075,
+          "total_tokens": 18497,
+          "prompt_tokens_details": {
+            "cached_tokens": 9728
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 6879
+          },
+          "prompt_cache_hit_tokens": 9728,
+          "prompt_cache_miss_tokens": 694
+        }
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "event": "request",
+        "request": {
+          "model": "deepseek-flash",
+          "max_tokens": 10000,
+          "response_format": {
+            "type": "json_object"
+          }
+        },
+        "system_sha256": "6c58cd8dced113c0beda9c5bbda87c2aaf16ca5e254a7c36d6306976b2c1c3ab"
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "event": "http_response",
+        "http_status": 200
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 11266,
+          "completion_tokens": 5676,
+          "total_tokens": 16942,
+          "prompt_tokens_details": {
+            "cached_tokens": 9728
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 4007
+          },
+          "prompt_cache_hit_tokens": 9728,
+          "prompt_cache_miss_tokens": 1538
+        }
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "event": "request",
+        "request": {
+          "model": "deepseek-flash",
+          "max_tokens": 10000,
+          "response_format": {
+            "type": "json_object"
+          }
+        },
+        "system_sha256": "6c58cd8dced113c0beda9c5bbda87c2aaf16ca5e254a7c36d6306976b2c1c3ab"
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "event": "http_response",
+        "http_status": 200
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 10716,
+          "completion_tokens": 4212,
+          "total_tokens": 14928,
+          "prompt_tokens_details": {
+            "cached_tokens": 9728
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 3032
+          },
+          "prompt_cache_hit_tokens": 9728,
+          "prompt_cache_miss_tokens": 988
+        }
+      }
+    ]
+  },
+  {
+    "run": "animation-acceptance-20261030",
+    "job": {
+      "schema_version": "1.0",
+      "job_id": "job_b8561573087c455694fc2d474838cb80",
+      "kind": "video",
+      "status": "needs_review",
+      "stage": "video",
+      "message": "模型输出被截断，请增加输出预算后重试",
+      "resource_ref": null,
+      "result": null,
+      "error": {
+        "code": "output_truncated",
+        "message": "模型输出被截断，请增加输出预算后重试",
+        "retryable": false,
+        "details": {}
+      },
+      "diagnostic_asset_ids": [
+        "file_c1439e8288d04585840480e21b5032d8",
+        "file_80b34856d4cb4b8fa20b8b20f79e0799",
+        "file_a94bf1b6e3c14b058263930e9f9069c2"
+      ],
+      "usage": {
+        "model_calls": 3,
+        "input_tokens": 36759,
+        "output_tokens": 15606,
+        "tokens_reported": true,
+        "elapsed_seconds": 145.829
+      },
+      "created_at": "2026-10-30T13:52:26.900481+00:00",
+      "updated_at": "2026-10-30T13:54:52.753219+00:00"
+    },
+    "accepted_at": "2026-10-30T13:52:26.900481+00:00",
+    "answer_ready_at": null,
+    "video_started_at": "2026-10-30T13:52:26.927607+00:00",
+    "terminal_at": "2026-10-30T13:54:52.735846+00:00",
+    "resumed_from_job_id": "job_320193094e9f464db906a828a878a649",
+    "plan_checks": [],
+    "rendered_scenes": [],
+    "model_events": [
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "event": "request",
+        "request": {
+          "model": "deepseek-flash",
+          "max_tokens": 10000,
+          "response_format": {
+            "type": "json_object"
+          }
+        },
+        "system_sha256": "edefd00a9aab9433249cdabf96180a4d92c7bcdc04705c438c7d4b65491ffef0"
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "event": "http_response",
+        "http_status": 200
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 11402,
+          "completion_tokens": 5606,
+          "total_tokens": 17008,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 4096
+          },
+          "prompt_cache_hit_tokens": 0,
+          "prompt_cache_miss_tokens": 11402
+        }
+      },
+      {
+        "role": "plan_checker",
+        "attempt": 1,
+        "event": "request",
+        "request": {
+          "model": "deepseek-flash",
+          "max_tokens": 10000,
+          "response_format": {
+            "type": "json_object"
+          }
+        },
+        "system_sha256": "7397ad9d664d2e4cdb962e82ca65775db6fb4662feaa356c9b7ee66559aa97f3"
+      },
+      {
+        "role": "plan_checker",
+        "attempt": 1,
+        "event": "error"
+      },
+      {
+        "role": "plan_checker",
+        "attempt": 2,
+        "event": "request",
+        "request": {
+          "model": "deepseek-flash",
+          "max_tokens": 10000,
+          "response_format": {
+            "type": "json_object"
+          }
+        },
+        "system_sha256": "7397ad9d664d2e4cdb962e82ca65775db6fb4662feaa356c9b7ee66559aa97f3"
+      },
+      {
+        "role": "plan_checker",
+        "attempt": 2,
+        "event": "http_response",
+        "http_status": 200
+      },
+      {
+        "role": "plan_checker",
+        "attempt": 2,
+        "finish_reason": "length",
+        "usage": {
+          "prompt_tokens": 25357,
+          "completion_tokens": 10000,
+          "total_tokens": 35357,
+          "prompt_tokens_details": {
+            "cached_tokens": 25216
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 10000
+          },
+          "prompt_cache_hit_tokens": 25216,
+          "prompt_cache_miss_tokens": 141
+        }
+      }
+    ]
+  },
+  {
+    "run": "animation-acceptance-20261030",
+    "job": {
+      "schema_version": "1.0",
+      "job_id": "job_70e9113aa5694a0abc00059418a35512",
+      "kind": "video",
+      "status": "needs_review",
+      "stage": "video",
+      "message": "layout: 文字或公式过密，缩小后无法保证可读性，请缩短当前节拍",
+      "resource_ref": null,
+      "result": null,
+      "error": {
+        "code": "render_layout",
+        "message": "layout: 文字或公式过密，缩小后无法保证可读性，请缩短当前节拍",
+        "retryable": false,
+        "details": {}
+      },
+      "diagnostic_asset_ids": [
+        "file_949b1e48adc04fbb949d6f16b39ae0e0",
+        "file_c0d8aa6cf9374356b1e0402b2f928d98"
+      ],
+      "usage": {
+        "model_calls": 1,
+        "input_tokens": 25315,
+        "output_tokens": 1928,
+        "tokens_reported": true,
+        "elapsed_seconds": 120.703
+      },
+      "created_at": "2026-10-30T13:56:40.952398+00:00",
+      "updated_at": "2026-10-30T13:58:41.688072+00:00"
+    },
+    "accepted_at": "2026-10-30T13:56:40.952398+00:00",
+    "answer_ready_at": null,
+    "video_started_at": "2026-10-30T13:56:40.978569+00:00",
+    "terminal_at": "2026-10-30T13:58:41.671737+00:00",
+    "resumed_from_job_id": "job_b8561573087c455694fc2d474838cb80",
+    "plan_checks": [
+      {
+        "plan_hash": "cf712b146392b96bc99e1a6387b97b35026e34ca965b0b19c1c7ae8050f5808e",
+        "decision": "pass",
+        "message": "全部36个教学单元均有屏幕文字或公式/图形承接，内容与固定正文一致；仅有少处示意冗余，不影响正确性与节奏。",
+        "units": [
+          {
+            "unit_id": "u001",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_1"
+            ],
+            "evidence": "scene_1 beat_1 屏幕文字给出 a=(3,2)、b=(2,0)，公式同步，图为两向量。"
+          },
+          {
+            "unit_id": "u002",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_1"
+            ],
+            "evidence": "scene_1 beat_2 标题屏文写明'投影需b非零'，公式列 b≠0。"
+          },
+          {
+            "unit_id": "u003",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_1"
+            ],
+            "evidence": "scene_1 beat_2 屏文解释b决定方向、b=0则分母b·b=0投影无定义。"
+          },
+          {
+            "unit_id": "u004",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_1"
+            ],
+            "evidence": "scene_1 beat_3 屏文与公式写明 b=(2,0)≠(0,0)，投影可正常计算。"
+          },
+          {
+            "unit_id": "u005",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_2"
+            ],
+            "evidence": "scene_2 b1 屏文出现'直线L与终点A'，导向几何意义。"
+          },
+          {
+            "unit_id": "u006",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_2"
+            ],
+            "evidence": "scene_2 b1/b2 给出 L={tb}、A=(3,2)，从A作垂线至P，p=OP。"
+          },
+          {
+            "unit_id": "u007",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_2"
+            ],
+            "evidence": "scene_2 b3/b4 屏文列出共线条件 p=cb 与残差正交条件。"
+          },
+          {
+            "unit_id": "u008",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_2"
+            ],
+            "evidence": "scene_2 b3 显示 p=cb；b4 显示(a-p)·b=0且残差垂直于b。"
+          },
+          {
+            "unit_id": "u009",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_3"
+            ],
+            "evidence": "scene_3 b1 以'把投影设为cb'进入系数推导。"
+          },
+          {
+            "unit_id": "u010",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_3"
+            ],
+            "evidence": "scene_3 b2/b3 展开(a-cb)·b=0得c(b·b)=a·b，并给出c与p公式。"
+          },
+          {
+            "unit_id": "u011",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_4"
+            ],
+            "evidence": "scene_4 b1 标题'代入已知向量'，屏文说明逐项计算。"
+          },
+          {
+            "unit_id": "u012",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_4"
+            ],
+            "evidence": "scene_4 b1 屏幕公式重现 a=(3,2)、b=(2,0)。"
+          },
+          {
+            "unit_id": "u013",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_4"
+            ],
+            "evidence": "scene_4 b2 标题'计算点积a·b'，公式为a·b。"
+          },
+          {
+            "unit_id": "u014",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_4"
+            ],
+            "evidence": "scene_4 b2 公式显示 a·b=3·2+2·0=6。"
+          },
+          {
+            "unit_id": "u015",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_4"
+            ],
+            "evidence": "scene_4 b3 标题'计算b·b与长度'，公式出现b·b。"
+          },
+          {
+            "unit_id": "u016",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_4"
+            ],
+            "evidence": "scene_4 b3 公式显示 b·b=2²+0²=4，||b||=2。"
+          },
+          {
+            "unit_id": "u017",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_4"
+            ],
+            "evidence": "scene_4 b4 标题'得到系数c'，公式写c=..."
+          },
+          {
+            "unit_id": "u018",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_4"
+            ],
+            "evidence": "scene_4 b4 公式显示 c=6/4=3/2。"
+          },
+          {
+            "unit_id": "u019",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_5"
+            ],
+            "evidence": "scene_5 b1 屏文'代入系数求投影'，公式列 p=cb。"
+          },
+          {
+            "unit_id": "u020",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_5"
+            ],
+            "evidence": "scene_5 b1 公式显示 p=(3/2)(2,0)=(3,0)，图绘p。"
+          },
+          {
+            "unit_id": "u021",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_5"
+            ],
+            "evidence": "scene_5 b1 公式 p=(3,0)，图中向量p终点标为(3,0)。"
+          },
+          {
+            "unit_id": "u022",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_5"
+            ],
+            "evidence": "scene_5 b2 屏文L就是x轴；b3垂足P=(3,0)故OP=(3,0)。"
+          },
+          {
+            "unit_id": "u023",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_6"
+            ],
+            "evidence": "scene_6 标题'区分三个投影量'，b1先讲系数，后讲s与p。"
+          },
+          {
+            "unit_id": "u024",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_6"
+            ],
+            "evidence": "scene_6 b1 标题/屏文说明c是p相对b的倍数，公式c=3/2。"
+          },
+          {
+            "unit_id": "u025",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_6"
+            ],
+            "evidence": "scene_6 b1 公式 c=3/2、p=cb、p=(3/2)b。"
+          },
+          {
+            "unit_id": "u026",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_6"
+            ],
+            "evidence": "scene_6 b2 进入单位方向与标量投影s，对应标量投影长度。"
+          },
+          {
+            "unit_id": "u027",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_6"
+            ],
+            "evidence": "scene_6 b2 公式u=(1,0)，s=a·u=3，与正文一致。"
+          },
+          {
+            "unit_id": "u028",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_6"
+            ],
+            "evidence": "scene_6 b3 公式 s=c||b||=(3/2)·2=3。"
+          },
+          {
+            "unit_id": "u029",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_6"
+            ],
+            "evidence": "scene_6 b3 屏文解释系数与标量投影关系，b5总结区别。"
+          },
+          {
+            "unit_id": "u030",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_6"
+            ],
+            "evidence": "scene_6 b4 标题'投影向量'，屏文说明p=s u。"
+          },
+          {
+            "unit_id": "u031",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_6"
+            ],
+            "evidence": "scene_6 b4 公式 p=s u=3(1,0)=(3,0)及p=cb。"
+          },
+          {
+            "unit_id": "u032",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_6"
+            ],
+            "evidence": "scene_6 b5 屏文并列 c=3/2、s=3、p=(3,0) 三者。"
+          },
+          {
+            "unit_id": "u033",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_7"
+            ],
+            "evidence": "scene_7 b1 标题'残差向量a-p'，进入残差验证。"
+          },
+          {
+            "unit_id": "u034",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_7"
+            ],
+            "evidence": "scene_7 b1/b2 显示a-p=(0,2)，点积(0,2)·(2,0)=0，说明正交。"
+          },
+          {
+            "unit_id": "u035",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_7"
+            ],
+            "evidence": "scene_7 b3 标题'结论汇总'，公式与屏文汇总结果。"
+          },
+          {
+            "unit_id": "u036",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_7"
+            ],
+            "evidence": "scene_7 b3 屏文/公式给出p=(3,0)、s=3、c=3/2及残差点积0。"
+          }
+        ],
+        "problem_scene_ids": []
+      }
+    ],
+    "rendered_scenes": [
+      {
+        "scene_id": "scene_1",
+        "duration_seconds": 42.86666666666667,
+        "wall_seconds": 15.719
+      },
+      {
+        "scene_id": "scene_2",
+        "duration_seconds": 59.93333333333333,
+        "wall_seconds": 21.766
+      },
+      {
+        "scene_id": "scene_3",
+        "duration_seconds": 42.833333333333336,
+        "wall_seconds": 15.235
+      },
+      {
+        "scene_id": "scene_4",
+        "duration_seconds": 49.766666666666666,
+        "wall_seconds": 17.844
+      },
+      {
+        "scene_id": "scene_5",
+        "duration_seconds": 43.7,
+        "wall_seconds": 15.781
+      },
+      {
+        "scene_id": "scene_6",
+        "duration_seconds": 68.86666666666666,
+        "wall_seconds": 22.266
+      }
+    ],
+    "model_events": [
+      {
+        "role": "plan_checker",
+        "attempt": 1,
+        "event": "request",
+        "request": {
+          "model": "deepseek-flash",
+          "max_tokens": 10000,
+          "response_format": {
+            "type": "json_object"
+          },
+          "thinking": {
+            "type": "disabled"
+          }
+        },
+        "system_sha256": "7397ad9d664d2e4cdb962e82ca65775db6fb4662feaa356c9b7ee66559aa97f3"
+      },
+      {
+        "role": "plan_checker",
+        "attempt": 1,
+        "event": "http_response",
+        "http_status": 200
+      },
+      {
+        "role": "plan_checker",
+        "attempt": 1,
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 25315,
+          "completion_tokens": 1928,
+          "total_tokens": 27243,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          },
+          "prompt_cache_hit_tokens": 0,
+          "prompt_cache_miss_tokens": 25315
+        }
+      }
+    ]
+  },
+  {
+    "run": "animation-acceptance-20261030",
+    "job": {
+      "schema_version": "1.0",
+      "job_id": "job_3218d9ff2b2f4e70ba868f390f2fac33",
+      "kind": "video",
+      "status": "needs_review",
+      "stage": "video",
+      "message": "layout: 文字或公式过密，缩小后无法保证可读性，请缩短当前节拍",
+      "resource_ref": null,
+      "result": null,
+      "error": {
+        "code": "render_layout",
+        "message": "layout: 文字或公式过密，缩小后无法保证可读性，请缩短当前节拍",
+        "retryable": false,
+        "details": {}
+      },
+      "diagnostic_asset_ids": [
+        "file_2c8e51db5681495da986be7a17fba9e7",
+        "file_16917dafd3dd4616a3e597c0812798ab"
+      ],
+      "usage": {
+        "model_calls": 1,
+        "input_tokens": 10783,
+        "output_tokens": 1115,
+        "tokens_reported": true,
+        "elapsed_seconds": 64.703
+      },
+      "created_at": "2026-10-30T14:00:57.576350+00:00",
+      "updated_at": "2026-10-30T14:02:02.336142+00:00"
+    },
+    "accepted_at": "2026-10-30T14:00:57.576350+00:00",
+    "answer_ready_at": null,
+    "video_started_at": "2026-10-30T14:00:57.609238+00:00",
+    "terminal_at": "2026-10-30T14:02:02.300837+00:00",
+    "resumed_from_job_id": "job_70e9113aa5694a0abc00059418a35512",
+    "plan_checks": [],
+    "rendered_scenes": [],
+    "model_events": [
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "event": "request",
+        "request": {
+          "model": "deepseek-flash",
+          "max_tokens": 10000,
+          "response_format": {
+            "type": "json_object"
+          },
+          "thinking": {
+            "type": "disabled"
+          }
+        },
+        "system_sha256": "edefd00a9aab9433249cdabf96180a4d92c7bcdc04705c438c7d4b65491ffef0"
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "event": "http_response",
+        "http_status": 200
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 10783,
+          "completion_tokens": 1115,
+          "total_tokens": 11898,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          },
+          "prompt_cache_hit_tokens": 0,
+          "prompt_cache_miss_tokens": 10783
+        }
+      }
+    ]
+  },
+  {
+    "run": "animation-acceptance-20261030",
+    "job": {
+      "schema_version": "1.0",
+      "job_id": "job_12a67470ba9f4b5a90972aa41f34d99f",
+      "kind": "video",
+      "status": "completed",
+      "stage": "completed",
+      "message": "文字与无声动画已完成",
+      "resource_ref": {
+        "type": "video",
+        "id": "video_ebe7ff05d4334896a694b8e86285e1ad"
+      },
+      "result": {
+        "type": "video",
+        "id": "video_ebe7ff05d4334896a694b8e86285e1ad"
+      },
+      "error": null,
+      "diagnostic_asset_ids": [
+        "file_97dd77b835d24ecf9286ef23000ea456",
+        "file_9a6dc6a00bff4aea9057abd76f9b2f00"
+      ],
+      "usage": {
+        "model_calls": 1,
+        "input_tokens": 24895,
+        "output_tokens": 1906,
+        "tokens_reported": true,
+        "elapsed_seconds": 198.25
+      },
+      "created_at": "2026-10-30T14:03:54.779437+00:00",
+      "updated_at": "2026-10-30T14:07:13.070151+00:00"
+    },
+    "accepted_at": "2026-10-30T14:03:54.779437+00:00",
+    "answer_ready_at": null,
+    "video_started_at": "2026-10-30T14:03:54.815802+00:00",
+    "terminal_at": "2026-10-30T14:07:13.056700+00:00",
+    "resumed_from_job_id": "job_3218d9ff2b2f4e70ba868f390f2fac33",
+    "plan_checks": [
+      {
+        "plan_hash": "8b20a759e3a575d9c62cb1bfe19f00956adcb69feded129a77a0f8d0d8451f77",
+        "decision": "pass",
+        "message": "全部36个教学单元均由屏幕文字与图形承接，公式与结论符合固定正文，无数学或节奏问题。",
+        "units": [
+          {
+            "unit_id": "u001",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_1"
+            ],
+            "evidence": "scene_1 beat_1屏幕给出a=(3,2)、b=(2,0)并同图绘制两向量，承接原始数据。"
+          },
+          {
+            "unit_id": "u002",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_1"
+            ],
+            "evidence": "scene_1 beat_2标题意为“投影需b非零”，屏幕文字明确投影方向由b决定、b≠0前提。"
+          },
+          {
+            "unit_id": "u003",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_1"
+            ],
+            "evidence": "scene_1 beat_2屏幕说明若b=0则无确定方向且分母b·b=0，投影无定义，并给出b·b>0。"
+          },
+          {
+            "unit_id": "u004",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_1"
+            ],
+            "evidence": "scene_1 beat_3屏幕写出b=(2,0)≠(0,0)，指出分量不全为零故b≠0，投影可正常计算。"
+          },
+          {
+            "unit_id": "u005",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_2"
+            ],
+            "evidence": "scene_2 beat b1_line_A标题“直线L与终点A”，屏幕展示b张成过原点直线L及点A。"
+          },
+          {
+            "unit_id": "u006",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_2"
+            ],
+            "evidence": "scene_2 b1给出L={tb}与A=(3,2)；b2屏幕说明从A向L作垂线垂足P，OP即投影p，图形含P与向量p。"
+          },
+          {
+            "unit_id": "u007",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_2"
+            ],
+            "evidence": "scene_2 b3标题“投影共线条件”，屏幕指出p与b共线，可设p=cb，c为实数。"
+          },
+          {
+            "unit_id": "u008",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_2"
+            ],
+            "evidence": "scene_2 b3给出p=cb共线；b4屏幕写残差a-p垂直于L故与b正交，(a-p)·b=0，图形标出残差。"
+          },
+          {
+            "unit_id": "u009",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_3"
+            ],
+            "evidence": "scene_3 beat s3_b1屏幕以“投影向量p”设p=cb并列出(a-p)·b=0，进行系数公式推导。"
+          },
+          {
+            "unit_id": "u010",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_3"
+            ],
+            "evidence": "scene_3 s3_b2展示(a-cb)·b=0展开为a·b-c(b·b)=0；s3_b3移项后因b·b>0除得c与p公式。"
+          },
+          {
+            "unit_id": "u011",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_4"
+            ],
+            "evidence": "scene_4 beat s4b1标题与屏幕“代入已知向量”指向逐项计算部分，进入点积与系数计算。"
+          },
+          {
+            "unit_id": "u012",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_4"
+            ],
+            "evidence": "scene_4 s4b1屏幕公式与图形给出a=(3,2)、b=(2,0)，为代入数据。"
+          },
+          {
+            "unit_id": "u013",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_4"
+            ],
+            "evidence": "scene_4 s4b2标题“计算点积a·b”，屏幕说明a·b按对应分量相乘再相加。"
+          },
+          {
+            "unit_id": "u014",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_4"
+            ],
+            "evidence": "scene_4 s4b2屏幕公式写出a·b=3·2+2·0=6。"
+          },
+          {
+            "unit_id": "u015",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_4"
+            ],
+            "evidence": "scene_4 s4b3标题“计算b·b与长度”，屏幕开始计算分母b·b。"
+          },
+          {
+            "unit_id": "u016",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_4"
+            ],
+            "evidence": "scene_4 s4b3屏幕写b·b=2²+0²=4且||b||=2。"
+          },
+          {
+            "unit_id": "u017",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_4"
+            ],
+            "evidence": "scene_4 s4b4标题“得到系数c”，屏幕代入系数公式求c。"
+          },
+          {
+            "unit_id": "u018",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_4"
+            ],
+            "evidence": "scene_4 s4b4屏幕公式c=(a·b)/(b·b)=6/4=3/2。"
+          },
+          {
+            "unit_id": "u019",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_5"
+            ],
+            "evidence": "scene_5 beat s5_b1标题与屏幕“代入p等于c b”，结合已求系数计算投影向量。"
+          },
+          {
+            "unit_id": "u020",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_5"
+            ],
+            "evidence": "scene_5 s5_b1屏幕写p=cb，(3/2)(2,0)=(3,0)并绘制向量p。"
+          },
+          {
+            "unit_id": "u021",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_5"
+            ],
+            "evidence": "scene_5 s5_b1屏幕公式p=(3,0)，图形标出p与P点，承接投影向量结果。"
+          },
+          {
+            "unit_id": "u022",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_5"
+            ],
+            "evidence": "scene_5 s5_b2说明b沿x轴故L为x轴；s5_b3给出A=(3,2)到x轴垂足P=(3,0)，OP=(3,0)。"
+          },
+          {
+            "unit_id": "u023",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_6"
+            ],
+            "evidence": "scene_6 s6b1标题“先分清系数”，屏幕区分c是b的倍数，进入三个量区分。"
+          },
+          {
+            "unit_id": "u024",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_6"
+            ],
+            "evidence": "scene_6 s6b1屏幕写c=3/2、p=cb，说明c表示投影向量是b的多少倍。"
+          },
+          {
+            "unit_id": "u025",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_6"
+            ],
+            "evidence": "scene_6 s6b1屏幕公式p=c b=(3/2)b，数值c=3/2。"
+          },
+          {
+            "unit_id": "u026",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_6"
+            ],
+            "evidence": "scene_6 s6b2标题“单位方向与标量投影”，屏幕给出单位向量u与标量投影s。"
+          },
+          {
+            "unit_id": "u027",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_6"
+            ],
+            "evidence": "scene_6 s6b2屏幕写u=b/||b||=(1,0)，s=a·u=3。"
+          },
+          {
+            "unit_id": "u028",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_6"
+            ],
+            "evidence": "scene_6 s6b3屏幕公式s=c||b||=(3/2)·2=3。"
+          },
+          {
+            "unit_id": "u029",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_6"
+            ],
+            "evidence": "scene_6 s6b3用“系数乘b的长度得标量投影”说明c与s关系，区分倍数与单位方向长度。"
+          },
+          {
+            "unit_id": "u030",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_6"
+            ],
+            "evidence": "scene_6 s6b4标题“投影向量”，回到p的表示。"
+          },
+          {
+            "unit_id": "u031",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_6"
+            ],
+            "evidence": "scene_6 s6b4屏幕公式p=s u=3(1,0)=(3,0)，并写p=c b。"
+          },
+          {
+            "unit_id": "u032",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_6"
+            ],
+            "evidence": "scene_6 s6b5屏幕并列c=3/2、s=3、p=(3,0)，说明倍数、长度、向量三者不同。"
+          },
+          {
+            "unit_id": "u033",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_7"
+            ],
+            "evidence": "scene_7 beat b1_residual标题“残差与b点积为零”，屏幕进行残差验证。"
+          },
+          {
+            "unit_id": "u034",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_7"
+            ],
+            "evidence": "scene_7 b1写a-p=(0,2)且点积为0；b2说明a-p⊥b符合垂足条件，p确为投影向量。"
+          },
+          {
+            "unit_id": "u035",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_7"
+            ],
+            "evidence": "scene_7 b3标题“结论汇总”，屏幕汇总最终结果。"
+          },
+          {
+            "unit_id": "u036",
+            "decision": "pass",
+            "scene_ids": [
+              "scene_7"
+            ],
+            "evidence": "scene_7 b3屏幕写p=(3,0)、s=3、c=3/2，并说明三者含义不同；b1-b2已承接残差与正交验证。"
+          }
+        ],
+        "problem_scene_ids": []
+      }
+    ],
+    "rendered_scenes": [
+      {
+        "scene_id": "scene_1",
+        "duration_seconds": 42.86666666666667,
+        "wall_seconds": 15.391
+      },
+      {
+        "scene_id": "scene_2",
+        "duration_seconds": 59.93333333333333,
+        "wall_seconds": 20.906
+      },
+      {
+        "scene_id": "scene_3",
+        "duration_seconds": 42.833333333333336,
+        "wall_seconds": 15.828
+      },
+      {
+        "scene_id": "scene_4",
+        "duration_seconds": 49.766666666666666,
+        "wall_seconds": 18.109
+      },
+      {
+        "scene_id": "scene_5",
+        "duration_seconds": 43.7,
+        "wall_seconds": 16.5
+      },
+      {
+        "scene_id": "scene_6",
+        "duration_seconds": 68.86666666666666,
+        "wall_seconds": 22.594
+      },
+      {
+        "scene_id": "scene_7",
+        "duration_seconds": 40.63333333333333,
+        "wall_seconds": 14.859
+      }
+    ],
+    "model_events": [
+      {
+        "role": "plan_checker",
+        "attempt": 1,
+        "event": "request",
+        "request": {
+          "model": "deepseek-flash",
+          "max_tokens": 10000,
+          "response_format": {
+            "type": "json_object"
+          },
+          "thinking": {
+            "type": "disabled"
+          }
+        },
+        "system_sha256": "7397ad9d664d2e4cdb962e82ca65775db6fb4662feaa356c9b7ee66559aa97f3"
+      },
+      {
+        "role": "plan_checker",
+        "attempt": 1,
+        "event": "http_response",
+        "http_status": 200
+      },
+      {
+        "role": "plan_checker",
+        "attempt": 1,
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 24895,
+          "completion_tokens": 1906,
+          "total_tokens": 26801,
+          "prompt_tokens_details": {
+            "cached_tokens": 5504
+          },
+          "prompt_cache_hit_tokens": 5504,
+          "prompt_cache_miss_tokens": 19391
+        }
+      }
+    ]
+  },
+  {
+    "run": "animation-fresh-20261030",
+    "job": {
+      "schema_version": "1.0",
+      "job_id": "job_e6fbb11e71954796bd7e88341581edb4",
+      "kind": "generation",
+      "status": "partial",
+      "stage": "video",
+      "message": "文字已保存；动画未完成：整体切分遗漏正文单元或超出节拍上限",
+      "resource_ref": {
+        "type": "generation",
+        "id": "generation_d6fa3ecf0b3c4d038311598561d9fd7f"
+      },
+      "result": {
+        "type": "generation",
+        "id": "generation_d6fa3ecf0b3c4d038311598561d9fd7f"
+      },
+      "error": {
+        "code": "video_coverage",
+        "message": "整体切分遗漏正文单元或超出节拍上限",
+        "retryable": false,
+        "details": {}
+      },
+      "diagnostic_asset_ids": [
+        "file_a46fa7e75bc94e79b1c787fe278dd06e",
+        "file_b1d2b9af71194d1cbfe99d67c104ecdb",
+        "file_f3d8887358954f8783cca0905528ba4d",
+        "file_248c04f21a224710bc56ea4a10c392cc"
+      ],
+      "usage": {
+        "model_calls": 3,
+        "input_tokens": 11570,
+        "output_tokens": 2333,
+        "tokens_reported": true,
+        "elapsed_seconds": 16.313
+      },
+      "created_at": "2026-10-30T14:08:17.916214+00:00",
+      "updated_at": "2026-10-30T14:08:34.244217+00:00"
+    },
+    "accepted_at": "2026-10-30T14:08:17.916214+00:00",
+    "answer_ready_at": "2026-10-30T14:08:28.477143+00:00",
+    "video_started_at": "2026-10-30T14:08:28.485147+00:00",
+    "terminal_at": "2026-10-30T14:08:34.232258+00:00",
+    "resumed_from_job_id": null,
+    "plan_checks": [],
+    "rendered_scenes": [],
+    "model_events": [
+      {
+        "role": "answer_writer",
+        "attempt": 1,
+        "event": "request",
+        "request": {
+          "model": "deepseek-flash",
+          "max_tokens": 6000,
+          "thinking": {
+            "type": "disabled"
+          }
+        },
+        "system_sha256": "b181fe663a64af738d6b02f7ae0b9af278d9579a5dbb0fdce15cd22519b3e46d"
+      },
+      {
+        "role": "answer_writer",
+        "attempt": 1,
+        "event": "http_response",
+        "http_status": 200
+      },
+      {
+        "role": "answer_writer",
+        "attempt": 1,
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 708,
+          "completion_tokens": 1588,
+          "total_tokens": 2296,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          },
+          "prompt_cache_hit_tokens": 0,
+          "prompt_cache_miss_tokens": 708
+        }
+      },
+      {
+        "role": "answer_checker",
+        "attempt": 1,
+        "event": "request",
+        "request": {
+          "model": "deepseek-flash",
+          "max_tokens": 6000,
+          "response_format": {
+            "type": "json_object"
+          },
+          "thinking": {
+            "type": "disabled"
+          }
+        },
+        "system_sha256": "08f3295beb7db40131ae251aac583f70d4fc63cf40895098c32fde8f97be1309"
+      },
+      {
+        "role": "answer_checker",
+        "attempt": 1,
+        "event": "http_response",
+        "http_status": 200
+      },
+      {
+        "role": "answer_checker",
+        "attempt": 1,
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 2829,
+          "completion_tokens": 117,
+          "total_tokens": 2946,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          },
+          "prompt_cache_hit_tokens": 0,
+          "prompt_cache_miss_tokens": 2829
+        }
+      },
+      {
+        "role": "video_planner",
+        "attempt": 1,
+        "event": "request",
+        "request": {
+          "model": "deepseek-flash",
+          "max_tokens": 10000,
+          "response_format": {
+            "type": "json_object"
+          },
+          "thinking": {
+            "type": "disabled"
+          }
+        },
+        "system_sha256": "f2a033da28237fe81636c2a726b408a3a4fc813c28aceb11340de6aa92a434e2"
+      },
+      {
+        "role": "video_planner",
+        "attempt": 1,
+        "event": "http_response",
+        "http_status": 200
+      },
+      {
+        "role": "video_planner",
+        "attempt": 1,
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 8033,
+          "completion_tokens": 628,
+          "total_tokens": 8661,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          },
+          "prompt_cache_hit_tokens": 0,
+          "prompt_cache_miss_tokens": 8033
+        }
+      }
+    ]
+  },
+  {
+    "run": "animation-fresh-v2-20261030",
+    "job": {
+      "schema_version": "1.0",
+      "job_id": "job_8258d82e0d0f4616b1d65f17f71280c9",
+      "kind": "generation",
+      "status": "partial",
+      "stage": "video",
+      "message": "文字已保存；动画未完成：\n\\lVert b\\rVert=2,\\ b\\cdot b=\\lVert b\\rVert^2=4\n^\nParseFatalException: Unknown symbol: \\lVert, found '\\'  (at char 0), (line:1, col:1)",
+      "resource_ref": {
+        "type": "generation",
+        "id": "generation_00b04897bc524b83a13e027a70245817"
+      },
+      "result": {
+        "type": "generation",
+        "id": "generation_00b04897bc524b83a13e027a70245817"
+      },
+      "error": {
+        "code": "render_failed",
+        "message": "\n\\lVert b\\rVert=2,\\ b\\cdot b=\\lVert b\\rVert^2=4\n^\nParseFatalException: Unknown symbol: \\lVert, found '\\'  (at char 0), (line:1, col:1)",
+        "retryable": false,
+        "details": {}
+      },
+      "diagnostic_asset_ids": [
+        "file_a130a7a8f8c3483eac484dc265acee2c",
+        "file_251b29b5431f48f0a5cfea84d48d8371",
+        "file_9fdcd329041742268cd422603316499b",
+        "file_cb99022557be4c6cab169f1c7da1743e",
+        "file_fb8652317afa4995885f4109161a0bbe",
+        "file_f267041dbeab494fb4eda299ec23afd7",
+        "file_bf10351c13f14aca9291d021b98e5ac2",
+        "file_84e234c42514479db646a6e470878e92",
+        "file_f21260e23c674fd5a6003dc5737909ca",
+        "file_e26cafc5170b4c819e6e9e3f93e080cd"
+      ],
+      "usage": {
+        "model_calls": 9,
+        "input_tokens": 72859,
+        "output_tokens": 10284,
+        "tokens_reported": true,
+        "elapsed_seconds": 86.75
+      },
+      "created_at": "2026-10-30T14:12:03.075119+00:00",
+      "updated_at": "2026-10-30T14:13:29.879360+00:00"
+    },
+    "accepted_at": "2026-10-30T14:12:03.075119+00:00",
+    "answer_ready_at": "2026-10-30T14:12:11.407900+00:00",
+    "video_started_at": "2026-10-30T14:12:11.414900+00:00",
+    "terminal_at": "2026-10-30T14:13:29.858033+00:00",
+    "resumed_from_job_id": null,
+    "plan_checks": [],
+    "rendered_scenes": [],
+    "model_events": [
+      {
+        "role": "answer_writer",
+        "attempt": 1,
+        "event": "request",
+        "request": {
+          "model": "deepseek-flash",
+          "max_tokens": 6000,
+          "thinking": {
+            "type": "disabled"
+          }
+        },
+        "system_sha256": "b181fe663a64af738d6b02f7ae0b9af278d9579a5dbb0fdce15cd22519b3e46d"
+      },
+      {
+        "role": "answer_writer",
+        "attempt": 1,
+        "event": "http_response",
+        "http_status": 200
+      },
+      {
+        "role": "answer_writer",
+        "attempt": 1,
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 712,
+          "completion_tokens": 1489,
+          "total_tokens": 2201,
+          "prompt_tokens_details": {
+            "cached_tokens": 128
+          },
+          "prompt_cache_hit_tokens": 128,
+          "prompt_cache_miss_tokens": 584
+        }
+      },
+      {
+        "role": "answer_checker",
+        "attempt": 1,
+        "event": "request",
+        "request": {
+          "model": "deepseek-flash",
+          "max_tokens": 6000,
+          "response_format": {
+            "type": "json_object"
+          },
+          "thinking": {
+            "type": "disabled"
+          }
+        },
+        "system_sha256": "08f3295beb7db40131ae251aac583f70d4fc63cf40895098c32fde8f97be1309"
+      },
+      {
+        "role": "answer_checker",
+        "attempt": 1,
+        "event": "http_response",
+        "http_status": 200
+      },
+      {
+        "role": "answer_checker",
+        "attempt": 1,
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 2725,
+          "completion_tokens": 111,
+          "total_tokens": 2836,
+          "prompt_tokens_details": {
+            "cached_tokens": 256
+          },
+          "prompt_cache_hit_tokens": 256,
+          "prompt_cache_miss_tokens": 2469
+        }
+      },
+      {
+        "role": "video_planner",
+        "attempt": 1,
+        "event": "request",
+        "request": {
+          "model": "deepseek-flash",
+          "max_tokens": 10000,
+          "response_format": {
+            "type": "json_object"
+          },
+          "thinking": {
+            "type": "disabled"
+          }
+        },
+        "system_sha256": "f2a033da28237fe81636c2a726b408a3a4fc813c28aceb11340de6aa92a434e2"
+      },
+      {
+        "role": "video_planner",
+        "attempt": 1,
+        "event": "http_response",
+        "http_status": 200
+      },
+      {
+        "role": "video_planner",
+        "attempt": 1,
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 7954,
+          "completion_tokens": 503,
+          "total_tokens": 8457,
+          "prompt_tokens_details": {
+            "cached_tokens": 768
+          },
+          "prompt_cache_hit_tokens": 768,
+          "prompt_cache_miss_tokens": 7186
+        }
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "event": "request",
+        "request": {
+          "model": "deepseek-flash",
+          "max_tokens": 10000,
+          "response_format": {
+            "type": "json_object"
+          },
+          "thinking": {
+            "type": "disabled"
+          }
+        },
+        "system_sha256": "edefd00a9aab9433249cdabf96180a4d92c7bcdc04705c438c7d4b65491ffef0"
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "event": "http_response",
+        "http_status": 200
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 9953,
+          "completion_tokens": 914,
+          "total_tokens": 10867,
+          "prompt_tokens_details": {
+            "cached_tokens": 1536
+          },
+          "prompt_cache_hit_tokens": 1536,
+          "prompt_cache_miss_tokens": 8417
+        }
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "event": "request",
+        "request": {
+          "model": "deepseek-flash",
+          "max_tokens": 10000,
+          "response_format": {
+            "type": "json_object"
+          },
+          "thinking": {
+            "type": "disabled"
+          }
+        },
+        "system_sha256": "edefd00a9aab9433249cdabf96180a4d92c7bcdc04705c438c7d4b65491ffef0"
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "event": "http_response",
+        "http_status": 200
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 9952,
+          "completion_tokens": 1491,
+          "total_tokens": 11443,
+          "prompt_tokens_details": {
+            "cached_tokens": 9216
+          },
+          "prompt_cache_hit_tokens": 9216,
+          "prompt_cache_miss_tokens": 736
+        }
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 2,
+        "event": "request",
+        "request": {
+          "model": "deepseek-flash",
+          "max_tokens": 10000,
+          "response_format": {
+            "type": "json_object"
+          },
+          "thinking": {
+            "type": "disabled"
+          }
+        },
+        "system_sha256": "edefd00a9aab9433249cdabf96180a4d92c7bcdc04705c438c7d4b65491ffef0"
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 2,
+        "event": "http_response",
+        "http_status": 200
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 2,
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 9971,
+          "completion_tokens": 1747,
+          "total_tokens": 11718,
+          "prompt_tokens_details": {
+            "cached_tokens": 9728
+          },
+          "prompt_cache_hit_tokens": 9728,
+          "prompt_cache_miss_tokens": 243
+        }
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "event": "request",
+        "request": {
+          "model": "deepseek-flash",
+          "max_tokens": 10000,
+          "response_format": {
+            "type": "json_object"
+          },
+          "thinking": {
+            "type": "disabled"
+          }
+        },
+        "system_sha256": "edefd00a9aab9433249cdabf96180a4d92c7bcdc04705c438c7d4b65491ffef0"
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "event": "http_response",
+        "http_status": 200
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 10496,
+          "completion_tokens": 1912,
+          "total_tokens": 12408,
+          "prompt_tokens_details": {
+            "cached_tokens": 9216
+          },
+          "prompt_cache_hit_tokens": 9216,
+          "prompt_cache_miss_tokens": 1280
+        }
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "event": "request",
+        "request": {
+          "model": "deepseek-flash",
+          "max_tokens": 10000,
+          "response_format": {
+            "type": "json_object"
+          },
+          "thinking": {
+            "type": "disabled"
+          }
+        },
+        "system_sha256": "edefd00a9aab9433249cdabf96180a4d92c7bcdc04705c438c7d4b65491ffef0"
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "event": "http_response",
+        "http_status": 200
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 10527,
+          "completion_tokens": 1335,
+          "total_tokens": 11862,
+          "prompt_tokens_details": {
+            "cached_tokens": 9216
+          },
+          "prompt_cache_hit_tokens": 9216,
+          "prompt_cache_miss_tokens": 1311
+        }
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "event": "request",
+        "request": {
+          "model": "deepseek-flash",
+          "max_tokens": 10000,
+          "response_format": {
+            "type": "json_object"
+          },
+          "thinking": {
+            "type": "disabled"
+          }
+        },
+        "system_sha256": "edefd00a9aab9433249cdabf96180a4d92c7bcdc04705c438c7d4b65491ffef0"
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "event": "http_response",
+        "http_status": 200
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 10569,
+          "completion_tokens": 782,
+          "total_tokens": 11351,
+          "prompt_tokens_details": {
+            "cached_tokens": 10368
+          },
+          "prompt_cache_hit_tokens": 10368,
+          "prompt_cache_miss_tokens": 201
+        }
+      }
+    ]
+  },
+  {
+    "run": "animation-fresh-v2-20261030",
+    "job": {
+      "schema_version": "1.0",
+      "job_id": "job_0ec63ee7a3094633a92984f99ee2e309",
+      "kind": "video",
+      "status": "needs_review",
+      "stage": "video",
+      "message": "layout: 文字或公式过密，缩小后无法保证可读性，请缩短当前节拍",
+      "resource_ref": null,
+      "result": null,
+      "error": {
+        "code": "render_layout",
+        "message": "layout: 文字或公式过密，缩小后无法保证可读性，请缩短当前节拍",
+        "retryable": false,
+        "details": {}
+      },
+      "diagnostic_asset_ids": [
+        "file_c5126bac4860453dbef6d900ddb95135",
+        "file_63cd804c046a403eb1c6473c5adccfd7",
+        "file_5f67354de4d24d899c14b5a41eb90594"
+      ],
+      "usage": {
+        "model_calls": 2,
+        "input_tokens": 20498,
+        "output_tokens": 2394,
+        "tokens_reported": true,
+        "elapsed_seconds": 55.25
+      },
+      "created_at": "2026-10-30T14:16:08.138322+00:00",
+      "updated_at": "2026-10-30T14:17:03.505185+00:00"
+    },
+    "accepted_at": "2026-10-30T14:16:08.138322+00:00",
+    "answer_ready_at": null,
+    "video_started_at": "2026-10-30T14:16:08.251884+00:00",
+    "terminal_at": "2026-10-30T14:17:03.472250+00:00",
+    "resumed_from_job_id": "job_8258d82e0d0f4616b1d65f17f71280c9",
+    "plan_checks": [],
+    "rendered_scenes": [],
+    "model_events": [
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "event": "request",
+        "request": {
+          "model": "deepseek-flash",
+          "max_tokens": 10000,
+          "response_format": {
+            "type": "json_object"
+          },
+          "thinking": {
+            "type": "disabled"
+          }
+        },
+        "system_sha256": "edefd00a9aab9433249cdabf96180a4d92c7bcdc04705c438c7d4b65491ffef0"
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "event": "http_response",
+        "http_status": 200
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 10228,
+          "completion_tokens": 1229,
+          "total_tokens": 11457,
+          "prompt_tokens_details": {
+            "cached_tokens": 9216
+          },
+          "prompt_cache_hit_tokens": 9216,
+          "prompt_cache_miss_tokens": 1012
+        }
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "event": "request",
+        "request": {
+          "model": "deepseek-flash",
+          "max_tokens": 10000,
+          "response_format": {
+            "type": "json_object"
+          },
+          "thinking": {
+            "type": "disabled"
+          }
+        },
+        "system_sha256": "edefd00a9aab9433249cdabf96180a4d92c7bcdc04705c438c7d4b65491ffef0"
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "event": "http_response",
+        "http_status": 200
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 10270,
+          "completion_tokens": 1165,
+          "total_tokens": 11435,
+          "prompt_tokens_details": {
+            "cached_tokens": 10112
+          },
+          "prompt_cache_hit_tokens": 10112,
+          "prompt_cache_miss_tokens": 158
+        }
+      }
+    ]
+  },
+  {
+    "run": "animation-fresh-v2-20261030",
+    "job": {
+      "schema_version": "1.0",
+      "job_id": "job_0ce3ad13fef14f5c9318243bf459ef7a",
+      "kind": "video",
+      "status": "completed",
+      "stage": "completed",
+      "message": "文字与无声动画已完成",
+      "resource_ref": {
+        "type": "video",
+        "id": "video_5dd1f5bee3c54488811e68302961349b"
+      },
+      "result": {
+        "type": "video",
+        "id": "video_5dd1f5bee3c54488811e68302961349b"
+      },
+      "error": null,
+      "diagnostic_asset_ids": [
+        "file_74da347969ba44959fbd5d98408d23e1",
+        "file_6064baf8750746778dc033d2b16f2044",
+        "file_d39a67c0697545b29d27c6422296cefa"
+      ],
+      "usage": {
+        "model_calls": 2,
+        "input_tokens": 32583,
+        "output_tokens": 3934,
+        "tokens_reported": true,
+        "elapsed_seconds": 186.578
+      },
+      "created_at": "2026-10-30T14:19:31.158464+00:00",
+      "updated_at": "2026-10-30T14:22:37.766731+00:00"
+    },
+    "accepted_at": "2026-10-30T14:19:31.158464+00:00",
+    "answer_ready_at": null,
+    "video_started_at": "2026-10-30T14:19:31.185573+00:00",
+    "terminal_at": "2026-10-30T14:22:37.754022+00:00",
+    "resumed_from_job_id": "job_0ec63ee7a3094633a92984f99ee2e309",
+    "plan_checks": [
+      {
+        "plan_hash": "ce542b7e254a31c009dfcbef43e96976b7e2856a6eb4bf70fa0273cc5ca5791e",
+        "decision": "pass",
+        "message": "全部41个教学单元均由屏幕文字、公式或图形承接，坐标、量类型与结论与固定答案一致，未发现数学或节奏问题。",
+        "units": [
+          {
+            "unit_id": "u001",
+            "decision": "pass",
+            "scene_ids": [
+              "S1_Setup"
+            ],
+            "evidence": "S1的B1屏幕文字与公式写出a=(3,2)、b=(2,0)并说明求正交投影，图中有两向量。"
+          },
+          {
+            "unit_id": "u002",
+            "decision": "pass",
+            "scene_ids": [
+              "S1_Setup"
+            ],
+            "evidence": "S1的B2屏幕文字说明投影沿b方向定义、b=0无方向且公式会除以零，必须b≠0。"
+          },
+          {
+            "unit_id": "u003",
+            "decision": "pass",
+            "scene_ids": [
+              "S1_Setup"
+            ],
+            "evidence": "S1的B3屏幕文字与公式b=(2,0)≠(0,0)确认前提满足。"
+          },
+          {
+            "unit_id": "u004",
+            "decision": "pass",
+            "scene_ids": [
+              "S2_Geometry"
+            ],
+            "evidence": "S2的B1同起点O作图与B2过a终点作垂线得垂足、O到垂足的p，公式p=(3,0)。"
+          },
+          {
+            "unit_id": "u005",
+            "decision": "pass",
+            "scene_ids": [
+              "S2_Geometry"
+            ],
+            "evidence": "S2的B3屏幕文字指出残差a-p正交投影要求垂直于b所在直线，并画出红色残差。"
+          },
+          {
+            "unit_id": "u006",
+            "decision": "pass",
+            "scene_ids": [
+              "S2_Geometry"
+            ],
+            "evidence": "S2的B3公式(a-p) perp b与(a-p) cdot b=0明确写出等价点积条件。"
+          },
+          {
+            "unit_id": "u007",
+            "decision": "pass",
+            "scene_ids": [
+              "S2_Geometry"
+            ],
+            "evidence": "S2的B4屏幕文字说明垂足为最近点、最近等价连线垂直，是列点积方程的根据。"
+          },
+          {
+            "unit_id": "u008",
+            "decision": "pass",
+            "scene_ids": [
+              "S3_Formula"
+            ],
+            "evidence": "S3的b1屏幕文字说明p落在b所在直线上，因此是b的倍数，设p=c·b。"
+          },
+          {
+            "unit_id": "u009",
+            "decision": "pass",
+            "scene_ids": [
+              "S3_Formula"
+            ],
+            "evidence": "S3的b1公式p = c b完整呈现设元式。"
+          },
+          {
+            "unit_id": "u010",
+            "decision": "pass",
+            "scene_ids": [
+              "S3_Formula"
+            ],
+            "evidence": "S3的b2屏幕文字说明代入正交条件(a-p)·b=0。"
+          },
+          {
+            "unit_id": "u011",
+            "decision": "pass",
+            "scene_ids": [
+              "S3_Formula"
+            ],
+            "evidence": "S3的b2公式(a - c b) \\cdot b = 0写出代入结果。"
+          },
+          {
+            "unit_id": "u012",
+            "decision": "pass",
+            "scene_ids": [
+              "S3_Formula"
+            ],
+            "evidence": "S3的b3屏幕文字说明利用点积线性性展开。"
+          },
+          {
+            "unit_id": "u013",
+            "decision": "pass",
+            "scene_ids": [
+              "S3_Formula"
+            ],
+            "evidence": "S3的b3公式a \\cdot b - c (b \\cdot b) = 0写出展开并令其为零。"
+          },
+          {
+            "unit_id": "u014",
+            "decision": "pass",
+            "scene_ids": [
+              "S3_Formula"
+            ],
+            "evidence": "S3的b4屏幕文字说明因b≠0，b·b>0，可除以b·b。"
+          },
+          {
+            "unit_id": "u015",
+            "decision": "pass",
+            "scene_ids": [
+              "S3_Formula"
+            ],
+            "evidence": "S3的b4公式c = (a·b)/(b·b)完整给出解出的系数。"
+          },
+          {
+            "unit_id": "u016",
+            "decision": "pass",
+            "scene_ids": [
+              "S3_Formula"
+            ],
+            "evidence": "S3的b5屏幕文字说明将c代回p=cb得到投影向量公式。"
+          },
+          {
+            "unit_id": "u017",
+            "decision": "pass",
+            "scene_ids": [
+              "S3_Formula"
+            ],
+            "evidence": "S3的b5公式p = (a·b)/(b·b) b写出投影向量一般公式。"
+          },
+          {
+            "unit_id": "u018",
+            "decision": "pass",
+            "scene_ids": [
+              "S3_Formula"
+            ],
+            "evidence": "S3的b5屏幕文字声明这就是正交投影的系数公式。"
+          },
+          {
+            "unit_id": "u019",
+            "decision": "pass",
+            "scene_ids": [
+              "S4_Compute"
+            ],
+            "evidence": "S4的B1标题与屏幕文字“先算点积a·b”承接计算a·b。"
+          },
+          {
+            "unit_id": "u020",
+            "decision": "pass",
+            "scene_ids": [
+              "S4_Compute"
+            ],
+            "evidence": "S4的B1公式a·b=3×2+2×0=6+0=6给出结果6。"
+          },
+          {
+            "unit_id": "u021",
+            "decision": "pass",
+            "scene_ids": [
+              "S4_Compute"
+            ],
+            "evidence": "S4的B2屏幕文字“再算b·b”承接计算b·b。"
+          },
+          {
+            "unit_id": "u022",
+            "decision": "pass",
+            "scene_ids": [
+              "S4_Compute"
+            ],
+            "evidence": "S4的B2公式b·b=2×2+0×0=4给出结果4。"
+          },
+          {
+            "unit_id": "u023",
+            "decision": "pass",
+            "scene_ids": [
+              "S4_Compute"
+            ],
+            "evidence": "S4的B2屏幕文字提到用模长平方验证，公式‖b‖=2, b·b=‖b‖²=4。"
+          },
+          {
+            "unit_id": "u024",
+            "decision": "pass",
+            "scene_ids": [
+              "S4_Compute"
+            ],
+            "evidence": "S4的B3屏幕文字“求系数c”并提及代入系数公式。"
+          },
+          {
+            "unit_id": "u025",
+            "decision": "pass",
+            "scene_ids": [
+              "S4_Compute"
+            ],
+            "evidence": "S4的B3公式c=6/4=3/2给出系数结果。"
+          },
+          {
+            "unit_id": "u026",
+            "decision": "pass",
+            "scene_ids": [
+              "S4_Compute"
+            ],
+            "evidence": "S4的B4屏幕文字“投影向量p=cb”承接求p。"
+          },
+          {
+            "unit_id": "u027",
+            "decision": "pass",
+            "scene_ids": [
+              "S4_Compute"
+            ],
+            "evidence": "S4的B4公式p=cb=(3/2)(2,0)=(3,0)完整呈现代入。"
+          },
+          {
+            "unit_id": "u028",
+            "decision": "pass",
+            "scene_ids": [
+              "S4_Compute"
+            ],
+            "evidence": "S4的B4屏幕文字说明投影向量p=cb代入后得p=(3,0)，即正交投影向量。"
+          },
+          {
+            "unit_id": "u029",
+            "decision": "pass",
+            "scene_ids": [
+              "S4_Compute"
+            ],
+            "evidence": "S4的B4公式末行p=(3,0)给出投影向量结论。"
+          },
+          {
+            "unit_id": "u030",
+            "decision": "pass",
+            "scene_ids": [
+              "S5_Concepts"
+            ],
+            "evidence": "S5的B1屏幕文字列出三个不同量：标量系数c、标量投影长度、投影向量p。"
+          },
+          {
+            "unit_id": "u031",
+            "decision": "pass",
+            "scene_ids": [
+              "S5_Concepts"
+            ],
+            "evidence": "S5的B1与B2、B3以公式与文字给出c=3/2、标量投影长度3及二者类型区分。"
+          },
+          {
+            "unit_id": "u032",
+            "decision": "pass",
+            "scene_ids": [
+              "S5_Concepts"
+            ],
+            "evidence": "S5的B3屏幕文字以c乘b的模得3说明三者关系。"
+          },
+          {
+            "unit_id": "u033",
+            "decision": "pass",
+            "scene_ids": [
+              "S5_Concepts"
+            ],
+            "evidence": "S5的B3公式c‖b‖=3/2×2=3与B4屏幕文字3·(1,0)=(3,0)承接关系。"
+          },
+          {
+            "unit_id": "u034",
+            "decision": "pass",
+            "scene_ids": [
+              "S5_Concepts"
+            ],
+            "evidence": "S5的B2屏幕文字强调c=3/2是纯数非投影长度，B4强调向量(3,0)与c不同。"
+          },
+          {
+            "unit_id": "u035",
+            "decision": "pass",
+            "scene_ids": [
+              "S6_Verify"
+            ],
+            "evidence": "S6的b1屏幕文字“验证正交性，先求残差a-p”承接验证步骤开头。"
+          },
+          {
+            "unit_id": "u036",
+            "decision": "pass",
+            "scene_ids": [
+              "S6_Verify"
+            ],
+            "evidence": "S6的b1公式a-p=(3,2)-(3,0)=(0,2)写出残差。"
+          },
+          {
+            "unit_id": "u037",
+            "decision": "pass",
+            "scene_ids": [
+              "S6_Verify"
+            ],
+            "evidence": "S6的b2屏幕文字说明把残差(0,2)与b=(2,0)作点积。"
+          },
+          {
+            "unit_id": "u038",
+            "decision": "pass",
+            "scene_ids": [
+              "S6_Verify"
+            ],
+            "evidence": "S6的b2公式(a-p)·b=0×2+2×0=0给出点积为0。"
+          },
+          {
+            "unit_id": "u039",
+            "decision": "pass",
+            "scene_ids": [
+              "S6_Verify"
+            ],
+            "evidence": "S6的b3屏幕文字与公式说明点积为0故a-p⊥b，垂足正确并与正交条件一致。"
+          },
+          {
+            "unit_id": "u040",
+            "decision": "pass",
+            "scene_ids": [
+              "S6_Verify"
+            ],
+            "evidence": "S6的b4屏幕文字汇总前提成立、a·b=6、b·b=4、c=3/2、p=(3,0)、长度3。"
+          },
+          {
+            "unit_id": "u041",
+            "decision": "pass",
+            "scene_ids": [
+              "S6_Verify"
+            ],
+            "evidence": "S6的b4屏幕文字与公式p=(3,0),|p|=3给出最终投影与有向长度结论。"
+          }
+        ],
+        "problem_scene_ids": []
+      }
+    ],
+    "rendered_scenes": [
+      {
+        "scene_id": "S1_Setup",
+        "duration_seconds": 33.96666666666667,
+        "wall_seconds": 12.625
+      },
+      {
+        "scene_id": "S2_Geometry",
+        "duration_seconds": 46.266666666666666,
+        "wall_seconds": 18.515
+      },
+      {
+        "scene_id": "S3_Formula",
+        "duration_seconds": 69.36666666666666,
+        "wall_seconds": 23.203
+      },
+      {
+        "scene_id": "S4_Compute",
+        "duration_seconds": 41.9,
+        "wall_seconds": 14.813
+      },
+      {
+        "scene_id": "S5_Concepts",
+        "duration_seconds": 50.96666666666667,
+        "wall_seconds": 19.922
+      },
+      {
+        "scene_id": "S6_Verify",
+        "duration_seconds": 52.333333333333336,
+        "wall_seconds": 19.531
+      }
+    ],
+    "model_events": [
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "event": "request",
+        "request": {
+          "model": "deepseek-flash",
+          "max_tokens": 10000,
+          "response_format": {
+            "type": "json_object"
+          },
+          "thinking": {
+            "type": "disabled"
+          }
+        },
+        "system_sha256": "edefd00a9aab9433249cdabf96180a4d92c7bcdc04705c438c7d4b65491ffef0"
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "event": "http_response",
+        "http_status": 200
+      },
+      {
+        "role": "scene_generator",
+        "attempt": 1,
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 10355,
+          "completion_tokens": 1660,
+          "total_tokens": 12015,
+          "prompt_tokens_details": {
+            "cached_tokens": 9216
+          },
+          "prompt_cache_hit_tokens": 9216,
+          "prompt_cache_miss_tokens": 1139
+        }
+      },
+      {
+        "role": "plan_checker",
+        "attempt": 1,
+        "event": "request",
+        "request": {
+          "model": "deepseek-flash",
+          "max_tokens": 10000,
+          "response_format": {
+            "type": "json_object"
+          },
+          "thinking": {
+            "type": "disabled"
+          }
+        },
+        "system_sha256": "7397ad9d664d2e4cdb962e82ca65775db6fb4662feaa356c9b7ee66559aa97f3"
+      },
+      {
+        "role": "plan_checker",
+        "attempt": 1,
+        "event": "http_response",
+        "http_status": 200
+      },
+      {
+        "role": "plan_checker",
+        "attempt": 1,
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 22228,
+          "completion_tokens": 2274,
+          "total_tokens": 24502,
+          "prompt_tokens_details": {
+            "cached_tokens": 512
+          },
+          "prompt_cache_hit_tokens": 512,
+          "prompt_cache_miss_tokens": 21716
+        }
+      }
+    ]
+  }
+]

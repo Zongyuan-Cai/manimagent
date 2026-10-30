@@ -1,0 +1,3896 @@
+{
+  "runs": [
+    {
+      "run": "baseline",
+      "model": "deepseek-flash",
+      "endpoint": "https://api.deepseek.com",
+      "cases": [
+        {
+          "name": "docx_subscript",
+          "format": "docx",
+          "expected": "needs_review",
+          "passed": false,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1949,
+            "output_tokens": 1755,
+            "tokens_reported": true,
+            "elapsed_seconds": 15.125
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 892,
+          "failure": "AssertionError: expected needs_review, got completed",
+          "elapsed_seconds": 15.406
+        },
+        {
+          "name": "docx_superscript",
+          "format": "docx",
+          "expected": "needs_review",
+          "passed": false,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1596,
+            "output_tokens": 976,
+            "tokens_reported": true,
+            "elapsed_seconds": 7.766
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 319,
+          "failure": "AssertionError: expected needs_review, got completed",
+          "elapsed_seconds": 8.093
+        },
+        {
+          "name": "docx_symbol",
+          "format": "docx",
+          "expected": "needs_review",
+          "passed": false,
+          "real_provider": true,
+          "status": "needs_input",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1427,
+            "output_tokens": 645,
+            "tokens_reported": true,
+            "elapsed_seconds": 9.312
+          },
+          "error": {
+            "code": "source_incomplete",
+            "message": "材料仅包含不完整片段“An essential symbol:”，未提出可回答的问题，也未给出待识别符号；候选答案仅说明信息不足。需补充完整题干、目标符号或相关定义后才能作答。",
+            "retryable": false,
+            "details": {}
+          },
+          "model_calls": 2,
+          "failure": "AssertionError: expected needs_review, got needs_input",
+          "elapsed_seconds": 9.547
+        },
+        {
+          "name": "integral_pdf",
+          "format": "pdf",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1622,
+            "output_tokens": 744,
+            "tokens_reported": true,
+            "elapsed_seconds": 7.14
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 438,
+          "elapsed_seconds": 7.562
+        },
+        {
+          "name": "linear_docx",
+          "format": "docx",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 2127,
+            "output_tokens": 633,
+            "tokens_reported": true,
+            "elapsed_seconds": 9.0
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 584,
+          "elapsed_seconds": 9.469
+        },
+        {
+          "name": "missing_matrix",
+          "format": "text",
+          "expected": "needs_input",
+          "passed": true,
+          "real_provider": true,
+          "status": "needs_input",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1648,
+            "output_tokens": 1504,
+            "tokens_reported": true,
+            "elapsed_seconds": 9.75
+          },
+          "error": {
+            "code": "source_incomplete",
+            "message": "材料未提供任何矩阵，无法计算具体特征值；候选答案正确指出缺少矩阵并给出一般方法，但原问题仍因缺少必要输入而不能形成完整可用的数值结论。",
+            "retryable": false,
+            "details": {}
+          },
+          "model_calls": 2,
+          "elapsed_seconds": 9.938
+        },
+        {
+          "name": "pdf_graphic_F",
+          "format": "pdf",
+          "expected": "needs_review",
+          "passed": false,
+          "real_provider": true,
+          "status": "needs_input",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1624,
+            "output_tokens": 1242,
+            "tokens_reported": true,
+            "elapsed_seconds": 11.063
+          },
+          "error": {
+            "code": "source_incomplete",
+            "message": "候选答案正确指出材料仅含题干文本，缺少三角形图形或可计算面积的数据，因此无法给出数值结果；需补充图形、底和高或三边长度等信息后才能完成计算。",
+            "retryable": false,
+            "details": {}
+          },
+          "model_calls": 2,
+          "failure": "AssertionError: expected needs_review, got needs_input",
+          "elapsed_seconds": 11.406
+        },
+        {
+          "name": "pdf_graphic_b",
+          "format": "pdf",
+          "expected": "needs_review",
+          "passed": false,
+          "real_provider": true,
+          "status": "needs_input",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1655,
+            "output_tokens": 952,
+            "tokens_reported": true,
+            "elapsed_seconds": 10.031
+          },
+          "error": {
+            "code": "source_incomplete",
+            "message": "材料仅包含题干文字，未提供三角形图形、边长、底高、角度或坐标等必要数据，因此无法计算具体面积。候选答案正确指出了信息缺失，但该题在当前材料下不能形成完整可用解答；需补充图形或相关测量数据后才能作答。",
+            "retryable": false,
+            "details": {}
+          },
+          "model_calls": 2,
+          "failure": "AssertionError: expected needs_review, got needs_input",
+          "elapsed_seconds": 10.266
+        },
+        {
+          "name": "pdf_graphic_bstar",
+          "format": "pdf",
+          "expected": "needs_review",
+          "passed": false,
+          "real_provider": true,
+          "status": "needs_input",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1555,
+            "output_tokens": 1200,
+            "tokens_reported": true,
+            "elapsed_seconds": 9.297
+          },
+          "error": {
+            "code": "source_incomplete",
+            "message": "候选答案正确指出材料未提供三角形图形或尺寸，无法计算面积；需补充图形、底与高、三边长度或顶点坐标等必要信息后才能给出数值结果。引用来源与材料一致。",
+            "retryable": false,
+            "details": {}
+          },
+          "model_calls": 2,
+          "failure": "AssertionError: expected needs_review, got needs_input",
+          "elapsed_seconds": 9.516
+        },
+        {
+          "name": "probability_md",
+          "format": "md",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1860,
+            "output_tokens": 702,
+            "tokens_reported": true,
+            "elapsed_seconds": 6.281
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 722,
+          "elapsed_seconds": 6.609
+        },
+        {
+          "name": "projection_text",
+          "format": "text",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1426,
+            "output_tokens": 924,
+            "tokens_reported": true,
+            "elapsed_seconds": 8.938
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 732,
+          "elapsed_seconds": 9.375
+        },
+        {
+          "name": "table_docx",
+          "format": "docx",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 2093,
+            "output_tokens": 898,
+            "tokens_reported": true,
+            "elapsed_seconds": 7.609
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 510,
+          "elapsed_seconds": 7.859
+        }
+      ],
+      "passed": 6,
+      "total": 12
+    },
+    {
+      "run": "cli",
+      "cases": [
+        {
+          "name": "doctor",
+          "passed": true,
+          "model_calls": 0,
+          "exit_code": 0,
+          "elapsed_seconds": 0.484
+        },
+        {
+          "name": "text",
+          "passed": true,
+          "model_calls": 2,
+          "exit_code": 0,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1331,
+            "output_tokens": 879,
+            "tokens_reported": true,
+            "elapsed_seconds": 8.625
+          },
+          "elapsed_seconds": 9.282
+        },
+        {
+          "name": "mixed_files",
+          "passed": true,
+          "model_calls": 2,
+          "exit_code": 0,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 2541,
+            "output_tokens": 467,
+            "tokens_reported": true,
+            "elapsed_seconds": 8.328
+          },
+          "elapsed_seconds": 9.187
+        },
+        {
+          "name": "missing_data",
+          "passed": true,
+          "model_calls": 2,
+          "exit_code": 1,
+          "status": "needs_input",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1323,
+            "output_tokens": 464,
+            "tokens_reported": true,
+            "elapsed_seconds": 4.312
+          },
+          "elapsed_seconds": 4.953
+        },
+        {
+          "name": "missing_file",
+          "passed": true,
+          "model_calls": 0,
+          "exit_code": 2,
+          "elapsed_seconds": 0.625
+        }
+      ],
+      "passed": 5,
+      "total": 5
+    },
+    {
+      "run": "final",
+      "model": "deepseek-flash",
+      "endpoint": "https://api.deepseek.com",
+      "cases": [
+        {
+          "name": "bad_encoding",
+          "format": "reject",
+          "expected": null,
+          "passed": true,
+          "real_provider": true,
+          "status": 415,
+          "model_calls": 0,
+          "elapsed_seconds": 0.125
+        },
+        {
+          "name": "code_output",
+          "format": "text",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1513,
+            "output_tokens": 768,
+            "tokens_reported": true,
+            "elapsed_seconds": 5.969
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 635,
+          "elapsed_seconds": 6.219
+        },
+        {
+          "name": "concept",
+          "format": "text",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1862,
+            "output_tokens": 1970,
+            "tokens_reported": true,
+            "elapsed_seconds": 12.922
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 1126,
+          "elapsed_seconds": 13.11
+        },
+        {
+          "name": "crlf",
+          "format": "txt",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1889,
+            "output_tokens": 316,
+            "tokens_reported": true,
+            "elapsed_seconds": 4.281
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 246,
+          "elapsed_seconds": 4.516
+        },
+        {
+          "name": "csv",
+          "format": "reject",
+          "expected": null,
+          "passed": true,
+          "real_provider": true,
+          "status": 415,
+          "model_calls": 0,
+          "elapsed_seconds": 0.125
+        },
+        {
+          "name": "derivative_docx",
+          "format": "docx",
+          "expected": "completed",
+          "passed": false,
+          "real_provider": true,
+          "status": "needs_input",
+          "usage": {
+            "model_calls": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "tokens_reported": false,
+            "elapsed_seconds": 0.453
+          },
+          "error": {
+            "code": "invalid_file",
+            "message": "文件损坏或格式无法解析，请重新提供原件",
+            "retryable": false,
+            "details": {}
+          },
+          "model_calls": 0,
+          "failure": "AssertionError: expected completed, got needs_input",
+          "elapsed_seconds": 0.718
+        },
+        {
+          "name": "derivative_md",
+          "format": "md",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 2185,
+            "output_tokens": 1180,
+            "tokens_reported": true,
+            "elapsed_seconds": 7.406
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 1038,
+          "elapsed_seconds": 7.688
+        },
+        {
+          "name": "derivative_pdf",
+          "format": "pdf",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 2300,
+            "output_tokens": 1347,
+            "tokens_reported": true,
+            "elapsed_seconds": 8.86
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 1140,
+          "elapsed_seconds": 9.031
+        },
+        {
+          "name": "derivative_text",
+          "format": "text",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 2093,
+            "output_tokens": 1297,
+            "tokens_reported": true,
+            "elapsed_seconds": 7.391
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 1351,
+          "elapsed_seconds": 7.672
+        },
+        {
+          "name": "derivative_txt",
+          "format": "txt",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 2186,
+            "output_tokens": 1043,
+            "tokens_reported": true,
+            "elapsed_seconds": 7.375
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 1038,
+          "elapsed_seconds": 7.656
+        },
+        {
+          "name": "determinant_docx",
+          "format": "docx",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 2041,
+            "output_tokens": 502,
+            "tokens_reported": true,
+            "elapsed_seconds": 4.969
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 260,
+          "elapsed_seconds": 5.313
+        },
+        {
+          "name": "determinant_md",
+          "format": "md",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1774,
+            "output_tokens": 455,
+            "tokens_reported": true,
+            "elapsed_seconds": 4.39
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 427,
+          "elapsed_seconds": 4.625
+        },
+        {
+          "name": "determinant_pdf",
+          "format": "pdf",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1661,
+            "output_tokens": 415,
+            "tokens_reported": true,
+            "elapsed_seconds": 3.156
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 379,
+          "elapsed_seconds": 3.359
+        },
+        {
+          "name": "determinant_text",
+          "format": "text",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1305,
+            "output_tokens": 353,
+            "tokens_reported": true,
+            "elapsed_seconds": 3.891
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 269,
+          "elapsed_seconds": 4.094
+        },
+        {
+          "name": "determinant_txt",
+          "format": "txt",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1733,
+            "output_tokens": 423,
+            "tokens_reported": true,
+            "elapsed_seconds": 3.812
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 384,
+          "elapsed_seconds": 3.985
+        },
+        {
+          "name": "docx_inherited_subscript",
+          "format": "docx",
+          "expected": "needs_review",
+          "passed": true,
+          "real_provider": true,
+          "status": "needs_review",
+          "usage": {
+            "model_calls": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "tokens_reported": false,
+            "elapsed_seconds": 0.469
+          },
+          "error": {
+            "code": "content_uncertain",
+            "message": "DOCX 使用的样式包含上下标，纯文本会丢失数学含义，请提供文本或 LaTeX",
+            "retryable": false,
+            "details": {}
+          },
+          "model_calls": 0,
+          "elapsed_seconds": 0.843
+        },
+        {
+          "name": "docx_style_superscript",
+          "format": "docx",
+          "expected": "needs_review",
+          "passed": true,
+          "real_provider": true,
+          "status": "needs_review",
+          "usage": {
+            "model_calls": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "tokens_reported": false,
+            "elapsed_seconds": 0.328
+          },
+          "error": {
+            "code": "content_uncertain",
+            "message": "DOCX 使用的样式包含上下标，纯文本会丢失数学含义，请提供文本或 LaTeX",
+            "retryable": false,
+            "details": {}
+          },
+          "model_calls": 0,
+          "elapsed_seconds": 0.64
+        },
+        {
+          "name": "docx_subscript",
+          "format": "docx",
+          "expected": "needs_review",
+          "passed": true,
+          "real_provider": true,
+          "status": "needs_review",
+          "usage": {
+            "model_calls": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "tokens_reported": false,
+            "elapsed_seconds": 0.282
+          },
+          "error": {
+            "code": "content_uncertain",
+            "message": "DOCX 包含上下标或特殊符号，纯文本会丢失数学含义，请提供明确的文本或 LaTeX",
+            "retryable": false,
+            "details": {}
+          },
+          "model_calls": 0,
+          "elapsed_seconds": 0.469
+        },
+        {
+          "name": "docx_superscript",
+          "format": "docx",
+          "expected": "needs_review",
+          "passed": true,
+          "real_provider": true,
+          "status": "needs_review",
+          "usage": {
+            "model_calls": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "tokens_reported": false,
+            "elapsed_seconds": 0.359
+          },
+          "error": {
+            "code": "content_uncertain",
+            "message": "DOCX 包含上下标或特殊符号，纯文本会丢失数学含义，请提供明确的文本或 LaTeX",
+            "retryable": false,
+            "details": {}
+          },
+          "model_calls": 0,
+          "elapsed_seconds": 0.562
+        },
+        {
+          "name": "docx_symbol",
+          "format": "docx",
+          "expected": "needs_review",
+          "passed": true,
+          "real_provider": true,
+          "status": "needs_review",
+          "usage": {
+            "model_calls": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "tokens_reported": false,
+            "elapsed_seconds": 0.312
+          },
+          "error": {
+            "code": "content_uncertain",
+            "message": "DOCX 包含上下标或特殊符号，纯文本会丢失数学含义，请提供明确的文本或 LaTeX",
+            "retryable": false,
+            "details": {}
+          },
+          "model_calls": 0,
+          "elapsed_seconds": 0.657
+        },
+        {
+          "name": "fake_docx",
+          "format": "reject",
+          "expected": null,
+          "passed": true,
+          "real_provider": true,
+          "status": 415,
+          "model_calls": 0,
+          "elapsed_seconds": 0.141
+        },
+        {
+          "name": "fake_pdf",
+          "format": "reject",
+          "expected": null,
+          "passed": true,
+          "real_provider": true,
+          "status": 415,
+          "model_calls": 0,
+          "elapsed_seconds": 0.203
+        },
+        {
+          "name": "injection",
+          "format": "md",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 2025,
+            "output_tokens": 609,
+            "tokens_reported": true,
+            "elapsed_seconds": 5.5
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 375,
+          "elapsed_seconds": 5.921
+        },
+        {
+          "name": "integral_docx",
+          "format": "docx",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 2119,
+            "output_tokens": 719,
+            "tokens_reported": true,
+            "elapsed_seconds": 6.641
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 448,
+          "elapsed_seconds": 6.922
+        },
+        {
+          "name": "integral_md",
+          "format": "md",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1801,
+            "output_tokens": 607,
+            "tokens_reported": true,
+            "elapsed_seconds": 4.812
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 444,
+          "elapsed_seconds": 5.047
+        },
+        {
+          "name": "integral_pdf",
+          "format": "pdf",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1721,
+            "output_tokens": 478,
+            "tokens_reported": true,
+            "elapsed_seconds": 5.344
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 410,
+          "elapsed_seconds": 5.5
+        },
+        {
+          "name": "integral_text",
+          "format": "text",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1446,
+            "output_tokens": 531,
+            "tokens_reported": true,
+            "elapsed_seconds": 7.453
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 449,
+          "elapsed_seconds": 7.625
+        },
+        {
+          "name": "integral_txt",
+          "format": "txt",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1718,
+            "output_tokens": 563,
+            "tokens_reported": true,
+            "elapsed_seconds": 5.047
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 394,
+          "elapsed_seconds": 5.344
+        },
+        {
+          "name": "linear_docx",
+          "format": "docx",
+          "expected": "completed",
+          "passed": false,
+          "real_provider": true,
+          "status": "needs_input",
+          "usage": {
+            "model_calls": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "tokens_reported": false,
+            "elapsed_seconds": 0.406
+          },
+          "error": {
+            "code": "invalid_file",
+            "message": "文件损坏或格式无法解析，请重新提供原件",
+            "retryable": false,
+            "details": {}
+          },
+          "model_calls": 0,
+          "failure": "AssertionError: expected completed, got needs_input",
+          "elapsed_seconds": 0.688
+        },
+        {
+          "name": "linear_md",
+          "format": "md",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1868,
+            "output_tokens": 549,
+            "tokens_reported": true,
+            "elapsed_seconds": 3.921
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 537,
+          "elapsed_seconds": 4.093
+        },
+        {
+          "name": "linear_pdf",
+          "format": "pdf",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1769,
+            "output_tokens": 656,
+            "tokens_reported": true,
+            "elapsed_seconds": 5.031
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 490,
+          "elapsed_seconds": 5.25
+        },
+        {
+          "name": "linear_text",
+          "format": "text",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1515,
+            "output_tokens": 654,
+            "tokens_reported": true,
+            "elapsed_seconds": 5.829
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 532,
+          "elapsed_seconds": 6.141
+        },
+        {
+          "name": "linear_txt",
+          "format": "txt",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1765,
+            "output_tokens": 501,
+            "tokens_reported": true,
+            "elapsed_seconds": 4.594
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 419,
+          "elapsed_seconds": 4.907
+        },
+        {
+          "name": "missing_chinese",
+          "format": "text",
+          "expected": "needs_input",
+          "passed": true,
+          "real_provider": true,
+          "status": "needs_input",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1343,
+            "output_tokens": 585,
+            "tokens_reported": true,
+            "elapsed_seconds": 5.297
+          },
+          "error": {
+            "code": "source_incomplete",
+            "message": "材料要求计算“这批数据”的数值均值，但明确未提供数据；候选仅给出均值公式和示例，并说明缺少观测值，未完成数值计算。需补充具体数据后才能作答。",
+            "retryable": false,
+            "details": {}
+          },
+          "model_calls": 2,
+          "elapsed_seconds": 5.5
+        },
+        {
+          "name": "missing_data",
+          "format": "text",
+          "expected": "needs_input",
+          "passed": true,
+          "real_provider": true,
+          "status": "needs_input",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1418,
+            "output_tokens": 569,
+            "tokens_reported": true,
+            "elapsed_seconds": 4.875
+          },
+          "error": {
+            "code": "source_incomplete",
+            "message": "材料要求计算数据集的数值均值，但未提供任何数据值；候选答案正确指出无法计算并给出公式，但原问题的数值均值尚未完成，需补充全部数据或频数信息。",
+            "retryable": false,
+            "details": {}
+          },
+          "model_calls": 2,
+          "elapsed_seconds": 5.094
+        },
+        {
+          "name": "missing_matrix",
+          "format": "text",
+          "expected": "needs_input",
+          "passed": true,
+          "real_provider": true,
+          "status": "needs_input",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1535,
+            "output_tokens": 846,
+            "tokens_reported": true,
+            "elapsed_seconds": 6.859
+          },
+          "error": {
+            "code": "source_incomplete",
+            "message": "材料要求计算“给定矩阵”的特征值，但没有提供矩阵及其元素，缺少完成数值计算的必要信息。候选解答正确指出无法给出具体特征值并给出了通用方法，但原问题仍未完成，需要补充矩阵后才能计算。",
+            "retryable": false,
+            "details": {}
+          },
+          "model_calls": 2,
+          "elapsed_seconds": 7.141
+        },
+        {
+          "name": "missing_mixed",
+          "format": "text",
+          "expected": "needs_input",
+          "passed": true,
+          "real_provider": true,
+          "status": "needs_input",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1399,
+            "output_tokens": 649,
+            "tokens_reported": true,
+            "elapsed_seconds": 5.546
+          },
+          "error": {
+            "code": "source_incomplete",
+            "message": "第二项要求计算数据集均值，但材料明确未附数据集，无法得到数值结果；第一项 17+25=42 已正确完成，但整体尚未完成，需要补充数据集或各数据值。",
+            "retryable": false,
+            "details": {}
+          },
+          "model_calls": 2,
+          "elapsed_seconds": 5.844
+        },
+        {
+          "name": "missing_triangle",
+          "format": "text",
+          "expected": "needs_input",
+          "passed": true,
+          "real_provider": true,
+          "status": "needs_input",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1367,
+            "output_tokens": 639,
+            "tokens_reported": true,
+            "elapsed_seconds": 4.859
+          },
+          "error": {
+            "code": "source_incomplete",
+            "message": "题目要求计算三角形的数值面积，但未提供底和高，缺失必要数据，无法完成数值计算；候选答案给出公式并说明需补充数据，但原问题尚未解决。",
+            "retryable": false,
+            "details": {}
+          },
+          "model_calls": 2,
+          "elapsed_seconds": 5.171
+        },
+        {
+          "name": "mixed_sources",
+          "format": "mixed",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 2241,
+            "output_tokens": 397,
+            "tokens_reported": true,
+            "elapsed_seconds": 4.093
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 267,
+          "elapsed_seconds": 4.39
+        },
+        {
+          "name": "multi_question",
+          "format": "docx",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 2116,
+            "output_tokens": 516,
+            "tokens_reported": true,
+            "elapsed_seconds": 4.562
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 429,
+          "elapsed_seconds": 4.906
+        },
+        {
+          "name": "pdf_graphic_F",
+          "format": "pdf",
+          "expected": "needs_review",
+          "passed": true,
+          "real_provider": true,
+          "status": "needs_review",
+          "usage": {
+            "model_calls": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "tokens_reported": false,
+            "elapsed_seconds": 0.344
+          },
+          "error": {
+            "code": "content_uncertain",
+            "message": "第 1 页包含图像或绘图，当前纯文字解析无法核对其内容",
+            "retryable": false,
+            "details": {}
+          },
+          "model_calls": 0,
+          "elapsed_seconds": 0.532
+        },
+        {
+          "name": "pdf_graphic_S",
+          "format": "pdf",
+          "expected": "needs_review",
+          "passed": true,
+          "real_provider": true,
+          "status": "needs_review",
+          "usage": {
+            "model_calls": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "tokens_reported": false,
+            "elapsed_seconds": 0.5
+          },
+          "error": {
+            "code": "content_uncertain",
+            "message": "第 1 页包含图像或绘图，当前纯文字解析无法核对其内容",
+            "retryable": false,
+            "details": {}
+          },
+          "model_calls": 0,
+          "elapsed_seconds": 0.719
+        },
+        {
+          "name": "pdf_graphic_b",
+          "format": "pdf",
+          "expected": "needs_review",
+          "passed": true,
+          "real_provider": true,
+          "status": "needs_review",
+          "usage": {
+            "model_calls": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "tokens_reported": false,
+            "elapsed_seconds": 0.329
+          },
+          "error": {
+            "code": "content_uncertain",
+            "message": "第 1 页包含图像或绘图，当前纯文字解析无法核对其内容",
+            "retryable": false,
+            "details": {}
+          },
+          "model_calls": 0,
+          "elapsed_seconds": 0.547
+        },
+        {
+          "name": "pdf_graphic_bstar",
+          "format": "pdf",
+          "expected": "needs_review",
+          "passed": true,
+          "real_provider": true,
+          "status": "needs_review",
+          "usage": {
+            "model_calls": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "tokens_reported": false,
+            "elapsed_seconds": 0.328
+          },
+          "error": {
+            "code": "content_uncertain",
+            "message": "第 1 页包含图像或绘图，当前纯文字解析无法核对其内容",
+            "retryable": false,
+            "details": {}
+          },
+          "model_calls": 0,
+          "elapsed_seconds": 0.515
+        },
+        {
+          "name": "png",
+          "format": "reject",
+          "expected": null,
+          "passed": true,
+          "real_provider": true,
+          "status": 415,
+          "model_calls": 0,
+          "elapsed_seconds": 0.141
+        },
+        {
+          "name": "probability_docx",
+          "format": "docx",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 2312,
+            "output_tokens": 794,
+            "tokens_reported": true,
+            "elapsed_seconds": 9.656
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 667,
+          "elapsed_seconds": 10.0
+        },
+        {
+          "name": "probability_md",
+          "format": "md",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1811,
+            "output_tokens": 690,
+            "tokens_reported": true,
+            "elapsed_seconds": 6.75
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 547,
+          "elapsed_seconds": 7.047
+        },
+        {
+          "name": "probability_pdf",
+          "format": "pdf",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1728,
+            "output_tokens": 461,
+            "tokens_reported": true,
+            "elapsed_seconds": 4.672
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 372,
+          "elapsed_seconds": 4.984
+        },
+        {
+          "name": "probability_text",
+          "format": "text",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1514,
+            "output_tokens": 582,
+            "tokens_reported": true,
+            "elapsed_seconds": 4.406
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 541,
+          "elapsed_seconds": 4.594
+        },
+        {
+          "name": "probability_txt",
+          "format": "txt",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1938,
+            "output_tokens": 815,
+            "tokens_reported": true,
+            "elapsed_seconds": 6.172
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 685,
+          "elapsed_seconds": 6.484
+        },
+        {
+          "name": "projection_docx",
+          "format": "docx",
+          "expected": "completed",
+          "passed": false,
+          "real_provider": true,
+          "status": "needs_input",
+          "usage": {
+            "model_calls": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "tokens_reported": false,
+            "elapsed_seconds": 0.469
+          },
+          "error": {
+            "code": "invalid_file",
+            "message": "文件损坏或格式无法解析，请重新提供原件",
+            "retryable": false,
+            "details": {}
+          },
+          "model_calls": 0,
+          "failure": "AssertionError: expected completed, got needs_input",
+          "elapsed_seconds": 0.812
+        },
+        {
+          "name": "projection_md",
+          "format": "md",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1841,
+            "output_tokens": 1142,
+            "tokens_reported": true,
+            "elapsed_seconds": 8.063
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 625,
+          "elapsed_seconds": 8.515
+        },
+        {
+          "name": "projection_pdf",
+          "format": "pdf",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1885,
+            "output_tokens": 975,
+            "tokens_reported": true,
+            "elapsed_seconds": 10.156
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 726,
+          "elapsed_seconds": 10.454
+        },
+        {
+          "name": "projection_text",
+          "format": "text",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1611,
+            "output_tokens": 1090,
+            "tokens_reported": true,
+            "elapsed_seconds": 6.906
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 848,
+          "elapsed_seconds": 7.125
+        },
+        {
+          "name": "projection_txt",
+          "format": "txt",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1784,
+            "output_tokens": 589,
+            "tokens_reported": true,
+            "elapsed_seconds": 4.781
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 450,
+          "elapsed_seconds": 5.14
+        },
+        {
+          "name": "quadratic_docx",
+          "format": "docx",
+          "expected": "completed",
+          "passed": false,
+          "real_provider": true,
+          "status": "needs_input",
+          "usage": {
+            "model_calls": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "tokens_reported": false,
+            "elapsed_seconds": 0.281
+          },
+          "error": {
+            "code": "invalid_file",
+            "message": "文件损坏或格式无法解析，请重新提供原件",
+            "retryable": false,
+            "details": {}
+          },
+          "model_calls": 0,
+          "failure": "AssertionError: expected completed, got needs_input",
+          "elapsed_seconds": 0.64
+        },
+        {
+          "name": "quadratic_md",
+          "format": "md",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1746,
+            "output_tokens": 444,
+            "tokens_reported": true,
+            "elapsed_seconds": 3.797
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 401,
+          "elapsed_seconds": 3.969
+        },
+        {
+          "name": "quadratic_pdf",
+          "format": "pdf",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1684,
+            "output_tokens": 567,
+            "tokens_reported": true,
+            "elapsed_seconds": 4.938
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 386,
+          "elapsed_seconds": 5.234
+        },
+        {
+          "name": "quadratic_text",
+          "format": "text",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1442,
+            "output_tokens": 528,
+            "tokens_reported": true,
+            "elapsed_seconds": 4.625
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 453,
+          "elapsed_seconds": 4.875
+        },
+        {
+          "name": "quadratic_txt",
+          "format": "txt",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1667,
+            "output_tokens": 446,
+            "tokens_reported": true,
+            "elapsed_seconds": 3.703
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 329,
+          "elapsed_seconds": 3.985
+        },
+        {
+          "name": "table_docx",
+          "format": "docx",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 2157,
+            "output_tokens": 1072,
+            "tokens_reported": true,
+            "elapsed_seconds": 8.672
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 567,
+          "elapsed_seconds": 9.015
+        },
+        {
+          "name": "table_md",
+          "format": "md",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1768,
+            "output_tokens": 630,
+            "tokens_reported": true,
+            "elapsed_seconds": 5.547
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 405,
+          "elapsed_seconds": 5.781
+        },
+        {
+          "name": "table_pdf",
+          "format": "pdf",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1720,
+            "output_tokens": 535,
+            "tokens_reported": true,
+            "elapsed_seconds": 4.297
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 388,
+          "elapsed_seconds": 4.484
+        },
+        {
+          "name": "table_text",
+          "format": "text",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1419,
+            "output_tokens": 564,
+            "tokens_reported": true,
+            "elapsed_seconds": 4.078
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 468,
+          "elapsed_seconds": 4.235
+        },
+        {
+          "name": "table_txt",
+          "format": "txt",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1786,
+            "output_tokens": 636,
+            "tokens_reported": true,
+            "elapsed_seconds": 5.047
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 504,
+          "elapsed_seconds": 5.25
+        },
+        {
+          "name": "unicode",
+          "format": "md",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1575,
+            "output_tokens": 390,
+            "tokens_reported": true,
+            "elapsed_seconds": 3.828
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 177,
+          "elapsed_seconds": 4.094
+        },
+        {
+          "name": "unused_docx_style",
+          "format": "docx",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1642,
+            "output_tokens": 360,
+            "tokens_reported": true,
+            "elapsed_seconds": 3.766
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 220,
+          "elapsed_seconds": 3.985
+        },
+        {
+          "name": "utf8_bom",
+          "format": "txt",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1715,
+            "output_tokens": 481,
+            "tokens_reported": true,
+            "elapsed_seconds": 4.453
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 399,
+          "elapsed_seconds": 4.703
+        }
+      ],
+      "passed": 64,
+      "total": 68
+    },
+    {
+      "run": "long-context-final",
+      "model": "deepseek-flash",
+      "endpoint": "https://api.deepseek.com",
+      "cases": [
+        {
+          "name": "long_material",
+          "format": "txt",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 40564,
+            "output_tokens": 1628,
+            "tokens_reported": true,
+            "elapsed_seconds": 12.718
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 871,
+          "elapsed_seconds": 13.125
+        },
+        {
+          "name": "long_material_budget",
+          "format": "txt",
+          "expected": "needs_input",
+          "passed": true,
+          "real_provider": true,
+          "status": "needs_input",
+          "usage": {
+            "model_calls": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "tokens_reported": false,
+            "elapsed_seconds": 0.328
+          },
+          "error": {
+            "code": "budget_exceeded",
+            "message": "完整材料与输出预留超过上下文预算，请缩小页码范围或拆分问题",
+            "retryable": false,
+            "details": {}
+          },
+          "model_calls": 0,
+          "elapsed_seconds": 0.86
+        }
+      ],
+      "passed": 2,
+      "total": 2
+    },
+    {
+      "run": "long-final",
+      "model": "deepseek-flash",
+      "endpoint": "https://api.deepseek.com",
+      "cases": [
+        {
+          "name": "long_answer",
+          "format": "docx",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 3822,
+            "output_tokens": 2585,
+            "tokens_reported": true,
+            "elapsed_seconds": 13.094
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 1881,
+          "elapsed_seconds": 13.547
+        },
+        {
+          "name": "long_material",
+          "format": "txt",
+          "expected": "completed",
+          "passed": false,
+          "real_provider": true,
+          "status": "needs_input",
+          "usage": {
+            "model_calls": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "tokens_reported": false,
+            "elapsed_seconds": 0.313
+          },
+          "error": {
+            "code": "budget_exceeded",
+            "message": "完整材料与输出预留超过上下文预算，请缩小页码范围或拆分问题",
+            "retryable": false,
+            "details": {}
+          },
+          "model_calls": 0,
+          "failure": "AssertionError: expected completed, got needs_input",
+          "elapsed_seconds": 0.781
+        }
+      ],
+      "passed": 1,
+      "total": 2
+    },
+    {
+      "run": "supplemental",
+      "cases": [
+        {
+          "name": "probe_root_text",
+          "passed": true,
+          "usage": {
+            "model_calls": 1,
+            "input_tokens": 45,
+            "output_tokens": 56,
+            "tokens_reported": true,
+            "elapsed_seconds": 1.062
+          },
+          "status": 200,
+          "elapsed_seconds": 1.078
+        },
+        {
+          "name": "probe_root_structured",
+          "passed": true,
+          "usage": {
+            "model_calls": 1,
+            "input_tokens": 119,
+            "output_tokens": 28,
+            "tokens_reported": true,
+            "elapsed_seconds": 1.078
+          },
+          "status": 200,
+          "elapsed_seconds": 1.078
+        },
+        {
+          "name": "probe_v1_text",
+          "passed": true,
+          "usage": {
+            "model_calls": 1,
+            "input_tokens": 45,
+            "output_tokens": 34,
+            "tokens_reported": true,
+            "elapsed_seconds": 1.063
+          },
+          "status": 200,
+          "elapsed_seconds": 1.063
+        },
+        {
+          "name": "probe_v1_structured",
+          "passed": true,
+          "usage": {
+            "model_calls": 1,
+            "input_tokens": 119,
+            "output_tokens": 22,
+            "tokens_reported": true,
+            "elapsed_seconds": 1.187
+          },
+          "status": 200,
+          "elapsed_seconds": 1.187
+        },
+        {
+          "name": "probe_full_url_text",
+          "passed": true,
+          "usage": {
+            "model_calls": 1,
+            "input_tokens": 45,
+            "output_tokens": 2,
+            "tokens_reported": true,
+            "elapsed_seconds": 0.938
+          },
+          "status": 200,
+          "elapsed_seconds": 0.938
+        },
+        {
+          "name": "probe_full_url_structured",
+          "passed": true,
+          "usage": {
+            "model_calls": 1,
+            "input_tokens": 119,
+            "output_tokens": 82,
+            "tokens_reported": true,
+            "elapsed_seconds": 1.093
+          },
+          "status": 200,
+          "elapsed_seconds": 1.093
+        },
+        {
+          "name": "probe_prompt_json_text",
+          "passed": true,
+          "usage": {
+            "model_calls": 1,
+            "input_tokens": 45,
+            "output_tokens": 49,
+            "tokens_reported": true,
+            "elapsed_seconds": 1.344
+          },
+          "status": 200,
+          "elapsed_seconds": 1.344
+        },
+        {
+          "name": "probe_prompt_json_structured",
+          "passed": true,
+          "usage": {
+            "model_calls": 1,
+            "input_tokens": 96,
+            "output_tokens": 38,
+            "tokens_reported": true,
+            "elapsed_seconds": 1.234
+          },
+          "status": 200,
+          "elapsed_seconds": 1.234
+        },
+        {
+          "name": "probe_completion_token_parameter_text",
+          "passed": true,
+          "usage": {
+            "model_calls": 1,
+            "input_tokens": 45,
+            "output_tokens": 105,
+            "tokens_reported": true,
+            "elapsed_seconds": 1.266
+          },
+          "status": 200,
+          "elapsed_seconds": 1.266
+        },
+        {
+          "name": "probe_completion_token_parameter_structured",
+          "passed": true,
+          "usage": {
+            "model_calls": 1,
+            "input_tokens": 119,
+            "output_tokens": 22,
+            "tokens_reported": true,
+            "elapsed_seconds": 1.015
+          },
+          "status": 200,
+          "elapsed_seconds": 1.015
+        },
+        {
+          "name": "probe_custom_auth_header_text",
+          "passed": true,
+          "usage": {
+            "model_calls": 1,
+            "input_tokens": 45,
+            "output_tokens": 11,
+            "tokens_reported": true,
+            "elapsed_seconds": 0.985
+          },
+          "status": 200,
+          "elapsed_seconds": 0.985
+        },
+        {
+          "name": "probe_custom_auth_header_structured",
+          "passed": true,
+          "usage": {
+            "model_calls": 1,
+            "input_tokens": 119,
+            "output_tokens": 42,
+            "tokens_reported": true,
+            "elapsed_seconds": 0.703
+          },
+          "status": 200,
+          "elapsed_seconds": 0.703
+        },
+        {
+          "name": "invalid_key",
+          "passed": true,
+          "status": 502,
+          "provider_http_calls": 1,
+          "elapsed_seconds": 3.204
+        },
+        {
+          "name": "chinese_pdf",
+          "passed": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1845,
+            "output_tokens": 1075,
+            "tokens_reported": true,
+            "elapsed_seconds": 7.797
+          },
+          "elapsed_seconds": 7.984
+        },
+        {
+          "name": "pdf_page_2",
+          "passed": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1923,
+            "output_tokens": 2181,
+            "tokens_reported": true,
+            "elapsed_seconds": 14.687
+          },
+          "elapsed_seconds": 14.844
+        },
+        {
+          "name": "pdf_invalid_page",
+          "passed": true,
+          "status": "needs_input",
+          "usage": {
+            "model_calls": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "tokens_reported": false,
+            "elapsed_seconds": 0.531
+          },
+          "elapsed_seconds": 0.657
+        },
+        {
+          "name": "blank_page",
+          "passed": true,
+          "status": "needs_review",
+          "usage": {
+            "model_calls": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "tokens_reported": false,
+            "elapsed_seconds": 0.484
+          },
+          "elapsed_seconds": 0.656
+        },
+        {
+          "name": "scanned",
+          "passed": true,
+          "status": "needs_review",
+          "usage": {
+            "model_calls": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "tokens_reported": false,
+            "elapsed_seconds": 0.5
+          },
+          "elapsed_seconds": 0.672
+        },
+        {
+          "name": "diagram",
+          "passed": true,
+          "status": "needs_review",
+          "usage": {
+            "model_calls": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "tokens_reported": false,
+            "elapsed_seconds": 0.516
+          },
+          "elapsed_seconds": 0.688
+        },
+        {
+          "name": "docx_equation",
+          "passed": true,
+          "status": "needs_review",
+          "usage": {
+            "model_calls": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "tokens_reported": false,
+            "elapsed_seconds": 0.469
+          },
+          "elapsed_seconds": 0.719
+        },
+        {
+          "name": "docx_image",
+          "passed": true,
+          "status": "needs_review",
+          "usage": {
+            "model_calls": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "tokens_reported": false,
+            "elapsed_seconds": 0.484
+          },
+          "elapsed_seconds": 0.672
+        },
+        {
+          "name": "encrypted",
+          "passed": true,
+          "status": "needs_input",
+          "usage": {
+            "model_calls": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "tokens_reported": false,
+            "elapsed_seconds": 0.546
+          },
+          "elapsed_seconds": 0.641
+        },
+        {
+          "name": "corrupt",
+          "passed": true,
+          "status": "needs_input",
+          "usage": {
+            "model_calls": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "tokens_reported": false,
+            "elapsed_seconds": 0.531
+          },
+          "elapsed_seconds": 0.64
+        },
+        {
+          "name": "empty",
+          "passed": true,
+          "status": "needs_input",
+          "usage": {
+            "model_calls": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "tokens_reported": false,
+            "elapsed_seconds": 0.391
+          },
+          "elapsed_seconds": 0.5
+        },
+        {
+          "name": "reuse_seed",
+          "passed": true,
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1098,
+            "output_tokens": 346,
+            "tokens_reported": true,
+            "elapsed_seconds": 3.797
+          },
+          "elapsed_seconds": 3.875
+        },
+        {
+          "name": "revision_zero_call_reuse",
+          "passed": true,
+          "usage": {
+            "model_calls": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "tokens_reported": false,
+            "elapsed_seconds": 0.016
+          },
+          "version_preserved": true,
+          "elapsed_seconds": 0.203
+        },
+        {
+          "name": "material_reuse_new_question",
+          "passed": true,
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1113,
+            "output_tokens": 454,
+            "tokens_reported": true,
+            "elapsed_seconds": 4.0
+          },
+          "elapsed_seconds": 4.188
+        },
+        {
+          "name": "ui_save_two_role_bindings",
+          "passed": true,
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1053,
+            "output_tokens": 395,
+            "tokens_reported": true,
+            "elapsed_seconds": 4.375
+          },
+          "distinct_bindings": true,
+          "vendor_count": 1,
+          "elapsed_seconds": 4.515
+        },
+        {
+          "name": "restart_configuration_and_generate",
+          "passed": true,
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1068,
+            "output_tokens": 392,
+            "tokens_reported": true,
+            "elapsed_seconds": 6.157
+          },
+          "configuration_and_answers_persisted": true,
+          "elapsed_seconds": 6.359
+        },
+        {
+          "name": "truncation",
+          "passed": true,
+          "status": "needs_review",
+          "usage": {
+            "model_calls": 1,
+            "input_tokens": 456,
+            "output_tokens": 256,
+            "tokens_reported": true,
+            "elapsed_seconds": 2.609
+          },
+          "elapsed_seconds": 2.922
+        },
+        {
+          "name": "call_budget",
+          "passed": true,
+          "status": "failed",
+          "usage": {
+            "model_calls": 1,
+            "input_tokens": 442,
+            "output_tokens": 246,
+            "tokens_reported": true,
+            "elapsed_seconds": 1.797
+          },
+          "elapsed_seconds": 2.016
+        }
+      ],
+      "passed": 31,
+      "total": 31
+    },
+    {
+      "run": "supplemental-final",
+      "cases": [
+        {
+          "name": "probe_root_text",
+          "passed": true,
+          "usage": {
+            "model_calls": 1,
+            "input_tokens": 45,
+            "output_tokens": 2,
+            "tokens_reported": true,
+            "elapsed_seconds": 0.796
+          },
+          "status": 200,
+          "elapsed_seconds": 0.796
+        },
+        {
+          "name": "probe_root_structured",
+          "passed": true,
+          "usage": {
+            "model_calls": 1,
+            "input_tokens": 119,
+            "output_tokens": 116,
+            "tokens_reported": true,
+            "elapsed_seconds": 1.156
+          },
+          "status": 200,
+          "elapsed_seconds": 1.172
+        },
+        {
+          "name": "probe_v1_text",
+          "passed": true,
+          "usage": {
+            "model_calls": 1,
+            "input_tokens": 45,
+            "output_tokens": 28,
+            "tokens_reported": true,
+            "elapsed_seconds": 1.078
+          },
+          "status": 200,
+          "elapsed_seconds": 1.078
+        },
+        {
+          "name": "probe_v1_structured",
+          "passed": true,
+          "usage": {
+            "model_calls": 1,
+            "input_tokens": 119,
+            "output_tokens": 20,
+            "tokens_reported": true,
+            "elapsed_seconds": 0.829
+          },
+          "status": 200,
+          "elapsed_seconds": 0.829
+        },
+        {
+          "name": "probe_full_url_text",
+          "passed": true,
+          "usage": {
+            "model_calls": 1,
+            "input_tokens": 45,
+            "output_tokens": 58,
+            "tokens_reported": true,
+            "elapsed_seconds": 1.125
+          },
+          "status": 200,
+          "elapsed_seconds": 1.125
+        },
+        {
+          "name": "probe_full_url_structured",
+          "passed": true,
+          "usage": {
+            "model_calls": 1,
+            "input_tokens": 119,
+            "output_tokens": 21,
+            "tokens_reported": true,
+            "elapsed_seconds": 1.531
+          },
+          "status": 200,
+          "elapsed_seconds": 1.531
+        },
+        {
+          "name": "probe_prompt_json_text",
+          "passed": true,
+          "usage": {
+            "model_calls": 1,
+            "input_tokens": 45,
+            "output_tokens": 51,
+            "tokens_reported": true,
+            "elapsed_seconds": 1.234
+          },
+          "status": 200,
+          "elapsed_seconds": 1.234
+        },
+        {
+          "name": "probe_prompt_json_structured",
+          "passed": true,
+          "usage": {
+            "model_calls": 1,
+            "input_tokens": 96,
+            "output_tokens": 20,
+            "tokens_reported": true,
+            "elapsed_seconds": 0.984
+          },
+          "status": 200,
+          "elapsed_seconds": 1.0
+        },
+        {
+          "name": "probe_completion_token_parameter_text",
+          "passed": true,
+          "usage": {
+            "model_calls": 1,
+            "input_tokens": 45,
+            "output_tokens": 2,
+            "tokens_reported": true,
+            "elapsed_seconds": 0.813
+          },
+          "status": 200,
+          "elapsed_seconds": 0.813
+        },
+        {
+          "name": "probe_completion_token_parameter_structured",
+          "passed": true,
+          "usage": {
+            "model_calls": 1,
+            "input_tokens": 119,
+            "output_tokens": 23,
+            "tokens_reported": true,
+            "elapsed_seconds": 1.187
+          },
+          "status": 200,
+          "elapsed_seconds": 1.187
+        },
+        {
+          "name": "probe_custom_auth_header_text",
+          "passed": true,
+          "usage": {
+            "model_calls": 1,
+            "input_tokens": 45,
+            "output_tokens": 47,
+            "tokens_reported": true,
+            "elapsed_seconds": 1.172
+          },
+          "status": 200,
+          "elapsed_seconds": 1.172
+        },
+        {
+          "name": "probe_custom_auth_header_structured",
+          "passed": true,
+          "usage": {
+            "model_calls": 1,
+            "input_tokens": 119,
+            "output_tokens": 25,
+            "tokens_reported": true,
+            "elapsed_seconds": 1.062
+          },
+          "status": 200,
+          "elapsed_seconds": 1.062
+        },
+        {
+          "name": "invalid_key",
+          "passed": true,
+          "status": 502,
+          "provider_http_calls": 1,
+          "elapsed_seconds": 0.172
+        },
+        {
+          "name": "chinese_pdf",
+          "passed": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 2096,
+            "output_tokens": 1400,
+            "tokens_reported": true,
+            "elapsed_seconds": 9.438
+          },
+          "elapsed_seconds": 9.593
+        },
+        {
+          "name": "pdf_page_2",
+          "passed": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1964,
+            "output_tokens": 1606,
+            "tokens_reported": true,
+            "elapsed_seconds": 11.312
+          },
+          "elapsed_seconds": 11.391
+        },
+        {
+          "name": "pdf_invalid_page",
+          "passed": true,
+          "status": "needs_input",
+          "usage": {
+            "model_calls": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "tokens_reported": false,
+            "elapsed_seconds": 0.328
+          },
+          "elapsed_seconds": 0.516
+        },
+        {
+          "name": "blank_page",
+          "passed": true,
+          "status": "needs_review",
+          "usage": {
+            "model_calls": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "tokens_reported": false,
+            "elapsed_seconds": 0.484
+          },
+          "elapsed_seconds": 0.64
+        },
+        {
+          "name": "scanned",
+          "passed": true,
+          "status": "needs_review",
+          "usage": {
+            "model_calls": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "tokens_reported": false,
+            "elapsed_seconds": 0.468
+          },
+          "elapsed_seconds": 0.641
+        },
+        {
+          "name": "diagram",
+          "passed": true,
+          "status": "needs_review",
+          "usage": {
+            "model_calls": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "tokens_reported": false,
+            "elapsed_seconds": 0.438
+          },
+          "elapsed_seconds": 0.5
+        },
+        {
+          "name": "docx_equation",
+          "passed": true,
+          "status": "needs_review",
+          "usage": {
+            "model_calls": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "tokens_reported": false,
+            "elapsed_seconds": 0.25
+          },
+          "elapsed_seconds": 0.328
+        },
+        {
+          "name": "docx_image",
+          "passed": true,
+          "status": "needs_review",
+          "usage": {
+            "model_calls": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "tokens_reported": false,
+            "elapsed_seconds": 0.265
+          },
+          "elapsed_seconds": 0.328
+        },
+        {
+          "name": "encrypted",
+          "passed": true,
+          "status": "needs_input",
+          "usage": {
+            "model_calls": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "tokens_reported": false,
+            "elapsed_seconds": 0.281
+          },
+          "elapsed_seconds": 0.516
+        },
+        {
+          "name": "corrupt",
+          "passed": true,
+          "status": "needs_input",
+          "usage": {
+            "model_calls": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "tokens_reported": false,
+            "elapsed_seconds": 0.359
+          },
+          "elapsed_seconds": 0.484
+        },
+        {
+          "name": "empty",
+          "passed": true,
+          "status": "needs_input",
+          "usage": {
+            "model_calls": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "tokens_reported": false,
+            "elapsed_seconds": 0.281
+          },
+          "elapsed_seconds": 0.328
+        },
+        {
+          "name": "reuse_seed",
+          "passed": true,
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1198,
+            "output_tokens": 377,
+            "tokens_reported": true,
+            "elapsed_seconds": 3.469
+          },
+          "elapsed_seconds": 3.532
+        },
+        {
+          "name": "revision_zero_call_reuse",
+          "passed": true,
+          "usage": {
+            "model_calls": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "tokens_reported": false,
+            "elapsed_seconds": 0.0
+          },
+          "version_preserved": true,
+          "elapsed_seconds": 0.187
+        },
+        {
+          "name": "material_reuse_new_question",
+          "passed": true,
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1248,
+            "output_tokens": 502,
+            "tokens_reported": true,
+            "elapsed_seconds": 4.25
+          },
+          "elapsed_seconds": 4.297
+        },
+        {
+          "name": "ui_save_two_role_bindings",
+          "passed": true,
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1211,
+            "output_tokens": 368,
+            "tokens_reported": true,
+            "elapsed_seconds": 5.016
+          },
+          "distinct_bindings": true,
+          "vendor_count": 1,
+          "elapsed_seconds": 5.094
+        },
+        {
+          "name": "restart_configuration_and_generate",
+          "passed": true,
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1208,
+            "output_tokens": 353,
+            "tokens_reported": true,
+            "elapsed_seconds": 3.156
+          },
+          "configuration_and_answers_persisted": true,
+          "elapsed_seconds": 3.297
+        },
+        {
+          "name": "truncation",
+          "passed": true,
+          "status": "needs_review",
+          "usage": {
+            "model_calls": 1,
+            "input_tokens": 492,
+            "output_tokens": 256,
+            "tokens_reported": true,
+            "elapsed_seconds": 2.75
+          },
+          "elapsed_seconds": 3.047
+        },
+        {
+          "name": "call_budget",
+          "passed": true,
+          "status": "failed",
+          "usage": {
+            "model_calls": 1,
+            "input_tokens": 476,
+            "output_tokens": 149,
+            "tokens_reported": true,
+            "elapsed_seconds": 1.516
+          },
+          "elapsed_seconds": 1.688
+        }
+      ],
+      "passed": 31,
+      "total": 31
+    },
+    {
+      "run": "targeted-final",
+      "model": "deepseek-flash",
+      "endpoint": "https://api.deepseek.com",
+      "cases": [
+        {
+          "name": "derivative_docx",
+          "format": "docx",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 2478,
+            "output_tokens": 1590,
+            "tokens_reported": true,
+            "elapsed_seconds": 11.766
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 999,
+          "elapsed_seconds": 12.078
+        },
+        {
+          "name": "linear_docx",
+          "format": "docx",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 2233,
+            "output_tokens": 693,
+            "tokens_reported": true,
+            "elapsed_seconds": 5.687
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 584,
+          "elapsed_seconds": 6.282
+        },
+        {
+          "name": "mean_method_only",
+          "format": "text",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1747,
+            "output_tokens": 968,
+            "tokens_reported": true,
+            "elapsed_seconds": 7.188
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 940,
+          "elapsed_seconds": 7.5
+        },
+        {
+          "name": "mean_values",
+          "format": "docx",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 2031,
+            "output_tokens": 554,
+            "tokens_reported": true,
+            "elapsed_seconds": 5.125
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 312,
+          "elapsed_seconds": 5.5
+        },
+        {
+          "name": "projection_docx",
+          "format": "docx",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 2309,
+            "output_tokens": 1025,
+            "tokens_reported": true,
+            "elapsed_seconds": 7.687
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 880,
+          "elapsed_seconds": 8.282
+        },
+        {
+          "name": "quadratic_docx",
+          "format": "docx",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 2255,
+            "output_tokens": 769,
+            "tokens_reported": true,
+            "elapsed_seconds": 5.484
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 710,
+          "elapsed_seconds": 5.954
+        },
+        {
+          "name": "symbolic_formula",
+          "format": "text",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1434,
+            "output_tokens": 607,
+            "tokens_reported": true,
+            "elapsed_seconds": 5.344
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 516,
+          "elapsed_seconds": 5.531
+        }
+      ],
+      "passed": 7,
+      "total": 7
+    },
+    {
+      "run": "verified",
+      "model": "deepseek-flash",
+      "endpoint": "https://api.deepseek.com",
+      "cases": [
+        {
+          "name": "bad_encoding",
+          "format": "reject",
+          "expected": null,
+          "passed": true,
+          "real_provider": true,
+          "status": 415,
+          "model_calls": 0,
+          "elapsed_seconds": 0.141
+        },
+        {
+          "name": "code_output",
+          "format": "text",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1329,
+            "output_tokens": 965,
+            "tokens_reported": true,
+            "elapsed_seconds": 6.875
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 564,
+          "elapsed_seconds": 7.172
+        },
+        {
+          "name": "concept",
+          "format": "text",
+          "expected": "completed",
+          "passed": false,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1412,
+            "output_tokens": 853,
+            "tokens_reported": true,
+            "elapsed_seconds": 7.453
+          },
+          "error": null,
+          "model_calls": 2,
+          "failure": "AssertionError: expected result/coverage marker missing",
+          "elapsed_seconds": 7.843
+        },
+        {
+          "name": "crlf",
+          "format": "txt",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1866,
+            "output_tokens": 362,
+            "tokens_reported": true,
+            "elapsed_seconds": 3.719
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 268,
+          "elapsed_seconds": 4.109
+        },
+        {
+          "name": "csv",
+          "format": "reject",
+          "expected": null,
+          "passed": true,
+          "real_provider": true,
+          "status": 415,
+          "model_calls": 0,
+          "elapsed_seconds": 0.141
+        },
+        {
+          "name": "derivative_docx",
+          "format": "docx",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 2274,
+            "output_tokens": 1041,
+            "tokens_reported": true,
+            "elapsed_seconds": 7.703
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 842,
+          "elapsed_seconds": 8.047
+        },
+        {
+          "name": "derivative_md",
+          "format": "md",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 2185,
+            "output_tokens": 1338,
+            "tokens_reported": true,
+            "elapsed_seconds": 8.234
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 1257,
+          "elapsed_seconds": 8.563
+        },
+        {
+          "name": "derivative_pdf",
+          "format": "pdf",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 2087,
+            "output_tokens": 1184,
+            "tokens_reported": true,
+            "elapsed_seconds": 8.391
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 1097,
+          "elapsed_seconds": 8.719
+        },
+        {
+          "name": "derivative_text",
+          "format": "text",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1644,
+            "output_tokens": 965,
+            "tokens_reported": true,
+            "elapsed_seconds": 6.016
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 890,
+          "elapsed_seconds": 6.219
+        },
+        {
+          "name": "derivative_txt",
+          "format": "txt",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 2078,
+            "output_tokens": 1046,
+            "tokens_reported": true,
+            "elapsed_seconds": 7.656
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 1033,
+          "elapsed_seconds": 7.984
+        },
+        {
+          "name": "determinant_docx",
+          "format": "docx",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 2061,
+            "output_tokens": 797,
+            "tokens_reported": true,
+            "elapsed_seconds": 6.032
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 510,
+          "elapsed_seconds": 6.407
+        },
+        {
+          "name": "determinant_md",
+          "format": "md",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1581,
+            "output_tokens": 505,
+            "tokens_reported": true,
+            "elapsed_seconds": 4.344
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 376,
+          "elapsed_seconds": 4.656
+        },
+        {
+          "name": "determinant_pdf",
+          "format": "pdf",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1585,
+            "output_tokens": 474,
+            "tokens_reported": true,
+            "elapsed_seconds": 4.937
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 379,
+          "elapsed_seconds": 5.266
+        },
+        {
+          "name": "determinant_text",
+          "format": "text",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1318,
+            "output_tokens": 462,
+            "tokens_reported": true,
+            "elapsed_seconds": 3.953
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 471,
+          "elapsed_seconds": 4.172
+        },
+        {
+          "name": "determinant_txt",
+          "format": "txt",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1645,
+            "output_tokens": 499,
+            "tokens_reported": true,
+            "elapsed_seconds": 5.468
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 398,
+          "elapsed_seconds": 5.703
+        },
+        {
+          "name": "docx_subscript",
+          "format": "docx",
+          "expected": "needs_review",
+          "passed": true,
+          "real_provider": true,
+          "status": "needs_review",
+          "usage": {
+            "model_calls": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "tokens_reported": false,
+            "elapsed_seconds": 0.406
+          },
+          "error": {
+            "code": "content_uncertain",
+            "message": "DOCX 包含上下标或特殊符号，纯文本会丢失数学含义，请提供明确的文本或 LaTeX",
+            "retryable": false,
+            "details": {}
+          },
+          "model_calls": 0,
+          "elapsed_seconds": 0.641
+        },
+        {
+          "name": "docx_superscript",
+          "format": "docx",
+          "expected": "needs_review",
+          "passed": true,
+          "real_provider": true,
+          "status": "needs_review",
+          "usage": {
+            "model_calls": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "tokens_reported": false,
+            "elapsed_seconds": 0.375
+          },
+          "error": {
+            "code": "content_uncertain",
+            "message": "DOCX 包含上下标或特殊符号，纯文本会丢失数学含义，请提供明确的文本或 LaTeX",
+            "retryable": false,
+            "details": {}
+          },
+          "model_calls": 0,
+          "elapsed_seconds": 0.625
+        },
+        {
+          "name": "docx_symbol",
+          "format": "docx",
+          "expected": "needs_review",
+          "passed": true,
+          "real_provider": true,
+          "status": "needs_review",
+          "usage": {
+            "model_calls": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "tokens_reported": false,
+            "elapsed_seconds": 0.313
+          },
+          "error": {
+            "code": "content_uncertain",
+            "message": "DOCX 包含上下标或特殊符号，纯文本会丢失数学含义，请提供明确的文本或 LaTeX",
+            "retryable": false,
+            "details": {}
+          },
+          "model_calls": 0,
+          "elapsed_seconds": 0.625
+        },
+        {
+          "name": "fake_docx",
+          "format": "reject",
+          "expected": null,
+          "passed": true,
+          "real_provider": true,
+          "status": 415,
+          "model_calls": 0,
+          "elapsed_seconds": 0.141
+        },
+        {
+          "name": "fake_pdf",
+          "format": "reject",
+          "expected": null,
+          "passed": true,
+          "real_provider": true,
+          "status": 415,
+          "model_calls": 0,
+          "elapsed_seconds": 0.125
+        },
+        {
+          "name": "injection",
+          "format": "md",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1971,
+            "output_tokens": 712,
+            "tokens_reported": true,
+            "elapsed_seconds": 5.562
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 459,
+          "elapsed_seconds": 5.938
+        },
+        {
+          "name": "integral_docx",
+          "format": "docx",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 2290,
+            "output_tokens": 875,
+            "tokens_reported": true,
+            "elapsed_seconds": 6.515
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 787,
+          "elapsed_seconds": 6.875
+        },
+        {
+          "name": "integral_md",
+          "format": "md",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1638,
+            "output_tokens": 567,
+            "tokens_reported": true,
+            "elapsed_seconds": 4.563
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 434,
+          "elapsed_seconds": 4.766
+        },
+        {
+          "name": "integral_pdf",
+          "format": "pdf",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1620,
+            "output_tokens": 576,
+            "tokens_reported": true,
+            "elapsed_seconds": 4.969
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 452,
+          "elapsed_seconds": 5.172
+        },
+        {
+          "name": "integral_text",
+          "format": "text",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1330,
+            "output_tokens": 548,
+            "tokens_reported": true,
+            "elapsed_seconds": 4.313
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 498,
+          "elapsed_seconds": 4.625
+        },
+        {
+          "name": "integral_txt",
+          "format": "txt",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1665,
+            "output_tokens": 494,
+            "tokens_reported": true,
+            "elapsed_seconds": 4.172
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 449,
+          "elapsed_seconds": 4.484
+        },
+        {
+          "name": "linear_docx",
+          "format": "docx",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 2157,
+            "output_tokens": 973,
+            "tokens_reported": true,
+            "elapsed_seconds": 7.235
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 537,
+          "elapsed_seconds": 7.516
+        },
+        {
+          "name": "linear_md",
+          "format": "md",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1666,
+            "output_tokens": 593,
+            "tokens_reported": true,
+            "elapsed_seconds": 5.594
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 431,
+          "elapsed_seconds": 5.813
+        },
+        {
+          "name": "linear_pdf",
+          "format": "pdf",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1702,
+            "output_tokens": 669,
+            "tokens_reported": true,
+            "elapsed_seconds": 5.031
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 510,
+          "elapsed_seconds": 5.235
+        },
+        {
+          "name": "linear_text",
+          "format": "text",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1329,
+            "output_tokens": 569,
+            "tokens_reported": true,
+            "elapsed_seconds": 5.078
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 431,
+          "elapsed_seconds": 5.25
+        },
+        {
+          "name": "linear_txt",
+          "format": "txt",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1655,
+            "output_tokens": 598,
+            "tokens_reported": true,
+            "elapsed_seconds": 5.11
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 432,
+          "elapsed_seconds": 5.422
+        },
+        {
+          "name": "missing_data",
+          "format": "text",
+          "expected": "needs_input",
+          "passed": false,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1166,
+            "output_tokens": 959,
+            "tokens_reported": true,
+            "elapsed_seconds": 7.25
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 317,
+          "failure": "AssertionError: expected needs_input, got completed",
+          "elapsed_seconds": 7.437
+        },
+        {
+          "name": "missing_matrix",
+          "format": "text",
+          "expected": "needs_input",
+          "passed": true,
+          "real_provider": true,
+          "status": "needs_input",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1296,
+            "output_tokens": 1176,
+            "tokens_reported": true,
+            "elapsed_seconds": 9.609
+          },
+          "error": {
+            "code": "source_incomplete",
+            "message": "候选答案正确识别材料未提供矩阵，因此无法计算特征值；需要补充矩阵的阶数和元素后才能作答。",
+            "retryable": false,
+            "details": {}
+          },
+          "model_calls": 2,
+          "elapsed_seconds": 9.921
+        },
+        {
+          "name": "mixed_sources",
+          "format": "mixed",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 2168,
+            "output_tokens": 412,
+            "tokens_reported": true,
+            "elapsed_seconds": 4.906
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 299,
+          "elapsed_seconds": 5.172
+        },
+        {
+          "name": "multi_question",
+          "format": "docx",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1980,
+            "output_tokens": 466,
+            "tokens_reported": true,
+            "elapsed_seconds": 4.469
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 369,
+          "elapsed_seconds": 4.813
+        },
+        {
+          "name": "pdf_graphic_F",
+          "format": "pdf",
+          "expected": "needs_review",
+          "passed": true,
+          "real_provider": true,
+          "status": "needs_review",
+          "usage": {
+            "model_calls": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "tokens_reported": false,
+            "elapsed_seconds": 0.579
+          },
+          "error": {
+            "code": "content_uncertain",
+            "message": "第 1 页包含图像或绘图，当前纯文字解析无法核对其内容",
+            "retryable": false,
+            "details": {}
+          },
+          "model_calls": 0,
+          "elapsed_seconds": 0.953
+        },
+        {
+          "name": "pdf_graphic_S",
+          "format": "pdf",
+          "expected": "needs_review",
+          "passed": true,
+          "real_provider": true,
+          "status": "needs_review",
+          "usage": {
+            "model_calls": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "tokens_reported": false,
+            "elapsed_seconds": 0.5
+          },
+          "error": {
+            "code": "content_uncertain",
+            "message": "第 1 页包含图像或绘图，当前纯文字解析无法核对其内容",
+            "retryable": false,
+            "details": {}
+          },
+          "model_calls": 0,
+          "elapsed_seconds": 0.781
+        },
+        {
+          "name": "pdf_graphic_b",
+          "format": "pdf",
+          "expected": "needs_review",
+          "passed": true,
+          "real_provider": true,
+          "status": "needs_review",
+          "usage": {
+            "model_calls": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "tokens_reported": false,
+            "elapsed_seconds": 0.5
+          },
+          "error": {
+            "code": "content_uncertain",
+            "message": "第 1 页包含图像或绘图，当前纯文字解析无法核对其内容",
+            "retryable": false,
+            "details": {}
+          },
+          "model_calls": 0,
+          "elapsed_seconds": 0.797
+        },
+        {
+          "name": "pdf_graphic_bstar",
+          "format": "pdf",
+          "expected": "needs_review",
+          "passed": true,
+          "real_provider": true,
+          "status": "needs_review",
+          "usage": {
+            "model_calls": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "tokens_reported": false,
+            "elapsed_seconds": 0.484
+          },
+          "error": {
+            "code": "content_uncertain",
+            "message": "第 1 页包含图像或绘图，当前纯文字解析无法核对其内容",
+            "retryable": false,
+            "details": {}
+          },
+          "model_calls": 0,
+          "elapsed_seconds": 0.766
+        },
+        {
+          "name": "png",
+          "format": "reject",
+          "expected": null,
+          "passed": true,
+          "real_provider": true,
+          "status": 415,
+          "model_calls": 0,
+          "elapsed_seconds": 0.14
+        },
+        {
+          "name": "probability_docx",
+          "format": "docx",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 2256,
+            "output_tokens": 991,
+            "tokens_reported": true,
+            "elapsed_seconds": 7.141
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 804,
+          "elapsed_seconds": 7.438
+        },
+        {
+          "name": "probability_md",
+          "format": "md",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1808,
+            "output_tokens": 616,
+            "tokens_reported": true,
+            "elapsed_seconds": 5.203
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 651,
+          "elapsed_seconds": 5.532
+        },
+        {
+          "name": "probability_pdf",
+          "format": "pdf",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1694,
+            "output_tokens": 561,
+            "tokens_reported": true,
+            "elapsed_seconds": 5.281
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 498,
+          "elapsed_seconds": 5.5
+        },
+        {
+          "name": "probability_text",
+          "format": "text",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1394,
+            "output_tokens": 560,
+            "tokens_reported": true,
+            "elapsed_seconds": 4.438
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 572,
+          "elapsed_seconds": 4.75
+        },
+        {
+          "name": "probability_txt",
+          "format": "txt",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1846,
+            "output_tokens": 817,
+            "tokens_reported": true,
+            "elapsed_seconds": 5.609
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 635,
+          "elapsed_seconds": 5.843
+        },
+        {
+          "name": "projection_docx",
+          "format": "docx",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 2158,
+            "output_tokens": 1293,
+            "tokens_reported": true,
+            "elapsed_seconds": 9.469
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 807,
+          "elapsed_seconds": 9.703
+        },
+        {
+          "name": "projection_md",
+          "format": "md",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1752,
+            "output_tokens": 781,
+            "tokens_reported": true,
+            "elapsed_seconds": 5.14
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 689,
+          "elapsed_seconds": 5.594
+        },
+        {
+          "name": "projection_pdf",
+          "format": "pdf",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1707,
+            "output_tokens": 1490,
+            "tokens_reported": true,
+            "elapsed_seconds": 9.594
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 640,
+          "elapsed_seconds": 9.828
+        },
+        {
+          "name": "projection_text",
+          "format": "text",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1571,
+            "output_tokens": 1482,
+            "tokens_reported": true,
+            "elapsed_seconds": 9.094
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 980,
+          "elapsed_seconds": 9.469
+        },
+        {
+          "name": "projection_txt",
+          "format": "txt",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1765,
+            "output_tokens": 752,
+            "tokens_reported": true,
+            "elapsed_seconds": 4.953
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 748,
+          "elapsed_seconds": 5.5
+        },
+        {
+          "name": "quadratic_docx",
+          "format": "docx",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 2166,
+            "output_tokens": 1036,
+            "tokens_reported": true,
+            "elapsed_seconds": 7.328
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 652,
+          "elapsed_seconds": 7.578
+        },
+        {
+          "name": "quadratic_md",
+          "format": "md",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1673,
+            "output_tokens": 658,
+            "tokens_reported": true,
+            "elapsed_seconds": 5.391
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 523,
+          "elapsed_seconds": 5.718
+        },
+        {
+          "name": "quadratic_pdf",
+          "format": "pdf",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1620,
+            "output_tokens": 603,
+            "tokens_reported": true,
+            "elapsed_seconds": 5.063
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 459,
+          "elapsed_seconds": 5.25
+        },
+        {
+          "name": "quadratic_text",
+          "format": "text",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1314,
+            "output_tokens": 521,
+            "tokens_reported": true,
+            "elapsed_seconds": 4.125
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 446,
+          "elapsed_seconds": 4.297
+        },
+        {
+          "name": "quadratic_txt",
+          "format": "txt",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1613,
+            "output_tokens": 519,
+            "tokens_reported": true,
+            "elapsed_seconds": 4.422
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 373,
+          "elapsed_seconds": 4.656
+        },
+        {
+          "name": "table_docx",
+          "format": "docx",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 2027,
+            "output_tokens": 951,
+            "tokens_reported": true,
+            "elapsed_seconds": 7.828
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 520,
+          "elapsed_seconds": 8.172
+        },
+        {
+          "name": "table_md",
+          "format": "md",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1630,
+            "output_tokens": 539,
+            "tokens_reported": true,
+            "elapsed_seconds": 4.484
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 434,
+          "elapsed_seconds": 4.843
+        },
+        {
+          "name": "table_pdf",
+          "format": "pdf",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1635,
+            "output_tokens": 589,
+            "tokens_reported": true,
+            "elapsed_seconds": 5.109
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 445,
+          "elapsed_seconds": 5.5
+        },
+        {
+          "name": "table_text",
+          "format": "text",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1208,
+            "output_tokens": 671,
+            "tokens_reported": true,
+            "elapsed_seconds": 4.797
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 293,
+          "elapsed_seconds": 5.14
+        },
+        {
+          "name": "table_txt",
+          "format": "txt",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1694,
+            "output_tokens": 656,
+            "tokens_reported": true,
+            "elapsed_seconds": 5.031
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 494,
+          "elapsed_seconds": 5.218
+        },
+        {
+          "name": "unicode",
+          "format": "md",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1492,
+            "output_tokens": 412,
+            "tokens_reported": true,
+            "elapsed_seconds": 5.5
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 222,
+          "elapsed_seconds": 5.828
+        },
+        {
+          "name": "utf8_bom",
+          "format": "txt",
+          "expected": "completed",
+          "passed": true,
+          "real_provider": true,
+          "status": "completed",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 1511,
+            "output_tokens": 459,
+            "tokens_reported": true,
+            "elapsed_seconds": 4.25
+          },
+          "error": null,
+          "model_calls": 2,
+          "answer_chars": 237,
+          "elapsed_seconds": 4.453
+        }
+      ],
+      "passed": 60,
+      "total": 62
+    }
+  ],
+  "executions": 220,
+  "model_calls_with_usage": 300,
+  "invalid_credential_requests": 2,
+  "input_tokens": 280148,
+  "output_tokens": 107227
+}

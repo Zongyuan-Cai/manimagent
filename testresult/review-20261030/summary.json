@@ -1,0 +1,81 @@
+{
+  "date": "2026-10-30",
+  "model": "deepseek-flash",
+  "vendor_count": 1,
+  "provider": "https://api.deepseek.com",
+  "base_commit": "4a6b3bc164ac97394b78957e49ae07193fa015f2",
+  "python": "3.12.14",
+  "total_cases": 110,
+  "passed": 110,
+  "groups": {
+    "core": 74,
+    "supplemental": 31,
+    "cli": 5
+  },
+  "model_calls_with_usage": 150,
+  "invalid_credential_requests": 1,
+  "input_tokens": 163375,
+  "output_tokens": 51581,
+  "core_statuses": {
+    "completed": 54,
+    "needs_input": 6,
+    "needs_review": 9,
+    "415": 5
+  },
+  "successful_core_latency": {
+    "count": 54,
+    "p50_seconds": 5.5,
+    "p95_nearest_rank_seconds": 13.11,
+    "max_seconds": 13.547
+  },
+  "short_core_latency": {
+    "count": 52,
+    "p50_seconds": 5.422,
+    "p95_nearest_rank_seconds": 10.454,
+    "max_seconds": 13.11
+  },
+  "long_cases": {
+    "long_answer": {
+      "status": "completed",
+      "elapsed_seconds": 13.547,
+      "model_calls": 2,
+      "answer_chars": 1881
+    },
+    "long_material": {
+      "status": "completed",
+      "elapsed_seconds": 13.125,
+      "model_calls": 2,
+      "answer_chars": 871
+    },
+    "long_material_budget": {
+      "status": "needs_input",
+      "elapsed_seconds": 0.86,
+      "model_calls": 0,
+      "answer_chars": null
+    }
+  },
+  "source_sha256": {
+    "src\\manimagent\\answers.py": "2ef6202bc796f142c5d4210d01b282f86940d92870c61fd9a5c6cfd58fb07bac",
+    "src\\manimagent\\materials.py": "354dafc77a5aa6c984b9bc711d5574bcec92c3d78c992bb42661c59b49b71bf6",
+    "src\\manimagent\\content_store.py": "6487e53369da41e86e702f3ddcce13e978da01703d16cb20774377cddc9098e6"
+  },
+  "prompt_hashes": {
+    "answer_writer": [
+      "b181fe663a64af738d6b02f7ae0b9af278d9579a5dbb0fdce15cd22519b3e46d"
+    ],
+    "answer_checker": [
+      "08f3295beb7db40131ae251aac583f70d4fc63cf40895098c32fde8f97be1309"
+    ]
+  },
+  "long_answer_arithmetic_checks": 32,
+  "selection": "Latest result per case after fixes; original failures remain in history.json. Includes targeted retests and explicit context-budget variants.",
+  "automated_tests": {
+    "passed": 94,
+    "elapsed_seconds": 29.48,
+    "ruff_check": "passed",
+    "ruff_format_check": "passed",
+    "python_files_formatted": 34
+  },
+  "manual_content_findings": 1,
+  "mathematical_accuracy_rate_measured": false
+}
