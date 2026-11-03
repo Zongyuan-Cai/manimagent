@@ -16,6 +16,11 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 
+def matrix_text(value: float) -> str:
+    # Python's shortest round-trip representation preserves every stored float.
+    return str(int(value)) if value.is_integer() else repr(value)
+
+
 def probe(path: Path, decode: bool = False) -> dict:
     import av
 
@@ -144,22 +149,30 @@ def render(data: dict, directory: Path) -> dict:
         "muted": "#98ACC7",
     }
     evidence = []
+    active_beat = "header"
     formulas_dir = directory / "formulas"
     formulas_dir.mkdir(exist_ok=True)
 
     def label(text, size=28, color="white"):
         return Text(
-            text, font=font, font_size=size, color=palette.get(color, color), line_spacing=0.8
+            text,
+            font=font,
+            font_size=size,
+            color=palette.get(color, color),
+            line_spacing=0.8,
+            use_svg_cache=True,
         )
 
     def fit(mob, width, height, minimum=0.78):
         scale = min(1, width / max(mob.width, 0.001), height / max(mob.height, 0.001))
         if scale < minimum:
-            raise ValueError("layout: 文字或公式过密，缩小后无法保证可读性，请缩短当前节拍")
+            raise ValueError(
+                f"layout: 节拍 {active_beat} 的内容尺寸 {mob.width:.2f}×{mob.height:.2f} 超过区域 {width}×{height}，缩小后无法保证可读性，请缩短该节拍"
+            )
         mob.scale(scale)
         return mob
 
-    def wrapped(text, width=42):
+    def wrapped(text, width=32):
         # A CJK glyph uses one column; Latin text is grouped by spaces where possible.
         rows, row, weight = [], "", 0.0
         for char in text:
@@ -199,11 +212,15 @@ def render(data: dict, directory: Path) -> dict:
                     if child.get("id") == "patch_1":
                         parent.remove(child)
             tree.write(target, encoding="utf-8", xml_declaration=True)
-        return SVGMobject(str(target), height=0.58)
+        # Preserve the font's em scale. Normalizing every formula to the same
+        # total height made sums/fractions (with stacked limits) almost illegible.
+        svg_height = float(ET.parse(target).getroot().attrib["viewBox"].split()[3])
+        return SVGMobject(str(target), height=svg_height * 0.6 / 48)
 
     def graphic(diagram):
         group, objects, arrows = VGroup(), {}, []
         occupied = []
+        matrix_cells = []
         if diagram.kind == "plane":
             scale = min(
                 5.35 / (diagram.x_range[1] - diagram.x_range[0]),
@@ -294,21 +311,32 @@ def render(data: dict, directory: Path) -> dict:
                     group.add(caption)
         elif diagram.kind == "matrix":
             rows, cols = len(diagram.matrix), len(diagram.matrix[0])
+            cells = [[label(matrix_text(value), 38) for value in row] for row in diagram.matrix]
+            widths = [max(cells[r][c].width for r in range(rows)) for c in range(cols)]
+            heights = [max(cell.height for cell in row) for row in cells]
+            x = 0.0
             values = VGroup()
-            for r, row in enumerate(diagram.matrix):
-                for c, value in enumerate(row):
-                    values.add(
-                        label(f"{value:g}", 38).move_to(
-                            np.array([(c - (cols - 1) / 2) * 0.95, ((rows - 1) / 2 - r) * 0.7, 0])
-                        )
-                    )
+            for c, width in enumerate(widths):
+                y = 0.0
+                for r, height in enumerate(heights):
+                    cell = cells[r][c]
+                    cell.move_to([x + width / 2, -y - height / 2, 0])
+                    values.add(cell)
+                    y += height + 0.24
+                x += width + 0.3
             brackets = VGroup(label("[", 100, "blue"), label("]", 100, "blue"))
-            brackets[0].stretch_to_fit_height(max(1.3, rows * 0.7)).next_to(values, LEFT, buff=0.18)
-            brackets[1].stretch_to_fit_height(max(1.3, rows * 0.7)).next_to(
-                values, RIGHT, buff=0.18
-            )
-            group.add(values, brackets).move_to(np.array([-3.45, 0, 0]))
-        return group, objects, arrows
+            for bracket, side in zip(brackets, [LEFT, RIGHT], strict=True):
+                bracket.stretch_to_fit_height(max(1.3, values.height + 0.2)).next_to(
+                    values, side, buff=0.18
+                )
+            group.add(values, brackets)
+            fit(group, 5.8, 3.35).move_to(np.array([-3.45, 0, 0]))
+            matrix_cells = [
+                {"text": matrix_text(value), "bounds": bounds(cell)}
+                for row, value_row in zip(cells, diagram.matrix, strict=True)
+                for cell, value in zip(row, value_row, strict=True)
+            ]
+        return group, objects, arrows, matrix_cells
 
     def bounds(mob):
         return {
@@ -319,7 +347,24 @@ def render(data: dict, directory: Path) -> dict:
         }
 
     class TeachingScene(Scene):
+        def play(self, *animations, **kwargs):
+            if data.get("layout_only"):
+                # Geometry is already constructed. Preflight does not need animation
+                # interpolation/deep copies; the real render validates event timing.
+                self.renderer.time += kwargs.get(
+                    "run_time", max((a.run_time for a in animations), default=1)
+                )
+            else:
+                super().play(*animations, **kwargs)
+
+        def wait(self, duration=1, **kwargs):
+            if data.get("layout_only"):
+                self.renderer.time += duration
+            else:
+                super().wait(duration, **kwargs)
+
         def construct(self):
+            nonlocal active_beat
             header = fit(label(data["title"], 26), 10.5, 0.5).move_to(
                 np.array([-6.5, 3.48, 0]), aligned_edge=LEFT
             )
@@ -341,12 +386,13 @@ def render(data: dict, directory: Path) -> dict:
             self.add(header, count, divider, scene_title, caption_card)
             previous = VGroup()
             for index, beat in enumerate(spec.beats):
+                active_beat = beat.beat_id
                 start = float(self.time)
                 if len(previous):
                     self.play(FadeOut(previous), run_time=0.25)
                 else:
                     self.wait(0.25, frozen_frame=True)
-                diagram, objects, arrows = graphic(beat.diagram)
+                diagram, objects, arrows, matrix_cells = graphic(beat.diagram)
                 has_graphic = beat.diagram.kind != "none"
                 center = np.array([3.35 if has_graphic else 0, 0.2, 0])
                 width = 6.05 if has_graphic else 11.7
@@ -354,11 +400,12 @@ def render(data: dict, directory: Path) -> dict:
                     center + [0, 1.55, 0]
                 )
                 equations = VGroup(*(formula(s) for s in beat.formulas))
+                formula_em = None
                 if len(equations):
-                    for equation in equations:
-                        fit(equation, width, 0.72, minimum=0.68)
                     equations.arrange(-UP, buff=0.32)
-                    fit(equations, width, 2.3, minimum=0.82).move_to(center)
+                    original_height = equations.height
+                    fit(equations, width, 2.3).move_to(center)
+                    formula_em = round(0.6 * equations.height / original_height, 6)
                 else:
                     equations = fit(
                         label(wrapped(beat.screen_text, 18 if has_graphic else 34), 30), width, 2.2
@@ -412,7 +459,10 @@ def render(data: dict, directory: Path) -> dict:
                         "end_seconds": float(self.time),
                         "screen_text": beat.screen_text,
                         "formulas": beat.formulas,
+                        "formula_em": formula_em,
+                        "formula_bounds": [bounds(e) for e in equations] if beat.formulas else [],
                         "objects": list(objects),
+                        "matrix_cells": matrix_cells,
                         "caption_bounds": bounds(caption),
                         "content_bounds": bounds(VGroup(title, equations, diagram)),
                         "time_source": "estimated",

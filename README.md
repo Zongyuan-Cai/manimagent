@@ -1,4 +1,4 @@
-# ManimAgent 0.3.0
+# ManimAgent 0.3.1
 
 当前版本提供“问题与文件 → 可追溯材料 → 完整 Markdown → 整体教学切分 → 分块生成 → 无声动画”。支持 UTF-8 TXT、Markdown、文本型 PDF（可选页）和 DOCX；保留来源、内容检查、下载和修订。视频采用本地可信 Manim 模板，目标 2～6 分钟，720p／30 fps，不依赖 Docker。动画失败时完整文字仍保留。
 
@@ -25,14 +25,14 @@ uv run manimagent doctor --animation
 uv run manimagent lesson --question "给定 a=(3,2)、b=(2,0)，解释并计算正交投影，验证残差正交" --output lesson.mp4
 ```
 
-PR 自动运行 Windows／Linux 回归、代码检查与独立安装包验证，结果统一汇总为 `PR checks`。配置与合并门槛见 [PR 流水线](docs/PR流水线.md)。
+PR 和 main 推送自动运行 Windows／Linux 回归、JS 行为测试、真实原生动画渲染及独立安装包验证，结果统一汇总为 `PR checks`。配置与合并门槛见 [PR 流水线](docs/PR流水线.md)。
 
 ## 当前版本与历史 MVP
 
 | 项目 | 当前开发版本 | 历史动画 MVP |
 |---|---|---|
 | 项目根目录 | 本目录 | `legacy_mvp/` |
-| 版本 | 0.3.0 | 独立冻结的 0.1.0 |
+| 版本 | 0.3.1 | 独立冻结的 0.1.0 |
 | 虚拟环境与锁文件 | `.venv/`、`uv.lock` | 自有 `.venv/`、`uv.lock` |
 | 默认端口 | 8000 | 8001 |
 | 默认数据 | `runs/current/private/` | `legacy_mvp/runs/` |
@@ -53,6 +53,6 @@ uv run ruff format --check src tests scripts
 
 `scripts/test_animation_e2e.py` 显式测试真实 DeepSeek＋本地动画完整链路，保存正文、计划、MP4、逐节拍关键帧和用量。动画复测报告见[正式动画真实测试](testresult/animation-20261030/真实测试报告.md)。当前为受约束模板的语义／几何／布局／媒体检查；视觉模型未调用，实际音画同步未验证，不把估计时间冒充音频实测。
 
-最新的 [2026-10-30 真实测试报告](testresult/review-20261030/真实测试报告.md)与[代码审查](testresult/review-20261030/代码审查.md)覆盖多模型配置、输入格式和完整正文交付，记录实际 DeepSeek 调用及修复证据。此前的[测试报告](testresult/测试报告.md)与[代码审查](testresult/代码审查.md)保留为历史记录。
+最新的 [0.3.1 修复与复审报告](testresult/review-20261103/报告.md)记录七项缺陷修复、死代码清理、110 项真实文字工作流和 10 题动画首轮的全部结果。动画首次完成率尚未达到生产要求，不能只根据成功视频判断可用性。[2026-10-30 真实测试报告](testresult/review-20261030/真实测试报告.md)及更早的报告保留为历史记录。
 
-正式版方案见[动画 Pipeline](docs/04-动画生成.md)、[Prompt 与检查规范](docs/动画Prompt与检查规范.md)、[时长与生产验收](docs/动画时长与生产验收.md)。[音画对齐调研](docs/research/音画对齐开源项目与论文调研.md)进一步明确：TTS 服务暂缓，但旁白、语义锚点和画面事件现在就要共用时间线；当前估时不能冒充真实同步。2～6 分钟和生成耗时均为待验证目标。实施顺序见[开发计划](docs/开发计划.md)，记忆与个性化继续暂缓。
+正式版方案见[动画 Pipeline](docs/04-动画生成.md)、[Prompt 与检查规范](docs/动画Prompt与检查规范.md)、[时长与生产验收](docs/动画时长与生产验收.md)。[音画对齐调研](docs/research/音画对齐开源项目与论文调研.md)进一步明确：TTS 服务暂缓，但旁白、语义锚点和画面事件现在就要共用时间线；当前估时不能冒充真实同步。成功样本已达到 2～6 分钟，稳定合格率与生成耗时分布仍需固定版本评测。实施顺序见[开发计划](docs/开发计划.md)，记忆与个性化继续暂缓。

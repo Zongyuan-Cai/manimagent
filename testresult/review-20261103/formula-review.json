@@ -1,0 +1,25 @@
+{
+  "source": "real_deepseek_variance_scene_4",
+  "passed": true,
+  "media": {
+    "width": 1280,
+    "height": 720,
+    "fps": 30.0,
+    "codec": "h264",
+    "pix_fmt": "yuv420p",
+    "duration_seconds": 61.733333333333334,
+    "audio_streams": 0,
+    "decoded_frames": 1852
+  },
+  "layout_seconds": 7.828,
+  "render_seconds": 45.094,
+  "formula_em": [
+    0.6,
+    0.6,
+    0.6,
+    0.6,
+    0.6
+  ],
+  "source_video_id": "video_f65d73dc57aa43d695b13cc478786efc",
+  "full_video_rerendered": false
+}

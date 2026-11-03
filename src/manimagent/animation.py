@@ -39,6 +39,7 @@ OUTLINE_PROMPT = (
 先规划整体，再分块生成。根据完整正文与服务器给出的 teaching_units，输出 3～8 个自包含场景。
 每个 unit_id 都必须被某个场景承接，不能通过只引用全文 step_id 跳过内容。
 每场景安排 3～7 个有教学目的的节拍；总节拍建议 18～24 个，每个约 6～18 秒。
+scene_id 使用 s1、s2 等简短编号，忽略大小写仍须唯一，不能使用 CON、AUX 等系统保留名。
 单一概念通常 120～180 秒，多步题 180～360 秒。时长取决于解释工作量，不按难度标签机械映射。
 主题很简单或太复杂而无法在 120～360 秒完整教学时返回 scope_issue，不填充无关材料。
 说明受众默认假设、难度理由、教学依赖与时长理由。最多8场景、全片最多42节拍。
@@ -59,8 +60,12 @@ cue_text 必须逐字取自 spoken_text 中一个靠前的短语；cue_objects �
 公式为 Matplotlib MathText 的 ASCII 子集，不带 $，不使用 begin/end/matrix/align/text/中文。
 可用 \frac{a}{b}、\mathbf{a}、\cdot、\perp、\sqrt{}、上下标等；数值矩阵用 diagram.kind=matrix。
 分式等命令必须保留反斜杠前缀，在 JSON 中双写反斜杠进行转义；不要裸输出 frac。
+字体命令必须带花括号：写 \mathbf{a}，不能写 \mathbf a。
+公式字段绝不能含任何中文，包括 \text{或}、\text{无定义} 也禁止；中文全部放在 screen_text。
+例如 x=2 或 x=3 写作 x=2\quad\mathrm{or}\quad x=3；“h不能为零”公式写 h\neq0，理由写屏幕文字。
 公式要简短，一行通常少于50字符，长推导拆成多拍；中文解释放 screen_text。
 无图时 diagram={"kind":"none"}；坐标图用 kind=plane、x_range/y_range、objects。
+纯代数与概率题优先 kind=none，只在正文确有几何推理时使用坐标图。所有 points 的两个坐标都必须落在给出的范围内。
 对象kind仅vector/point/segment/dashed/polygon/circle；vector/segment/dashed的points恰有两个不同端点。
 颜色仅blue/gold/teal/red/white/muted。label是简短纯文本，不写LaTeX；说明图例代表谁。
 图形、公式与解释分区显示。不能把系数当向量，不能因模板限制省略题目的必要内容。
@@ -153,6 +158,28 @@ def teaching_units(markdown: str) -> list[TeachingUnit]:
             )
         )
     units = merged
+    if len(units) > 42:
+        # Writers often put every display equation in a separate paragraph.
+        # Pack adjacent short paragraphs within a section, preserving exact spans;
+        # paragraph formatting alone must not turn an ordinary problem into >70 units.
+        units = []
+        for unit in merged:
+            if (
+                units
+                and not re.match(r"#{1,6}\s", unit.text.lstrip())
+                and unit.end - units[-1].start <= 300
+            ):
+                start = units[-1].start
+                text = markdown[start : unit.end]
+                units[-1] = TeachingUnit(
+                    unit_id=units[-1].unit_id,
+                    start=start,
+                    end=unit.end,
+                    text=text,
+                    sha256=digest(text),
+                )
+            else:
+                units.append(unit.model_copy(update={"unit_id": f"u{len(units) + 1:03d}"}))
     if not units or len(units) > 70:
         raise ContentError(
             "video_scope", "正文教学单元过多或为空，请拆分为独立主题", state="needs_input"
@@ -324,7 +351,7 @@ class VideoService:
                 state="needs_input" if outline.status == "needs_input" else "needs_review",
             )
         used = {u for s in outline.scenes for u in s.unit_ids}
-        if outline.status == "ready" and used != all_units:
+        if used != all_units:
             repairs += 1
             outline = self.call(
                 "video_planner",
@@ -345,10 +372,8 @@ class VideoService:
             self.store.save("records", record["job_id"], record)
             if outline.status != "ready":
                 raise ContentError("video_scope", outline.message, state="needs_review")
-        if not 3 <= len(outline.scenes) <= 8 or len({s.scene_id for s in outline.scenes}) != len(
-            outline.scenes
-        ):
-            raise ContentError("invalid_plan", "整体场景数量或ID不合格", state="needs_review")
+        if len(outline.scenes) < 3:
+            raise ContentError("invalid_plan", "整体场景至少需要3个", state="needs_review")
         if {u for s in outline.scenes for u in s.unit_ids} != all_units or sum(
             s.beat_count for s in outline.scenes
         ) > 42:
@@ -372,6 +397,9 @@ class VideoService:
                     ),
                     "selected_units": [u.model_dump() for u in units if u.unit_id in spec.unit_ids],
                     "feedback": feedback,
+                    "previous_scene": record.get("scene_chunks", {}).get(spec.scene_id)
+                    if feedback
+                    else None,
                 },
                 SceneDraft,
                 budget,
@@ -382,16 +410,15 @@ class VideoService:
             return scene
 
         def layout(index, scene):
-            if hasattr(self.renderer, "validate_layout"):
-                progress(f"正在预检场景 {index + 1}/{len(outline.scenes)} 的公式与排版")
-                return self.renderer.validate_layout(
-                    scene,
-                    self.store.root / "renders" / record["job_id"] / "layout" / scene.scene_id,
-                    outline,
-                    len(outline.scenes),
-                    budget,
-                    index,
-                )
+            progress(f"正在预检场景 {index + 1}/{len(outline.scenes)} 的公式与排版")
+            return self.renderer.validate_layout(
+                scene,
+                self.store.root / "renders" / record["job_id"] / "layout" / scene.scene_id,
+                outline,
+                len(outline.scenes),
+                budget,
+                index,
+            )
 
         for index in range(len(outline.scenes)):
             try:
@@ -477,26 +504,42 @@ class VideoService:
                 duration_seconds=duration,
             )
 
-        try:
-            plan = make_plan()
-        except ContentError as exc:
-            if exc.error.code != "video_pacing" or repairs >= 2:
-                raise
-            total = sum(s.duration_seconds for s in scenes)
-            index = max(range(len(scenes)), key=lambda i: scenes[i].duration_seconds)
-            repairs += 1
-            target = max(20, scenes[index].duration_seconds + min(0, 340 - total))
-            scenes[index] = chunk(
-                index,
-                {
-                    "issue": exc.error.message,
-                    "current_total_seconds": total,
-                    "required_scene_max_seconds": target,
-                    "instruction": "保留全部必要单元，缩短冗余屏幕表述和旁白；不得加速、删必要推理或补空等。",
-                },
-            )
-            layout(index, scenes[index])
-            plan = make_plan()
+        while True:
+            try:
+                plan = make_plan()
+                break
+            except ContentError as exc:
+                if exc.error.code != "video_pacing" or repairs >= 2:
+                    raise
+                total = sum(s.duration_seconds for s in scenes)
+                short = total < 120
+                index = max(
+                    range(len(scenes)),
+                    key=lambda i: (
+                        24 * scenes[i].beat_count - scenes[i].duration_seconds
+                        if short
+                        else scenes[i].duration_seconds
+                    ),
+                )
+                repairs += 1
+                feedback = {"issue": exc.error.message, "current_total_seconds": total}
+                if short:
+                    feedback.update(
+                        required_scene_min_seconds=min(
+                            23 * scenes[index].beat_count,
+                            scenes[index].duration_seconds + 130 - total,
+                        ),
+                        instruction="展开正文中已有的条件、依据、代入与核对，让屏幕独立讲清楚；不得添加无关内容、重复结论或空等凑时长。若无法完整教学则保持真实内容，不编造。",
+                    )
+                else:
+                    feedback.update(
+                        required_scene_max_seconds=max(
+                            20, scenes[index].duration_seconds + min(0, 340 - total)
+                        ),
+                        instruction="保留全部必要单元，消除重复并缩短冗余屏幕表述和旁白；不得加速、删必要推理或补空等。",
+                    )
+                scenes[index] = chunk(index, feedback)
+                layout(index, scenes[index])
         for attempt in range(2):
             progress("正在统一检查分块覆盖、数学含义与阅读节奏")
             report = self.call(

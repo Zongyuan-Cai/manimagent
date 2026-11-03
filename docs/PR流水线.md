@@ -8,25 +8,24 @@
 
 | 检查 | 内容 |
 |---|---|
-| Current (ubuntu-latest) | Python 3.12，依赖锁一致性，Ruff、格式、JavaScript 语法和全部当前版自动化测试 |
+| Current (ubuntu-latest) | Python 3.12，依赖锁一致性，Ruff、格式、JavaScript 语法、页面异步回归和全部当前版基础自动化测试 |
 | Current (windows-latest) | Python 3.12，依赖锁一致性和全部当前版自动化测试，覆盖 Windows 凭据存储路径 |
+| Native animation | 安装 animation 依赖和中文字体，真实渲染矩阵／几何／公式，检查精度与间距，合成 2 分钟以上视频并完整解码 |
 | Legacy MVP | 在 `legacy_mvp/` 使用自有锁文件、依赖环境和回归测试，排除需要 Docker 的集成测试 |
 | Installable package | 当前回归通过后构建 wheel、sdist；检查历史／私有目录未混入、页面资源齐全；分别在临时环境安装并实际启动 CLI、HTTP 服务和页面静态资源 |
 | PR checks | 汇总以上检查；任一失败、取消或跳过均不通过，适合作为固定的合并门槛 |
 
 当前和历史 JUnit XML 分别存为 Actions artifacts；通过验证的当前版安装包也可下载，均保留 7 天。测试失败时查看对应 step 日志和 XML。所有任务设有超时，第三方 Action 固定到完整提交 SHA，工作流令牌仅有 `contents: read`。
 
-CI 不需要任何 LLM 密钥，不读取本机私有配置，不运行 `scripts/test_deepseek_e2e.py`，不会产生真实模型调用费用。真实模型质量、视觉结果和 Docker 渲染不属于本流水线的通过承诺。
+CI 不需要任何 LLM 密钥，不读取本机私有配置，不运行 `scripts/test_deepseek_e2e.py`，不会产生真实模型调用费用。真实模型质量和完整人工视觉验收不属于本流水线的通过承诺。Native animation 使用本地可信模板，不依赖 Docker。
 
 ## 设置合并门槛
 
-2026-10-29 已通过 GitHub API 为 `main` 启用分支保护：必须通过 PR 修改，`PR checks` 必须由 GitHub Actions 提供且通过，提交需与主分支同步；规则对管理员生效，禁止强推与删除。独立审批数量为 0，不要求单人仓库另找审批者。
-
-主分支已安装通用的 `PR checks` 汇总门禁。当前文字版的完整检查通过[临时 PR #3](https://github.com/Zongyuan-Cai/manimagent/pull/3)完成正反路径验证，该临时 PR 已关闭、未合并。本版本的正式 PR 使用新的完整检查；合入 `main` 后，主分支也执行上表中的当前版、独立 MVP 与安装包验证。
+主维护者已明确授权直接推送 `main`。管理员可直接提交；不强制主维护者创建 PR 或另找审批者。其他贡献者仍可通过 PR 使用同一组检查。禁止强推与删除主分支；主分支 push 也运行全部 CI。
 
 后续可在仓库 Settings → Branches → `main` 的分支保护（或 Rules → Rulesets）维护：
 
-1. Require a pull request before merging。
+1. 按协作需要设置 Require a pull request before merging；保留主维护者／管理员的直接提交权限。
 2. Require status checks to pass，选择 **PR checks**。
 3. 如需确保检查涵盖最新主分支，开启 Require branches to be up to date before merging；使用 merge queue 时可由队列验证合并结果。
 
@@ -41,6 +40,7 @@ uv run --no-sync ruff format --check src tests scripts
 uv run --no-sync python -m pytest -q
 node --check src/manimagent/web/app.js
 node --check src/manimagent/web/llm-settings.js
+node --test tests/web/*.test.cjs
 uv build --out-dir dist/current
 uv run --no-sync python scripts/check_distribution.py dist/current
 ```
@@ -48,3 +48,5 @@ uv run --no-sync python scripts/check_distribution.py dist/current
 打包检查要求 `dist/current/` 中恰好包含当前版本的 wheel 与 sdist，避免混用旧包。脚本会为每个包创建并关闭临时服务；绑定随机本机端口，不占用开发服务的 8000 端口。只安装生产依赖，页面与接口不依赖源码目录或开发依赖。
 
 历史测试需在 `legacy_mvp/` 中单独执行 `uv sync --locked --extra dev` 与 `uv run --no-sync python -m pytest -q -m "not docker"`。
+
+原生渲染本地复现：先 `uv sync --locked --extra dev --extra animation`，然后在 PowerShell 中设置 `$env:RUN_NATIVE_TESTS="1"` 并运行 `uv run --no-sync python -m pytest -q tests/native`。基础测试环境显式跳过这些测试；单独的 Native animation CI 必须通过。

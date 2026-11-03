@@ -11,8 +11,8 @@ from pydantic import Field, StringConstraints, field_validator, model_validator
 
 from manimagent.schemas import Contract, ResourceID, now
 
-PROMPT_VERSION = "silent-templates-2"
-TEMPLATE_VERSION = "native-manim-1"
+PROMPT_VERSION = "silent-templates-6"
+TEMPLATE_VERSION = "native-manim-3"
 SmallText = Annotated[str, StringConstraints(min_length=1, max_length=120)]
 LocalID = Annotated[str, StringConstraints(pattern=r"^[A-Za-z][A-Za-z0-9_]{0,39}$")]
 Coordinate = Annotated[float, Field(ge=-20, le=20, allow_inf_nan=False)]
@@ -38,6 +38,16 @@ class SceneOutline(Contract):
     unit_ids: list[LocalID] = Field(min_length=1, max_length=50)
     beat_count: int = Field(ge=3, le=7)
 
+    @field_validator("scene_id")
+    @classmethod
+    def portable_scene_id(cls, value):
+        reserved = {"con", "prn", "aux", "nul"} | {
+            f"{prefix}{i}" for prefix in ("com", "lpt") for i in range(1, 10)
+        }
+        if value.casefold() in reserved:
+            raise ValueError("场景 ID 不能使用操作系统保留名称")
+        return value
+
 
 class VideoOutline(Contract):
     status: Literal["ready", "answer_issue", "scope_issue", "needs_input"]
@@ -48,6 +58,13 @@ class VideoOutline(Contract):
     difficulty_reason: SmallText
     duration_reason: SmallText
     scenes: list[SceneOutline] = Field(max_length=8)
+
+    @model_validator(mode="after")
+    def unique_scene_paths(self):
+        ids = [s.scene_id.casefold() for s in self.scenes]
+        if len(ids) != len(set(ids)):
+            raise ValueError("场景 ID 必须忽略大小写后仍唯一")
+        return self
 
 
 class GraphicObject(Contract):
@@ -116,13 +133,25 @@ class BeatDraft(Contract):
     beat_id: LocalID
     unit_ids: list[LocalID] = Field(min_length=1, max_length=50)
     headline: Annotated[str, StringConstraints(min_length=1, max_length=24)]
-    screen_text: Annotated[str, StringConstraints(min_length=8, max_length=100)]
-    formulas: list[Annotated[str, StringConstraints(min_length=1, max_length=130)]] = Field(
-        default_factory=list, max_length=3
+    screen_text: Annotated[str, StringConstraints(min_length=8, max_length=64)] = Field(
+        description="Chinese explanation, ideally 25-50 characters; at most 64 characters fit the two-line caption. Split long reasoning across beats."
+    )
+    formulas: list[
+        Annotated[str, StringConstraints(min_length=1, max_length=130, pattern=r"^[\x20-\x7E]+$")]
+    ] = Field(
+        default_factory=list,
+        max_length=3,
+        description="ASCII MathText only. NO Chinese, NO \\begin, NO \\end, NO pmatrix/bmatrix/array/cases. Display numeric matrices using diagram.kind=matrix and diagram.matrix; for determinants show the expanded arithmetic in formulas. Chinese explanations belong in screen_text. Use \\mathrm{or} for alternatives. Commands require braces: \\mathbf{a}, \\frac{3}{4}.",
     )
     spoken_text: Annotated[str, StringConstraints(min_length=15, max_length=150)]
-    cue_text: Annotated[str, StringConstraints(min_length=1, max_length=30)]
-    cue_objects: list[LocalID] = Field(default_factory=list, max_length=10)
+    cue_text: Annotated[str, StringConstraints(min_length=1, max_length=30)] = Field(
+        description="An EXACT contiguous substring copied from spoken_text, including particles and punctuation. If spoken_text contains 趋近的目标, use 趋近的目标, never 趋近目标. Prefer a short phrase near the beginning."
+    )
+    cue_objects: list[LocalID] = Field(
+        default_factory=list,
+        max_length=10,
+        description="String IDs ONLY, each must exist in this beat's diagram.objects. Never put object definitions here. For formulas, matrices or no diagram, use an empty list []. Axes and matrix cells have no object IDs.",
+    )
     reading_reason: SmallText
     diagram: Diagram = Field(default_factory=Diagram)
 
@@ -131,6 +160,14 @@ class BeatDraft(Contract):
     def safe_formulas(cls, values):
         normalized = []
         for value in values:
+            # JSON producers sometimes escape an already escaped command a second time.
+            # MathText has no double-backslash row separators; retain the command itself.
+            value = re.sub(r"\\{2,}(?=[A-Za-z{}])", lambda _: "\\", value)
+            value = re.sub(
+                r"\\(mathbf|mathrm|mathit|mathsf|mathtt|mathcal|mathbb)\s+([A-Za-z0-9])",
+                lambda m: "\\" + m[1] + "{" + m[2] + "}",
+                value,
+            )
             value = re.sub(r"(?<![A-Za-z\\])(?:dfrac|tfrac|frac)(?=\{)", r"\\frac", value)
             if (
                 "$" in value
@@ -150,6 +187,23 @@ class BeatDraft(Contract):
                 (r"\tfrac", r"\frac"),
             ]:
                 value = value.replace(source, target)
+            # TeX permits single-token fraction arguments; MathText requires braces.
+            # Group exactly those tokens, preserving TeX meaning (no numeric rounding).
+            value = re.sub(
+                r"\\frac(?:\s+([A-Za-z0-9])|([0-9]))\s*([A-Za-z0-9])",
+                lambda m: "\\frac{" + (m[1] or m[2]) + "}{" + m[3] + "}",
+                value,
+            )
+            value = re.sub(
+                r"\\frac(?:\s+([A-Za-z0-9])|([0-9]))(?=\{)",
+                lambda m: "\\frac{" + (m[1] or m[2]) + "}",
+                value,
+            )
+            value = re.sub(
+                r"\\frac(\{[^{}]+\})\s*([A-Za-z0-9])",
+                lambda m: "\\frac" + m[1] + "{" + m[2] + "}",
+                value,
+            )
             normalized.append(value)
         return normalized
 

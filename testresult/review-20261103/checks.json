@@ -1,0 +1,56 @@
+{
+  "checks": [
+    {
+      "name": "current_python",
+      "tests": 135,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 2,
+      "seconds": 43.716
+    },
+    {
+      "name": "native_manim",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 120.81
+    },
+    {
+      "name": "legacy_without_docker",
+      "tests": 83,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 10.381
+    },
+    {
+      "name": "javascript_behavior",
+      "passed": 6,
+      "failed": 0
+    },
+    {
+      "name": "wheel_install",
+      "passed": true
+    },
+    {
+      "name": "sdist_install",
+      "passed": true
+    },
+    {
+      "name": "ruff_check_format",
+      "passed": true
+    },
+    {
+      "name": "dependency_lock",
+      "passed": true
+    }
+  ],
+  "legacy_deselected_docker": 1,
+  "python": "3.12.14",
+  "os": "Windows",
+  "cpu": "Intel Core Ultra 7 255HX",
+  "native_fixture_is_generated_by_llm": false,
+  "native_fixture_seconds": 121.5,
+  "human_full_video_review": false
+}

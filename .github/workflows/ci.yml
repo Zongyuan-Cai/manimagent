@@ -49,6 +49,7 @@ jobs:
         run: |
           node --check src/manimagent/web/app.js
           node --check src/manimagent/web/llm-settings.js
+          node --test tests/web/*.test.cjs
       - name: Current regression tests
         run: uv run --no-sync python -m pytest -q --junitxml=testresult/ci/current.xml
       - name: Save test report
@@ -58,6 +59,41 @@ jobs:
           name: tests-${{ matrix.os }}
           path: testresult/ci/current.xml
           if-no-files-found: ignore
+          retention-days: 7
+
+  native:
+    name: Native animation
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with:
+          version: "0.13.1"
+          python-version: "3.12"
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+      - name: Install renderer system libraries and Chinese fonts
+        run: sudo apt-get update && sudo apt-get install -y libcairo2-dev libpango1.0-dev pkg-config fonts-noto-cjk
+      - name: Install locked animation dependencies
+        run: uv sync --locked --extra dev --extra animation
+      - name: Render and fully decode silent animation
+        env:
+          RUN_NATIVE_TESTS: "1"
+        run: uv run --no-sync python -m pytest -q tests/native --basetemp=testresult/ci/native --junitxml=testresult/ci/native.xml
+      - name: Save render evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: native-animation
+          path: |
+            testresult/ci/native.xml
+            testresult/ci/native/**/result.json
+            testresult/ci/native/**/frame_*.png
+            testresult/ci/native/**/complete.mp4
+            testresult/ci/native/**/error.txt
           retention-days: 7
 
   legacy:
@@ -124,7 +160,7 @@ jobs:
   required:
     name: PR checks
     if: always()
-    needs: [current, legacy, package]
+    needs: [current, native, legacy, package]
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:
@@ -132,7 +168,7 @@ jobs:
         env:
           RESULTS: ${{ join(needs.*.result, ',') }}
         run: |
-          if [[ "$RESULTS" != "success,success,success" ]]; then
+          if [[ "$RESULTS" != "success,success,success,success" ]]; then
             printf 'Validation jobs did not all succeed: %s\n' "$RESULTS"
             exit 1
           fi

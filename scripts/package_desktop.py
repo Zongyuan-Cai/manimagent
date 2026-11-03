@@ -7,10 +7,12 @@ import hashlib
 import json
 import shutil
 import subprocess
+import tomllib
 import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+VERSION = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))["project"]["version"]
 
 
 def main():
@@ -53,13 +55,13 @@ def main():
     for name in ["example.mp4", "answer.md", "plan.json", "video.json", "result.json"]:
         shutil.copyfile(args.example / name, examples / name)
         copied.append((examples / name).relative_to(destination).as_posix())
-    for file in (ROOT / "dist").glob("manimagent-0.3.0*"):
+    for file in (ROOT / "dist").glob(f"manimagent-{VERSION}*"):
         target = destination / "dist" / file.name
         target.parent.mkdir(exist_ok=True)
         shutil.copyfile(file, target)
         copied.append(target.relative_to(destination).as_posix())
     manifest = {
-        "version": "0.3.0",
+        "version": VERSION,
         "example": result,
         "files": {
             name: hashlib.sha256((destination / name).read_bytes()).hexdigest() for name in copied

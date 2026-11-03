@@ -1,0 +1,1172 @@
+{
+  "pilot": [
+    {
+      "cohort": "animation-pilot",
+      "passed": false,
+      "model": "deepseek-flash",
+      "provider": "https://api.deepseek.com",
+      "status": "partial",
+      "job_id": "job_d2cfc791b8df47b4ad05a15b7edae91f",
+      "answer_id": "answer_2d75d48af4e34d67b1d358d4fd94387c",
+      "usage": {
+        "model_calls": 4,
+        "input_tokens": 23189,
+        "output_tokens": 3522,
+        "tokens_reported": true,
+        "elapsed_seconds": 64.562
+      },
+      "elapsed_seconds": 64.75,
+      "error": {
+        "code": "render_timeout",
+        "message": "本地渲染达到时间上限",
+        "retryable": false,
+        "details": {}
+      }
+    },
+    {
+      "cohort": "animation-pilot-2",
+      "passed": false,
+      "model": "deepseek-flash",
+      "provider": "https://api.deepseek.com",
+      "status": "partial",
+      "job_id": "job_88300ee14fdb4ec39b50ebe0f85b5c5d",
+      "answer_id": "answer_ebc32a59cec54b36b1e9032467c764a5",
+      "usage": {
+        "model_calls": 9,
+        "input_tokens": 57922,
+        "output_tokens": 10461,
+        "tokens_reported": true,
+        "elapsed_seconds": 160.688
+      },
+      "elapsed_seconds": 161.156,
+      "error": {
+        "code": "render_timeout",
+        "message": "本地渲染达到时间上限",
+        "retryable": false,
+        "details": {}
+      }
+    }
+  ],
+  "cohorts": [
+    {
+      "workers": 2,
+      "source_hash": "3743beec80ff8efbe45fe3a7add00dd2ce9b2071dba4f30bfa59fb93fce2b1f5",
+      "first_attempt_only": true,
+      "passed": 0,
+      "total": 7,
+      "expected": 30,
+      "cases": [
+        {
+          "passed": false,
+          "model": "deepseek-flash",
+          "provider": "https://api.deepseek.com",
+          "status": "partial",
+          "job_id": "job_4de6dfe1719a4efb9f183f4085860cb3",
+          "answer_id": "answer_92e8faaecde446d5996e781763823ae6",
+          "usage": {
+            "model_calls": 6,
+            "input_tokens": 40034,
+            "output_tokens": 4816,
+            "tokens_reported": true,
+            "elapsed_seconds": 35.921
+          },
+          "elapsed_seconds": 36.234,
+          "error": {
+            "code": "invalid_provider_response",
+            "message": "scene_generator 返回结构不符合契约",
+            "retryable": false,
+            "details": {}
+          },
+          "name": "bayes-1",
+          "topic": "bayes",
+          "attempt": 1,
+          "exit_code": 1,
+          "wall_seconds": 37.093,
+          "text_ready_seconds": 9.733,
+          "video_stage_seconds": 26.213
+        },
+        {
+          "passed": false,
+          "model": "deepseek-flash",
+          "provider": "https://api.deepseek.com",
+          "status": "partial",
+          "job_id": "job_d7f95253ece843f7a1b606f41548dcb0",
+          "answer_id": "answer_189fdeb51d5241abba70c90d508b8458",
+          "usage": {
+            "model_calls": 4,
+            "input_tokens": 12926,
+            "output_tokens": 2167,
+            "tokens_reported": true,
+            "elapsed_seconds": 20.453
+          },
+          "elapsed_seconds": 20.672,
+          "error": {
+            "code": "render_failed",
+            "message": "[Errno 2] No such file or directory: 'C:\\\\Users\\\\20557\\\\.codex\\\\worktrees\\\\docs-av-alignment\\\\manimagent\\\\runs\\\\fix-20261103\\\\animation-benchmark\\\\derivative-1\\\\runtime\\\\private\\\\renders\\\\job_d7f95253ece843f7a1b606f41548dcb0\\\\layout\\\\s1\\\\formulas\\\\709b7c8d7ed1ff828ad4dacc2207d25e2dd8a9cb652fa58990941c460a00fe6e.svg'",
+            "retryable": false,
+            "details": {}
+          },
+          "name": "derivative-1",
+          "topic": "derivative",
+          "attempt": 1,
+          "exit_code": 1,
+          "wall_seconds": 21.781,
+          "text_ready_seconds": 6.824,
+          "video_stage_seconds": 13.664
+        },
+        {
+          "passed": false,
+          "model": "deepseek-flash",
+          "provider": "https://api.deepseek.com",
+          "status": "partial",
+          "job_id": "job_6409c89840cd419fad778d3474f782e6",
+          "answer_id": "answer_a5ec7673cb9f4e68a84b8713b52641cd",
+          "usage": {
+            "model_calls": 11,
+            "input_tokens": 66130,
+            "output_tokens": 7730,
+            "tokens_reported": true,
+            "elapsed_seconds": 79.657
+          },
+          "elapsed_seconds": 80.219,
+          "error": {
+            "code": "render_failed",
+            "message": "render.<locals>.TeachingScene.play() missing 1 required keyword-only argument: 'run_time'",
+            "retryable": false,
+            "details": {}
+          },
+          "name": "integral-1",
+          "topic": "integral",
+          "attempt": 1,
+          "exit_code": 1,
+          "wall_seconds": 80.828,
+          "text_ready_seconds": 4.229,
+          "video_stage_seconds": 75.46
+        },
+        {
+          "passed": false,
+          "model": "deepseek-flash",
+          "provider": "https://api.deepseek.com",
+          "status": "partial",
+          "job_id": "job_d04c7e030694410b93b5d5fc3c3d7242",
+          "answer_id": "answer_701f7d43cec548e5babdb6dc240ae069",
+          "usage": {
+            "model_calls": 2,
+            "input_tokens": 3364,
+            "output_tokens": 1627,
+            "tokens_reported": true,
+            "elapsed_seconds": 11.438
+          },
+          "elapsed_seconds": 11.891,
+          "error": {
+            "code": "video_scope",
+            "message": "正文教学单元过多或为空，请拆分为独立主题",
+            "retryable": false,
+            "details": {}
+          },
+          "name": "linear_system-1",
+          "topic": "linear_system",
+          "attempt": 1,
+          "exit_code": 1,
+          "wall_seconds": 12.828,
+          "text_ready_seconds": 9.156,
+          "video_stage_seconds": 2.315
+        },
+        {
+          "passed": false,
+          "model": "deepseek-flash",
+          "provider": "https://api.deepseek.com",
+          "status": "partial",
+          "job_id": "job_b6dbbe7fb36749d5a825eaee652330f1",
+          "answer_id": "answer_eefb99a805c040e0b119f871abdfcb07",
+          "usage": {
+            "model_calls": 5,
+            "input_tokens": 29464,
+            "output_tokens": 3741,
+            "tokens_reported": true,
+            "elapsed_seconds": 23.969
+          },
+          "elapsed_seconds": 24.312,
+          "error": {
+            "code": "invalid_provider_response",
+            "message": "scene_generator 返回结构不符合契约",
+            "retryable": false,
+            "details": {}
+          },
+          "name": "matrix_inverse-1",
+          "topic": "matrix_inverse",
+          "attempt": 1,
+          "exit_code": 1,
+          "wall_seconds": 25.125,
+          "text_ready_seconds": 7.22,
+          "video_stage_seconds": 16.761
+        },
+        {
+          "passed": false,
+          "model": "deepseek-flash",
+          "provider": "https://api.deepseek.com",
+          "status": "partial",
+          "job_id": "job_2223be5dcbb3436daa8194f115a0c8c2",
+          "answer_id": "answer_a2aef487bfa64024aa5d86c2a13fe469",
+          "usage": {
+            "model_calls": 4,
+            "input_tokens": 20069,
+            "output_tokens": 3130,
+            "tokens_reported": true,
+            "elapsed_seconds": 26.0
+          },
+          "elapsed_seconds": 26.344,
+          "error": {
+            "code": "render_failed",
+            "message": "[Errno 2] No such file or directory: 'C:\\\\Users\\\\20557\\\\.codex\\\\worktrees\\\\docs-av-alignment\\\\manimagent\\\\runs\\\\fix-20261103\\\\animation-benchmark\\\\projection-1\\\\runtime\\\\private\\\\renders\\\\job_2223be5dcbb3436daa8194f115a0c8c2\\\\layout\\\\s1\\\\formulas\\\\d18f4d1fc232d8b1aa61b2341978aee2bb0f5bf525cd681ab52158075318a749.svg'",
+            "retryable": false,
+            "details": {}
+          },
+          "name": "projection-1",
+          "topic": "projection",
+          "attempt": 1,
+          "exit_code": 1,
+          "wall_seconds": 27.266,
+          "text_ready_seconds": 10.277,
+          "video_stage_seconds": 15.759
+        },
+        {
+          "passed": false,
+          "model": "deepseek-flash",
+          "provider": "https://api.deepseek.com",
+          "status": "partial",
+          "job_id": "job_c00b57e41e4548bfa9ba87951a09c122",
+          "answer_id": "answer_c5e3527c6953489497f9a1dcef877e13",
+          "usage": {
+            "model_calls": 4,
+            "input_tokens": 14039,
+            "output_tokens": 2185,
+            "tokens_reported": true,
+            "elapsed_seconds": 20.172
+          },
+          "elapsed_seconds": 20.797,
+          "error": {
+            "code": "render_failed",
+            "message": "[Errno 2] No such file or directory: 'C:\\\\Users\\\\20557\\\\.codex\\\\worktrees\\\\docs-av-alignment\\\\manimagent\\\\runs\\\\fix-20261103\\\\animation-benchmark\\\\quadratic-1\\\\runtime\\\\private\\\\renders\\\\job_c00b57e41e4548bfa9ba87951a09c122\\\\layout\\\\s1\\\\formulas\\\\12bd316dfd7bfe1f1f4f2c36def37ed7f0adf8e8421cf4ef21b82e5ad430c432_.svg'",
+            "retryable": false,
+            "details": {}
+          },
+          "name": "quadratic-1",
+          "topic": "quadratic",
+          "attempt": 1,
+          "exit_code": 1,
+          "wall_seconds": 21.641,
+          "text_ready_seconds": 6.99,
+          "video_stage_seconds": 13.277
+        }
+      ],
+      "cohort": "runs/fix-20261103/animation-benchmark",
+      "fixed_release_benchmark": false,
+      "note": "Development-time cohort; source changes and explicit retries are disclosed separately. Not 30 immutable-version trials.",
+      "interrupted_cases": [
+        "geometric_sum-1",
+        "triangle_area-1"
+      ]
+    },
+    {
+      "workers": 2,
+      "source_hash": "bfdd650390c06f6c70a9e3610a064b51e8d4c4c9538c16b31731be0aa7e99736",
+      "first_attempt_only": true,
+      "passed": 0,
+      "total": 6,
+      "expected": 30,
+      "cases": [
+        {
+          "passed": false,
+          "model": "deepseek-flash",
+          "provider": "https://api.deepseek.com",
+          "status": "partial",
+          "job_id": "job_f526b4dc8d52448fb6021ded05a5690e",
+          "answer_id": "answer_6e39ca95b9e84e8195c0a4b82c62ea3c",
+          "usage": {
+            "model_calls": 8,
+            "input_tokens": 50688,
+            "output_tokens": 5293,
+            "tokens_reported": true,
+            "elapsed_seconds": 50.953
+          },
+          "elapsed_seconds": 51.578,
+          "error": {
+            "code": "invalid_provider_response",
+            "message": "scene_generator 返回结构不符合契约",
+            "retryable": false,
+            "details": {}
+          },
+          "name": "derivative-1",
+          "topic": "derivative",
+          "attempt": 1,
+          "exit_code": 1,
+          "wall_seconds": 52.578,
+          "text_ready_seconds": 9.365,
+          "video_stage_seconds": 41.619
+        },
+        {
+          "passed": false,
+          "model": "deepseek-flash",
+          "provider": "https://api.deepseek.com",
+          "status": "partial",
+          "job_id": "job_e55800419f94487b8e94beb27c39cf21",
+          "answer_id": "answer_83be01d2a0074763b8d929cf4320dce8",
+          "usage": {
+            "model_calls": 10,
+            "input_tokens": 48470,
+            "output_tokens": 6414,
+            "tokens_reported": true,
+            "elapsed_seconds": 68.391
+          },
+          "elapsed_seconds": 68.687,
+          "error": {
+            "code": "render_failed",
+            "message": "render.<locals>.TeachingScene.play() missing 1 required keyword-only argument: 'run_time'",
+            "retryable": false,
+            "details": {}
+          },
+          "name": "integral-1",
+          "topic": "integral",
+          "attempt": 1,
+          "exit_code": 1,
+          "wall_seconds": 69.609,
+          "text_ready_seconds": 5.044,
+          "video_stage_seconds": 63.382
+        },
+        {
+          "passed": false,
+          "model": "deepseek-flash",
+          "provider": "https://api.deepseek.com",
+          "status": "partial",
+          "job_id": "job_6555981030b44e4ba4df932a77aa858a",
+          "answer_id": "answer_b9c7c6a42def423a8d48ee4d17816bed",
+          "usage": {
+            "model_calls": 10,
+            "input_tokens": 61830,
+            "output_tokens": 7317,
+            "tokens_reported": true,
+            "elapsed_seconds": 74.703
+          },
+          "elapsed_seconds": 75.328,
+          "error": {
+            "code": "invalid_provider_response",
+            "message": "scene_generator 返回结构不符合契约",
+            "retryable": false,
+            "details": {}
+          },
+          "name": "linear_system-1",
+          "topic": "linear_system",
+          "attempt": 1,
+          "exit_code": 1,
+          "wall_seconds": 76.438,
+          "text_ready_seconds": 10.527,
+          "video_stage_seconds": 64.198
+        },
+        {
+          "passed": false,
+          "model": "deepseek-flash",
+          "provider": "https://api.deepseek.com",
+          "status": "partial",
+          "job_id": "job_cf0c5b6cb3024d7bb22ec430c5e2b696",
+          "answer_id": "answer_39c76112bdc44ca384727446d3377836",
+          "usage": {
+            "model_calls": 6,
+            "input_tokens": 29998,
+            "output_tokens": 4141,
+            "tokens_reported": true,
+            "elapsed_seconds": 32.593
+          },
+          "elapsed_seconds": 33.047,
+          "error": {
+            "code": "invalid_provider_response",
+            "message": "scene_generator 返回结构不符合契约",
+            "retryable": false,
+            "details": {}
+          },
+          "name": "matrix_inverse-1",
+          "topic": "matrix_inverse",
+          "attempt": 1,
+          "exit_code": 1,
+          "wall_seconds": 34.047,
+          "text_ready_seconds": 7.817,
+          "video_stage_seconds": 24.864
+        },
+        {
+          "passed": false,
+          "model": "deepseek-flash",
+          "provider": "https://api.deepseek.com",
+          "status": "partial",
+          "job_id": "job_1d38c3b573bb4b41ad8211d039bb2a02",
+          "answer_id": "answer_6c2bbe53398c48a78ef20d4abb65a045",
+          "usage": {
+            "model_calls": 11,
+            "input_tokens": 87139,
+            "output_tokens": 11983,
+            "tokens_reported": true,
+            "elapsed_seconds": 95.906
+          },
+          "elapsed_seconds": 96.563,
+          "error": {
+            "code": "render_formula",
+            "message": "\nc=\\frac{\\mathbf a\\cdot\\mathbf b}{\\mathbf b\\cdot\\mathbf b}\n        ^\nParseSyntaxException: Unknown symbol: \\mathbf, found '\\'  (at char 8), (line:1, col:9)",
+            "retryable": false,
+            "details": {}
+          },
+          "name": "projection-1",
+          "topic": "projection",
+          "attempt": 1,
+          "exit_code": 1,
+          "wall_seconds": 97.547,
+          "text_ready_seconds": 10.565,
+          "video_stage_seconds": 85.383
+        },
+        {
+          "passed": false,
+          "model": "deepseek-flash",
+          "provider": "https://api.deepseek.com",
+          "status": "partial",
+          "job_id": "job_6a07c4fa5fb44b0abb8816fa7ae4a54e",
+          "answer_id": "answer_6dc0bd4b2f694e3f82d2831fbf6196cc",
+          "usage": {
+            "model_calls": 9,
+            "input_tokens": 48093,
+            "output_tokens": 5327,
+            "tokens_reported": true,
+            "elapsed_seconds": 53.86
+          },
+          "elapsed_seconds": 54.125,
+          "error": {
+            "code": "invalid_provider_response",
+            "message": "scene_generator 返回结构不符合契约",
+            "retryable": false,
+            "details": {}
+          },
+          "name": "quadratic-1",
+          "topic": "quadratic",
+          "attempt": 1,
+          "exit_code": 1,
+          "wall_seconds": 55.203,
+          "text_ready_seconds": 7.838,
+          "video_stage_seconds": 46.068
+        }
+      ],
+      "cohort": "runs/acceptance-1103",
+      "fixed_release_benchmark": false,
+      "note": "Development-time cohort; source changes and explicit retries are disclosed separately. Not 30 immutable-version trials.",
+      "interrupted_cases": [
+        "bayes-1",
+        "triangle_area-1"
+      ]
+    },
+    {
+      "workers": 2,
+      "source_hash": "2ac278f05c11b26ec24076b67f3e84b0e6788190ae049782f994041f7beba789",
+      "first_attempt_only": true,
+      "passed": 2,
+      "total": 5,
+      "expected": 5,
+      "cases": [
+        {
+          "passed": false,
+          "model": "deepseek-flash",
+          "provider": "https://api.deepseek.com",
+          "status": "partial",
+          "job_id": "job_01e3c0c830044fea8bcb9d679f5ca83f",
+          "answer_id": "answer_7aa4609096054f54ac1eefcf043ee537",
+          "usage": {
+            "model_calls": 9,
+            "input_tokens": 61003,
+            "output_tokens": 5804,
+            "tokens_reported": true,
+            "elapsed_seconds": 71.968
+          },
+          "elapsed_seconds": 72.157,
+          "error": {
+            "code": "render_formula",
+            "message": "\nP(A\\mid R)=\\frac{\\frac{3}{10}}{\\frac{4}{10}}=\\frac34\n                                                  ^\nParseSyntaxException: Expected \\frac{num}{den}, found '34'  (at char 50), (line:1, col:51)",
+            "retryable": false,
+            "details": {}
+          },
+          "name": "bayes-1",
+          "topic": "bayes",
+          "attempt": 1,
+          "exit_code": 1,
+          "wall_seconds": 73.297,
+          "text_ready_seconds": 8.864,
+          "video_stage_seconds": 63.134
+        },
+        {
+          "passed": true,
+          "model": "deepseek-flash",
+          "provider": "https://api.deepseek.com",
+          "status": "completed",
+          "job_id": "job_5976ebf617724b0d8c57571ab39669da",
+          "answer_id": "answer_7e89d795edc242b4baf05ef4edb09d92",
+          "usage": {
+            "model_calls": 11,
+            "input_tokens": 76849,
+            "output_tokens": 7761,
+            "tokens_reported": true,
+            "elapsed_seconds": 375.985
+          },
+          "elapsed_seconds": 376.188,
+          "error": null,
+          "video_id": "video_0495b6acd528408997bd3fdff85981e0",
+          "media": {
+            "width": 1280,
+            "height": 720,
+            "fps": 30.0,
+            "codec": "h264",
+            "pix_fmt": "yuv420p",
+            "duration_seconds": 355.56666666666666,
+            "audio_streams": 0,
+            "decoded_frames": 10667
+          },
+          "scene_count": 7,
+          "beat_count": 27,
+          "sha256": "081fc042e22800b0921bd2a09e168171a44195edd6bb5b48de1c17f5ccf9e469",
+          "name": "derivative-1",
+          "topic": "derivative",
+          "attempt": 1,
+          "exit_code": 0,
+          "wall_seconds": 380.89,
+          "text_ready_seconds": 8.255,
+          "video_stage_seconds": 367.759
+        },
+        {
+          "passed": false,
+          "model": "deepseek-flash",
+          "provider": "https://api.deepseek.com",
+          "status": "partial",
+          "job_id": "job_4246dbfde8f64b91aee207e4b6f05352",
+          "answer_id": "answer_146ff4119d3f4612b68d60d129a36b45",
+          "usage": {
+            "model_calls": 13,
+            "input_tokens": 100730,
+            "output_tokens": 9318,
+            "tokens_reported": true,
+            "elapsed_seconds": 107.141
+          },
+          "elapsed_seconds": 107.75,
+          "error": {
+            "code": "render_layout",
+            "message": "layout: 文字或公式过密，缩小后无法保证可读性，请缩短当前节拍",
+            "retryable": false,
+            "details": {}
+          },
+          "name": "linear_system-1",
+          "topic": "linear_system",
+          "attempt": 1,
+          "exit_code": 1,
+          "wall_seconds": 108.719,
+          "text_ready_seconds": 8.732,
+          "video_stage_seconds": 98.466
+        },
+        {
+          "passed": false,
+          "model": "deepseek-flash",
+          "provider": "https://api.deepseek.com",
+          "status": "partial",
+          "job_id": "job_88f7867f994344e2b98e456c6ff0bfe2",
+          "answer_id": "answer_40298f9322c44b758847451eb5b72d18",
+          "usage": {
+            "model_calls": 11,
+            "input_tokens": 89481,
+            "output_tokens": 10413,
+            "tokens_reported": true,
+            "elapsed_seconds": 93.36
+          },
+          "elapsed_seconds": 93.89,
+          "error": {
+            "code": "render_failed",
+            "message": "render.<locals>.TeachingScene.play() missing 1 required keyword-only argument: 'run_time'",
+            "retryable": false,
+            "details": {}
+          },
+          "name": "projection-1",
+          "topic": "projection",
+          "attempt": 1,
+          "exit_code": 1,
+          "wall_seconds": 94.907,
+          "text_ready_seconds": 9.108,
+          "video_stage_seconds": 84.291
+        },
+        {
+          "passed": true,
+          "model": "deepseek-flash",
+          "provider": "https://api.deepseek.com",
+          "status": "completed",
+          "job_id": "job_304481ca23dc4486b924affbab97742a",
+          "answer_id": "answer_d11b389ccdf94d408433b47d1eca579f",
+          "usage": {
+            "model_calls": 13,
+            "input_tokens": 99687,
+            "output_tokens": 8690,
+            "tokens_reported": true,
+            "elapsed_seconds": 333.937
+          },
+          "elapsed_seconds": 334.141,
+          "error": null,
+          "video_id": "video_0c50d10e4fc34e7bbbc30e7ac8bccc4e",
+          "media": {
+            "width": 1280,
+            "height": 720,
+            "fps": 30.0,
+            "codec": "h264",
+            "pix_fmt": "yuv420p",
+            "duration_seconds": 285.7,
+            "audio_streams": 0,
+            "decoded_frames": 8571
+          },
+          "scene_count": 7,
+          "beat_count": 21,
+          "sha256": "df6925d385fd8d93481d21cd736205be33a155c11e51d98e638ac4b08408634a",
+          "name": "quadratic-1",
+          "topic": "quadratic",
+          "attempt": 1,
+          "exit_code": 0,
+          "wall_seconds": 338.046,
+          "text_ready_seconds": 6.573,
+          "video_stage_seconds": 327.39
+        }
+      ],
+      "cohort": "runs/acceptance-v5-1103",
+      "fixed_release_benchmark": false,
+      "note": "Development-time cohort; source changes and explicit retries are disclosed separately. Not 30 immutable-version trials.",
+      "interrupted_cases": []
+    },
+    {
+      "workers": 2,
+      "source_hash": "c7128d84f9bf1d5b1b109003a465bc8438c64667cfcc0ee1abddfb08168d9e9b",
+      "first_attempt_only": true,
+      "passed": 4,
+      "total": 10,
+      "expected": 10,
+      "cases": [
+        {
+          "passed": false,
+          "model": "deepseek-flash",
+          "provider": "https://api.deepseek.com",
+          "status": "partial",
+          "job_id": "job_dcd321660fda4b43ae9c130397a9c381",
+          "answer_id": "answer_59457a43c0df43beaca0156b14615e1f",
+          "usage": {
+            "model_calls": 12,
+            "input_tokens": 99820,
+            "output_tokens": 8166,
+            "tokens_reported": true,
+            "elapsed_seconds": 101.359
+          },
+          "elapsed_seconds": 101.75,
+          "error": {
+            "code": "render_formula",
+            "message": "\nP(A\\mid R)=\\frac34\n                ^\nParseSyntaxException: Expected \\frac{num}{den}, found '34'  (at char 16), (line:1, col:17)",
+            "retryable": false,
+            "details": {}
+          },
+          "name": "bayes-1",
+          "topic": "bayes",
+          "attempt": 1,
+          "exit_code": 1,
+          "wall_seconds": 102.828,
+          "text_ready_seconds": 7.706,
+          "video_stage_seconds": 93.699
+        },
+        {
+          "passed": true,
+          "model": "deepseek-flash",
+          "provider": "https://api.deepseek.com",
+          "status": "completed",
+          "job_id": "job_556afeda36fd404d82d8a2a327eff1db",
+          "answer_id": "answer_312aaa48787945a18c5e5f505ac9a1df",
+          "usage": {
+            "model_calls": 10,
+            "input_tokens": 75896,
+            "output_tokens": 6702,
+            "tokens_reported": true,
+            "elapsed_seconds": 302.297
+          },
+          "elapsed_seconds": 302.516,
+          "error": null,
+          "video_id": "video_aceaf581103f4c668201ecd0f7430524",
+          "media": {
+            "width": 1280,
+            "height": 720,
+            "fps": 30.0,
+            "codec": "h264",
+            "pix_fmt": "yuv420p",
+            "duration_seconds": 273.46666666666664,
+            "audio_streams": 0,
+            "decoded_frames": 8204
+          },
+          "scene_count": 6,
+          "beat_count": 22,
+          "sha256": "bbb51eb773f01976c43007a3c86ad58d0f38a8ab57f41a48a693c4fff8b02539",
+          "name": "derivative-1",
+          "topic": "derivative",
+          "attempt": 1,
+          "exit_code": 0,
+          "wall_seconds": 306.344,
+          "text_ready_seconds": 8.728,
+          "video_stage_seconds": 293.593
+        },
+        {
+          "passed": true,
+          "model": "deepseek-flash",
+          "provider": "https://api.deepseek.com",
+          "status": "completed",
+          "job_id": "job_9591bd7e49534853bff495d0eaab8aa9",
+          "answer_id": "answer_8b20e572a13f479d9fd20a70a5df90d8",
+          "usage": {
+            "model_calls": 9,
+            "input_tokens": 67334,
+            "output_tokens": 7701,
+            "tokens_reported": true,
+            "elapsed_seconds": 330.563
+          },
+          "elapsed_seconds": 330.797,
+          "error": null,
+          "video_id": "video_42a745d2d9304c6fb779b80f19a6fdfa",
+          "media": {
+            "width": 1280,
+            "height": 720,
+            "fps": 30.0,
+            "codec": "h264",
+            "pix_fmt": "yuv420p",
+            "duration_seconds": 318.6,
+            "audio_streams": 0,
+            "decoded_frames": 9558
+          },
+          "scene_count": 5,
+          "beat_count": 25,
+          "sha256": "0f7a4f4f4e9c3d064dd4f8bf07200e4097e4b5a2dfbb773a779cac4935f9d933",
+          "name": "geometric_sum-1",
+          "topic": "geometric_sum",
+          "attempt": 1,
+          "exit_code": 0,
+          "wall_seconds": 335.125,
+          "text_ready_seconds": 6.559,
+          "video_stage_seconds": 324.031
+        },
+        {
+          "passed": true,
+          "model": "deepseek-flash",
+          "provider": "https://api.deepseek.com",
+          "status": "completed",
+          "job_id": "job_75834cd9cacc47e3be938c2b09d2ac82",
+          "answer_id": "answer_e75c9581ad5a4b0fbd7942bab9f7a706",
+          "usage": {
+            "model_calls": 10,
+            "input_tokens": 66890,
+            "output_tokens": 8019,
+            "tokens_reported": true,
+            "elapsed_seconds": 308.562
+          },
+          "elapsed_seconds": 309.204,
+          "error": null,
+          "video_id": "video_0b5d79f27f3845849e0465a1ec96f6f6",
+          "media": {
+            "width": 1280,
+            "height": 720,
+            "fps": 30.0,
+            "codec": "h264",
+            "pix_fmt": "yuv420p",
+            "duration_seconds": 287.4,
+            "audio_streams": 0,
+            "decoded_frames": 8622
+          },
+          "scene_count": 5,
+          "beat_count": 22,
+          "sha256": "fcddf0eede9f706bd3414d2d9103b2ada4d37dcd278966f151cda482ad989bea",
+          "name": "integral-1",
+          "topic": "integral",
+          "attempt": 1,
+          "exit_code": 0,
+          "wall_seconds": 313.39,
+          "text_ready_seconds": 5.415,
+          "video_stage_seconds": 303.176
+        },
+        {
+          "passed": false,
+          "model": "deepseek-flash",
+          "provider": "https://api.deepseek.com",
+          "status": "partial",
+          "job_id": "job_503e11db8f4d44929c84e00c876e4321",
+          "answer_id": "answer_01f03f501fee4891bfcd5906249b672d",
+          "usage": {
+            "model_calls": 13,
+            "input_tokens": 117187,
+            "output_tokens": 10894,
+            "tokens_reported": true,
+            "elapsed_seconds": 108.422
+          },
+          "elapsed_seconds": 108.75,
+          "error": {
+            "code": "video_plan_check",
+            "message": "整体覆盖完整，代入与加减消元、检验及结论均有屏幕承接；仅s6唯一性解释不足：可逆性论证未上屏，且“从图形看”缺少实际图象。",
+            "retryable": false,
+            "details": {}
+          },
+          "name": "linear_system-1",
+          "topic": "linear_system",
+          "attempt": 1,
+          "exit_code": 1,
+          "wall_seconds": 109.766,
+          "text_ready_seconds": 9.474,
+          "video_stage_seconds": 99.009
+        },
+        {
+          "passed": false,
+          "model": "deepseek-flash",
+          "provider": "https://api.deepseek.com",
+          "status": "partial",
+          "job_id": "job_c70fb1e2b99c45179781649cf6b0f107",
+          "answer_id": "answer_8d083d74924d4e04b54357b395e9badc",
+          "usage": {
+            "model_calls": 5,
+            "input_tokens": 26284,
+            "output_tokens": 3495,
+            "tokens_reported": true,
+            "elapsed_seconds": 22.016
+          },
+          "elapsed_seconds": 22.625,
+          "error": {
+            "code": "invalid_provider_response",
+            "message": "scene_generator 返回结构不符合契约",
+            "retryable": false,
+            "details": {}
+          },
+          "name": "matrix_inverse-1",
+          "topic": "matrix_inverse",
+          "attempt": 1,
+          "exit_code": 1,
+          "wall_seconds": 23.609,
+          "text_ready_seconds": 8.165,
+          "video_stage_seconds": 13.88
+        },
+        {
+          "passed": false,
+          "model": "deepseek-flash",
+          "provider": "https://api.deepseek.com",
+          "status": "partial",
+          "job_id": "job_4e9563578aee483c85ff7aa641cb6008",
+          "answer_id": "answer_2bf778d2df524d6ab4408eaee6d5ae9a",
+          "usage": {
+            "model_calls": 11,
+            "input_tokens": 105892,
+            "output_tokens": 11696,
+            "tokens_reported": true,
+            "elapsed_seconds": 106.828
+          },
+          "elapsed_seconds": 107.203,
+          "error": {
+            "code": "video_plan_check",
+            "message": "整体覆盖了全部24个单元，s5的概念辨析已修正原答案中a·u的口误；但s5b4关系式c=3/||b||表述不当，s3b2与s4_b1屏幕文字有轻微歧义，建议小修。",
+            "retryable": false,
+            "details": {}
+          },
+          "name": "projection-1",
+          "topic": "projection",
+          "attempt": 1,
+          "exit_code": 1,
+          "wall_seconds": 108.235,
+          "text_ready_seconds": 11.365,
+          "video_stage_seconds": 95.538
+        },
+        {
+          "passed": true,
+          "model": "deepseek-flash",
+          "provider": "https://api.deepseek.com",
+          "status": "completed",
+          "job_id": "job_6efcc97a31e84a31897f077d37c9e6a6",
+          "answer_id": "answer_59b7c35edec04f3699ef1350f7d3ca00",
+          "usage": {
+            "model_calls": 12,
+            "input_tokens": 107277,
+            "output_tokens": 11491,
+            "tokens_reported": true,
+            "elapsed_seconds": 376.172
+          },
+          "elapsed_seconds": 376.516,
+          "error": null,
+          "video_id": "video_6805701dea88440da55d18afb0ffdb06",
+          "media": {
+            "width": 1280,
+            "height": 720,
+            "fps": 30.0,
+            "codec": "h264",
+            "pix_fmt": "yuv420p",
+            "duration_seconds": 334.8666666666667,
+            "audio_streams": 0,
+            "decoded_frames": 10046
+          },
+          "scene_count": 6,
+          "beat_count": 27,
+          "sha256": "68470830385c4f352c08058d109b264d26f181fab6310b97fe0a047319df43c5",
+          "name": "quadratic-1",
+          "topic": "quadratic",
+          "attempt": 1,
+          "exit_code": 0,
+          "wall_seconds": 381.188,
+          "text_ready_seconds": 6.207,
+          "video_stage_seconds": 369.988
+        },
+        {
+          "passed": false,
+          "model": "deepseek-flash",
+          "provider": "https://api.deepseek.com",
+          "status": "partial",
+          "job_id": "job_a9101cf554f642eea965e0f24a8b6f29",
+          "answer_id": "answer_30ea1c9d576a4889adeddc94767d5001",
+          "usage": {
+            "model_calls": 10,
+            "input_tokens": 70191,
+            "output_tokens": 12263,
+            "tokens_reported": true,
+            "elapsed_seconds": 89.141
+          },
+          "elapsed_seconds": 89.844,
+          "error": {
+            "code": "invalid_provider_response",
+            "message": "scene_generator 返回结构不符合契约",
+            "retryable": false,
+            "details": {}
+          },
+          "name": "triangle_area-1",
+          "topic": "triangle_area",
+          "attempt": 1,
+          "exit_code": 1,
+          "wall_seconds": 90.875,
+          "text_ready_seconds": 7.159,
+          "video_stage_seconds": 82.009
+        },
+        {
+          "passed": false,
+          "model": "deepseek-flash",
+          "provider": "https://api.deepseek.com",
+          "status": "partial",
+          "job_id": "job_7e6dbba1cea24b218cfac9ad73be60aa",
+          "answer_id": "answer_c9459774f6314c3d9acfd3979afdcfe2",
+          "usage": {
+            "model_calls": 6,
+            "input_tokens": 34287,
+            "output_tokens": 5623,
+            "tokens_reported": true,
+            "elapsed_seconds": 37.969
+          },
+          "elapsed_seconds": 38.234,
+          "error": {
+            "code": "invalid_provider_response",
+            "message": "scene_generator 返回结构不符合契约",
+            "retryable": false,
+            "details": {}
+          },
+          "name": "variance-1",
+          "topic": "variance",
+          "attempt": 1,
+          "exit_code": 1,
+          "wall_seconds": 39.485,
+          "text_ready_seconds": 9.388,
+          "video_stage_seconds": 28.596
+        }
+      ],
+      "cohort": "runs/release-031-live",
+      "fixed_release_benchmark": false,
+      "note": "Development-time cohort; source changes and explicit retries are disclosed separately. Not 30 immutable-version trials.",
+      "interrupted_cases": []
+    }
+  ],
+  "followups": [
+    {
+      "passed": false,
+      "model": "deepseek-flash",
+      "provider": "https://api.deepseek.com",
+      "status": "failed",
+      "job_id": "job_f25c3e9aa7864e85a88424af8ff504c8",
+      "answer_id": "answer_8d083d74924d4e04b54357b395e9badc",
+      "usage": {
+        "model_calls": 4,
+        "input_tokens": 32438,
+        "output_tokens": 2113,
+        "tokens_reported": true,
+        "elapsed_seconds": 21.218
+      },
+      "elapsed_seconds": 21.625,
+      "error": {
+        "code": "invalid_provider_response",
+        "message": "scene_generator 返回结构不符合契约",
+        "retryable": false,
+        "details": {}
+      },
+      "topic": "matrix_inverse",
+      "first_attempt": false,
+      "input_mode": "existing_answer_fresh_video",
+      "exit_code": 1,
+      "wall_seconds": 22.656
+    },
+    {
+      "passed": false,
+      "model": "deepseek-flash",
+      "provider": "https://api.deepseek.com",
+      "status": "needs_review",
+      "job_id": "job_60e21e7a458c4f158850fc955e053bc3",
+      "answer_id": "answer_30ea1c9d576a4889adeddc94767d5001",
+      "usage": {
+        "model_calls": 3,
+        "input_tokens": 24942,
+        "output_tokens": 2796,
+        "tokens_reported": true,
+        "elapsed_seconds": 24.797
+      },
+      "elapsed_seconds": 25.203,
+      "error": {
+        "code": "render_layout",
+        "message": "layout: 节拍 b1 的内容尺寸 10.00×0.58 超过区域 6.05×0.72，缩小后无法保证可读性，请缩短该节拍",
+        "retryable": false,
+        "details": {}
+      },
+      "topic": "triangle_area",
+      "first_attempt": false,
+      "input_mode": "existing_answer_fresh_video",
+      "exit_code": 1,
+      "wall_seconds": 26.281
+    },
+    {
+      "passed": true,
+      "model": "deepseek-flash",
+      "provider": "https://api.deepseek.com",
+      "status": "completed",
+      "job_id": "job_357687f1889c4e65b0aa2051a3943c7f",
+      "answer_id": "answer_c9459774f6314c3d9acfd3979afdcfe2",
+      "usage": {
+        "model_calls": 8,
+        "input_tokens": 73087,
+        "output_tokens": 6006,
+        "tokens_reported": true,
+        "elapsed_seconds": 330.188
+      },
+      "elapsed_seconds": 330.797,
+      "error": null,
+      "video_id": "video_f65d73dc57aa43d695b13cc478786efc",
+      "media": {
+        "width": 1280,
+        "height": 720,
+        "fps": 30.0,
+        "codec": "h264",
+        "pix_fmt": "yuv420p",
+        "duration_seconds": 340.56666666666666,
+        "audio_streams": 0,
+        "decoded_frames": 10217
+      },
+      "scene_count": 6,
+      "beat_count": 28,
+      "sha256": "b9e6d04664a2b7b6887517c154878adcabd0746f39e26c283bc624f80e42cd8b",
+      "topic": "variance",
+      "first_attempt": false,
+      "input_mode": "existing_answer_fresh_video",
+      "exit_code": 0,
+      "wall_seconds": 335.297
+    },
+    {
+      "topic": "bayes",
+      "first_attempt": false,
+      "input_mode": "existing_answer_resume_chunks",
+      "passed": true,
+      "model": "deepseek-flash",
+      "provider": "https://api.deepseek.com",
+      "status": "completed",
+      "job_id": "job_3ec14a6a08c54e579fd03e6a9ecf1627",
+      "answer_id": "answer_59457a43c0df43beaca0156b14615e1f",
+      "usage": {
+        "model_calls": 1,
+        "input_tokens": 17758,
+        "output_tokens": 2218,
+        "tokens_reported": true,
+        "elapsed_seconds": 343.047
+      },
+      "elapsed_seconds": 343.375,
+      "error": null,
+      "video_id": "video_a8b8aaea224e411b8c539d5e18be8f76",
+      "media": {
+        "width": 1280,
+        "height": 720,
+        "fps": 30.0,
+        "codec": "h264",
+        "pix_fmt": "yuv420p",
+        "duration_seconds": 343.2,
+        "audio_streams": 0,
+        "decoded_frames": 10296
+      },
+      "scene_count": 7,
+      "beat_count": 28,
+      "sha256": "b930b67d05f6ca1d085e5c2c052d002b9bf3aa4fa6d2c9347a9c693017171e90"
+    }
+  ],
+  "browser_attempt": {
+    "job_id": "job_a3350c5c7fe746229e86fa1f99aefd45",
+    "answer_id": "answer_312aaa48787945a18c5e5f505ac9a1df",
+    "status": "failed",
+    "stage": "video",
+    "message": "scene_generator 返回结构不符合契约",
+    "error": {
+      "code": "invalid_provider_response",
+      "message": "scene_generator 返回结构不符合契约",
+      "retryable": false,
+      "details": {}
+    },
+    "usage": {
+      "model_calls": 6,
+      "input_tokens": 48512,
+      "output_tokens": 4466,
+      "tokens_reported": true,
+      "elapsed_seconds": 46.062
+    },
+    "source": "real_browser_video_button",
+    "first_attempt": false,
+    "body_restored_while_running": true,
+    "body_restored_after_failure": true,
+    "answer_actions_visible": true,
+    "old_video_hidden": true,
+    "console_errors": []
+  },
+  "cli_animation": [
+    {
+      "name": "video-resume",
+      "exit_code": 0,
+      "wall_seconds": 354.672,
+      "media": {
+        "width": 1280,
+        "height": 720,
+        "fps": 30.0,
+        "codec": "h264",
+        "pix_fmt": "yuv420p",
+        "duration_seconds": 342.96666666666664,
+        "audio_streams": 0,
+        "decoded_frames": 10289
+      },
+      "passed": true
+    },
+    {
+      "name": "lesson-font-failure",
+      "exit_code": 1,
+      "wall_seconds": 7.969,
+      "status": "partial",
+      "error": {
+        "code": "render_failed",
+        "message": "未找到中文字体，请安装 Noto Sans CJK SC 或配置 video_font",
+        "retryable": false,
+        "details": {}
+      },
+      "usage": {
+        "model_calls": 2,
+        "input_tokens": 2000,
+        "output_tokens": 703,
+        "tokens_reported": true,
+        "elapsed_seconds": 6.906
+      },
+      "markdown_saved": true,
+      "passed": true
+    }
+  ]
+}

@@ -215,7 +215,21 @@ class ChatProvider:
                 result = schema.model_validate(parse_object(raw)) if schema else raw
                 budget.remaining(deadline)
                 return result
-            except (ValidationError, KeyError, IndexError, ValueError, TypeError) as exc:
+            except ValidationError as exc:
+                last_error = InvalidResponse(f"{role} 返回结构不符合契约")
+                last_error.__cause__ = exc
+                messages.append(
+                    {
+                        "role": "user",
+                        "content": "上次输出未通过以下契约校验。请按原始任务与 schema 修正这些字段后重新返回完整 JSON：\n"
+                        + json.dumps(
+                            exc.errors(include_url=False, include_context=False),
+                            ensure_ascii=False,
+                            default=str,
+                        )[:4000],
+                    }
+                )
+            except (KeyError, IndexError, ValueError, TypeError) as exc:
                 last_error = InvalidResponse(f"{role} 返回结构不符合契约")
                 last_error.__cause__ = exc
             except InvalidResponse as exc:
@@ -231,7 +245,7 @@ class ChatProvider:
                             "code": last_error.code,
                         }
                     )
-            if attempt == 0 and schema:
+            if attempt == 0 and schema and len(messages) == 2:
                 messages = [
                     *messages,
                     {

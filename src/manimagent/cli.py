@@ -57,25 +57,25 @@ def main(argv: list[str] | None = None) -> int:
                 errors += manager.renderer.preflight()
             print(json.dumps({"ready": not errors, "issues": errors}, ensure_ascii=False, indent=2))
             return int(bool(errors))
-        if args.command == "video":
-            request = VideoRequest(answer_id=args.answer_id, resume_job_id=args.resume_job_id)
-        else:
-            inputs = [{"type": "text", "text": args.question}]
-            if args.text is not None:
-                inputs.append({"type": "text", "text": args.text})
-            TextGenerationRequest(
-                source={"type": "inputs", "inputs": inputs, "instruction": args.question}
-            )
-            for path in args.file:
-                with path.open("rb") as stream:
-                    asset = manager.store.put_file(stream, path.name)
-                inputs.append({"type": "file", "file_id": asset.file_id})
-            request = TextGenerationRequest(
-                output_mode="both" if args.command == "lesson" else "text",
-                source={"type": "inputs", "inputs": inputs, "instruction": args.question},
-            )
         manager.start()
         try:
+            if args.command == "video":
+                request = VideoRequest(answer_id=args.answer_id, resume_job_id=args.resume_job_id)
+            else:
+                inputs = [{"type": "text", "text": args.question}]
+                if args.text is not None:
+                    inputs.append({"type": "text", "text": args.text})
+                TextGenerationRequest(
+                    source={"type": "inputs", "inputs": inputs, "instruction": args.question}
+                )
+                for path in args.file:
+                    with path.open("rb") as stream:
+                        asset = manager.store.put_file(stream, path.name)
+                    inputs.append({"type": "file", "file_id": asset.file_id})
+                request = TextGenerationRequest(
+                    output_mode="both" if args.command == "lesson" else "text",
+                    source={"type": "inputs", "inputs": inputs, "instruction": args.question},
+                )
             job = manager.submit("video" if args.command == "video" else "generation", request)
             manager.queue.join()
             result = manager.store.load("jobs", job.job_id, Job)

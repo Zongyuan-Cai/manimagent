@@ -9,6 +9,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException
 
+from manimagent import __version__
 from manimagent.config import Settings, load_settings
 from manimagent.content_store import ContentError
 from manimagent.providers import ChatProvider
@@ -50,7 +51,7 @@ def create_app(
         finally:
             manager.stop()
 
-    app = FastAPI(title="ManimAgent", version="0.3.0", lifespan=lifespan)
+    app = FastAPI(title="ManimAgent", version=__version__, lifespan=lifespan)
     app.state.text_manager = manager
     app.add_middleware(UploadLimitMiddleware, max_bytes=settings.max_upload_bytes)
     app.include_router(text_router(manager))

@@ -156,6 +156,11 @@ def parse_file(
         # Ignore unused styles: a template may contain many unrelated math styles.
         from docx.oxml.ns import qn
 
+        if document.styles.element.xpath(
+            "./w:docDefaults/w:rPrDefault/w:rPr/w:vertAlign"
+            "[@w:val='superscript' or @w:val='subscript']"
+        ):
+            issues.append("DOCX 文档默认格式包含上下标，请提供明确的文本或 LaTeX")
         styles = {style.style_id: style for style in document.styles}
         pending = list(root.xpath(".//w:rStyle/@w:val | .//w:pStyle/@w:val | .//w:tblStyle/@w:val"))
         pending.extend(

@@ -109,6 +109,7 @@ def text_router(manager: TextJobManager) -> APIRouter:
     def health():
         issues = manager.readiness()
         return {
+            "instance_id": manager.instance.identifier,
             "ready": not issues,
             "issues": issues,
             "output_mode": "text",

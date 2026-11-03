@@ -237,6 +237,7 @@ class Job(Contract):
     schema_version: Literal["1.0"] = "1.0"
     job_id: ResourceID
     kind: Literal["generation", "parse", "answer", "video"]
+    answer_id: ResourceID | None = None
     status: Literal[
         "queued",
         "running",

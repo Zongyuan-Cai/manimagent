@@ -36,6 +36,9 @@ class TemplateRenderer:
     def validate_runtime(self, directory, budget):
         return {"status": "success", "test_renderer": True}
 
+    def validate_layout(self, scene, directory, outline, scene_count, budget, index):
+        return {"status": "success", "test_renderer": True}
+
     def render(self, scene, directory, plan, budget, index):
         self.render_calls.append(scene.scene_id)
         if self.fail:
@@ -220,6 +223,7 @@ def test_both_outputs_share_answer_and_video_only_retry_never_calls_writer(tmp_p
         ]
         before = calls.count("writer")
         response = client.post("/api/v2/videos", json={"answer_id": aid})
+        assert response.json()["answer_id"] == aid
         retried = wait_job(client, response.json()["job_id"])
         assert retried["status"] == "completed", retried
         assert calls.count("writer") == before and calls.count("answer_check") == 1
@@ -279,6 +283,18 @@ def test_source_ranges_preserve_unicode_code_fences_and_display_math():
     assert all(markdown[u.start : u.end] == u.text and digest(u.text) == u.sha256 for u in units)
     assert any("x = 1\n\nprint(x)" in u.text for u in units)
     assert any("a+b\n\n=c" in u.text for u in units)
+    assert all(
+        c.isspace() or any(u.start <= i < u.end for u in units) for i, c in enumerate(markdown)
+    )
+
+
+def test_equation_paragraphs_do_not_artificially_exceed_unit_limit():
+    markdown = "# 逐项推导\n\n" + "\n\n".join(
+        f"条件{i}成立。\n\n\\[x_{i}={i}\\]" for i in range(45)
+    )
+    units = teaching_units(markdown)
+    assert 3 <= len(units) <= 70
+    assert all(markdown[u.start : u.end] == u.text and digest(u.text) == u.sha256 for u in units)
     assert all(
         c.isspace() or any(u.start <= i < u.end for u in units) for i, c in enumerate(markdown)
     )
@@ -381,6 +397,10 @@ def test_mathtext_aliases_and_prompt_examples_keep_command_prefixes():
 
     slash = chr(92)
     assert BeatDraft.safe_formulas(["frac{1}{2}"]) == [slash + "frac{1}{2}"]
+    assert BeatDraft.safe_formulas([slash * 2 + "frac{1}{2}"]) == [slash + "frac{1}{2}"]
+    assert BeatDraft.safe_formulas([slash + "mathbf a"]) == [slash + "mathbf{a}"]
+    assert BeatDraft.safe_formulas([r"\frac34", r"\frac3{4}", r"\frac{3}4"]) == [r"\frac{3}{4}"] * 3
+    assert BeatDraft.safe_formulas([r"\fraction", r"\fracab"]) == [r"\fraction", r"\fracab"]
     assert BeatDraft.safe_formulas([slash + "lVert b" + slash + "rVert"]) == [
         slash + "Vert b" + slash + "Vert"
     ]
@@ -390,3 +410,47 @@ def test_mathtext_aliases_and_prompt_examples_keep_command_prefixes():
         for prompt in [OUTLINE_PROMPT, SCENE_PROMPT, PLAN_PROMPT]
         for c in prompt
     )
+
+
+def test_short_video_repair_expands_explanation_instead_of_shortening_it(tmp_path):
+    settings = config(tmp_path)
+    calls, repairs = [], []
+    base = transport(settings, calls).transport
+
+    def handler(request):
+        response = base.handle_request(request)
+        body = json.loads(request.content)
+        payload = json.loads(body["messages"][1]["content"])
+        if "仅生成指定场景" not in body["messages"][0]["content"]:
+            return response
+        if payload.get("feedback"):
+            repairs.append(payload["feedback"])
+            data = response.json()
+            scene = json.loads(data["choices"][0]["message"]["content"])
+            for beat in scene["beats"]:
+                beat["screen_text"] += "并核对各项。"
+            data["choices"][0]["message"]["content"] = json.dumps(scene, ensure_ascii=False)
+            return httpx.Response(200, json=data)
+        data = response.json()
+        scene = json.loads(data["choices"][0]["message"]["content"])
+        for i, beat in enumerate(scene["beats"]):
+            beat.update(
+                headline=f"步骤{i}",
+                screen_text="保留给定条件，核对结果。",
+                spoken_text="先核对给定的条件，再计算并验证结果。",
+                cue_text="先核对",
+            )
+        data["choices"][0]["message"]["content"] = json.dumps(scene, ensure_ascii=False)
+        return httpx.Response(200, json=data)
+
+    with TestClient(
+        create_app(
+            settings,
+            ChatProvider(settings, transport=httpx.MockTransport(handler)),
+            TemplateRenderer(),
+        )
+    ) as client:
+        job = submit(client)
+        assert job["status"] == "completed", job
+        assert 1 <= len(repairs) <= 2
+        assert all("required_scene_min_seconds" in feedback for feedback in repairs)

@@ -12,6 +12,7 @@ from manimagent.answers import AnswerService
 from manimagent.budget import Budget, BudgetExceeded
 from manimagent.config import Settings
 from manimagent.content_store import ContentError, ContentStore, new_id
+from manimagent.instance import InstanceLease
 from manimagent.llm_settings import LLMSettingsStore
 from manimagent.materials import MaterialService
 from manimagent.providers import ChatProvider, ProviderError
@@ -39,6 +40,7 @@ class TextJobManager:
     def __init__(self, settings: Settings, provider: ChatProvider | None = None, renderer=None):
         self.settings = settings
         self.store = ContentStore(settings)
+        self.instance = InstanceLease(self.store.root)
         self.llm_settings = LLMSettingsStore(settings, self.store.root)
         self.settings = self.llm_settings.effective(settings)
         self.provider = provider
@@ -85,11 +87,18 @@ class TextJobManager:
         self.save_job(job)
 
     def start(self) -> None:
-        for path in (self.store.root / "jobs").glob("*.json"):
-            job = Job.model_validate_json(path.read_bytes())
-            if job.status in {"queued", "running"}:
-                self.interrupt(job, "服务已重启，请重新提交；已保存结果仍可读取")
-        self.thread.start()
+        if self.thread.is_alive():
+            return
+        self.instance.acquire()
+        try:
+            for path in (self.store.root / "jobs").glob("*.json"):
+                job = Job.model_validate_json(path.read_bytes())
+                if job.status in {"queued", "running"}:
+                    self.interrupt(job, "服务已重启，请重新提交；已保存结果仍可读取")
+            self.thread.start()
+        except BaseException:
+            self.instance.release()
+            raise
 
     def readiness(self, settings: Settings | None = None) -> list[str]:
         cfg = settings or self.settings
@@ -138,7 +147,11 @@ class TextJobManager:
             self.validate(kind, request, snapshot)
             if self.stopping.is_set() or not self.slots.acquire(blocking=False):
                 raise ContentError("queue_full", "文字任务队列已满，请稍后重试", 429)
-            job = Job(job_id=new_id("job"), kind=kind)
+            job = Job(
+                job_id=new_id("job"),
+                kind=kind,
+                answer_id=request.answer_id if kind == "video" else None,
+            )
             generation = None
             try:
                 if kind == "generation":
@@ -176,6 +189,12 @@ class TextJobManager:
             return job
 
     def _work(self) -> None:
+        try:
+            self._work_until_stopped()
+        finally:
+            self.instance.release()
+
+    def _work_until_stopped(self) -> None:
         while not self.stopping.is_set():
             try:
                 identifier = self.queue.get(timeout=0.1)

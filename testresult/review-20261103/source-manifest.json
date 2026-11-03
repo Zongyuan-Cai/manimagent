@@ -1,0 +1,134 @@
+[
+  {
+    "path": "scripts/check_distribution.py",
+    "sha256": "4200cdcc76a3284997eb6832e7568a310fc0adec1c27b211fa6212de9b7d6836"
+  },
+  {
+    "path": "scripts/create_test_materials.py",
+    "sha256": "6c1ba87f63a256424bc59d5132bd25ee2e378a9cf94cadb1fd585996a5d0ef98"
+  },
+  {
+    "path": "scripts/launch_local.py",
+    "sha256": "c9b5e98bee845f6e2ac18afbb94ceb735f2cc0dbefa632d63b3f905e456f645c"
+  },
+  {
+    "path": "scripts/package_desktop.py",
+    "sha256": "777a72d2cb6d541b3bf747489ddaac5971f1c5394a62b32ad310cc1c68ccccb2"
+  },
+  {
+    "path": "scripts/review_live_animation.py",
+    "sha256": "94ef69c4badc38ff27baba7e101850b649dda295285e46ecfcf048978f5ceea9"
+  },
+  {
+    "path": "scripts/review_live_cli.py",
+    "sha256": "5e35f16e4440cb511b44da7808c66a553abe54e34295a668cbd0f013a1d0e267"
+  },
+  {
+    "path": "scripts/review_live_supplemental.py",
+    "sha256": "3841d4012b72f790119f4e3409bc2b35370dd6f79f769d518f306a38b4439960"
+  },
+  {
+    "path": "scripts/review_live_text.py",
+    "sha256": "a7e22c8f07b6a370d50211d700632f5a361e3da6fd6688ec7e9a0e1904debf5b"
+  },
+  {
+    "path": "scripts/test_animation_e2e.py",
+    "sha256": "d553df0fbdafce6729c06fb138f7490e8d0ca12d4ad9c91a63c1dff6301b873e"
+  },
+  {
+    "path": "scripts/test_deepseek_e2e.py",
+    "sha256": "96d4f036423fcd150be6189fa01160ba7ca7b634cdfed3446ad576632b8810dc"
+  },
+  {
+    "path": "src/manimagent/__init__.py",
+    "sha256": "1620b2a73a7616b90f7f573a99617431c57c85862f3b3a62ee3ad94eb87db0d6"
+  },
+  {
+    "path": "src/manimagent/__main__.py",
+    "sha256": "2cbece14fa4b3597d490620b0d0d9ab65a7bae2df80a5a971f9fe3d320ea9e66"
+  },
+  {
+    "path": "src/manimagent/animation.py",
+    "sha256": "4595b762bd02d368a88b2f3bb41ba7b43e1023cf2f2f62dd3e6318e7543991a9"
+  },
+  {
+    "path": "src/manimagent/animation_driver.py",
+    "sha256": "de95a1e78e8b5f6d6994bdd37cf1477b7a9bafe63ad8d8d4b292d65c609e8d33"
+  },
+  {
+    "path": "src/manimagent/animation_models.py",
+    "sha256": "466ed116959dcae8da36a1decf0dfd30222e3487a2af42c4a911868aec6b0a44"
+  },
+  {
+    "path": "src/manimagent/animation_renderer.py",
+    "sha256": "f16dac078704ffd901dd55a916b49895955dfa2cb72712a86b43670c618fb162"
+  },
+  {
+    "path": "src/manimagent/answers.py",
+    "sha256": "73e3e43c8671fe6a19face8aa110d35f1617996f867bfdeafb6dbdee817cdc3f"
+  },
+  {
+    "path": "src/manimagent/api.py",
+    "sha256": "b8ae1ea51146c7460972c350eaf0f9e11cb56d2417899ac226af68b1f9e7d2d8"
+  },
+  {
+    "path": "src/manimagent/budget.py",
+    "sha256": "a8844b234d2a464fb12e68feb0992d3a9474f3e98c291e6b79440b9a8ff634ce"
+  },
+  {
+    "path": "src/manimagent/cli.py",
+    "sha256": "c5a379705dc45b2b3c47718513cc09512b3d5ee10b87834d2d1f0715eace9cd8"
+  },
+  {
+    "path": "src/manimagent/config.py",
+    "sha256": "acc7e72ff4a748c50e5bc87324645e1ee3d29eb9b80a07705159e0d878035557"
+  },
+  {
+    "path": "src/manimagent/content_store.py",
+    "sha256": "95e2e67e4bcba1aa618d8b0b18564020744f945e09d42527544f3760816f309e"
+  },
+  {
+    "path": "src/manimagent/instance.py",
+    "sha256": "ca23ff1a6c6edcd9c0f69ec7b07fac92567dc5fa2502b07324bad3c098cf96d0"
+  },
+  {
+    "path": "src/manimagent/llm_settings.py",
+    "sha256": "467b80282d31446b635ddf25b76dc7734f1f4d503657e1e3846e465d56b8b7e6"
+  },
+  {
+    "path": "src/manimagent/markdown_view.py",
+    "sha256": "b4374b56c11b74ecbc59e2c2b3903236ee3c7cc88a1fe039b046728410f1eea4"
+  },
+  {
+    "path": "src/manimagent/materials.py",
+    "sha256": "e9244b41cec4120f6daca423cb81774dbc682b5fabb5a3e5c37ce4bda46da37f"
+  },
+  {
+    "path": "src/manimagent/parse_worker.py",
+    "sha256": "6d0f636e6634444870c486aaff8aeb7a5af38b7125f8862f0121f367481a1bd5"
+  },
+  {
+    "path": "src/manimagent/providers.py",
+    "sha256": "b31729251f1a312cfc4ec9ddc2dbf641e583c60be971dc337ab3bb14a1e15eed"
+  },
+  {
+    "path": "src/manimagent/schemas.py",
+    "sha256": "0063289f79913cff6b5bc059c97a7e56cf83f1bde0f6fc2ae2647089086f0a3e"
+  },
+  {
+    "path": "src/manimagent/text_api.py",
+    "sha256": "f06d8f25f39f844651b53683e82d58680cb077b9460da6bd54ead0079735942e"
+  },
+  {
+    "path": "src/manimagent/text_jobs.py",
+    "sha256": "23c64c0c61f6776df3fae9b3b598bbf2048fda709e2f452a7a610105e261bf72"
+  },
+  {
+    "path": "src/manimagent/web/app.js",
+    "sha256": "a62734225787d7b13467ba8494b1b63e7dbadc015328f227d3f6b2b1e63246ee"
+  },
+  {
+    "path": "src/manimagent/web/llm-settings.js",
+    "sha256": "f739b668aed0888ea2d4888ca464c07b6b9b7fef03bd23feff3b3c914ca8e487"
+  }
+]

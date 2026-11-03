@@ -107,3 +107,23 @@ def test_checker_also_requires_a_confirmed_stop():
     with pytest.raises(ProviderError):
         client.complete("answer_checker", "check", {}, Check, budget)
     assert budget.usage.model_calls == 2
+
+
+def test_schema_retry_carries_field_feedback_and_stays_within_retry_budget():
+    requests = []
+
+    def handler(request):
+        body = json.loads(request.content)
+        requests.append(body)
+        if len(requests) == 2:
+            assert '"loc": ["ok"]' in body["messages"][-1]["content"]
+            assert "invalid-boolean" in body["messages"][-1]["content"]
+        content = '{"ok":"invalid-boolean"}' if len(requests) == 1 else '{"ok":true}'
+        return httpx.Response(
+            200, json={"choices": [{"message": {"content": content}, "finish_reason": "stop"}]}
+        )
+
+    client, budget = provider(handler)
+    budget.retry_allowance = 1
+    assert client.complete("answer_checker", "check", {}, Check, budget).ok
+    assert budget.usage.model_calls == 2 and budget.retry_allowance == 0

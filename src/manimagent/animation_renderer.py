@@ -8,6 +8,7 @@ import os
 import shutil
 import subprocess
 import sys
+import tempfile
 import time
 from pathlib import Path
 
@@ -81,6 +82,36 @@ class NativeRenderer:
         process.wait(timeout=5)
 
     def run(self, action: str, directory: Path, payload: dict, budget: Budget, cap: float) -> dict:
+        # Pango/Matplotlib/FFmpeg may use Win32 APIs with MAX_PATH limits. Keep
+        # transient SVG/cache/media paths short even when the project is nested.
+        directory.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(prefix="ma-render-") as temporary:
+            workspace = Path(temporary)
+            if action == "assemble":
+                for name in payload["videos"]:
+                    if Path(name).name != name:
+                        raise ContentError("invalid_render", "合成场景文件名无效")
+                    shutil.copyfile(directory / name, workspace / name)
+            try:
+                return self._run(action, workspace, payload, budget, cap)
+            finally:
+                for path in workspace.iterdir():
+                    if path.is_file() and (
+                        path.name
+                        in {
+                            "input.json",
+                            "result.json",
+                            "worker.log",
+                            "error.txt",
+                            "scene.mp4",
+                            "complete.mp4",
+                        }
+                        or path.name.startswith("frame_")
+                        and path.suffix == ".png"
+                    ):
+                        shutil.copyfile(path, directory / path.name)
+
+    def _run(self, action: str, directory: Path, payload: dict, budget: Budget, cap: float) -> dict:
         import psutil
 
         directory.mkdir(parents=True, exist_ok=True)
@@ -91,6 +122,14 @@ class NativeRenderer:
             raise BudgetExceeded("剩余时间不足以渲染并保存结果")
         started = time.monotonic()
         peak = 0
+        environment = self.child_environment()
+        cache = (
+            (budget.settings.private_dir or budget.settings.runs_dir / "private")
+            / "render-cache"
+            / "matplotlib"
+        )
+        cache.mkdir(parents=True, exist_ok=True)
+        environment["MPLCONFIGDIR"] = str(cache.resolve())
         with (directory / "worker.log").open("wb") as log:
             process = subprocess.Popen(
                 [
@@ -102,7 +141,7 @@ class NativeRenderer:
                     str(source.resolve()),
                 ],
                 cwd=directory,
-                env=self.child_environment(),
+                env=environment,
                 stdout=log,
                 stderr=log,
                 creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
