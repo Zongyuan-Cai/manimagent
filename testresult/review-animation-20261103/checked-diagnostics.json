@@ -1,0 +1,1445 @@
+[
+  {
+    "name": "bayes-1",
+    "error": null,
+    "plan_checks": [
+      {
+        "plan_hash": "b5f331215fa7cc87d2ce637fc333117fec56591e84780f376886d5c00f5ce9aa",
+        "decision": "pass",
+        "message": "全部14个单元均由屏幕文字、公式或表格承接，关键数值与固定答案一致，节奏合理。",
+        "units": [
+          {
+            "unit_id": "u001",
+            "decision": "pass",
+            "scene_ids": [
+              "s1"
+            ],
+            "evidence": "s1_b1屏幕列出盒A 3红2蓝、盒B 1红4蓝及先等概率选盒再抽球，完整承接读题。"
+          },
+          {
+            "unit_id": "u002",
+            "decision": "pass",
+            "scene_ids": [
+              "s1"
+            ],
+            "evidence": "s1_b2定义事件A、B、R；s1_b3说明已知红球求来源即求P(A|R)。"
+          },
+          {
+            "unit_id": "u003",
+            "decision": "pass",
+            "scene_ids": [
+              "s2"
+            ],
+            "evidence": "s2_b1写P(A)=P(B)=1/2；s2_b2由3/5、1/5分别得P(R|A)、P(R|B)。"
+          },
+          {
+            "unit_id": "u004",
+            "decision": "pass",
+            "scene_ids": [
+              "s2"
+            ],
+            "evidence": "s2_b3解释样本空间缩小到红球结果，并给出条件概率定义P(A|R)=P(A∩R)/P(R)。"
+          },
+          {
+            "unit_id": "u005",
+            "decision": "pass",
+            "scene_ids": [
+              "s3"
+            ],
+            "evidence": "s3_b1显示两个联合概率乘法计算；s3_b2按互斥情况相加得P(R)=2/5。"
+          },
+          {
+            "unit_id": "u006",
+            "decision": "pass",
+            "scene_ids": [
+              "s3"
+            ],
+            "evidence": "s3_b3屏幕文字说明四个联合概率列成表，并交代行、列与格子的含义。"
+          },
+          {
+            "unit_id": "u007",
+            "decision": "pass",
+            "scene_ids": [
+              "s3"
+            ],
+            "evidence": "s3_b3矩阵含四格0.3、0.2、0.1、0.4及行列合计；s3_b4公式核对行和均1/2、红列和2/5。"
+          },
+          {
+            "unit_id": "u008",
+            "decision": "pass",
+            "scene_ids": [
+              "s4"
+            ],
+            "evidence": "s4_b1说明A、B互斥且穷尽并拆分R；s4_b2给全概率公式；s4_b3代入得2/5。"
+          },
+          {
+            "unit_id": "u009",
+            "decision": "pass",
+            "scene_ids": [
+              "s5"
+            ],
+            "evidence": "s5_b2给出贝叶斯一般式与代入式；s5_b3逐步化为3/10除以4/10等于3/4。"
+          },
+          {
+            "unit_id": "u010",
+            "decision": "pass",
+            "scene_ids": [
+              "s5"
+            ],
+            "evidence": "s5_b4明确写出P(A|R)=3/4，并说明约为75%。"
+          },
+          {
+            "unit_id": "u011",
+            "decision": "pass",
+            "scene_ids": [
+              "s6"
+            ],
+            "evidence": "s6_b1设1000次实验，等概率选盒平均约500次选A、500次选B。"
+          },
+          {
+            "unit_id": "u012",
+            "decision": "pass",
+            "scene_ids": [
+              "s6"
+            ],
+            "evidence": "s6_b2算500×3/5=300；s6_b3算500×1/5=100，分别对应两盒红球次数。"
+          },
+          {
+            "unit_id": "u013",
+            "decision": "pass",
+            "scene_ids": [
+              "s6"
+            ],
+            "evidence": "s6_b4用300+100=400作红球总数，再算300/400=3/4并与贝叶斯结果核对。"
+          },
+          {
+            "unit_id": "u014",
+            "decision": "pass",
+            "scene_ids": [
+              "s7"
+            ],
+            "evidence": "s7_b1给最终3/4；s7_b2比较先验1/2与75%；s7_b3解释红球信息使后验增大。"
+          }
+        ],
+        "problem_scene_ids": []
+      }
+    ],
+    "calls": [
+      {
+        "role": "answer_writer",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 691,
+          "completion_tokens": 3092,
+          "total_tokens": 3783,
+          "prompt_tokens_details": {
+            "cached_tokens": 128
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 1965
+          },
+          "prompt_cache_hit_tokens": 128,
+          "prompt_cache_miss_tokens": 563
+        }
+      },
+      {
+        "role": "answer_checker",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 2244,
+          "completion_tokens": 476,
+          "total_tokens": 2720,
+          "prompt_tokens_details": {
+            "cached_tokens": 256
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 425
+          },
+          "prompt_cache_hit_tokens": 256,
+          "prompt_cache_miss_tokens": 1988
+        }
+      },
+      {
+        "role": "video_planner",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 5043,
+          "completion_tokens": 2534,
+          "total_tokens": 7577,
+          "prompt_tokens_details": {
+            "cached_tokens": 768
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 1987
+          },
+          "prompt_cache_hit_tokens": 768,
+          "prompt_cache_miss_tokens": 4275
+        }
+      },
+      {
+        "role": "scene_generator",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 7457,
+          "completion_tokens": 3622,
+          "total_tokens": 11079,
+          "prompt_tokens_details": {
+            "cached_tokens": 2176
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 3120
+          },
+          "prompt_cache_hit_tokens": 2176,
+          "prompt_cache_miss_tokens": 5281
+        }
+      },
+      {
+        "role": "scene_generator",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 7495,
+          "completion_tokens": 2098,
+          "total_tokens": 9593,
+          "prompt_tokens_details": {
+            "cached_tokens": 6912
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 1619
+          },
+          "prompt_cache_hit_tokens": 6912,
+          "prompt_cache_miss_tokens": 583
+        }
+      },
+      {
+        "role": "scene_generator",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 7730,
+          "completion_tokens": 6081,
+          "total_tokens": 13811,
+          "prompt_tokens_details": {
+            "cached_tokens": 6912
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 5206
+          },
+          "prompt_cache_hit_tokens": 6912,
+          "prompt_cache_miss_tokens": 818
+        }
+      },
+      {
+        "role": "scene_generator",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 7387,
+          "completion_tokens": 2057,
+          "total_tokens": 9444,
+          "prompt_tokens_details": {
+            "cached_tokens": 6912
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 1529
+          },
+          "prompt_cache_hit_tokens": 6912,
+          "prompt_cache_miss_tokens": 475
+        }
+      },
+      {
+        "role": "scene_generator",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 7535,
+          "completion_tokens": 1873,
+          "total_tokens": 9408,
+          "prompt_tokens_details": {
+            "cached_tokens": 6912
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 1091
+          },
+          "prompt_cache_hit_tokens": 6912,
+          "prompt_cache_miss_tokens": 623
+        }
+      },
+      {
+        "role": "scene_generator",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 7633,
+          "completion_tokens": 3387,
+          "total_tokens": 11020,
+          "prompt_tokens_details": {
+            "cached_tokens": 6912
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 2685
+          },
+          "prompt_cache_hit_tokens": 6912,
+          "prompt_cache_miss_tokens": 721
+        }
+      },
+      {
+        "role": "scene_generator",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 7329,
+          "completion_tokens": 1891,
+          "total_tokens": 9220,
+          "prompt_tokens_details": {
+            "cached_tokens": 6912
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 1394
+          },
+          "prompt_cache_hit_tokens": 6912,
+          "prompt_cache_miss_tokens": 417
+        }
+      },
+      {
+        "role": "plan_checker",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 14854,
+          "completion_tokens": 3448,
+          "total_tokens": 18302,
+          "prompt_tokens_details": {
+            "cached_tokens": 640
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 2658
+          },
+          "prompt_cache_hit_tokens": 640,
+          "prompt_cache_miss_tokens": 14214
+        }
+      }
+    ]
+  },
+  {
+    "name": "derivative-1",
+    "error": null,
+    "plan_checks": [
+      {
+        "plan_hash": "1ef7a590f9ad5ad0ecf72dc4db1c12bca1f17be4059fe49b2f8f3a82705d48c0",
+        "decision": "pass",
+        "message": "全部21个单元均有对应屏幕公式与文字承接；数学推导、h≠0、割线与切线区别及切点核对一致，无数学或节奏问题。",
+        "units": [
+          {
+            "unit_id": "u001",
+            "decision": "pass",
+            "scene_ids": [
+              "s1",
+              "s4",
+              "s5"
+            ],
+            "evidence": "s1 b1屏幕交代材料来源与用定义求导任务；s4/s5屏幕分别解释增量、差商、h≠0及极限与斜率区别。"
+          },
+          {
+            "unit_id": "u002",
+            "decision": "pass",
+            "scene_ids": [
+              "s1"
+            ],
+            "evidence": "s1 b1屏幕写出f(x)=x^2，并说明先明确函数式再算差商。"
+          },
+          {
+            "unit_id": "u003",
+            "decision": "pass",
+            "scene_ids": [
+              "s1"
+            ],
+            "evidence": "s1 b2屏幕给出导数定义式并说明先写差商再令h→0。"
+          },
+          {
+            "unit_id": "u004",
+            "decision": "pass",
+            "scene_ids": [
+              "s1"
+            ],
+            "evidence": "s1 b3屏幕展示f(x+h)=(x+h)^2=x^2+2xh+h^2，并说明为相减作准备。"
+          },
+          {
+            "unit_id": "u005",
+            "decision": "pass",
+            "scene_ids": [
+              "s1"
+            ],
+            "evidence": "s1 b4-b5屏幕由展开式相减得Δy=2xh+h^2，再提取h得h(2x+h)。"
+          },
+          {
+            "unit_id": "u006",
+            "decision": "pass",
+            "scene_ids": [
+              "s2"
+            ],
+            "evidence": "s2 b1屏幕公式显示h(2x+h)/h=2x+h，并标明h≠0及约分条件。"
+          },
+          {
+            "unit_id": "u007",
+            "decision": "pass",
+            "scene_ids": [
+              "s2"
+            ],
+            "evidence": "s2 b2屏幕公式f'(x)=lim_{h→0}(2x+h)=2x，并说明h趋近0但不取0。"
+          },
+          {
+            "unit_id": "u008",
+            "decision": "pass",
+            "scene_ids": [
+              "s2"
+            ],
+            "evidence": "s2 b3屏幕写出f'(x)=2x，并说明由差商化简后取极限得到。"
+          },
+          {
+            "unit_id": "u009",
+            "decision": "pass",
+            "scene_ids": [
+              "s3"
+            ],
+            "evidence": "s3 b1屏幕由f'(x)=2x代入x=3，显示f'(3)=2·3=6为切线斜率。"
+          },
+          {
+            "unit_id": "u010",
+            "decision": "pass",
+            "scene_ids": [
+              "s3"
+            ],
+            "evidence": "s3 b2屏幕算f(3)=3^2=9，并写出切点(3,9)。"
+          },
+          {
+            "unit_id": "u011",
+            "decision": "pass",
+            "scene_ids": [
+              "s3"
+            ],
+            "evidence": "s3 b3屏幕用点斜式y-9=6(x-3)，并化简为y=6x-18+9=6x-9。"
+          },
+          {
+            "unit_id": "u012",
+            "decision": "pass",
+            "scene_ids": [
+              "s3"
+            ],
+            "evidence": "s3 b4屏幕写出切线方程y=6x-9，并回指斜率6来自f'(3)。"
+          },
+          {
+            "unit_id": "u013",
+            "decision": "pass",
+            "scene_ids": [
+              "s4"
+            ],
+            "evidence": "s4 b1屏幕写Δx=h、Δy=f(x+h)-f(x)，并对x^2得Δy=2xh+h^2。"
+          },
+          {
+            "unit_id": "u014",
+            "decision": "pass",
+            "scene_ids": [
+              "s4"
+            ],
+            "evidence": "s4 b2屏幕写差商Δy/Δx=[f(x+h)-f(x)]/h，并说明是两点间割线斜率。"
+          },
+          {
+            "unit_id": "u015",
+            "decision": "pass",
+            "scene_ids": [
+              "s4"
+            ],
+            "evidence": "s4 b3屏幕公式h(2x+h)/h=2x+h并标h≠0，文字说明否则分母为0、两点重合无意义。"
+          },
+          {
+            "unit_id": "u016",
+            "decision": "pass",
+            "scene_ids": [
+              "s4"
+            ],
+            "evidence": "s4 b4屏幕写差商=2x+h(h≠0)，并说明这是割线斜率，一般不是切线斜率。"
+          },
+          {
+            "unit_id": "u017",
+            "decision": "pass",
+            "scene_ids": [
+              "s5"
+            ],
+            "evidence": "s5 b1屏幕在x=3处写差商=6+h，列出h=0.1,0.01,-0.1分别得6.1,6.01,5.9并称不同割线斜率。"
+          },
+          {
+            "unit_id": "u018",
+            "decision": "pass",
+            "scene_ids": [
+              "s5"
+            ],
+            "evidence": "s5 b2屏幕写lim_{h→0}(6+h)=6及f'(3)=6，并说明这是x=3处切线斜率。"
+          },
+          {
+            "unit_id": "u019",
+            "decision": "pass",
+            "scene_ids": [
+              "s5"
+            ],
+            "evidence": "s5 b3屏幕区分差商为割线斜率、极限结果为切线斜率，并说明h只趋近0不能代入。"
+          },
+          {
+            "unit_id": "u020",
+            "decision": "pass",
+            "scene_ids": [
+              "s6"
+            ],
+            "evidence": "s6 b1-b2屏幕代入x=3得y=9，又算f(3)=9，比较后说明切线过(3,9)。"
+          },
+          {
+            "unit_id": "u021",
+            "decision": "pass",
+            "scene_ids": [
+              "s6"
+            ],
+            "evidence": "s6 b3屏幕汇总f'(x)=2x、f'(3)=6、切线y=6x-9。"
+          }
+        ],
+        "problem_scene_ids": []
+      }
+    ],
+    "calls": [
+      {
+        "role": "answer_writer",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 693,
+          "completion_tokens": 3183,
+          "total_tokens": 3876,
+          "prompt_tokens_details": {
+            "cached_tokens": 128
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 2103
+          },
+          "prompt_cache_hit_tokens": 128,
+          "prompt_cache_miss_tokens": 565
+        }
+      },
+      {
+        "role": "answer_checker",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 2170,
+          "completion_tokens": 317,
+          "total_tokens": 2487,
+          "prompt_tokens_details": {
+            "cached_tokens": 256
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 250
+          },
+          "prompt_cache_hit_tokens": 256,
+          "prompt_cache_miss_tokens": 1914
+        }
+      },
+      {
+        "role": "video_planner",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 5370,
+          "completion_tokens": 1905,
+          "total_tokens": 7275,
+          "prompt_tokens_details": {
+            "cached_tokens": 768
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 1391
+          },
+          "prompt_cache_hit_tokens": 768,
+          "prompt_cache_miss_tokens": 4602
+        }
+      },
+      {
+        "role": "scene_generator",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 8039,
+          "completion_tokens": 2494,
+          "total_tokens": 10533,
+          "prompt_tokens_details": {
+            "cached_tokens": 2176
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 1713
+          },
+          "prompt_cache_hit_tokens": 2176,
+          "prompt_cache_miss_tokens": 5863
+        }
+      },
+      {
+        "role": "scene_generator",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 7771,
+          "completion_tokens": 2497,
+          "total_tokens": 10268,
+          "prompt_tokens_details": {
+            "cached_tokens": 7168
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 1990
+          },
+          "prompt_cache_hit_tokens": 7168,
+          "prompt_cache_miss_tokens": 603
+        }
+      },
+      {
+        "role": "scene_generator",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 7910,
+          "completion_tokens": 1386,
+          "total_tokens": 9296,
+          "prompt_tokens_details": {
+            "cached_tokens": 7168
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 781
+          },
+          "prompt_cache_hit_tokens": 7168,
+          "prompt_cache_miss_tokens": 742
+        }
+      },
+      {
+        "role": "scene_generator",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 8093,
+          "completion_tokens": 3244,
+          "total_tokens": 11337,
+          "prompt_tokens_details": {
+            "cached_tokens": 7168
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 2506
+          },
+          "prompt_cache_hit_tokens": 7168,
+          "prompt_cache_miss_tokens": 925
+        }
+      },
+      {
+        "role": "scene_generator",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 7992,
+          "completion_tokens": 3407,
+          "total_tokens": 11399,
+          "prompt_tokens_details": {
+            "cached_tokens": 7168
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 2635
+          },
+          "prompt_cache_hit_tokens": 7168,
+          "prompt_cache_miss_tokens": 824
+        }
+      },
+      {
+        "role": "scene_generator",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 7773,
+          "completion_tokens": 2517,
+          "total_tokens": 10290,
+          "prompt_tokens_details": {
+            "cached_tokens": 7168
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 2065
+          },
+          "prompt_cache_hit_tokens": 7168,
+          "prompt_cache_miss_tokens": 605
+        }
+      },
+      {
+        "role": "plan_checker",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 14214,
+          "completion_tokens": 6716,
+          "total_tokens": 20930,
+          "prompt_tokens_details": {
+            "cached_tokens": 640
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 5561
+          },
+          "prompt_cache_hit_tokens": 640,
+          "prompt_cache_miss_tokens": 13574
+        }
+      }
+    ]
+  },
+  {
+    "name": "linear_system-1",
+    "error": null,
+    "plan_checks": [
+      {
+        "plan_hash": "ff18a3e9d75a9f24a5b9dd755da867170f0f8396dc3670c78e6cede907a84495",
+        "decision": "pass",
+        "message": "全部教学单元均由屏幕文字和公式承接，消元依据、两种方向、检验与唯一性均完整；未发现数学或节奏问题。",
+        "units": [
+          {
+            "unit_id": "u001",
+            "decision": "pass",
+            "scene_ids": [
+              "s1"
+            ],
+            "evidence": "s1 b1显示方程组并标注来源；b2说明解需同时满足两式；b3明确消元目标。"
+          },
+          {
+            "unit_id": "u002",
+            "decision": "pass",
+            "scene_ids": [
+              "s2"
+            ],
+            "evidence": "s2 b2显示A=B、C=D可相加相减；b3显示k≠0时kC=kD，并说明是等式依据。"
+          },
+          {
+            "unit_id": "u003",
+            "decision": "pass",
+            "scene_ids": [
+              "s2"
+            ],
+            "evidence": "s2 b4说明相加、相减、同乘非零数所得新等式成立，且候选解必须回代检验。"
+          },
+          {
+            "unit_id": "u004",
+            "decision": "pass",
+            "scene_ids": [
+              "s3"
+            ],
+            "evidence": "s3 b1观察y系数1与-1；b2两式相加；b3合并得3x=9并推出x=3。"
+          },
+          {
+            "unit_id": "u005",
+            "decision": "pass",
+            "scene_ids": [
+              "s3"
+            ],
+            "evidence": "s3 b4把x=3代回(2)得3-y=2、y=1；b5汇总候选解(3,1)并提醒检验。"
+          },
+          {
+            "unit_id": "u006",
+            "decision": "pass",
+            "scene_ids": [
+              "s4"
+            ],
+            "evidence": "s4 b1观察x系数；b2将(2)乘2得2x-2y=4；b3说明同乘非零数2的依据。"
+          },
+          {
+            "unit_id": "u007",
+            "decision": "pass",
+            "scene_ids": [
+              "s4"
+            ],
+            "evidence": "s4 b4用(1)-(3)消x；b5合并得3y；b6得y=1；b7回代(2)得x=3并与方向一一致。"
+          },
+          {
+            "unit_id": "u008",
+            "decision": "pass",
+            "scene_ids": [
+              "s5"
+            ],
+            "evidence": "s5 b1代入(1)得7；b2代入(2)得2；b3确认(3,1)为原方程组的解。"
+          },
+          {
+            "unit_id": "u009",
+            "decision": "pass",
+            "scene_ids": [
+              "s6"
+            ],
+            "evidence": "s6 b1设任意解；b2相加得3x=9；b3得x=3；b4回代得y=1；b5结合检验结论说明解唯一。"
+          },
+          {
+            "unit_id": "u010",
+            "decision": "pass",
+            "scene_ids": [
+              "s6"
+            ],
+            "evidence": "s6 b5公式与文字给出x=3、y=1及解集{(3,1)}，承接最终答案。"
+          }
+        ],
+        "problem_scene_ids": []
+      }
+    ],
+    "calls": [
+      {
+        "role": "answer_writer",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 649,
+          "completion_tokens": 4329,
+          "total_tokens": 4978,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 3193
+          },
+          "prompt_cache_hit_tokens": 0,
+          "prompt_cache_miss_tokens": 649
+        }
+      },
+      {
+        "role": "answer_checker",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 2350,
+          "completion_tokens": 358,
+          "total_tokens": 2708,
+          "prompt_tokens_details": {
+            "cached_tokens": 256
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 315
+          },
+          "prompt_cache_hit_tokens": 256,
+          "prompt_cache_miss_tokens": 2094
+        }
+      },
+      {
+        "role": "video_planner",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 5024,
+          "completion_tokens": 2264,
+          "total_tokens": 7288,
+          "prompt_tokens_details": {
+            "cached_tokens": 768
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 1622
+          },
+          "prompt_cache_hit_tokens": 768,
+          "prompt_cache_miss_tokens": 4256
+        }
+      },
+      {
+        "role": "scene_generator",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 7234,
+          "completion_tokens": 2151,
+          "total_tokens": 9385,
+          "prompt_tokens_details": {
+            "cached_tokens": 2176
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 1741
+          },
+          "prompt_cache_hit_tokens": 2176,
+          "prompt_cache_miss_tokens": 5058
+        }
+      },
+      {
+        "role": "scene_generator",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 7468,
+          "completion_tokens": 2979,
+          "total_tokens": 10447,
+          "prompt_tokens_details": {
+            "cached_tokens": 6784
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 2350
+          },
+          "prompt_cache_hit_tokens": 6784,
+          "prompt_cache_miss_tokens": 684
+        }
+      },
+      {
+        "role": "scene_generator",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 7571,
+          "completion_tokens": 4530,
+          "total_tokens": 12101,
+          "prompt_tokens_details": {
+            "cached_tokens": 6784
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 3793
+          },
+          "prompt_cache_hit_tokens": 6784,
+          "prompt_cache_miss_tokens": 787
+        }
+      },
+      {
+        "role": "scene_generator",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 7655,
+          "completion_tokens": 6226,
+          "total_tokens": 13881,
+          "prompt_tokens_details": {
+            "cached_tokens": 6784
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 4901
+          },
+          "prompt_cache_hit_tokens": 6784,
+          "prompt_cache_miss_tokens": 871
+        }
+      },
+      {
+        "role": "scene_generator",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 7292,
+          "completion_tokens": 3176,
+          "total_tokens": 10468,
+          "prompt_tokens_details": {
+            "cached_tokens": 6784
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 2697
+          },
+          "prompt_cache_hit_tokens": 6784,
+          "prompt_cache_miss_tokens": 508
+        }
+      },
+      {
+        "role": "scene_generator",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 7491,
+          "completion_tokens": 3291,
+          "total_tokens": 10782,
+          "prompt_tokens_details": {
+            "cached_tokens": 6784
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 2541
+          },
+          "prompt_cache_hit_tokens": 6784,
+          "prompt_cache_miss_tokens": 707
+        }
+      },
+      {
+        "role": "plan_checker",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 14894,
+          "completion_tokens": 5890,
+          "total_tokens": 20784,
+          "prompt_tokens_details": {
+            "cached_tokens": 128
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 5296
+          },
+          "prompt_cache_hit_tokens": 128,
+          "prompt_cache_miss_tokens": 14766
+        }
+      }
+    ]
+  },
+  {
+    "name": "projection-1",
+    "error": null,
+    "plan_checks": [
+      {
+        "plan_hash": "e56ec900b380a5b0e7e7cf97734c059a022c6bf08b52efd1a191525c6e20c17e",
+        "decision": "pass",
+        "message": "全部13个单元均有屏幕文字、公式或图形承接，坐标、量的类型区分与残差验证正确，节奏估计合理。",
+        "units": [
+          {
+            "unit_id": "u001",
+            "decision": "pass",
+            "scene_ids": [
+              "s1"
+            ],
+            "evidence": "s1_b1 屏幕给出 a、b 坐标并明确求 a 在 b 方向上的投影向量。"
+          },
+          {
+            "unit_id": "u002",
+            "decision": "pass",
+            "scene_ids": [
+              "s1"
+            ],
+            "evidence": "s1_b2 说明 b=0 时方向未定且 b·b=0 不能作分母，并给出本题 b≠0。"
+          },
+          {
+            "unit_id": "u003",
+            "decision": "pass",
+            "scene_ids": [
+              "s1"
+            ],
+            "evidence": "s1_b3至b5依次给出 L 为 x 轴、垂足 P、残差 PA⊥b 及 p=OP。"
+          },
+          {
+            "unit_id": "u004",
+            "decision": "pass",
+            "scene_ids": [
+              "s2"
+            ],
+            "evidence": "s2_b1至b4设 p=cb，写 (a-p)·b=0，展开得 a·b-c(b·b)=0 并给出 c 公式与 b·b>0。"
+          },
+          {
+            "unit_id": "u005",
+            "decision": "pass",
+            "scene_ids": [
+              "s3"
+            ],
+            "evidence": "s3_b1至b4逐项算 a·b=6、b·b=4、c=3/2、p=(3,0)。"
+          },
+          {
+            "unit_id": "u006",
+            "decision": "pass",
+            "scene_ids": [
+              "s3"
+            ],
+            "evidence": "s3_b4 屏幕公式明确给出 proj_b a=(3,0)。"
+          },
+          {
+            "unit_id": "u007",
+            "decision": "pass",
+            "scene_ids": [
+              "s3"
+            ],
+            "evidence": "s3_b5 给出垂足 P=(3,0)、p=OP 与残差 (0,2) 垂直 b，配图坐标一致。"
+          },
+          {
+            "unit_id": "u008",
+            "decision": "pass",
+            "scene_ids": [
+              "s4"
+            ],
+            "evidence": "s4_b1 说明 c=3/2 是 b 的倍数系数而非投影长度，并展示 p=(3/2)b。"
+          },
+          {
+            "unit_id": "u009",
+            "decision": "pass",
+            "scene_ids": [
+              "s4"
+            ],
+            "evidence": "s4_b2至b3给 u=(1,0)、comp=3，并用 c||b|| 与正号说明有符号/无符号长度。"
+          },
+          {
+            "unit_id": "u010",
+            "decision": "pass",
+            "scene_ids": [
+              "s4"
+            ],
+            "evidence": "s4_b4 说明 p=(3,0) 是向量，长度 3 且与 b 同向。"
+          },
+          {
+            "unit_id": "u011",
+            "decision": "pass",
+            "scene_ids": [
+              "s4"
+            ],
+            "evidence": "s4_b5 汇总 c=3/2、comp=3、proj=(3,0)，区分三类量。"
+          },
+          {
+            "unit_id": "u012",
+            "decision": "pass",
+            "scene_ids": [
+              "s5"
+            ],
+            "evidence": "s5_b1至b3算残差 (0,2)，点积 (0,2)·(2,0)=0，得 a-p⊥b。"
+          },
+          {
+            "unit_id": "u013",
+            "decision": "pass",
+            "scene_ids": [
+              "s5"
+            ],
+            "evidence": "s5_b4 最终给出 c=3/2、有符号标量投影 3、投影向量 (3,0)。"
+          }
+        ],
+        "problem_scene_ids": []
+      }
+    ],
+    "calls": [
+      {
+        "role": "answer_writer",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 859,
+          "completion_tokens": 3549,
+          "total_tokens": 4408,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 2081
+          },
+          "prompt_cache_hit_tokens": 0,
+          "prompt_cache_miss_tokens": 859
+        }
+      },
+      {
+        "role": "answer_checker",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 2878,
+          "completion_tokens": 492,
+          "total_tokens": 3370,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 392
+          },
+          "prompt_cache_hit_tokens": 0,
+          "prompt_cache_miss_tokens": 2878
+        }
+      },
+      {
+        "role": "video_planner",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 5957,
+          "completion_tokens": 1934,
+          "total_tokens": 7891,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 1510
+          },
+          "prompt_cache_hit_tokens": 0,
+          "prompt_cache_miss_tokens": 5957
+        }
+      },
+      {
+        "role": "scene_generator",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 8616,
+          "completion_tokens": 8287,
+          "total_tokens": 16903,
+          "prompt_tokens_details": {
+            "cached_tokens": 128
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 6529
+          },
+          "prompt_cache_hit_tokens": 128,
+          "prompt_cache_miss_tokens": 8488
+        }
+      },
+      {
+        "role": "scene_generator",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 8256,
+          "completion_tokens": 3054,
+          "total_tokens": 11310,
+          "prompt_tokens_details": {
+            "cached_tokens": 7680
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 2205
+          },
+          "prompt_cache_hit_tokens": 7680,
+          "prompt_cache_miss_tokens": 576
+        }
+      },
+      {
+        "role": "scene_generator",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 8517,
+          "completion_tokens": 6899,
+          "total_tokens": 15416,
+          "prompt_tokens_details": {
+            "cached_tokens": 7680
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 5754
+          },
+          "prompt_cache_hit_tokens": 7680,
+          "prompt_cache_miss_tokens": 837
+        }
+      },
+      {
+        "role": "scene_generator",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 10555,
+          "completion_tokens": 3127,
+          "total_tokens": 13682,
+          "prompt_tokens_details": {
+            "cached_tokens": 8448
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 1772
+          },
+          "prompt_cache_hit_tokens": 8448,
+          "prompt_cache_miss_tokens": 2107
+        }
+      },
+      {
+        "role": "scene_generator",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 8712,
+          "completion_tokens": 9626,
+          "total_tokens": 18338,
+          "prompt_tokens_details": {
+            "cached_tokens": 7680
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 8528
+          },
+          "prompt_cache_hit_tokens": 7680,
+          "prompt_cache_miss_tokens": 1032
+        }
+      },
+      {
+        "role": "scene_generator",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 8374,
+          "completion_tokens": 6305,
+          "total_tokens": 14679,
+          "prompt_tokens_details": {
+            "cached_tokens": 7680
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 5263
+          },
+          "prompt_cache_hit_tokens": 7680,
+          "prompt_cache_miss_tokens": 694
+        }
+      },
+      {
+        "role": "plan_checker",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 18054,
+          "completion_tokens": 9282,
+          "total_tokens": 27336,
+          "prompt_tokens_details": {
+            "cached_tokens": 640
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 8556
+          },
+          "prompt_cache_hit_tokens": 640,
+          "prompt_cache_miss_tokens": 17414
+        }
+      }
+    ]
+  },
+  {
+    "name": "triangle_area-1",
+    "error": {
+      "code": "output_truncated",
+      "message": "模型输出被截断，请增加输出预算后重试",
+      "retryable": false,
+      "details": {}
+    },
+    "plan_checks": [],
+    "calls": [
+      {
+        "role": "answer_writer",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 689,
+          "completion_tokens": 4118,
+          "total_tokens": 4807,
+          "prompt_tokens_details": {
+            "cached_tokens": 128
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 3150
+          },
+          "prompt_cache_hit_tokens": 128,
+          "prompt_cache_miss_tokens": 561
+        }
+      },
+      {
+        "role": "answer_checker",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 2020,
+          "completion_tokens": 458,
+          "total_tokens": 2478,
+          "prompt_tokens_details": {
+            "cached_tokens": 256
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 408
+          },
+          "prompt_cache_hit_tokens": 256,
+          "prompt_cache_miss_tokens": 1764
+        }
+      },
+      {
+        "role": "video_planner",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 4206,
+          "completion_tokens": 1300,
+          "total_tokens": 5506,
+          "prompt_tokens_details": {
+            "cached_tokens": 768
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 804
+          },
+          "prompt_cache_hit_tokens": 768,
+          "prompt_cache_miss_tokens": 3438
+        }
+      },
+      {
+        "role": "scene_generator",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 6596,
+          "completion_tokens": 5800,
+          "total_tokens": 12396,
+          "prompt_tokens_details": {
+            "cached_tokens": 2176
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 4757
+          },
+          "prompt_cache_hit_tokens": 2176,
+          "prompt_cache_miss_tokens": 4420
+        }
+      },
+      {
+        "role": "scene_generator",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 8545,
+          "completion_tokens": 4050,
+          "total_tokens": 12595,
+          "prompt_tokens_details": {
+            "cached_tokens": 6528
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 2801
+          },
+          "prompt_cache_hit_tokens": 6528,
+          "prompt_cache_miss_tokens": 2017
+        }
+      },
+      {
+        "role": "scene_generator",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 6589,
+          "completion_tokens": 5280,
+          "total_tokens": 11869,
+          "prompt_tokens_details": {
+            "cached_tokens": 6016
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 4093
+          },
+          "prompt_cache_hit_tokens": 6016,
+          "prompt_cache_miss_tokens": 573
+        }
+      },
+      {
+        "role": "scene_generator",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 6568,
+          "completion_tokens": 6605,
+          "total_tokens": 13173,
+          "prompt_tokens_details": {
+            "cached_tokens": 6016
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 5100
+          },
+          "prompt_cache_hit_tokens": 6016,
+          "prompt_cache_miss_tokens": 552
+        }
+      },
+      {
+        "role": "scene_generator",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 6571,
+          "completion_tokens": 8284,
+          "total_tokens": 14855,
+          "prompt_tokens_details": {
+            "cached_tokens": 6016
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 6301
+          },
+          "prompt_cache_hit_tokens": 6016,
+          "prompt_cache_miss_tokens": 555
+        }
+      },
+      {
+        "role": "scene_generator",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 6679,
+          "completion_tokens": 5321,
+          "total_tokens": 12000,
+          "prompt_tokens_details": {
+            "cached_tokens": 6016
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 3816
+          },
+          "prompt_cache_hit_tokens": 6016,
+          "prompt_cache_miss_tokens": 663
+        }
+      },
+      {
+        "role": "scene_generator",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 6404,
+          "completion_tokens": 7605,
+          "total_tokens": 14009,
+          "prompt_tokens_details": {
+            "cached_tokens": 6016
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 6206
+          },
+          "prompt_cache_hit_tokens": 6016,
+          "prompt_cache_miss_tokens": 388
+        }
+      },
+      {
+        "role": "scene_generator",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 8836,
+          "completion_tokens": 3209,
+          "total_tokens": 12045,
+          "prompt_tokens_details": {
+            "cached_tokens": 6144
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 2378
+          },
+          "prompt_cache_hit_tokens": 6144,
+          "prompt_cache_miss_tokens": 2692
+        }
+      },
+      {
+        "role": "plan_checker",
+        "finish_reason": "length",
+        "usage": {
+          "prompt_tokens": 19844,
+          "completion_tokens": 10000,
+          "total_tokens": 29844,
+          "prompt_tokens_details": {
+            "cached_tokens": 640
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 10000
+          },
+          "prompt_cache_hit_tokens": 640,
+          "prompt_cache_miss_tokens": 19204
+        }
+      }
+    ]
+  }
+]

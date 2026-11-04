@@ -1,0 +1,36 @@
+[
+  {
+    "case": "original_error_then_correction",
+    "expected": "needs_review",
+    "passed": true,
+    "check": {
+      "decision": "needs_review",
+      "message": "候选答案主体推导、数值计算和残差验证均正确，但第五部分关于单位向量投影的段落先写出错误算式 p=(a·u)u=(6·1)(1,0) 且将 a·u 算成 6，随后虽自我更正为 a·u=3、p=3u，但前文错误保留在正文中。按检查规则，错误算式仍出现在答案中，应判 needs_review。"
+    },
+    "wall_seconds": 2.016,
+    "usage": {
+      "model_calls": 1,
+      "input_tokens": 3339,
+      "output_tokens": 111,
+      "tokens_reported": true,
+      "elapsed_seconds": 2.016
+    }
+  },
+  {
+    "case": "corrected_consistent_answer",
+    "expected": "pass",
+    "passed": true,
+    "check": {
+      "decision": "pass",
+      "message": "候选解答完整覆盖全部要求：写明 b≠0 前提、投影与垂足几何意义、设 p=cb 并由正交条件推导 c=(a·b)/(b·b)、逐项计算 a·b=6、b·b=4、c=3/2、p=(3,0)，区分标量系数/标量投影长度/投影向量，且残差 (0,2)·(2,0)=0 验证通过；数值逐行核对无误，引用题目来源。"
+    },
+    "wall_seconds": 3.25,
+    "usage": {
+      "model_calls": 1,
+      "input_tokens": 3311,
+      "output_tokens": 119,
+      "tokens_reported": true,
+      "elapsed_seconds": 3.25
+    }
+  }
+]

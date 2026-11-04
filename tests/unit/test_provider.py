@@ -116,6 +116,10 @@ def test_schema_retry_carries_field_feedback_and_stays_within_retry_budget():
         body = json.loads(request.content)
         requests.append(body)
         if len(requests) == 2:
+            assert body["messages"][-2] == {
+                "role": "assistant",
+                "content": '{"ok":"invalid-boolean"}',
+            }
             assert '"loc": ["ok"]' in body["messages"][-1]["content"]
             assert "invalid-boolean" in body["messages"][-1]["content"]
         content = '{"ok":"invalid-boolean"}' if len(requests) == 1 else '{"ok":true}'
@@ -125,5 +129,34 @@ def test_schema_retry_carries_field_feedback_and_stays_within_retry_budget():
 
     client, budget = provider(handler)
     budget.retry_allowance = 1
+    trace = []
+    client.trace = trace.append
     assert client.complete("answer_checker", "check", {}, Check, budget).ok
     assert budget.usage.model_calls == 2 and budget.retry_allowance == 0
+    assert (
+        len(
+            next(event["request"]["messages"] for event in trace if event.get("event") == "request")
+        )
+        == 2
+    )
+
+
+def test_repair_omits_large_candidate_without_exceeding_context():
+    requests = []
+
+    def handler(request):
+        body = json.loads(request.content)
+        requests.append(body)
+        if len(requests) == 2:
+            assert all(m["role"] != "assistant" for m in body["messages"])
+            assert '"loc": ["ok"]' in body["messages"][-1]["content"]
+            assert sum(len(m["content"].encode()) for m in body["messages"]) + 512 + 256 <= 4096
+        content = json.dumps({"ok": "x" * 5000}) if len(requests) == 1 else '{"ok":true}'
+        return httpx.Response(
+            200, json={"choices": [{"message": {"content": content}, "finish_reason": "stop"}]}
+        )
+
+    client, budget = provider(handler)
+    client.settings.models["text"].max_output_tokens = 256
+    client.settings.models["text"].context_window = 4096
+    assert client.complete("answer_checker", "check", {}, Check, budget).ok

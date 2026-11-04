@@ -10,6 +10,7 @@ import argparse
 import hashlib
 import json
 import math
+import re
 import subprocess
 import traceback
 import xml.etree.ElementTree as ET
@@ -137,6 +138,8 @@ def render(data: dict, directory: Path) -> dict:
     from matplotlib.mathtext import math_to_image
 
     from manimagent.animation_models import PlannedScene
+    from manimagent.animation_models import wrap_text as wrapped
+    from manimagent.math_notation import break_formula, math_parts
 
     spec = PlannedScene.model_validate(data["scene"])
     font = font_name(data.get("font", "auto"))
@@ -172,22 +175,7 @@ def render(data: dict, directory: Path) -> dict:
         mob.scale(scale)
         return mob
 
-    def wrapped(text, width=32):
-        # A CJK glyph uses one column; Latin text is grouped by spaces where possible.
-        rows, row, weight = [], "", 0.0
-        for char in text:
-            delta = 1 if ord(char) > 127 else 0.53
-            if char == "\n" or weight + delta > width:
-                rows.append(row)
-                row, weight = "", 0
-            if char != "\n":
-                row += char
-                weight += delta
-        if row:
-            rows.append(row)
-        return "\n".join(rows)
-
-    def formula(text):
+    def scalar_formula(text):
         target = formulas_dir / (
             hashlib.sha256(("transparent-2" + text).encode()).hexdigest() + ".svg"
         )
@@ -216,6 +204,64 @@ def render(data: dict, directory: Path) -> dict:
         # total height made sums/fractions (with stacked limits) almost illegible.
         svg_height = float(ET.parse(target).getroot().attrib["viewBox"].split()[3])
         return SVGMobject(str(target), height=svg_height * 0.6 / 48)
+
+    def formula(text):
+        parts, cells = VGroup(), []
+        for part in math_parts(text):
+            if not part.environment:
+                value = part.text.strip()
+                if not value:
+                    continue
+                # A superscript following a matrix belongs to that matrix.
+                exponent = re.match(r"\^(?:\{([^{}]+)\}|([A-Za-z0-9+-]))", value)
+                if exponent and len(parts):
+                    power = scalar_formula(exponent[1] or exponent[2]).scale(0.65)
+                    power.next_to(parts[-1], RIGHT, buff=0.04)
+                    power.shift(UP * (parts[-1].get_top()[1] - power.get_center()[1]))
+                    base = parts[-1]
+                    parts.remove(base)
+                    parts.add(VGroup(base, power))
+                    value = value[exponent.end() :].strip()
+                if value:
+                    parts.add(scalar_formula(value))
+                continue
+            grid = [[scalar_formula(cell) for cell in row] for row in part.rows]
+            widths = [max(row[c].width for row in grid) for c in range(len(grid[0]))]
+            heights = [max(cell.height for cell in row) for row in grid]
+            content = VGroup()
+            y = 0
+            for r, row in enumerate(grid):
+                x = 0
+                for c, cell in enumerate(row):
+                    cell.move_to(
+                        [
+                            x + (cell.width if part.environment == "cases" else widths[c]) / 2,
+                            -y - heights[r] / 2,
+                            0,
+                        ]
+                    )
+                    content.add(cell)
+                    cells.append((part.rows[r][c], cell))
+                    x += widths[c] + 0.32
+                y += heights[r] + 0.24
+            content.move_to([0, 0, 0])
+            matrix = VGroup(content)
+            if part.environment != "matrix":
+                glyphs = {
+                    "pmatrix": ("(", ")"),
+                    "bmatrix": ("[", "]"),
+                    "vmatrix": ("|", "|"),
+                    "cases": (r"\{",),
+                }
+                sides = [LEFT] if part.environment == "cases" else [LEFT, RIGHT]
+                for glyph, side in zip(glyphs[part.environment], sides, strict=True):
+                    bracket = scalar_formula(glyph)
+                    bracket.stretch_to_fit_height(content.height + 0.2)
+                    bracket.next_to(content, side, buff=0.12)
+                    matrix.add(bracket)
+            parts.add(matrix)
+        parts.arrange(RIGHT, buff=0.16)
+        return parts, cells
 
     def graphic(diagram):
         group, objects, arrows = VGroup(), {}, []
@@ -399,7 +445,19 @@ def render(data: dict, directory: Path) -> dict:
                 title = fit(label(beat.headline, 29, "gold"), width, 0.55).move_to(
                     center + [0, 1.55, 0]
                 )
-                equations = VGroup(*(formula(s) for s in beat.formulas))
+                equations, inline_cells, formula_lines = VGroup(), [], []
+                for text in beat.formulas:
+                    equation, cells = formula(text)
+                    lines = break_formula(text) if equation.width * 0.78 > width else [text]
+                    if len(lines) == 1:
+                        equations.add(equation)
+                        inline_cells.extend(cells)
+                    else:
+                        for line in lines:
+                            equation, cells = formula(line)
+                            equations.add(equation)
+                            inline_cells.extend(cells)
+                    formula_lines.extend(lines)
                 formula_em = None
                 if len(equations):
                     equations.arrange(-UP, buff=0.32)
@@ -459,8 +517,12 @@ def render(data: dict, directory: Path) -> dict:
                         "end_seconds": float(self.time),
                         "screen_text": beat.screen_text,
                         "formulas": beat.formulas,
+                        "formula_lines": formula_lines,
                         "formula_em": formula_em,
                         "formula_bounds": [bounds(e) for e in equations] if beat.formulas else [],
+                        "inline_matrix_cells": [
+                            {"text": text, "bounds": bounds(cell)} for text, cell in inline_cells
+                        ],
                         "objects": list(objects),
                         "matrix_cells": matrix_cells,
                         "caption_bounds": bounds(caption),

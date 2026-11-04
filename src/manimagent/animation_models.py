@@ -4,19 +4,35 @@ from __future__ import annotations
 
 import hashlib
 import math
-import re
 from typing import Annotated, Literal
 
 from pydantic import Field, StringConstraints, field_validator, model_validator
 
+from manimagent.math_notation import normalize_formula
 from manimagent.schemas import Contract, ResourceID, now
 
-PROMPT_VERSION = "silent-templates-6"
-TEMPLATE_VERSION = "native-manim-3"
+PROMPT_VERSION = "silent-templates-8"
+TEMPLATE_VERSION = "native-manim-5"
 SmallText = Annotated[str, StringConstraints(min_length=1, max_length=120)]
 LocalID = Annotated[str, StringConstraints(pattern=r"^[A-Za-z][A-Za-z0-9_]{0,39}$")]
 Coordinate = Annotated[float, Field(ge=-20, le=20, allow_inf_nan=False)]
 Point = tuple[Coordinate, Coordinate]
+
+
+def wrap_text(text: str, width: int = 32) -> str:
+    """Shared caption wrapping policy used by contract validation and rendering."""
+    rows, row, weight = [], "", 0.0
+    for char in text:
+        delta = 1 if ord(char) > 127 else 0.53
+        if char == "\n" or weight + delta > width:
+            rows.append(row)
+            row, weight = "", 0
+        if char != "\n":
+            row += char
+            weight += delta
+    if row:
+        rows.append(row)
+    return "\n".join(rows)
 
 
 def digest(text: str) -> str:
@@ -133,15 +149,15 @@ class BeatDraft(Contract):
     beat_id: LocalID
     unit_ids: list[LocalID] = Field(min_length=1, max_length=50)
     headline: Annotated[str, StringConstraints(min_length=1, max_length=24)]
-    screen_text: Annotated[str, StringConstraints(min_length=8, max_length=64)] = Field(
-        description="Chinese explanation, ideally 25-50 characters; at most 64 characters fit the two-line caption. Split long reasoning across beats."
+    screen_text: Annotated[str, StringConstraints(min_length=8, max_length=120)] = Field(
+        description="Chinese explanation, ideally 25-50 characters. Must fit TWO lines of 32 columns: Chinese uses one column, ASCII 0.53. Maximum 120 characters only accommodates mixed Latin/math prose; pure Chinese is at most 64. Split long reasoning across beats."
     )
     formulas: list[
-        Annotated[str, StringConstraints(min_length=1, max_length=130, pattern=r"^[\x20-\x7E]+$")]
+        Annotated[str, StringConstraints(min_length=1, max_length=400, pattern=r"^[\x20-\x7E]+$")]
     ] = Field(
         default_factory=list,
         max_length=3,
-        description="ASCII MathText only. NO Chinese, NO \\begin, NO \\end, NO pmatrix/bmatrix/array/cases. Display numeric matrices using diagram.kind=matrix and diagram.matrix; for determinants show the expanded arithmetic in formulas. Chinese explanations belong in screen_text. Use \\mathrm{or} for alternatives. Commands require braces: \\mathbf{a}, \\frac{3}{4}.",
+        description="Short ASCII MathText, no Chinese or $. Inline pmatrix/bmatrix/vmatrix/matrix (at most 4x4) and cases (at most 4 rows, 2 columns) allowed: at most two per formula, & separates cells and double backslash separates rows. No nested environments, array, align or macros. Prefer one matrix equation per beat. Numeric diagrams also support diagram.kind=matrix. Commands require braces: \\mathbf{a}, \\frac{3}{4}.",
     )
     spoken_text: Annotated[str, StringConstraints(min_length=15, max_length=150)]
     cue_text: Annotated[str, StringConstraints(min_length=1, max_length=30)] = Field(
@@ -155,57 +171,32 @@ class BeatDraft(Contract):
     reading_reason: SmallText
     diagram: Diagram = Field(default_factory=Diagram)
 
+    @field_validator("screen_text")
+    @classmethod
+    def caption_fits(cls, value):
+        if len(wrap_text(value).splitlines()) > 2:
+            raise ValueError("screen_text 须能按每行32列排为两行；请简化文字但保留依据")
+        return value
+
+    @field_validator("formulas", mode="before")
+    @classmethod
+    def explicit_formula_lines(cls, values):
+        if not isinstance(values, list):
+            return values
+        lines = []
+        for value in values:
+            if isinstance(value, str) and ("\n" in value or "\r" in value):
+                lines.extend(
+                    [line.strip() for line in value.splitlines() if line.strip()] or [value]
+                )
+            else:
+                lines.append(value)
+        return lines
+
     @field_validator("formulas")
     @classmethod
     def safe_formulas(cls, values):
-        normalized = []
-        for value in values:
-            # JSON producers sometimes escape an already escaped command a second time.
-            # MathText has no double-backslash row separators; retain the command itself.
-            value = re.sub(r"\\{2,}(?=[A-Za-z{}])", lambda _: "\\", value)
-            value = re.sub(
-                r"\\(mathbf|mathrm|mathit|mathsf|mathtt|mathcal|mathbb)\s+([A-Za-z0-9])",
-                lambda m: "\\" + m[1] + "{" + m[2] + "}",
-                value,
-            )
-            value = re.sub(r"(?<![A-Za-z\\])(?:dfrac|tfrac|frac)(?=\{)", r"\\frac", value)
-            if (
-                "$" in value
-                or any(ord(c) > 127 for c in value)
-                or re.search(
-                    r"\\(?:input|include|write|open|read|usepackage|newcommand|def|catcode|special|begin|end)\b",
-                    value,
-                )
-            ):
-                raise ValueError("公式仅接受 ASCII MathText，不接受文件、宏或 LaTeX 环境")
-            for source, target in [
-                (r"\lVert", r"\Vert"),
-                (r"\rVert", r"\Vert"),
-                (r"\lvert", r"\vert"),
-                (r"\rvert", r"\vert"),
-                (r"\dfrac", r"\frac"),
-                (r"\tfrac", r"\frac"),
-            ]:
-                value = value.replace(source, target)
-            # TeX permits single-token fraction arguments; MathText requires braces.
-            # Group exactly those tokens, preserving TeX meaning (no numeric rounding).
-            value = re.sub(
-                r"\\frac(?:\s+([A-Za-z0-9])|([0-9]))\s*([A-Za-z0-9])",
-                lambda m: "\\frac{" + (m[1] or m[2]) + "}{" + m[3] + "}",
-                value,
-            )
-            value = re.sub(
-                r"\\frac(?:\s+([A-Za-z0-9])|([0-9]))(?=\{)",
-                lambda m: "\\frac{" + (m[1] or m[2]) + "}",
-                value,
-            )
-            value = re.sub(
-                r"\\frac(\{[^{}]+\})\s*([A-Za-z0-9])",
-                lambda m: "\\frac" + m[1] + "{" + m[2] + "}",
-                value,
-            )
-            normalized.append(value)
-        return normalized
+        return [normalize_formula(value) for value in values]
 
     @model_validator(mode="after")
     def real_cue(self):

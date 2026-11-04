@@ -269,6 +269,22 @@ def test_revision_requires_fresh_content_check_before_video(tmp_path):
         assert calls.count("writer") == 1 and calls.count("answer_check") == 2
 
 
+def test_changing_checker_profile_invalidates_receipt_before_video(tmp_path):
+    settings = config(tmp_path)
+    calls = []
+    with TestClient(create_app(settings, transport(settings, calls), TemplateRenderer())) as client:
+        job = submit(client, "text")
+        generation = client.get(f"/api/v2/generations/{job['result']['id']}").json()
+    settings.models["text"].thinking = "enabled"
+    with TestClient(create_app(settings, transport(settings, calls), TemplateRenderer())) as client:
+        for _ in range(2):
+            response = client.post("/api/v2/videos", json={"answer_id": generation["answer_id"]})
+            job = wait_job(client, response.json()["job_id"])
+            assert job["status"] == "completed", job
+        assert calls.count("answer_check") == 2
+        assert calls.count("writer") == 1
+
+
 def test_native_environment_never_contains_api_keys_or_proxy_credentials(monkeypatch):
     monkeypatch.setenv("MY_LLM_API_KEY", "private-value")
     monkeypatch.setenv("HTTPS_PROXY", "https://private:password@proxy.invalid")
@@ -356,7 +372,7 @@ def test_resume_cannot_cross_answer_revision(tmp_path):
 
 
 @pytest.mark.parametrize(
-    "formula", [r"\input{private}", r"\begin{matrix}1\end{matrix}", "$x$", "中文公式"]
+    "formula", [r"\input{private}", r"\begin{array}1\end{array}", "$x$", "中文公式"]
 )
 def test_mathtext_rejects_file_macros_environments_and_non_math_input(formula):
     with pytest.raises(ValidationError):
@@ -454,3 +470,64 @@ def test_short_video_repair_expands_explanation_instead_of_shortening_it(tmp_pat
         assert job["status"] == "completed", job
         assert 1 <= len(repairs) <= 2
         assert all("required_scene_min_seconds" in feedback for feedback in repairs)
+
+
+@pytest.mark.parametrize(
+    "layout_failures, revisions, expected",
+    [
+        (0, 2, "completed"),
+        (0, 3, "partial"),
+        (2, 0, "completed"),
+        (3, 0, "partial"),
+        (1, 1, "completed"),
+        (1, 2, "partial"),
+    ],
+)
+def test_repairs_share_two_slots_and_always_recheck_final_plan(
+    tmp_path, layout_failures, revisions, expected
+):
+    settings = config(tmp_path)
+    calls, checked, feedback = [], [], []
+    base = transport(settings, calls).transport
+
+    class LayoutFailures(TemplateRenderer):
+        attempts = 0
+
+        def validate_layout(self, *args):
+            self.attempts += 1
+            if self.attempts <= layout_failures:
+                raise ContentError("render_layout", "测试排版未通过")
+            return super().validate_layout(*args)
+
+    def handler(request):
+        response = base.handle_request(request)
+        body = json.loads(request.content)
+        payload = json.loads(body["messages"][1]["content"])
+        if "仅生成指定场景" in body["messages"][0]["content"] and payload.get("feedback"):
+            feedback.append(payload)
+            assert payload["previous_scene"]
+        if "独立对照固定正文" in body["messages"][0]["content"]:
+            checked.append(payload)
+            if len(checked) <= revisions:
+                data = response.json()
+                report = json.loads(data["choices"][0]["message"]["content"])
+                report.update(
+                    decision="revise", message="修正场景一的解释", problem_scene_ids=["s1"]
+                )
+                data["choices"][0]["message"]["content"] = json.dumps(report)
+                return httpx.Response(200, json=data)
+        return response
+
+    renderer = LayoutFailures()
+    with TestClient(
+        create_app(
+            settings, ChatProvider(settings, transport=httpx.MockTransport(handler)), renderer
+        )
+    ) as client:
+        job = submit(client)
+        assert job["status"] == expected, job
+        assert len(feedback) <= 2
+        if expected == "completed":
+            assert len(checked) == revisions + 1
+        else:
+            assert not renderer.render_calls

@@ -108,13 +108,37 @@ class ChatProvider:
             {"role": "user", "content": content},
         ]
         last_error: ProviderError = InvalidResponse("模型结果无效")
+
+        def repair_messages(raw: str, feedback: str) -> None:
+            # Keep the failed candidate so the next call can actually repair it.
+            # Fall back to regeneration if that conversation would exceed context.
+            limit = min(
+                cfg.context_window,
+                self.settings.video_context_tokens
+                if role in {"video_planner", "scene_generator", "plan_checker"}
+                else self.settings.answer_context_tokens,
+            )
+            candidates = ([{"role": "assistant", "content": raw}] if raw else []) + [
+                {"role": "user", "content": feedback}
+            ]
+            size = sum(len(m["content"].encode("utf-8")) for m in messages + candidates) + 512
+            if size + cfg.max_output_tokens <= limit:
+                messages.extend(candidates)
+            else:
+                instruction = {"role": "user", "content": feedback}
+                size = (
+                    sum(len(m["content"].encode("utf-8")) for m in messages + [instruction]) + 512
+                )
+                if size + cfg.max_output_tokens <= limit:
+                    messages.append(instruction)
+
         for attempt in range(2):
             if attempt and not budget.allow_retry():
                 break
             timeout = budget.before_call(deadline)
             body = {
                 "model": cfg.model,
-                "messages": messages,
+                "messages": [dict(message) for message in messages],
                 cfg.token_parameter: cfg.max_output_tokens,
             }
             if cfg.json_mode and schema:
@@ -218,16 +242,14 @@ class ChatProvider:
             except ValidationError as exc:
                 last_error = InvalidResponse(f"{role} 返回结构不符合契约")
                 last_error.__cause__ = exc
-                messages.append(
-                    {
-                        "role": "user",
-                        "content": "上次输出未通过以下契约校验。请按原始任务与 schema 修正这些字段后重新返回完整 JSON：\n"
-                        + json.dumps(
-                            exc.errors(include_url=False, include_context=False),
-                            ensure_ascii=False,
-                            default=str,
-                        )[:4000],
-                    }
+                errors = [
+                    {**error, "input": str(error.get("input", ""))[:180]}
+                    for error in exc.errors(include_url=False, include_context=False)[:12]
+                ]
+                repair_messages(
+                    raw,
+                    "上次输出未通过以下契约校验。保留正确内容，修正这些字段后重新返回完整 JSON：\n"
+                    + json.dumps(errors, ensure_ascii=False, default=str),
                 )
             except (KeyError, IndexError, ValueError, TypeError) as exc:
                 last_error = InvalidResponse(f"{role} 返回结构不符合契约")
@@ -246,11 +268,8 @@ class ChatProvider:
                         }
                     )
             if attempt == 0 and schema and len(messages) == 2:
-                messages = [
-                    *messages,
-                    {
-                        "role": "user",
-                        "content": "上次输出无法校验。请严格返回完整 schema JSON，不加解释或代码围栏。",
-                    },
-                ]
+                repair_messages(
+                    "",
+                    "上次输出无法校验。请严格返回完整 schema JSON，不加解释或代码围栏。",
+                )
         raise last_error

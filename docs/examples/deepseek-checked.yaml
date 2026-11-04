@@ -1,0 +1,24 @@
+# DeepSeek Flash profile with reasoning. Supply the key through the environment.
+runs_dir: runs/deepseek-checked
+answer_context_tokens: 64000
+answer_check: true
+model_timeout: 60
+task_timeout: 900
+video_timeout: 600
+video_max_model_calls: 24
+max_model_calls: 30
+max_total_tokens: 300000
+models:
+  checked:
+    base_url: https://api.deepseek.com
+    model: deepseek-flash
+    api_key_env: MANIMAGENT_TEXT_API_KEY
+    thinking: enabled
+    context_window: 128000
+    max_output_tokens: 6000
+roles:
+  answer_writer: checked
+  answer_checker: checked
+  video_planner: checked
+  scene_generator: checked
+  plan_checker: checked

@@ -1,0 +1,1346 @@
+[
+  {
+    "name": "bayes-1",
+    "passed": false,
+    "error": {
+      "code": "video_plan_check",
+      "message": "整体数学与结构正确，但 s1 第4拍缺少对应 u004 的屏幕文字，s6 第4拍未呈现最终结论框式，均需局部补全。",
+      "retryable": false,
+      "details": {}
+    },
+    "schema_errors": [
+      "1 validation error for SceneDraft\nbeats.0.formulas.0\n  String should match pattern '^[\\x20-\\x7E]+$' [type=string_pattern_mismatch, input_value='10\\\\ \\\\text{次}', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/string_pattern_mismatch"
+    ],
+    "plan_checks": [
+      {
+        "plan_hash": "f073331c77eab3b783afe51b66dd30791d52858b3a157cea0d90c5b57bba9be4",
+        "decision": "revise",
+        "message": "整体数学与结构正确，但 s1 第4拍缺少对应 u004 的屏幕文字，s6 第4拍未呈现最终结论框式，均需局部补全。",
+        "units": [
+          {
+            "unit_id": "u001",
+            "decision": "pass",
+            "scene_ids": [
+              "s1"
+            ],
+            "evidence": "s1 b1 屏幕给出盒A3红2蓝、盒B1红4蓝及等概率选盒再抽球。"
+          },
+          {
+            "unit_id": "u002",
+            "decision": "pass",
+            "scene_ids": [
+              "s1"
+            ],
+            "evidence": "s1 b2 屏幕以“把事件写清楚”承接小节标题，并列出A、B、R。"
+          },
+          {
+            "unit_id": "u003",
+            "decision": "pass",
+            "scene_ids": [
+              "s1"
+            ],
+            "evidence": "s1 b2 屏幕文字定义A选盒A、B选盒B、R抽到红球，公式给符号。"
+          },
+          {
+            "unit_id": "u004",
+            "decision": "fail",
+            "scene_ids": [
+              "s1"
+            ],
+            "evidence": "s1 无屏幕文字写出“题设给出”这一引导；b1虽列条件但未承接该句。"
+          },
+          {
+            "unit_id": "u005",
+            "decision": "pass",
+            "scene_ids": [
+              "s2"
+            ],
+            "evidence": "s2 三拍屏幕分别给出P(A)=P(B)=1/2、P(R|A)=3/5、P(R|B)=1/5。"
+          },
+          {
+            "unit_id": "u006",
+            "decision": "pass",
+            "scene_ids": [
+              "s1"
+            ],
+            "evidence": "s1 b3 屏幕写“已知抽到红球，求红球来自盒A的概率”并给出P(A|R)。"
+          },
+          {
+            "unit_id": "u007",
+            "decision": "pass",
+            "scene_ids": [
+              "s3"
+            ],
+            "evidence": "s3 b1 屏幕以“条件概率P(A|R)”承接“二、条件概率”标题语义。"
+          },
+          {
+            "unit_id": "u008",
+            "decision": "pass",
+            "scene_ids": [
+              "s3"
+            ],
+            "evidence": "s3 b1-b3 屏幕解释条件语义、给出P(A|R)=P(A∩R)/P(R)并说明分子分母。"
+          },
+          {
+            "unit_id": "u009",
+            "decision": "pass",
+            "scene_ids": [
+              "s4"
+            ],
+            "evidence": "s4 b1 屏幕写“两种互斥情形”并给出P(R)=P(A∩R)+P(B∩R)，承接全概率。"
+          },
+          {
+            "unit_id": "u010",
+            "decision": "pass",
+            "scene_ids": [
+              "s4"
+            ],
+            "evidence": "s4 b1 屏幕说明抽到红球只可能来自盒A或盒B，两情形互斥且覆盖全部。"
+          },
+          {
+            "unit_id": "u011",
+            "decision": "pass",
+            "scene_ids": [
+              "s4"
+            ],
+            "evidence": "s4 b2 屏幕列出情形一A∩R与情形二B∩R，并说明不会同时发生。"
+          },
+          {
+            "unit_id": "u012",
+            "decision": "pass",
+            "scene_ids": [
+              "s4"
+            ],
+            "evidence": "s4 b3-b4 屏幕给出乘法公式及全概率公式P(R)=P(A)P(R|A)+P(B)P(R|B)。"
+          },
+          {
+            "unit_id": "u013",
+            "decision": "pass",
+            "scene_ids": [
+              "s5"
+            ],
+            "evidence": "s5 b1-b2 屏幕显示(1/2)(3/5)=3/10与(1/2)(1/5)=1/10。"
+          },
+          {
+            "unit_id": "u014",
+            "decision": "pass",
+            "scene_ids": [
+              "s5"
+            ],
+            "evidence": "s5 b3 屏幕文字“把两种情形列成表”承接联合概率列表标题。"
+          },
+          {
+            "unit_id": "u015",
+            "decision": "pass",
+            "scene_ids": [
+              "s5"
+            ],
+            "evidence": "s5 b3 屏幕说明每行先验乘条件得联合，并给出3/10与1/10两行结果。"
+          },
+          {
+            "unit_id": "u016",
+            "decision": "pass",
+            "scene_ids": [
+              "s5"
+            ],
+            "evidence": "s5 b4 屏幕显示P(R)=3/10+1/10=4/10=2/5。"
+          },
+          {
+            "unit_id": "u017",
+            "decision": "pass",
+            "scene_ids": [
+              "s6"
+            ],
+            "evidence": "s6 b1 屏幕以已有联合概率与总概率按定义反推，承接贝叶斯求答案。"
+          },
+          {
+            "unit_id": "u018",
+            "decision": "pass",
+            "scene_ids": [
+              "s6"
+            ],
+            "evidence": "s6 b2 屏幕显示P(A|R)=(3/10)/(4/10)=3/4。"
+          },
+          {
+            "unit_id": "u019",
+            "decision": "pass",
+            "scene_ids": [
+              "s6"
+            ],
+            "evidence": "s6 b3 屏幕给出贝叶斯公式P(A)P(R|A)/[P(A)P(R|A)+P(B)P(R|B)]。"
+          },
+          {
+            "unit_id": "u020",
+            "decision": "fail",
+            "scene_ids": [
+              "s6"
+            ],
+            "evidence": "s6 b4 屏幕只给3/4计算，未写出最终结论框式P(A|R)=3/4。"
+          },
+          {
+            "unit_id": "u021",
+            "decision": "pass",
+            "scene_ids": [
+              "s7"
+            ],
+            "evidence": "s7 b1 屏幕“自然频率核对”与10次试验承接小节标题。"
+          },
+          {
+            "unit_id": "u022",
+            "decision": "pass",
+            "scene_ids": [
+              "s7"
+            ],
+            "evidence": "s7 b1 屏幕说明取10次重复选盒抽球，公式标“10 times”。"
+          },
+          {
+            "unit_id": "u023",
+            "decision": "pass",
+            "scene_ids": [
+              "s7"
+            ],
+            "evidence": "s7 b2 屏幕给出10次中约5次盒A、5次盒B，并配10×1/2=5。"
+          },
+          {
+            "unit_id": "u024",
+            "decision": "pass",
+            "scene_ids": [
+              "s7"
+            ],
+            "evidence": "s7 b3 屏幕显示5×3/5=3与5×1/5=1，分别对应两盒红球次数。"
+          },
+          {
+            "unit_id": "u025",
+            "decision": "pass",
+            "scene_ids": [
+              "s7"
+            ],
+            "evidence": "s7 b4 屏幕写红球约3+1=4次，其中盒A约3次，比例3/4与贝叶斯一致。"
+          },
+          {
+            "unit_id": "u026",
+            "decision": "pass",
+            "scene_ids": [
+              "s7"
+            ],
+            "evidence": "s7 b4 屏幕以3/4与贝叶斯结果一致收束；关键数值3/10、1/10、2/5已在s5显示。"
+          }
+        ],
+        "problem_scene_ids": []
+      }
+    ]
+  },
+  {
+    "name": "derivative-1",
+    "passed": false,
+    "error": {
+      "code": "invalid_provider_response",
+      "message": "模型未返回有效 JSON 对象",
+      "retryable": false,
+      "details": {}
+    },
+    "schema_errors": [
+      "1 validation error for SceneDraft\n  Invalid JSON: invalid escape at line 1 column 215 [type=json_invalid, input_value='{\"scene_id\":\"s1\",\"beats\"...[-1,4],\"objects\":[]}}]}', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/json_invalid"
+    ],
+    "plan_checks": []
+  },
+  {
+    "name": "geometric_sum-1",
+    "passed": true,
+    "error": null,
+    "schema_errors": [
+      "1 validation error for SceneDraft\nbeats.2.formulas\n  List should have at most 3 items after validation, not 4 [type=too_long, input_value=['3+6=9', '9+12=21', '21+24=45', '45+48=93'], input_type=list]\n    For further information visit https://errors.pydantic.dev/2.14/v/too_long"
+    ],
+    "plan_checks": [
+      {
+        "plan_hash": "24f4e7cbcc15d59b2502af2df97ceeda841f74b90bdaed241e20130f64b23e84",
+        "decision": "pass",
+        "message": "所有单元均被对应场景的屏幕公式与文字承接，数值与固定解答一致；代数推导、分母条件、代入计算和直接相加验证均有独立屏幕说明。",
+        "units": [
+          {
+            "unit_id": "u001",
+            "decision": "pass",
+            "scene_ids": [
+              "s1"
+            ],
+            "evidence": "s1b1屏幕文字明确两个任务及a1=3、q=2前5项和验证；s7b3屏幕注明依据题目要求完成。"
+          },
+          {
+            "unit_id": "u002",
+            "decision": "pass",
+            "scene_ids": [
+              "s1"
+            ],
+            "evidence": "s1b2屏幕写出Sn=a1+a1q+…+a1q^(n-1)；b3给出ak=a1q^(k-1)并说明等比定义；b4用求和式对应。"
+          },
+          {
+            "unit_id": "u003",
+            "decision": "pass",
+            "scene_ids": [
+              "s2"
+            ],
+            "evidence": "s2b1写q=1推出ak=a1，b2写a1=a2=…=an与n个a1相加，b3给出Sn=na1(q=1)并说明不需错位相减。"
+          },
+          {
+            "unit_id": "u004",
+            "decision": "pass",
+            "scene_ids": [
+              "s3"
+            ],
+            "evidence": "s3b1显示Sn展开式，b2显示qSn展开式且末项为a1q^n，b3对齐两式说明错位位置。"
+          },
+          {
+            "unit_id": "u005",
+            "decision": "pass",
+            "scene_ids": [
+              "s3"
+            ],
+            "evidence": "s3b4显示Sn-qSn=a1-a1q^n并说明中间项抵消，b5显示(1-q)Sn=a1(1-q^n)及提取公因式依据。"
+          },
+          {
+            "unit_id": "u006",
+            "decision": "pass",
+            "scene_ids": [
+              "s4"
+            ],
+            "evidence": "s4b1以q≠1即1-q≠0说明可除，显示分式公式；b2显示分子分母同乘-1的等价形式；b3附q≠1条件。"
+          },
+          {
+            "unit_id": "u007",
+            "decision": "pass",
+            "scene_ids": [
+              "s4"
+            ],
+            "evidence": "s4b4屏幕说明q=1时分母为0分式无意义，必须单独用Sn=na1，并列出两种情形公式。"
+          },
+          {
+            "unit_id": "u008",
+            "decision": "pass",
+            "scene_ids": [
+              "s5"
+            ],
+            "evidence": "s5b1写a1=3、q=2、n=5且q≠1；b2显示2^5=32；b3代入得3(1-32)/(1-2)=3×(-31)/(-1)且算-93；b4得(-93)/(-1)=93。"
+          },
+          {
+            "unit_id": "u009",
+            "decision": "pass",
+            "scene_ids": [
+              "s5"
+            ],
+            "evidence": "s5b4屏幕公式S5=93并文字说明前5项和为93，与本单元结论一致。"
+          },
+          {
+            "unit_id": "u010",
+            "decision": "pass",
+            "scene_ids": [
+              "s6"
+            ],
+            "evidence": "s6b1列出3,6,12,24,48；b2写求和式；b3显示3+6=9、9+12=21、21+24=45、45+48=93；b4对照S5=93验证通过。"
+          },
+          {
+            "unit_id": "u011",
+            "decision": "pass",
+            "scene_ids": [
+              "s7"
+            ],
+            "evidence": "s7b1并列q=1时Sn=na1与q≠1时分式公式；b2强调除以1-q需q≠1；b3给出S5=93与直接相加93一致。"
+          },
+          {
+            "unit_id": "u012",
+            "decision": "pass",
+            "scene_ids": [
+              "s7"
+            ],
+            "evidence": "s7b3屏幕文字写明“依据题目要求完成”，与来源引用对应，未扩展无依据内容。"
+          }
+        ],
+        "problem_scene_ids": []
+      }
+    ]
+  },
+  {
+    "name": "integral-1",
+    "passed": true,
+    "error": null,
+    "schema_errors": [],
+    "plan_checks": [
+      {
+        "plan_hash": "5d0a60ee85dfa5e5010121d95f0f010e3ec3d108314f8f97112dd0b7be0cdb93",
+        "decision": "pass",
+        "message": "六个场景均以屏幕文字、公式和结论承接对应教学单元，数值与正文一致，未发现数学或节奏问题。",
+        "units": [
+          {
+            "unit_id": "u001",
+            "decision": "pass",
+            "scene_ids": [
+              "s1"
+            ],
+            "evidence": "s1 以公式显示待求定积分，屏幕文字说明需计算并写出原函数、代入次序与求导检验。"
+          },
+          {
+            "unit_id": "u002",
+            "decision": "pass",
+            "scene_ids": [
+              "s1"
+            ],
+            "evidence": "s1 屏幕定义 F'(x)=f(x) 说明原函数，并提出本题 f(x)=3x²+2x+1 的目标。"
+          },
+          {
+            "unit_id": "u003",
+            "decision": "pass",
+            "scene_ids": [
+              "s2"
+            ],
+            "evidence": "s2 分别显示 ∫3x²dx=x³、∫2xdx=x²、∫1dx=x，并说明幂公式与求导互逆依据。"
+          },
+          {
+            "unit_id": "u004",
+            "decision": "pass",
+            "scene_ids": [
+              "s2"
+            ],
+            "evidence": "s2 屏幕写出 f(x)=3x²+2x+1 与 F(x)=x³+x²+x，并说明积分可逐项相加。"
+          },
+          {
+            "unit_id": "u005",
+            "decision": "pass",
+            "scene_ids": [
+              "s2"
+            ],
+            "evidence": "s2 单独一屏显示整理后的原函数 F(x)=x³+x²+x，并与被积函数逐项对应。"
+          },
+          {
+            "unit_id": "u006",
+            "decision": "pass",
+            "scene_ids": [
+              "s2"
+            ],
+            "evidence": "s2 屏幕显示 F(x)=x³+x²+x+C 与 C=0，说明定积分中常数项相消。"
+          },
+          {
+            "unit_id": "u007",
+            "decision": "pass",
+            "scene_ids": [
+              "s3"
+            ],
+            "evidence": "s3 承接前一步原函数，屏幕文字明确指出计算定积分要用牛顿–莱布尼茨公式。"
+          },
+          {
+            "unit_id": "u008",
+            "decision": "pass",
+            "scene_ids": [
+              "s3"
+            ],
+            "evidence": "s3 屏幕完整显示 ∫_a^b f(x)dx=F(b)-F(a)，并解释先取上限值再取减下限值。"
+          },
+          {
+            "unit_id": "u009",
+            "decision": "pass",
+            "scene_ids": [
+              "s3"
+            ],
+            "evidence": "s3 屏幕文字说明公式中 F 是 f 的任意一个原函数，取 C=0 不影响结果。"
+          },
+          {
+            "unit_id": "u010",
+            "decision": "pass",
+            "scene_ids": [
+              "s3"
+            ],
+            "evidence": "s3 屏幕对照题目显示 a=0、b=2，说明积分下限与上限。"
+          },
+          {
+            "unit_id": "u011",
+            "decision": "pass",
+            "scene_ids": [
+              "s3"
+            ],
+            "evidence": "s3 屏幕显示 ∫_0^2(3x²+2x+1)dx=F(2)-F(0)，完成具体上下限代入。"
+          },
+          {
+            "unit_id": "u012",
+            "decision": "pass",
+            "scene_ids": [
+              "s4"
+            ],
+            "evidence": "s4 开篇屏幕文字明确先代入上限、再代入下限、然后相减，并配公式 F(b)-F(a)。"
+          },
+          {
+            "unit_id": "u013",
+            "decision": "pass",
+            "scene_ids": [
+              "s4"
+            ],
+            "evidence": "s4 屏幕显示第三部分标题“代入上下限并逐项计算”，承接逐项计算任务。"
+          },
+          {
+            "unit_id": "u014",
+            "decision": "pass",
+            "scene_ids": [
+              "s4"
+            ],
+            "evidence": "s4 屏幕再次写出 F(x)=x³+x²+x 作为代入依据。"
+          },
+          {
+            "unit_id": "u015",
+            "decision": "pass",
+            "scene_ids": [
+              "s4",
+              "s5"
+            ],
+            "evidence": "s4 由 F(x) 过渡到 F(2)、F(0) 计算，s5 进入相减步骤，屏幕文字承接。"
+          },
+          {
+            "unit_id": "u016",
+            "decision": "pass",
+            "scene_ids": [
+              "s4"
+            ],
+            "evidence": "s4 屏幕完整显示 F(2)=2³+2²+2=8+4+2=14，逐项计算正确。"
+          },
+          {
+            "unit_id": "u017",
+            "decision": "pass",
+            "scene_ids": [
+              "s4"
+            ],
+            "evidence": "s4 屏幕显示 F(0)=0³+0²+0=0，并说明三项都含因子 0。"
+          },
+          {
+            "unit_id": "u018",
+            "decision": "pass",
+            "scene_ids": [
+              "s5"
+            ],
+            "evidence": "s5 开头屏幕文字回顾 F(2)=14、F(0)=0，并以“所以”引出相减计算。"
+          },
+          {
+            "unit_id": "u019",
+            "decision": "pass",
+            "scene_ids": [
+              "s5"
+            ],
+            "evidence": "s5 屏幕显示 F(2)-F(0)=14-0=14 及完整定积分计算链等于 14。"
+          },
+          {
+            "unit_id": "u020",
+            "decision": "pass",
+            "scene_ids": [
+              "s5"
+            ],
+            "evidence": "s5 屏幕文字“所以该定积分的值确定为 14”给出结论依据。"
+          },
+          {
+            "unit_id": "u021",
+            "decision": "pass",
+            "scene_ids": [
+              "s5"
+            ],
+            "evidence": "s5 结论拍公式框出定积分值 14。"
+          },
+          {
+            "unit_id": "u022",
+            "decision": "pass",
+            "scene_ids": [
+              "s6"
+            ],
+            "evidence": "s6 屏幕标题“用原函数求导检验”，并说明要针对选定的原函数求导。"
+          },
+          {
+            "unit_id": "u023",
+            "decision": "pass",
+            "scene_ids": [
+              "s6"
+            ],
+            "evidence": "s6 屏幕显示检验对象 F(x)=x³+x²+x。"
+          },
+          {
+            "unit_id": "u024",
+            "decision": "pass",
+            "scene_ids": [
+              "s6"
+            ],
+            "evidence": "s6 屏幕文字“逐项求导”引出对三项分别求导。"
+          },
+          {
+            "unit_id": "u025",
+            "decision": "pass",
+            "scene_ids": [
+              "s6"
+            ],
+            "evidence": "s6 屏幕显示 F'(x)=3x²+2x+1，并说明 x³→3x²、x²→2x、x→1。"
+          },
+          {
+            "unit_id": "u026",
+            "decision": "pass",
+            "scene_ids": [
+              "s6"
+            ],
+            "evidence": "s6 屏幕显示 F'(x)=3x²+2x+1=f(x)，并说明所选原函数正确、定积分计算成立。"
+          },
+          {
+            "unit_id": "u027",
+            "decision": "pass",
+            "scene_ids": [
+              "s6"
+            ],
+            "evidence": "s6 屏幕文字“检验通过以后”回到定积分最终结果，并显示积分等于 14。"
+          },
+          {
+            "unit_id": "u028",
+            "decision": "pass",
+            "scene_ids": [
+              "s6"
+            ],
+            "evidence": "s6 末拍屏显示完整结论 ∫_0^2(3x²+2x+1)dx=14，文字确认原函数与代入无误。"
+          }
+        ],
+        "problem_scene_ids": []
+      }
+    ]
+  },
+  {
+    "name": "linear_system-1",
+    "passed": false,
+    "error": {
+      "code": "invalid_provider_response",
+      "message": "scene_generator 返回结构不符合契约",
+      "retryable": false,
+      "details": {}
+    },
+    "schema_errors": [
+      "2 validation errors for SceneDraft\nbeats.1.formulas.0\n  String should match pattern '^[\\x20-\\x7E]+$' [type=string_pattern_mismatch, input_value='\\\\mathrm{①}:x\\\\ \\\\mathrm{coef}\\\\ 2', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/string_pattern_mismatch\nbeats.1.formulas.1\n  String should match pattern '^[\\x20-\\x7E]+$' [type=string_pattern_mismatch, input_value='\\\\mathrm{②}:x\\\\ \\\\mathrm{coef}\\\\ 1', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/string_pattern_mismatch",
+      "2 validation errors for SceneDraft\nbeats.2.diagram\n  Value error, 对象坐标超出坐标范围 [type=value_error, input_value={'kind': 'plane', 'x_rang...x-2', 'color': 'gold'}]}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error\nbeats.3.diagram\n  Value error, 对象坐标超出坐标范围 [type=value_error, input_value={'kind': 'plane', 'x_rang...'red', 'radius': 0.15}]}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error"
+    ],
+    "plan_checks": []
+  },
+  {
+    "name": "matrix_inverse-1",
+    "passed": true,
+    "error": null,
+    "schema_errors": [],
+    "plan_checks": [
+      {
+        "plan_hash": "f80bcdb79d0db86d3019bc5bc622b80a40e59d2ab96a250d0b10bb3db2018ca4",
+        "decision": "pass",
+        "message": "6个场景逐一承接13个单元，公式与数值均与固定正文一致，无数学或节奏问题。",
+        "units": [
+          {
+            "unit_id": "u001",
+            "decision": "pass",
+            "scene_ids": [
+              "s1"
+            ],
+            "evidence": "s1给矩阵A=[[2,1],[1,1]]并列出det A、A^{-1}、AA^{-1}三项任务及核对目标。"
+          },
+          {
+            "unit_id": "u002",
+            "decision": "pass",
+            "scene_ids": [
+              "s2"
+            ],
+            "evidence": "s2给出det M=ad-bc、可逆当且仅当det M≠0，并用除以det M及奇异矩阵解释理由。"
+          },
+          {
+            "unit_id": "u003",
+            "decision": "pass",
+            "scene_ids": [
+              "s3"
+            ],
+            "evidence": "s3显示M^{-1}=1/(ad-bc)[[d,-b],[-c,a]]并解释主对角互换、副对角变号、整体除行列式。"
+          },
+          {
+            "unit_id": "u004",
+            "decision": "pass",
+            "scene_ids": [
+              "s4"
+            ],
+            "evidence": "s4b1屏幕文字列出a=2,b=1,c=1,d=1并对应左上、右上、左下、右下。"
+          },
+          {
+            "unit_id": "u005",
+            "decision": "pass",
+            "scene_ids": [
+              "s4"
+            ],
+            "evidence": "s4b2显示det A=2·1-1·1=1，s4b3显示det A=1≠0故A可逆。"
+          },
+          {
+            "unit_id": "u006",
+            "decision": "pass",
+            "scene_ids": [
+              "s4"
+            ],
+            "evidence": "s4b4-b5由公式代入得A^{-1}=1/1[[1,-1],[-1,2]]=[[1,-1],[-1,2]]，四元素来源已逐项说明。"
+          },
+          {
+            "unit_id": "u007",
+            "decision": "pass",
+            "scene_ids": [
+              "s4"
+            ],
+            "evidence": "s4b5屏幕公式给出A^{-1}=[[1,-1],[-1,2]]，即正文方框中的结论。"
+          },
+          {
+            "unit_id": "u008",
+            "decision": "pass",
+            "scene_ids": [
+              "s5"
+            ],
+            "evidence": "s5b1屏幕写出A=[[2,1],[1,1]]、A^{-1}=[[1,-1],[-1,2]]并交代行乘列规则。"
+          },
+          {
+            "unit_id": "u009",
+            "decision": "pass",
+            "scene_ids": [
+              "s5"
+            ],
+            "evidence": "s5b2显示(AA^{-1})_{11}=2·1+1·(-1)=2-1=1。"
+          },
+          {
+            "unit_id": "u010",
+            "decision": "pass",
+            "scene_ids": [
+              "s5"
+            ],
+            "evidence": "s5b3显示(AA^{-1})_{12}=2·(-1)+1·2=-2+2=0。"
+          },
+          {
+            "unit_id": "u011",
+            "decision": "pass",
+            "scene_ids": [
+              "s5"
+            ],
+            "evidence": "s5b4显示(AA^{-1})_{21}=1·1+1·(-1)=1-1=0。"
+          },
+          {
+            "unit_id": "u012",
+            "decision": "pass",
+            "scene_ids": [
+              "s5"
+            ],
+            "evidence": "s5b5显示(AA^{-1})_{22}=1·(-1)+1·2=1，并汇总AA^{-1}=[[1,0],[0,1]]=I₂，核对通过。"
+          },
+          {
+            "unit_id": "u013",
+            "decision": "pass",
+            "scene_ids": [
+              "s6"
+            ],
+            "evidence": "s6b1显示det A=1≠0且A可逆；s6b2给出逆矩阵；s6b3显示AA^{-1}=I₂，结论成立。"
+          }
+        ],
+        "problem_scene_ids": []
+      }
+    ]
+  },
+  {
+    "name": "projection-1",
+    "passed": true,
+    "error": null,
+    "schema_errors": [],
+    "plan_checks": [
+      {
+        "plan_hash": "68cf973366b4ad449696dc2791feaf34f7617c3a3a601944cf42d3199163279d",
+        "decision": "pass",
+        "message": "六场景覆盖全部18个教学单元：前提、几何、公式推导、逐项计算、三量辨析与残差验证均以屏幕文字/公式/图形独立承接，数值与固定答案一致。",
+        "units": [
+          {
+            "unit_id": "u001",
+            "decision": "pass",
+            "scene_ids": [
+              "s1"
+            ],
+            "evidence": "s1b1屏幕给出a=(3,2)、b=(2,0)及求正交投影的目标。"
+          },
+          {
+            "unit_id": "u002",
+            "decision": "pass",
+            "scene_ids": [
+              "s1"
+            ],
+            "evidence": "s1b3屏幕写明必须b≠0及其理由，s1b4核验b=(2,0)≠(0,0)。"
+          },
+          {
+            "unit_id": "u003",
+            "decision": "pass",
+            "scene_ids": [
+              "s2"
+            ],
+            "evidence": "s2b1同起点O作图，b2作垂足P，b3标出OP=p为投影向量。"
+          },
+          {
+            "unit_id": "u004",
+            "decision": "pass",
+            "scene_ids": [
+              "s2"
+            ],
+            "evidence": "s2b4标题即为投影向量两个特征之一，屏幕列出p落在b所在直线。"
+          },
+          {
+            "unit_id": "u005",
+            "decision": "pass",
+            "scene_ids": [
+              "s2"
+            ],
+            "evidence": "s2b4屏幕给出p=cb，s2b5屏幕给出(a-p)·b=0并配残差向量图。"
+          },
+          {
+            "unit_id": "u006",
+            "decision": "pass",
+            "scene_ids": [
+              "s2"
+            ],
+            "evidence": "s2b5屏幕文字明言两条特征正是推导系数公式的依据。"
+          },
+          {
+            "unit_id": "u007",
+            "decision": "pass",
+            "scene_ids": [
+              "s3"
+            ],
+            "evidence": "s3b1设p=cb，b2代入(a-cb)·b=0，b3展开，b4因b·b>0得c与p公式。"
+          },
+          {
+            "unit_id": "u008",
+            "decision": "pass",
+            "scene_ids": [
+              "s4"
+            ],
+            "evidence": "s4b1屏幕公式(3,2)·(2,0)=3×2+2×0=6承接点积计算。"
+          },
+          {
+            "unit_id": "u009",
+            "decision": "pass",
+            "scene_ids": [
+              "s4"
+            ],
+            "evidence": "s4b2屏幕公式b·b=2²+0²=4及|b|²>0承接。"
+          },
+          {
+            "unit_id": "u010",
+            "decision": "pass",
+            "scene_ids": [
+              "s4"
+            ],
+            "evidence": "s4b3屏幕公式c=6/4=3/2承接系数计算。"
+          },
+          {
+            "unit_id": "u011",
+            "decision": "pass",
+            "scene_ids": [
+              "s5"
+            ],
+            "evidence": "s5b1屏幕公式p=(3/2)(2,0)=(3,0)承接投影向量计算。"
+          },
+          {
+            "unit_id": "u012",
+            "decision": "pass",
+            "scene_ids": [
+              "s5"
+            ],
+            "evidence": "s5b2屏幕写明投影向量p=(3,0)且强调是向量非长度。"
+          },
+          {
+            "unit_id": "u013",
+            "decision": "pass",
+            "scene_ids": [
+              "s5"
+            ],
+            "evidence": "s5b3屏幕公式c=3/2并说明其为p相对b的倍数。"
+          },
+          {
+            "unit_id": "u014",
+            "decision": "pass",
+            "scene_ids": [
+              "s5"
+            ],
+            "evidence": "s5b3屏幕公式a·b/|b|=6/2=3，说明为标量投影长度且与b同向。"
+          },
+          {
+            "unit_id": "u015",
+            "decision": "pass",
+            "scene_ids": [
+              "s5"
+            ],
+            "evidence": "s5b4屏幕给出p=(3,0)、|p|=3，说明方向同b。"
+          },
+          {
+            "unit_id": "u016",
+            "decision": "pass",
+            "scene_ids": [
+              "s5"
+            ],
+            "evidence": "s5b4屏幕公式p=(a·b/|b|)(b/|b|)=a·b/|b|²·b承接三者关系。"
+          },
+          {
+            "unit_id": "u017",
+            "decision": "pass",
+            "scene_ids": [
+              "s6"
+            ],
+            "evidence": "s6b1屏幕算残差(0,2)与点积为0，s6b2推出a-p⊥b。"
+          },
+          {
+            "unit_id": "u018",
+            "decision": "pass",
+            "scene_ids": [
+              "s6"
+            ],
+            "evidence": "s6b3屏幕汇总b≠0前提、p=(3,0)、c=3/2、长度3、残差(0,2)垂直。"
+          }
+        ],
+        "problem_scene_ids": []
+      }
+    ]
+  },
+  {
+    "name": "quadratic-1",
+    "passed": true,
+    "error": null,
+    "schema_errors": [],
+    "plan_checks": [
+      {
+        "plan_hash": "250a41508b2a79d8feff0719dc30291a1d790fdfb2e454193c66373411932fdc",
+        "decision": "pass",
+        "message": "全部10个教学单元均由屏幕文字与公式承接，推理、判别式、双根代回均与固定答案一致，无数学或节奏问题。",
+        "units": [
+          {
+            "unit_id": "u001",
+            "decision": "pass",
+            "scene_ids": [
+              "s1"
+            ],
+            "evidence": "s1b1屏幕给出题目方程与任务清单（分解依据、零乘积法则、公式核对、代回验证）。"
+          },
+          {
+            "unit_id": "u002",
+            "decision": "pass",
+            "scene_ids": [
+              "s1"
+            ],
+            "evidence": "s1b2列出系数a=1、b=-5、c=6；s1b3说明分解后利用乘积为零的总体思路。"
+          },
+          {
+            "unit_id": "u003",
+            "decision": "pass",
+            "scene_ids": [
+              "s2"
+            ],
+            "evidence": "s2b2展开得x^2-(p+q)x+pq；s2b3比较得p+q=5、pq=6；s2b4取2和3得分解。"
+          },
+          {
+            "unit_id": "u004",
+            "decision": "pass",
+            "scene_ids": [
+              "s3"
+            ],
+            "evidence": "s3b1展开为x^2-3x-2x+6；s3b2系数相同即恒等；s3b3改写为(x-2)(x-3)=0。"
+          },
+          {
+            "unit_id": "u005",
+            "decision": "pass",
+            "scene_ids": [
+              "s4"
+            ],
+            "evidence": "s4b1陈述AB=0则A=0或B=0；s4b2给出非零乘积依据；s4b3代入得两个一次方程。"
+          },
+          {
+            "unit_id": "u006",
+            "decision": "pass",
+            "scene_ids": [
+              "s5"
+            ],
+            "evidence": "s5b1由x-2=0得x=2；s5b2由x-3=0得x=3；s5b3写出x1=2、x2=3。"
+          },
+          {
+            "unit_id": "u007",
+            "decision": "pass",
+            "scene_ids": [
+              "s6"
+            ],
+            "evidence": "s6b1写求根公式；s6b2代a=1、b=-5、c=6算Δ=25-24=1；s6b3据Δ>0代入得(5±1)/2。"
+          },
+          {
+            "unit_id": "u008",
+            "decision": "pass",
+            "scene_ids": [
+              "s6"
+            ],
+            "evidence": "s6b4分别算6/2=3、4/2=2，得x1=2、x2=3，并指出与因式分解一致。"
+          },
+          {
+            "unit_id": "u009",
+            "decision": "pass",
+            "scene_ids": [
+              "s7"
+            ],
+            "evidence": "s7b2显示2^2-5·2+6=4-10+6=0；s7b3显示3^2-5·3+6=9-15+6=0，均成立。"
+          },
+          {
+            "unit_id": "u010",
+            "decision": "pass",
+            "scene_ids": [
+              "s7"
+            ],
+            "evidence": "s7b4汇总分解、零乘积两个一次方程、公式核对一致、双根代回成立，结论x1=2、x2=3。"
+          }
+        ],
+        "problem_scene_ids": []
+      }
+    ]
+  },
+  {
+    "name": "triangle_area-1",
+    "passed": false,
+    "error": {
+      "code": "invalid_provider_response",
+      "message": "scene_generator 返回结构不符合契约",
+      "retryable": false,
+      "details": {}
+    },
+    "schema_errors": [
+      "2 validation errors for SceneDraft\nbeats.2.formulas.0\n  String should match pattern '^[\\x20-\\x7E]+$' [type=string_pattern_mismatch, input_value='\\\\det>0\\\\Rightarrow \\\\text{逆时针}', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/string_pattern_mismatch\nbeats.2.formulas.1\n  String should match pattern '^[\\x20-\\x7E]+$' [type=string_pattern_mismatch, input_value='\\\\det<0\\\\Rightarrow \\\\text{顺时针}', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/string_pattern_mismatch",
+      "1 validation error for SceneDraft\nbeats.3\n  Value error, cue 引用了不存在的图形对象 [type=value_error, input_value={'beat_id': 'b4', 'unit_i...'C', 'color': 'gold'}]}}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error"
+    ],
+    "plan_checks": []
+  },
+  {
+    "name": "variance-1",
+    "passed": true,
+    "error": null,
+    "schema_errors": [],
+    "plan_checks": [
+      {
+        "plan_hash": "b0ef10bfeade87b657e95ce582f253c503bba30939849e1581ff1d94777cec43",
+        "decision": "pass",
+        "message": "六场景全覆盖40单元；数值与固定答案一致；分母n、E(X²)核对与量纲区别均有屏幕说明，旁白cue指向正确。",
+        "units": [
+          {
+            "unit_id": "u001",
+            "decision": "pass",
+            "scene_ids": [
+              "s1"
+            ],
+            "evidence": "s1 b1屏幕文字列出完整总体与求均值、方差、解释分母n的任务。"
+          },
+          {
+            "unit_id": "u002",
+            "decision": "pass",
+            "scene_ids": [
+              "s1"
+            ],
+            "evidence": "s1 b2屏幕显示“共有5个个体，n等于5”及公式n=5。"
+          },
+          {
+            "unit_id": "u003",
+            "decision": "pass",
+            "scene_ids": [
+              "s1"
+            ],
+            "evidence": "s1 b3公式行显示x1=1至x5=5并与下标说明对应。"
+          },
+          {
+            "unit_id": "u004",
+            "decision": "pass",
+            "scene_ids": [
+              "s1"
+            ],
+            "evidence": "s1 b4说明5个数是完整总体非样本，并显示μ与σ²记号。"
+          },
+          {
+            "unit_id": "u005",
+            "decision": "pass",
+            "scene_ids": [
+              "s2"
+            ],
+            "evidence": "s2 b1屏幕文字与公式给出均值等于数据和除以5的定义。"
+          },
+          {
+            "unit_id": "u006",
+            "decision": "pass",
+            "scene_ids": [
+              "s2"
+            ],
+            "evidence": "s2 b2代入1+2+3+4+5得15，b3显示15/5=3。"
+          },
+          {
+            "unit_id": "u007",
+            "decision": "pass",
+            "scene_ids": [
+              "s2"
+            ],
+            "evidence": "s2 b3屏幕文字明示15除以5得3，所以总体均值为3。"
+          },
+          {
+            "unit_id": "u008",
+            "decision": "pass",
+            "scene_ids": [
+              "s2"
+            ],
+            "evidence": "s2 b4公式μ=3并说明其作为后续离差计算基准。"
+          },
+          {
+            "unit_id": "u009",
+            "decision": "pass",
+            "scene_ids": [
+              "s3"
+            ],
+            "evidence": "s3 b1屏幕说明离差为x_i-3、离差平方为(x_i-3)^2。"
+          },
+          {
+            "unit_id": "u010",
+            "decision": "pass",
+            "scene_ids": [
+              "s3"
+            ],
+            "evidence": "s3 b2逐项列出-2,-1,0,1,2，b3列出平方4,1,0,1,4。"
+          },
+          {
+            "unit_id": "u011",
+            "decision": "pass",
+            "scene_ids": [
+              "s3"
+            ],
+            "evidence": "s3 b4屏幕明示把五个离差平方相加作为总体方差分子。"
+          },
+          {
+            "unit_id": "u012",
+            "decision": "pass",
+            "scene_ids": [
+              "s3"
+            ],
+            "evidence": "s3 b4屏幕显示4+1+0+1+4=10。"
+          },
+          {
+            "unit_id": "u013",
+            "decision": "pass",
+            "scene_ids": [
+              "s4"
+            ],
+            "evidence": "s4 b1屏幕说明总体方差是离差平方平均、分母为总数n。"
+          },
+          {
+            "unit_id": "u014",
+            "decision": "pass",
+            "scene_ids": [
+              "s4"
+            ],
+            "evidence": "s4 b1公式显示σ²=(1/n)Σ(x_i-μ)²。"
+          },
+          {
+            "unit_id": "u015",
+            "decision": "pass",
+            "scene_ids": [
+              "s4"
+            ],
+            "evidence": "s4 b2屏幕说明代入n=5与离差平方和10，公式显示10/5。"
+          },
+          {
+            "unit_id": "u016",
+            "decision": "pass",
+            "scene_ids": [
+              "s4"
+            ],
+            "evidence": "s4 b3公式显示10/5=2。"
+          },
+          {
+            "unit_id": "u017",
+            "decision": "pass",
+            "scene_ids": [
+              "s4"
+            ],
+            "evidence": "s4 b3屏幕文字明示10除以5等于2，所以总体方差为2。"
+          },
+          {
+            "unit_id": "u018",
+            "decision": "pass",
+            "scene_ids": [
+              "s4"
+            ],
+            "evidence": "s4 b3屏幕文字给出σ²=2的结论。"
+          },
+          {
+            "unit_id": "u019",
+            "decision": "pass",
+            "scene_ids": [
+              "s4"
+            ],
+            "evidence": "s4 b4屏幕解释5个数据是全部总体，相加除以5正好是算术平均。"
+          },
+          {
+            "unit_id": "u020",
+            "decision": "pass",
+            "scene_ids": [
+              "s4"
+            ],
+            "evidence": "s4 b5屏幕说明n-1用于样本估计总体，本题完整总体故用n。"
+          },
+          {
+            "unit_id": "u021",
+            "decision": "pass",
+            "scene_ids": [
+              "s5"
+            ],
+            "evidence": "s5 b1屏幕说明用等价公式核对，并给出公式标题。"
+          },
+          {
+            "unit_id": "u022",
+            "decision": "pass",
+            "scene_ids": [
+              "s5"
+            ],
+            "evidence": "s5 b1公式显示σ²=E(X²)-[E(X)]²。"
+          },
+          {
+            "unit_id": "u023",
+            "decision": "pass",
+            "scene_ids": [
+              "s5"
+            ],
+            "evidence": "s5 b2屏幕说明各占1/5时E(X)即总体均值3，并显示E(X)=μ=3。"
+          },
+          {
+            "unit_id": "u024",
+            "decision": "pass",
+            "scene_ids": [
+              "s5"
+            ],
+            "evidence": "s5 b3屏幕文字“先逐项平方再相加”引出平方和计算。"
+          },
+          {
+            "unit_id": "u025",
+            "decision": "pass",
+            "scene_ids": [
+              "s5"
+            ],
+            "evidence": "s5 b3公式显示1+4+9+16+25=55。"
+          },
+          {
+            "unit_id": "u026",
+            "decision": "pass",
+            "scene_ids": [
+              "s5"
+            ],
+            "evidence": "s5 b3屏幕说明再除以5得平方平均11。"
+          },
+          {
+            "unit_id": "u027",
+            "decision": "pass",
+            "scene_ids": [
+              "s5"
+            ],
+            "evidence": "s5 b3公式显示E(X²)=55/5=11。"
+          },
+          {
+            "unit_id": "u028",
+            "decision": "pass",
+            "scene_ids": [
+              "s5"
+            ],
+            "evidence": "s5 b4屏幕接续计算均值平方，公式显示[E(X)]²=3²=9。"
+          },
+          {
+            "unit_id": "u029",
+            "decision": "pass",
+            "scene_ids": [
+              "s5"
+            ],
+            "evidence": "s5 b4公式明确写出3²=9。"
+          },
+          {
+            "unit_id": "u030",
+            "decision": "pass",
+            "scene_ids": [
+              "s5"
+            ],
+            "evidence": "s5 b4屏幕明示用11减9得2，承接公式代入。"
+          },
+          {
+            "unit_id": "u031",
+            "decision": "pass",
+            "scene_ids": [
+              "s5"
+            ],
+            "evidence": "s5 b4公式显示σ²=11-9=2。"
+          },
+          {
+            "unit_id": "u032",
+            "decision": "pass",
+            "scene_ids": [
+              "s5"
+            ],
+            "evidence": "s5 b5屏幕说明结果2与逐项离差平方所得2一致，核对通过。"
+          },
+          {
+            "unit_id": "u033",
+            "decision": "pass",
+            "scene_ids": [
+              "s6"
+            ],
+            "evidence": "s6 b1屏幕说明已有方差2，标准差为算术平方根并给出公式。"
+          },
+          {
+            "unit_id": "u034",
+            "decision": "pass",
+            "scene_ids": [
+              "s6"
+            ],
+            "evidence": "s6 b1公式显示σ=√(σ²)=√2≈1.414。"
+          },
+          {
+            "unit_id": "u035",
+            "decision": "pass",
+            "scene_ids": [
+              "s6"
+            ],
+            "evidence": "s6 b2屏幕与旁白引出两者在量纲上的区别。"
+          },
+          {
+            "unit_id": "u036",
+            "decision": "pass",
+            "scene_ids": [
+              "s6"
+            ],
+            "evidence": "s6 b2屏幕文字说明方差用原单位平方、标准差用原单位且更直观。"
+          },
+          {
+            "unit_id": "u037",
+            "decision": "pass",
+            "scene_ids": [
+              "s6"
+            ],
+            "evidence": "s6 b3屏幕写明方差2与标准差√2描述同一离散程度，只是尺度不同。"
+          },
+          {
+            "unit_id": "u038",
+            "decision": "pass",
+            "scene_ids": [
+              "s6"
+            ],
+            "evidence": "s6 b4屏幕文字“对完整总体1到5”引出结论汇总。"
+          },
+          {
+            "unit_id": "u039",
+            "decision": "pass",
+            "scene_ids": [
+              "s6"
+            ],
+            "evidence": "s6 b4公式显示μ=3、σ²=2、σ=√2≈1.414。"
+          },
+          {
+            "unit_id": "u040",
+            "decision": "pass",
+            "scene_ids": [
+              "s4",
+              "s5",
+              "s6"
+            ],
+            "evidence": "s4显示分母n=5与10/5=2；s5显示11-9=2核对一致；s6汇总三结论。"
+          }
+        ],
+        "problem_scene_ids": []
+      }
+    ]
+  }
+]

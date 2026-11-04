@@ -1,0 +1,140 @@
+{
+  "workers": 2,
+  "source_hash": "ec9f61063a7ac3668dba28ec235554d320a15826976ca12c1cddf43c10149e41",
+  "fixed_source": true,
+  "first_attempt_only": true,
+  "passed": 1,
+  "total": 4,
+  "expected": 4,
+  "cases": [
+    {
+      "passed": false,
+      "model": "deepseek-flash",
+      "provider": "https://api.deepseek.com",
+      "status": "partial",
+      "job_id": "job_064a840f9f33499b896782cea205f8f2",
+      "answer_id": "answer_2d921881e79b4b8fbb8e226c44324ace",
+      "usage": {
+        "model_calls": 9,
+        "input_tokens": 53730,
+        "output_tokens": 5641,
+        "tokens_reported": true,
+        "elapsed_seconds": 52.172
+      },
+      "elapsed_seconds": 52.75,
+      "error": {
+        "code": "invalid_provider_response",
+        "message": "scene_generator 返回结构不符合契约",
+        "retryable": false,
+        "details": {}
+      },
+      "source_hash_before": "ec9f61063a7ac3668dba28ec235554d320a15826976ca12c1cddf43c10149e41",
+      "source_hash_after": "ec9f61063a7ac3668dba28ec235554d320a15826976ca12c1cddf43c10149e41",
+      "fixed_source": true,
+      "name": "linear_system-1",
+      "topic": "linear_system",
+      "attempt": 1,
+      "exit_code": 1,
+      "wall_seconds": 53.562
+    },
+    {
+      "passed": true,
+      "model": "deepseek-flash",
+      "provider": "https://api.deepseek.com",
+      "status": "completed",
+      "job_id": "job_f143d82004b144a7856dbb301c51a3a2",
+      "answer_id": "answer_b8bc7b831a6647e68f2a8095a5154c01",
+      "usage": {
+        "model_calls": 11,
+        "input_tokens": 68981,
+        "output_tokens": 7255,
+        "tokens_reported": true,
+        "elapsed_seconds": 248.656
+      },
+      "elapsed_seconds": 249.157,
+      "error": null,
+      "video_id": "video_781985723dc540b3b5a65ac0fb970ac0",
+      "media": {
+        "width": 1280,
+        "height": 720,
+        "fps": 30.0,
+        "codec": "h264",
+        "pix_fmt": "yuv420p",
+        "duration_seconds": 295.6,
+        "audio_streams": 0,
+        "decoded_frames": 8868
+      },
+      "scene_count": 6,
+      "beat_count": 24,
+      "sha256": "d1126ecf12743a1af025c442eab773c744a66097e5867df21b28b4a5b08892e3",
+      "source_hash_before": "ec9f61063a7ac3668dba28ec235554d320a15826976ca12c1cddf43c10149e41",
+      "source_hash_after": "ec9f61063a7ac3668dba28ec235554d320a15826976ca12c1cddf43c10149e41",
+      "fixed_source": true,
+      "name": "matrix_inverse-1",
+      "topic": "matrix_inverse",
+      "attempt": 1,
+      "exit_code": 0,
+      "wall_seconds": 252.593
+    },
+    {
+      "passed": false,
+      "model": "deepseek-flash",
+      "provider": "https://api.deepseek.com",
+      "status": "partial",
+      "job_id": "job_dec34cf115cd43be824419e8b3128836",
+      "answer_id": "answer_f474aace42424713a6f6fa2ea316673d",
+      "usage": {
+        "model_calls": 12,
+        "input_tokens": 94118,
+        "output_tokens": 9724,
+        "tokens_reported": true,
+        "elapsed_seconds": 79.171
+      },
+      "elapsed_seconds": 79.297,
+      "error": {
+        "code": "invalid_provider_response",
+        "message": "scene_generator 返回结构不符合契约",
+        "retryable": false,
+        "details": {}
+      },
+      "source_hash_before": "ec9f61063a7ac3668dba28ec235554d320a15826976ca12c1cddf43c10149e41",
+      "source_hash_after": "ec9f61063a7ac3668dba28ec235554d320a15826976ca12c1cddf43c10149e41",
+      "fixed_source": true,
+      "name": "projection-1",
+      "topic": "projection",
+      "attempt": 1,
+      "exit_code": 1,
+      "wall_seconds": 80.032
+    },
+    {
+      "passed": false,
+      "model": "deepseek-flash",
+      "provider": "https://api.deepseek.com",
+      "status": "partial",
+      "job_id": "job_e30a340135ca45d99f50513f8bbda6cc",
+      "answer_id": "answer_23b885a7f5674ec09e692c90f52a36c9",
+      "usage": {
+        "model_calls": 9,
+        "input_tokens": 57862,
+        "output_tokens": 9420,
+        "tokens_reported": true,
+        "elapsed_seconds": 74.015
+      },
+      "elapsed_seconds": 74.625,
+      "error": {
+        "code": "render_layout",
+        "message": "layout: 节拍 b2 的内容尺寸 5.48×3.80 超过区域 6.05×2.3，缩小后无法保证可读性，请缩短该节拍",
+        "retryable": false,
+        "details": {}
+      },
+      "source_hash_before": "ec9f61063a7ac3668dba28ec235554d320a15826976ca12c1cddf43c10149e41",
+      "source_hash_after": "ec9f61063a7ac3668dba28ec235554d320a15826976ca12c1cddf43c10149e41",
+      "fixed_source": true,
+      "name": "triangle_area-1",
+      "topic": "triangle_area",
+      "attempt": 1,
+      "exit_code": 1,
+      "wall_seconds": 75.359
+    }
+  ]
+}

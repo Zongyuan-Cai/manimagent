@@ -22,7 +22,7 @@ from manimagent.animation_models import (
     digest,
 )
 from manimagent.animation_renderer import NativeRenderer
-from manimagent.answers import CHECK_INSTRUCTION, ContextAssembler
+from manimagent.answers import CHECK_INSTRUCTION, ContextAssembler, checker_profile_hash
 from manimagent.budget import Budget
 from manimagent.content_store import ContentError, ContentStore, new_id
 from manimagent.providers import ChatProvider
@@ -43,7 +43,7 @@ scene_id 使用 s1、s2 等简短编号，忽略大小写仍须唯一，不能�
 单一概念通常 120～180 秒，多步题 180～360 秒。时长取决于解释工作量，不按难度标签机械映射。
 主题很简单或太复杂而无法在 120～360 秒完整教学时返回 scope_issue，不填充无关材料。
 说明受众默认假设、难度理由、教学依赖与时长理由。最多8场景、全片最多42节拍。
-模板支持：公式逐步推导、二维平面向量/点/线段/多边形/圆、至多4×4数值矩阵。
+模板支持：公式逐步推导、二维平面向量/点/线段/多边形/圆、至多4×4数值或符号矩阵。
 不支持任意代码、外部素材、三维、函数程序求值或复杂 LaTeX 环境；必要时明确 scope_issue。
 所有数学依据必须来自正文；可以把已有推理拆成观察、解释、代入、核对，不能重复结论凑时长。"""
 )
@@ -57,7 +57,8 @@ SCENE_PROMPT = (
 同一场景节拍有先后关系，但每一拍都提供完整图形状态，未列出的对象会消失。
 坐标图在相邻节拍使用相同范围；相同对象使用稳定 object_id；向量明确两个端点和数学含义。
 cue_text 必须逐字取自 spoken_text 中一个靠前的短语；cue_objects 只能引用当前图形存在的对象。
-公式为 Matplotlib MathText 的 ASCII 子集，不带 $，不使用 begin/end/matrix/align/text/中文。
+公式为 ASCII MathText，不带 $ 或中文。另支持最多4×4的 pmatrix/bmatrix/vmatrix/matrix：&分列，双反斜杠分行。
+矩阵每单元最多60字符、不嵌套，一行最多两个矩阵，优先每拍一个短矩阵等式。另支持最多4行2列的cases方程组或分段式；禁止array/align和宏。
 可用 \frac{a}{b}、\mathbf{a}、\cdot、\perp、\sqrt{}、上下标等；数值矩阵用 diagram.kind=matrix。
 分式等命令必须保留反斜杠前缀，在 JSON 中双写反斜杠进行转义；不要裸输出 frac。
 字体命令必须带花括号：写 \mathbf{a}，不能写 \mathbf a。
@@ -69,6 +70,10 @@ cue_text 必须逐字取自 spoken_text 中一个靠前的短语；cue_objects �
 对象kind仅vector/point/segment/dashed/polygon/circle；vector/segment/dashed的points恰有两个不同端点。
 颜色仅blue/gold/teal/red/white/muted。label是简短纯文本，不写LaTeX；说明图例代表谁。
 图形、公式与解释分区显示。不能把系数当向量，不能因模板限制省略题目的必要内容。
+有图时公式区只有半屏：最多三行短式。长代数计算可以在该拍用kind=none获得整屏，必要几何解释保留在相邻拍；不能删掉计算依据或用更小字塞下。
+若收到 feedback，依据 previous_scene 局部修改，保留已正确的推理、条件和全部 selected_units；不能为了修一处而删掉另一处依据。
+cue_text 先写好 spoken_text 再逐字复制，不能省略“的”等字；cue_objects 仅放字符串ID，无图或矩阵填[]。
+只在真实存在相应图形时写“从图中看”；纯公式证明直接说明等式的依据。
 屏幕解释不能只是“注意看图”“如上所述”；它应明确这一步的依据、观察或结论。
 不要把整段答案当作屏幕文案；不要输出秒数、音频或假定已检查通过。"""
 )
@@ -83,7 +88,9 @@ PLAN_PROMPT = (
 每个通过项 evidence 要说明哪个场景的什么实际内容承接该单元，scene_ids 只能用计划中已有ID。
 未覆盖或无法确认则 fail/unknown；所有单元通过且没有数学/节奏问题才 decision=pass。
 可局部修正用revise并给problem_scene_ids；上游答案错误或范围不适合用fail，不重写答案。
-不要为美化持续要求修订，避免把风格偏好当严重错误。"""
+报告错误之前独立重算相关数值和量的定义，message 指出具体节拍、错误和正确依据；不能把等价变形误判为数学错误。
+屏幕公式本身也是证据：如代回后2(3)+1=7已显示检验成立，无需再要求每行添加“成立”二字。
+不要为美化持续要求修订，避免把风格偏好、常见数学记号或等价表达当严重错误。"""
 )
 
 
@@ -264,6 +271,7 @@ class VideoService:
 
     def require_content_check(self, answer: Answer, budget: Budget, record: dict):
         policy = digest(CHECK_INSTRUCTION)
+        profile = checker_profile_hash(self.provider)
         receipt_path = self.store.path("answer_checks", answer.answer_id)
         if receipt_path.exists():
             from manimagent.content_store import read_json_bytes
@@ -272,6 +280,7 @@ class VideoService:
             if (
                 receipt.get("answer_hash") == digest(answer.markdown)
                 and receipt.get("policy_hash") == policy
+                and receipt.get("checker_profile_hash") == profile
                 and receipt.get("decision") == "pass"
             ):
                 record["video_content_check"] = {"reused": True, **receipt}
@@ -293,6 +302,7 @@ class VideoService:
             {
                 "answer_hash": digest(answer.markdown),
                 "policy_hash": policy,
+                "checker_profile_hash": profile,
                 "decision": "pass",
                 "report": check.model_dump(),
             },
@@ -420,47 +430,47 @@ class VideoService:
                 index,
             )
 
-        for index in range(len(outline.scenes)):
-            try:
-                spec = outline.scenes[index]
-                if spec.scene_id in cached.get("scene_chunks", {}):
-                    raw = cached["scene_chunks"][spec.scene_id]
-                    draft = SceneDraft(
-                        scene_id=spec.scene_id,
-                        beats=[
-                            {k: v for k, v in b.items() if k in BeatDraft.model_fields}
-                            for b in raw["beats"]
-                        ],
+        def checked_chunk(index, feedback=None):
+            nonlocal repairs
+            while True:
+                try:
+                    spec = outline.scenes[index]
+                    if feedback is None and spec.scene_id in cached.get("scene_chunks", {}):
+                        raw = cached["scene_chunks"][spec.scene_id]
+                        draft = SceneDraft(
+                            scene_id=spec.scene_id,
+                            beats=[
+                                {k: v for k, v in b.items() if k in BeatDraft.model_fields}
+                                for b in raw["beats"]
+                            ],
+                        )
+                        scene = resolve_scene(spec, draft)
+                        record.setdefault("scene_chunks", {})[spec.scene_id] = scene.model_dump()
+                    else:
+                        scene = chunk(index, feedback)
+                    layout(index, scene)
+                    return scene
+                except ContentError as exc:
+                    if (
+                        exc.error.code
+                        not in {
+                            "invalid_plan",
+                            "video_coverage",
+                            "video_pacing",
+                            "render_layout",
+                            "render_formula",
+                        }
+                        or repairs >= 2
+                    ):
+                        raise
+                    repairs += 1
+                    feedback = (
+                        exc.error.message
+                        + "；保持全部必要单元，仅修正失败节拍。长公式与图共用半屏时，可将纯计算拍改为diagram.kind=none以使用整屏公式区，必要几何说明保留在其他拍。保留正确推理，不能只改标题而保留溢出布局。"
                     )
-                    restored = resolve_scene(spec, draft)
-                    scenes.append(restored)
-                    record.setdefault("scene_chunks", {})[spec.scene_id] = restored.model_dump()
-                else:
-                    scenes.append(chunk(index))
-                layout(index, scenes[-1])
-            except ContentError as exc:
-                if (
-                    exc.error.code
-                    not in {
-                        "invalid_plan",
-                        "video_coverage",
-                        "video_pacing",
-                        "render_layout",
-                        "render_formula",
-                    }
-                    or repairs >= 2
-                ):
-                    raise
-                repairs += 1
-                repaired = chunk(
-                    index,
-                    exc.error.message + "；保持必要单元，将过长公式拆成2～3行短等式并减少标签。",
-                )
-                if len(scenes) > index:
-                    scenes[index] = repaired
-                else:
-                    scenes.append(repaired)
-                layout(index, repaired)
+
+        for index in range(len(outline.scenes)):
+            scenes.append(checked_chunk(index))
 
         def make_plan():
             duration = sum(s.duration_seconds for s in scenes)
@@ -538,9 +548,8 @@ class VideoService:
                         ),
                         instruction="保留全部必要单元，消除重复并缩短冗余屏幕表述和旁白；不得加速、删必要推理或补空等。",
                     )
-                scenes[index] = chunk(index, feedback)
-                layout(index, scenes[index])
-        for attempt in range(2):
+                scenes[index] = checked_chunk(index, feedback)
+        while True:
             progress("正在统一检查分块覆盖、数学含义与阅读节奏")
             report = self.call(
                 "plan_checker",
@@ -565,8 +574,7 @@ class VideoService:
             if report.decision == "pass" and valid and not report.problem_scene_ids:
                 break
             if (
-                attempt
-                or report.decision != "revise"
+                report.decision != "revise"
                 or not report.problem_scene_ids
                 or repairs + len(set(report.problem_scene_ids)) > 2
             ):
@@ -577,9 +585,10 @@ class VideoService:
                         "invalid_plan", "检查报告引用了不存在的场景", state="needs_review"
                     )
                 index = next(i for i, s in enumerate(scenes) if s.scene_id == scene_id)
+                if repairs >= 2:
+                    raise ContentError("video_plan_check", report.message, state="needs_review")
                 repairs += 1
-                scenes[index] = chunk(index, report.model_dump())
-                layout(index, scenes[index])
+                scenes[index] = checked_chunk(index, report.model_dump())
             plan = make_plan()
         self.store.save("video_plans", plan.plan_id, plan)
         record["video_plan_id"] = plan.plan_id

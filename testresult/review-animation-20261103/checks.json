@@ -1,0 +1,40 @@
+{
+  "python": {
+    "name": "pytest",
+    "errors": "0",
+    "failures": "0",
+    "skipped": "2",
+    "tests": "159",
+    "time": "48.183",
+    "timestamp": "2026-11-04T00:02:10.548251+08:00",
+    "hostname": "WIN-N87RLP65UBC"
+  },
+  "native": {
+    "name": "pytest",
+    "errors": "0",
+    "failures": "0",
+    "skipped": "0",
+    "tests": "2",
+    "time": "127.968",
+    "timestamp": "2026-11-03T23:40:29.020742+08:00",
+    "hostname": "WIN-N87RLP65UBC"
+  },
+  "native_media": {
+    "width": 1280,
+    "height": 720,
+    "fps": 30.0,
+    "codec": "h264",
+    "pix_fmt": "yuv420p",
+    "duration_seconds": 161.73333333333332,
+    "audio_streams": 0,
+    "decoded_frames": 4852
+  },
+  "js": {
+    "passed": 6
+  },
+  "ruff": "passed",
+  "distribution": {
+    "wheel": "isolated CLI/HTTP/UI passed",
+    "sdist": "isolated CLI/HTTP/UI passed"
+  }
+}

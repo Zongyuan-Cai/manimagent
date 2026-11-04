@@ -1,0 +1,37 @@
+{
+  "extra_instruction": "\n涉及向量时核对方向：从点A到点P的向量是位置向量p-a，从P到A才是a-p。即使正交性或最终数值不受符号影响，也不能放过起终点与向量表达相反的正文。",
+  "results": [
+    {
+      "case": "wrong_endpoint_direction",
+      "expected": "needs_review",
+      "passed": true,
+      "check": {
+        "decision": "needs_review",
+        "message": "候选答案的计算和最终结论正确，但几何部分把“从 A 到垂足 P 的向量”写成 a-p；正确应为 p-a，而 a-p 表示从 P 到 A。该方向表述与起终点相反，需修正。"
+      },
+      "usage": {
+        "model_calls": 1,
+        "input_tokens": 2762,
+        "output_tokens": 902,
+        "tokens_reported": true,
+        "elapsed_seconds": 6.734
+      }
+    },
+    {
+      "case": "correct_endpoint_direction",
+      "expected": "pass",
+      "passed": true,
+      "check": {
+        "decision": "pass",
+        "message": "候选解答完整满足题目要求：说明了 b≠0 前提、投影与垂足的几何意义，正确推导并计算 c=3/2、p=(3,0)、标量投影长度为 3，且用 (a-p)·b=0 完成验证；数值与来源引用均无误。"
+      },
+      "usage": {
+        "model_calls": 1,
+        "input_tokens": 2762,
+        "output_tokens": 293,
+        "tokens_reported": true,
+        "elapsed_seconds": 2.172
+      }
+    }
+  ]
+}

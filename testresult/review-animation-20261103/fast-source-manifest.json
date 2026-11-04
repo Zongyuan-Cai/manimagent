@@ -1,0 +1,33 @@
+{
+  "source_hash": "fbe464e141722549fa57621a8a3e1841e47e9d22c488b6fdced75b83888ae2b9",
+  "thinking": "disabled",
+  "prompt_version": "silent-templates-8",
+  "template_version": "native-manim-5",
+  "files": {
+    "src/manimagent/__init__.py": "1620b2a73a7616b90f7f573a99617431c57c85862f3b3a62ee3ad94eb87db0d6",
+    "src/manimagent/__main__.py": "2cbece14fa4b3597d490620b0d0d9ab65a7bae2df80a5a971f9fe3d320ea9e66",
+    "src/manimagent/animation.py": "6251fec69c22788e7cfde0eda347b1cec06e102798ef13ea6240eae378192ae1",
+    "src/manimagent/animation_driver.py": "3670bf5fa6787c78bdec0cf7337e931015bbb3c5ccc6b93fc94497102075bf42",
+    "src/manimagent/animation_models.py": "4b3c7211464bb0fd24d22a45d415797d383b2b0c86a41d5dd93d2e9e31d7484d",
+    "src/manimagent/animation_renderer.py": "f16dac078704ffd901dd55a916b49895955dfa2cb72712a86b43670c618fb162",
+    "src/manimagent/answers.py": "040f0872103bc014b57e4373b1a39cf0bbcef46ed93ac7b884e7aa3efe5902b7",
+    "src/manimagent/api.py": "b8ae1ea51146c7460972c350eaf0f9e11cb56d2417899ac226af68b1f9e7d2d8",
+    "src/manimagent/budget.py": "a8844b234d2a464fb12e68feb0992d3a9474f3e98c291e6b79440b9a8ff634ce",
+    "src/manimagent/cli.py": "c5a379705dc45b2b3c47718513cc09512b3d5ee10b87834d2d1f0715eace9cd8",
+    "src/manimagent/config.py": "acc7e72ff4a748c50e5bc87324645e1ee3d29eb9b80a07705159e0d878035557",
+    "src/manimagent/content_store.py": "95e2e67e4bcba1aa618d8b0b18564020744f945e09d42527544f3760816f309e",
+    "src/manimagent/instance.py": "ca23ff1a6c6edcd9c0f69ec7b07fac92567dc5fa2502b07324bad3c098cf96d0",
+    "src/manimagent/llm_settings.py": "467b80282d31446b635ddf25b76dc7734f1f4d503657e1e3846e465d56b8b7e6",
+    "src/manimagent/markdown_view.py": "b4374b56c11b74ecbc59e2c2b3903236ee3c7cc88a1fe039b046728410f1eea4",
+    "src/manimagent/materials.py": "e9244b41cec4120f6daca423cb81774dbc682b5fabb5a3e5c37ce4bda46da37f",
+    "src/manimagent/math_notation.py": "43d9c6521d9d758dd3fb100c4e9a1a0ca3c97c0148791ff644f009033ee4dc38",
+    "src/manimagent/parse_worker.py": "6d0f636e6634444870c486aaff8aeb7a5af38b7125f8862f0121f367481a1bd5",
+    "src/manimagent/providers.py": "5dec1a2eec0258ebeb65986dbd9b0e2be8dcd5ad67068c15512b0156a02763a4",
+    "src/manimagent/schemas.py": "0063289f79913cff6b5bc059c97a7e56cf83f1bde0f6fc2ae2647089086f0a3e",
+    "src/manimagent/text_api.py": "f06d8f25f39f844651b53683e82d58680cb077b9460da6bd54ead0079735942e",
+    "src/manimagent/text_jobs.py": "23c64c0c61f6776df3fae9b3b598bbf2048fda709e2f452a7a610105e261bf72",
+    "scripts/test_animation_e2e.py": "d553df0fbdafce6729c06fb138f7490e8d0ca12d4ad9c91a63c1dff6301b873e",
+    "scripts/review_live_animation.py": "94ef69c4badc38ff27baba7e101850b649dda295285e46ecfcf048978f5ceea9",
+    "uv.lock": "ae879b4db8076f0395ef201816dd4656bdc3a44d7ebc7e185946838990619865"
+  }
+}

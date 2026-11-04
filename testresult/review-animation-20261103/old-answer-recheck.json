@@ -1,0 +1,29 @@
+{
+  "passed": false,
+  "model": "deepseek-flash",
+  "provider": "https://api.deepseek.com",
+  "thinking": "enabled",
+  "status": "needs_review",
+  "job_id": "job_752725cba53c411784ab0a32a8e97863",
+  "answer_id": "answer_e6f1d98ccdb04cc29377d1355185c8c1",
+  "usage": {
+    "model_calls": 1,
+    "input_tokens": 2762,
+    "output_tokens": 963,
+    "tokens_reported": true,
+    "elapsed_seconds": 7.407
+  },
+  "elapsed_seconds": 7.703,
+  "error": {
+    "code": "content_uncertain",
+    "message": "候选答案总体完整、数值计算正确，且满足题目多数要求；但几何说明中把“从 A 到垂足 P 的向量”写成 \\(a-p\\)，方向写反了。应为 \\(p-a\\)（即 \\(\\overrightarrow{AP}\\)）；而 \\(a-p\\) 表示从 P 到 A 的向量 \\(\\overrightarrow{PA}\\)。虽然两者的正交性验证不受影响，但该方向表述错误需要修正后才能通过。",
+    "retryable": false,
+    "details": {}
+  },
+  "expected_status": "needs_review",
+  "negative_test_passed": true,
+  "requested_roles": [
+    "answer_checker"
+  ],
+  "original_answer_unchanged": true
+}

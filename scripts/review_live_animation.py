@@ -51,6 +51,7 @@ def main():
     parser.add_argument("--workers", type=int, choices=[1, 2], default=1)
     parser.add_argument("--repeats", type=int, default=3)
     parser.add_argument("--topics", default=",".join(TOPICS))
+    parser.add_argument("--thinking", choices=["enabled", "disabled", "default"], default="enabled")
     args = parser.parse_args()
     selected = args.topics.split(",")
     if (
@@ -99,6 +100,8 @@ def main():
                     str(directory),
                     "--question",
                     question,
+                    "--thinking",
+                    args.thinking,
                 ],
                 cwd=ROOT,
                 stdout=log,
@@ -144,6 +147,7 @@ def main():
                 args.output / "summary.json",
                 {
                     "workers": args.workers,
+                    "thinking": args.thinking,
                     "source_hash": version,
                     "fixed_source": all(r["fixed_source"] for r in results),
                     "first_attempt_only": True,

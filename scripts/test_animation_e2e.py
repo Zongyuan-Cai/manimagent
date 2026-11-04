@@ -37,6 +37,7 @@ def main():
     parser.add_argument("--answer-id")
     parser.add_argument("--resume-job-id")
     parser.add_argument("--question", default=QUESTION)
+    parser.add_argument("--thinking", choices=["enabled", "disabled", "default"], default="enabled")
     args = parser.parse_args()
     if args.secret_file:
         os.environ[KEY_ENV] = dpapi(args.secret_file.read_bytes(), decrypt=True).decode()
@@ -49,7 +50,7 @@ def main():
         api_key_env=KEY_ENV,
         max_output_tokens=6000,
         context_window=128000,
-        thinking="disabled",
+        thinking=args.thinking,
     )
     settings = Settings(
         runs_dir=root / "runtime",
@@ -63,6 +64,7 @@ def main():
     )
     started = time.monotonic()
     result = {"passed": False, "model": "deepseek-flash", "provider": "https://api.deepseek.com"}
+    result["thinking"] = args.thinking
     with TestClient(create_app(settings)) as client:
         if args.answer_id:
             response = client.post(

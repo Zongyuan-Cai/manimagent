@@ -77,7 +77,19 @@ def test_real_render_precision_geometry_and_decoded_complete_movie(tmp_path):
             * 3,
         ),
         planned("formulas", [{"kind": "none"}] * 3),
+        planned("cases", [{"kind": "none"}] * 3),
     ]
+    scenes[1].beats[0].formulas = [r"A=(0,0)\quad B=(4,0)\quad C=(1,3)"]
+    scenes[2].beats[1].formulas = [r"A^{-1}=\frac{1}{ad-bc}\begin{pmatrix}d&-b\\-c&a\end{pmatrix}"]
+    scenes[2].beats[2].formulas = [r"\begin{bmatrix}2&1\\1&1\end{bmatrix}^{-1}"]
+    scenes[3].beats[0].formulas = [r"\begin{cases}2x+y=7\\x-y=2\end{cases}"]
+    scenes[3].beats[1].formulas = [r"f(x)=\begin{cases}x&x\geq0\\-x&x<0\end{cases}"]
+    scenes[3].beats[2].formulas = [r"\begin{pmatrix}2&1\\1&1\end{pmatrix}^T"]
+    scenes[3].beats[
+        2
+    ].screen_text = (
+        "因为 b ≠ 0，所以 b·b = ||b||² > 0，可除以 b·b，得到 c = (a·b)/(b·b)，于是 p = c b。"
+    )
     plan = SimpleNamespace(
         outline=SimpleNamespace(title="真实渲染回归"),
         scenes=scenes,
@@ -100,9 +112,42 @@ def test_real_render_precision_geometry_and_decoded_complete_movie(tmp_path):
             # Stacked limits need more physical height, not smaller body glyphs.
             sizes = [e["formula_bounds"][0] for e in result["events"]]
             assert sizes[0]["top"] - sizes[0]["bottom"] > 1.4
+            assert [c["text"] for c in result["events"][1]["inline_matrix_cells"]] == [
+                "d",
+                "-b",
+                "-c",
+                "a",
+            ]
+            assert [c["text"] for c in result["events"][2]["inline_matrix_cells"]] == [
+                "2",
+                "1",
+                "1",
+                "1",
+            ]
+            for event in result["events"][1:]:
+                for a, b in combinations([c["bounds"] for c in event["inline_matrix_cells"]], 2):
+                    assert (
+                        a["right"] < b["left"]
+                        or b["right"] < a["left"]
+                        or a["top"] < b["bottom"]
+                        or b["top"] < a["bottom"]
+                    )
+        if scene.scene_id == "geometry":
+            assert result["events"][0]["formula_lines"] == ["A=(0,0)", "B=(4,0)", "C=(1,3)"]
         assert [e["matrix_cells"] for e in layout["events"]] == [
             e["matrix_cells"] for e in result["events"]
         ]
+        if scene.scene_id == "cases":
+            assert [c["text"] for c in result["events"][0]["inline_matrix_cells"]] == [
+                "2x+y=7",
+                "x-y=2",
+            ]
+            assert [c["text"] for c in result["events"][1]["inline_matrix_cells"]] == [
+                "x",
+                r"x\geq0",
+                "-x",
+                "x<0",
+            ]
         if index == 0:
             for event in result["events"]:
                 cells = event["matrix_cells"]

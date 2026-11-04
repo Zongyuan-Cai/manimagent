@@ -1,0 +1,37 @@
+{
+  "extra_instruction": "\n涉及向量时核对方向：从点A到点P的向量是位置向量p-a，从P到A才是a-p。即使正交性或最终数值不受符号影响，也不能放过起终点与向量表达相反的正文。",
+  "results": [
+    {
+      "case": "wrong_endpoint_direction",
+      "expected": "needs_review",
+      "passed": false,
+      "check": {
+        "decision": "pass",
+        "message": "候选解答完整满足了题设全部要求：包含 b≠0 前提、投影与垂足的几何意义、由 (a-p)·b=0 推导 c 的公式、逐项计算 a·b=6、b·b=4、c=3/2、p=(3,0)、区分标量系数/标量投影长度/投影向量，并用残差 (0,2)·(2,0)=0 验证；数值与向量方向均正确，引用了题目来源。"
+      },
+      "usage": {
+        "model_calls": 1,
+        "input_tokens": 2737,
+        "output_tokens": 118,
+        "tokens_reported": true,
+        "elapsed_seconds": 1.031
+      }
+    },
+    {
+      "case": "correct_endpoint_direction",
+      "expected": "pass",
+      "passed": true,
+      "check": {
+        "decision": "pass",
+        "message": "候选解答完整且正确：明确 b≠0，解释垂足几何意义，设 p=cb 并由 (a-p)·b=0 推出系数公式；逐项计算 a·b=6、b·b=4、c=3/2、p=(3,0)，区分系数、有向投影长度和投影向量，并用残差 (0,2) 与 b 点积为 0 验证。全部子问题均完成，数值与方向表述无误，且引用题目来源。"
+      },
+      "usage": {
+        "model_calls": 1,
+        "input_tokens": 2737,
+        "output_tokens": 121,
+        "tokens_reported": true,
+        "elapsed_seconds": 1.469
+      }
+    }
+  ]
+}
