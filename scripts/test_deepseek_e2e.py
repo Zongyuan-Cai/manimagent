@@ -13,30 +13,16 @@ from pathlib import Path
 
 import httpx
 
+if __package__:
+    from .review_support import save, wait_job
+else:
+    from review_support import save, wait_job
+
 ROOT = Path(__file__).resolve().parents[1]
 MATERIAL = ROOT / "testmaterial"
 RESULT = ROOT / "testresult"
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
-
-
-def save(path: Path, data):
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(
-        json.dumps(data, ensure_ascii=False, indent=2) if not isinstance(data, str) else data,
-        encoding="utf-8",
-        newline="",
-    )
-
-
-def wait_job(client, identifier):
-    deadline = time.monotonic() + 300
-    while time.monotonic() < deadline:
-        job = client.get(f"/api/v2/jobs/{identifier}").json()
-        if job["status"] not in {"queued", "running"}:
-            return job
-        time.sleep(0.5)
-    raise TimeoutError("Job exceeded live test deadline")
 
 
 def run(base_url: str, label: str):
@@ -241,6 +227,7 @@ def run(base_url: str, label: str):
         summary["total"] = len(results)
         save(output / "summary.json", summary)
         print(json.dumps({"passed": summary["passed"], "total": summary["total"]}), flush=True)
+    return int(summary["passed"] != summary["total"])
 
 
 if __name__ == "__main__":
@@ -248,4 +235,4 @@ if __name__ == "__main__":
     parser.add_argument("--base-url", default="http://127.0.0.1:8000")
     parser.add_argument("--label", default="deepseek-official")
     args = parser.parse_args()
-    run(args.base_url, args.label)
+    raise SystemExit(run(args.base_url, args.label))

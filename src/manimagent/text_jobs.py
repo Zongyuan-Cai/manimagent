@@ -38,7 +38,6 @@ class TextJobManager:
     """Single-user, single-process persistent jobs; only the waiting queue is in memory."""
 
     def __init__(self, settings: Settings, provider: ChatProvider | None = None, renderer=None):
-        self.settings = settings
         self.store = ContentStore(settings)
         self.instance = InstanceLease(self.store.root)
         self.llm_settings = LLMSettingsStore(settings, self.store.root)
@@ -121,11 +120,7 @@ class TextJobManager:
             source = request.source
             needs_answer = source.type != "answer"
             if source.type == "inputs":
-                service.validate(
-                    ParseRequest.model_validate(
-                        source.model_dump(include={"inputs", "parser_profile_id", "input_mode"})
-                    )
-                )
+                service.validate(source)
             elif source.type == "answer":
                 self.store.load("answers", source.answer_id, Answer)
         source = request.source if kind == "generation" else request
@@ -252,13 +247,16 @@ class TextJobManager:
                 job.diagnostic_asset_ids.append(store.diagnostic(event["raw_text"]))
                 self.save_job(job)
 
-        provider = ChatProvider(
-            settings,
-            self.provider.transport if self.provider else None,
-            trace=trace,
-            credential_resolver=self.llm_settings.resolve,
-        )
-        materials, answers = MaterialService(store), AnswerService(store, provider)
+        def provider_for(snapshot):
+            return ChatProvider(
+                snapshot,
+                self.provider.transport if self.provider else None,
+                trace=trace,
+                credential_resolver=self.llm_settings.resolve,
+            )
+
+        materials = MaterialService(store)
+        answers = AnswerService(store, provider_for(settings))
 
         def stage(name: str):
             nonlocal stage_name
@@ -302,13 +300,7 @@ class TextJobManager:
                 job.message = message
                 self.save_job(job)
 
-            video_provider = ChatProvider(
-                snapshot,
-                self.provider.transport if self.provider else None,
-                trace=trace,
-                credential_resolver=self.llm_settings.resolve,
-            )
-            return VideoService(store, video_provider, self.renderer).generate(
+            return VideoService(store, provider_for(snapshot), self.renderer).generate(
                 VideoRequest(answer_id=answer_id, resume_job_id=resume_job_id),
                 budget,
                 record,
@@ -351,15 +343,7 @@ class TextJobManager:
                 else:
                     if source.type == "inputs":
                         stage("material")
-                        material = materials.parse(
-                            ParseRequest.model_validate(
-                                source.model_dump(
-                                    include={"inputs", "parser_profile_id", "input_mode"}
-                                )
-                            ),
-                            budget,
-                            record,
-                        )
+                        material = materials.parse(source, budget, record)
                         generation.material_ids = [material.material_id]
                     else:
                         generation.material_ids = source.material_ids

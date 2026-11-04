@@ -121,7 +121,8 @@ def derive_answer(
     allowed = {(r["material_id"], r["block_id"]) for r in bundle["allowed_source_refs"]}
     refs = []
     # Inspect every marker, including malformed tokens, instead of only matching valid IDs.
-    for marker in re.findall(r"\[\[(.*?)\]\]", markdown, flags=re.DOTALL):
+    markers = re.findall(r"\[\[(.*?)\]\]", markdown, flags=re.DOTALL)
+    for marker in markers:
         pair = tuple(marker.split(":"))
         if pair not in allowed:
             raise ContentError(
@@ -136,7 +137,7 @@ def derive_answer(
         raise ContentError(
             "invalid_reference", "答案缺少可核对的材料来源标记", state="needs_review"
         )
-    if markdown.count("[[") != len(re.findall(r"\[\[(.*?)\]\]", markdown, flags=re.DOTALL)):
+    if markdown.count("[[") != len(markers):
         raise ContentError("invalid_reference", "答案来源标记不完整", state="needs_review")
     tokens = MarkdownIt().parse(markdown)
     title = next(

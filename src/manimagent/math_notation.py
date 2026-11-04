@@ -59,8 +59,6 @@ def math_parts(text: str) -> list[MathPart]:
     """Separate complete inline matrices from scalar MathText, preserving order."""
     parts, offset = [], 0
     for match in MATRIX_START.finditer(text):
-        if match.start() < offset:
-            raise ValueError("不支持嵌套矩阵")
         if match.start() > offset:
             parts.append(MathPart(text=scalar(text[offset : match.start()])))
         end = text.find(r"\end{" + match[1] + "}", match.end())

@@ -267,7 +267,7 @@ class MaterialService:
         self.validate(request)
         blocks, files = [], []
         record["parse"] = {
-            "request": request.model_dump(),
+            "request": request.model_dump(include=set(ParseRequest.model_fields)),
             "parser_version": "local-1",
             "coverage": [],
         }

@@ -17,7 +17,7 @@ from pydantic import BaseModel, ConfigDict, Field, SecretStr, StringConstraints,
 
 from manimagent.budget import Budget
 from manimagent.config import ModelConfig, Settings
-from manimagent.content_store import ContentError
+from manimagent.content_store import ContentError, read_json_bytes, write_json
 from manimagent.providers import ChatProvider
 from manimagent.schemas import Usage
 
@@ -83,20 +83,6 @@ class ProbeResult(BaseModel):
     ok: bool
 
 
-def atomic_private_json(path: Path, value: dict) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    temporary = path.with_suffix("." + uuid.uuid4().hex + ".tmp")
-    try:
-        descriptor = os.open(temporary, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
-        with os.fdopen(descriptor, "w", encoding="utf-8", newline="") as stream:
-            json.dump(value, stream, ensure_ascii=False, indent=2)
-            stream.flush()
-            os.fsync(stream.fileno())
-        os.replace(temporary, path)
-    finally:
-        temporary.unlink(missing_ok=True)
-
-
 def dpapi(data: bytes, decrypt: bool = False) -> bytes:
     """Use the Windows user's credential protection; no external crypto dependency."""
     from ctypes import wintypes
@@ -141,12 +127,12 @@ class LLMSettingsStore:
     def read(self) -> dict:
         if not self.path.exists():
             return {"revision": 0, "models": {}, "roles": {}}
-        return json.loads(self.path.read_text(encoding="utf-8"))
+        return json.loads(read_json_bytes(self.path))
 
     def _credentials(self) -> dict:
         if not self.credentials_path.exists():
             return {}
-        return json.loads(self.credentials_path.read_text(encoding="utf-8"))
+        return json.loads(read_json_bytes(self.credentials_path))
 
     def resolve(self, reference: str) -> str | None:
         if not reference.startswith("local_secret_"):
@@ -260,8 +246,8 @@ class LLMSettingsStore:
             updated.answer_context_tokens = request.answer_context_tokens
             # Write new credentials first, then commit their references. Old references remain
             # valid for already-accepted job snapshots, even when the UI changes its defaults.
-            atomic_private_json(self.credentials_path, secrets)
-            atomic_private_json(
+            write_json(self.credentials_path, secrets)
+            write_json(
                 self.path,
                 {
                     "revision": current["revision"] + 1,

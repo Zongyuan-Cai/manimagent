@@ -15,19 +15,16 @@ from manimagent.api import create_app
 from manimagent.config import ModelConfig, Settings
 from manimagent.llm_settings import dpapi
 
+if __package__:
+    from .review_support import save
+else:
+    from review_support import save
+
 QUESTION = """给定 a=(3,2)、b=(2,0)，面向具备向量基础、首次学习正交投影的学生，完整解释并求出 a 在 b 方向上的投影。
 正文需包含：b≠0 的前提；几何上投影和垂足的意义；设 p=c b，由 a-p 与 b 正交推导系数公式；
 逐项算 a·b、b·b、c、p；区分标量系数、标量投影长度和投影向量；最后用残差 a-p 与 b 的点积验证。
 所有推导与结论完整写出，引用材料，不假设历史知识画像。"""
 KEY_ENV = "MANIMAGENT_ANIMATION_TEST_KEY"
-
-
-def save(path: Path, value):
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(
-        value if isinstance(value, str) else json.dumps(value, ensure_ascii=False, indent=2),
-        encoding="utf-8",
-    )
 
 
 def main():
@@ -87,6 +84,7 @@ def main():
         job_id = response.json()["job_id"]
         last = None
         answer_id = args.answer_id
+        answer = None
         while True:
             job = client.get(f"/api/v2/jobs/{job_id}").json()
             if job["message"] != last:
@@ -108,7 +106,7 @@ def main():
                 save(root / "generation.json", generation)
                 if generation["answer_id"]:
                     answer_id = generation["answer_id"]
-            if answer_id:
+            if answer_id and (answer is None or answer["answer_id"] != answer_id):
                 answer = client.get(f"/api/v2/answers/{answer_id}").json()
                 save(root / "answer.json", answer)
                 save(root / "answer.md", answer["markdown"])

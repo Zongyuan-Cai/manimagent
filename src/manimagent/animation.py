@@ -96,7 +96,7 @@ PLAN_PROMPT = (
 
 def teaching_units(markdown: str) -> list[TeachingUnit]:
     """Unicode code-point spans; never split inside a fenced block or display formula."""
-    units, start, offset, fence, display = [], 0, 0, None, None
+    spans, start, offset, fence, display = [], 0, 0, None, None
     for line in markdown.splitlines(keepends=True):
         stripped = line.strip()
         if stripped.startswith(("```", "~~~")):
@@ -111,87 +111,51 @@ def teaching_units(markdown: str) -> list[TeachingUnit]:
         end = offset + len(line)
         if not stripped and fence is None and display is None:
             if markdown[start:offset].strip():
-                text = markdown[start:offset]
-                units.append(
-                    TeachingUnit(
-                        unit_id=f"u{len(units) + 1:03d}",
-                        start=start,
-                        end=offset,
-                        text=text,
-                        sha256=digest(text),
-                    )
-                )
+                spans.append((start, offset))
             start = end
         offset = end
     if markdown[start:].strip():
-        text = markdown[start:]
-        units.append(
-            TeachingUnit(
-                unit_id=f"u{len(units) + 1:03d}",
-                start=start,
-                end=len(markdown),
-                text=text,
-                sha256=digest(text),
-            )
-        )
+        spans.append((start, len(markdown)))
     # Headings carry context, rather than becoming spurious standalone teaching tasks.
     merged = []
     pending = None
-    for unit in units:
-        if re.fullmatch(r"#{1,6}\s+[^\n]+", unit.text.strip()):
-            pending = unit.start if pending is None else pending
+    for start, end in spans:
+        if re.fullmatch(r"#{1,6}\s+[^\n]+", markdown[start:end].strip()):
+            pending = start if pending is None else pending
             continue
-        begin = unit.start if pending is None else pending
-        text = markdown[begin : unit.end]
-        merged.append(
-            TeachingUnit(
-                unit_id=f"u{len(merged) + 1:03d}",
-                start=begin,
-                end=unit.end,
-                text=text,
-                sha256=digest(text),
-            )
-        )
+        merged.append((start if pending is None else pending, end))
         pending = None
     if pending is not None:
-        text = markdown[pending:]
-        merged.append(
-            TeachingUnit(
-                unit_id=f"u{len(merged) + 1:03d}",
-                start=pending,
-                end=len(markdown),
-                text=text,
-                sha256=digest(text),
-            )
-        )
-    units = merged
-    if len(units) > 42:
+        merged.append((pending, len(markdown)))
+    spans = merged
+    if len(spans) > 42:
         # Writers often put every display equation in a separate paragraph.
         # Pack adjacent short paragraphs within a section, preserving exact spans;
         # paragraph formatting alone must not turn an ordinary problem into >70 units.
-        units = []
-        for unit in merged:
+        spans = []
+        for start, end in merged:
             if (
-                units
-                and not re.match(r"#{1,6}\s", unit.text.lstrip())
-                and unit.end - units[-1].start <= 300
+                spans
+                and not re.match(r"#{1,6}\s", markdown[start:end].lstrip())
+                and end - spans[-1][0] <= 300
             ):
-                start = units[-1].start
-                text = markdown[start : unit.end]
-                units[-1] = TeachingUnit(
-                    unit_id=units[-1].unit_id,
-                    start=start,
-                    end=unit.end,
-                    text=text,
-                    sha256=digest(text),
-                )
+                spans[-1] = (spans[-1][0], end)
             else:
-                units.append(unit.model_copy(update={"unit_id": f"u{len(units) + 1:03d}"}))
-    if not units or len(units) > 70:
+                spans.append((start, end))
+    if not spans or len(spans) > 70:
         raise ContentError(
             "video_scope", "正文教学单元过多或为空，请拆分为独立主题", state="needs_input"
         )
-    return units
+    return [
+        TeachingUnit(
+            unit_id=f"u{index:03d}",
+            start=start,
+            end=end,
+            text=markdown[start:end],
+            sha256=digest(markdown[start:end]),
+        )
+        for index, (start, end) in enumerate(spans, 1)
+    ]
 
 
 def speech_seconds(text: str) -> float:
@@ -390,7 +354,6 @@ class VideoService:
             raise ContentError(
                 "video_coverage", "整体切分遗漏正文单元或超出节拍上限", state="needs_review"
             )
-        scenes = []
 
         def chunk(index, feedback=None):
             spec = outline.scenes[index]
@@ -414,10 +377,7 @@ class VideoService:
                 SceneDraft,
                 budget,
             )
-            scene = resolve_scene(spec, draft)
-            record.setdefault("scene_chunks", {})[spec.scene_id] = scene.model_dump()
-            self.store.save("records", record["job_id"], record)
-            return scene
+            return resolve_scene(spec, draft)
 
         def layout(index, scene):
             progress(f"正在预检场景 {index + 1}/{len(outline.scenes)} 的公式与排版")
@@ -445,9 +405,10 @@ class VideoService:
                             ],
                         )
                         scene = resolve_scene(spec, draft)
-                        record.setdefault("scene_chunks", {})[spec.scene_id] = scene.model_dump()
                     else:
                         scene = chunk(index, feedback)
+                    record.setdefault("scene_chunks", {})[spec.scene_id] = scene.model_dump()
+                    self.store.save("records", record["job_id"], record)
                     layout(index, scene)
                     return scene
                 except ContentError as exc:
@@ -469,8 +430,7 @@ class VideoService:
                         + "；保持全部必要单元，仅修正失败节拍。长公式与图共用半屏时，可将纯计算拍改为diagram.kind=none以使用整屏公式区，必要几何说明保留在其他拍。保留正确推理，不能只改标题而保留溢出布局。"
                     )
 
-        for index in range(len(outline.scenes)):
-            scenes.append(checked_chunk(index))
+        scenes = [checked_chunk(index) for index in range(len(outline.scenes))]
 
         def make_plan():
             duration = sum(s.duration_seconds for s in scenes)
@@ -591,6 +551,7 @@ class VideoService:
                 scenes[index] = checked_chunk(index, report.model_dump())
             plan = make_plan()
         self.store.save("video_plans", plan.plan_id, plan)
+        plan_hash = digest(plan.model_dump_json())
         record["video_plan_id"] = plan.plan_id
         self.store.save("records", record["job_id"], record)
         root = self.store.root / "renders" / record["job_id"]
@@ -605,7 +566,7 @@ class VideoService:
             evidence.append(
                 {
                     "scene_id": scene.scene_id,
-                    "plan_hash": digest(plan.model_dump_json()),
+                    "plan_hash": plan_hash,
                     "offset_seconds": offset,
                     **result,
                 }

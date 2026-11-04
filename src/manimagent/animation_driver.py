@@ -205,6 +205,20 @@ def render(data: dict, directory: Path) -> dict:
         svg_height = float(ET.parse(target).getroot().attrib["viewBox"].split()[3])
         return SVGMobject(str(target), height=svg_height * 0.6 / 48)
 
+    def matrix_grid(cells, column_gap, left_align=False):
+        widths = [max(row[c].width for row in cells) for c in range(len(cells[0]))]
+        content = VGroup()
+        y = 0
+        for row in cells:
+            height = max(cell.height for cell in row)
+            x = 0
+            for width, cell in zip(widths, row, strict=True):
+                cell.move_to([x + (cell.width if left_align else width) / 2, -y - height / 2, 0])
+                content.add(cell)
+                x += width + column_gap
+            y += height + 0.24
+        return content.move_to([0, 0, 0])
+
     def formula(text):
         parts, cells = VGroup(), []
         for part in math_parts(text):
@@ -226,25 +240,12 @@ def render(data: dict, directory: Path) -> dict:
                     parts.add(scalar_formula(value))
                 continue
             grid = [[scalar_formula(cell) for cell in row] for row in part.rows]
-            widths = [max(row[c].width for row in grid) for c in range(len(grid[0]))]
-            heights = [max(cell.height for cell in row) for row in grid]
-            content = VGroup()
-            y = 0
-            for r, row in enumerate(grid):
-                x = 0
-                for c, cell in enumerate(row):
-                    cell.move_to(
-                        [
-                            x + (cell.width if part.environment == "cases" else widths[c]) / 2,
-                            -y - heights[r] / 2,
-                            0,
-                        ]
-                    )
-                    content.add(cell)
-                    cells.append((part.rows[r][c], cell))
-                    x += widths[c] + 0.32
-                y += heights[r] + 0.24
-            content.move_to([0, 0, 0])
+            content = matrix_grid(grid, 0.32, left_align=part.environment == "cases")
+            cells.extend(
+                (text, cell)
+                for texts, row in zip(part.rows, grid, strict=True)
+                for text, cell in zip(texts, row, strict=True)
+            )
             matrix = VGroup(content)
             if part.environment != "matrix":
                 glyphs = {
@@ -356,20 +357,8 @@ def render(data: dict, directory: Path) -> dict:
                         raise ValueError("layout: 图形标签重叠，请减少同屏对象或缩短标签")
                     group.add(caption)
         elif diagram.kind == "matrix":
-            rows, cols = len(diagram.matrix), len(diagram.matrix[0])
             cells = [[label(matrix_text(value), 38) for value in row] for row in diagram.matrix]
-            widths = [max(cells[r][c].width for r in range(rows)) for c in range(cols)]
-            heights = [max(cell.height for cell in row) for row in cells]
-            x = 0.0
-            values = VGroup()
-            for c, width in enumerate(widths):
-                y = 0.0
-                for r, height in enumerate(heights):
-                    cell = cells[r][c]
-                    cell.move_to([x + width / 2, -y - height / 2, 0])
-                    values.add(cell)
-                    y += height + 0.24
-                x += width + 0.3
+            values = matrix_grid(cells, 0.3)
             brackets = VGroup(label("[", 100, "blue"), label("]", 100, "blue"))
             for bracket, side in zip(brackets, [LEFT, RIGHT], strict=True):
                 bracket.stretch_to_fit_height(max(1.3, values.height + 0.2)).next_to(

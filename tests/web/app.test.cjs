@@ -9,24 +9,25 @@ const aid = id('answer', 'a'), bid = id('answer', 'b'), vid = id('video', 'c'), 
 const hash = text => createHash('sha256').update(text).digest('hex');
 const flush = async () => { for (let i = 0; i < 30; i++) await new Promise(r => setImmediate(r)); };
 
-function browser({storage = {}, search = '', job = {}, video = {}, intercept} = {}) {
+function browser({storage = {}, search = '', job = {}, video = {}, intercept, respond} = {}) {
   const elements = new Map(), requests = [], ls = new Map(Object.entries(storage));
   const element = name => {
     if (!elements.has(name)) elements.set(name, {
       hidden: true, value: '', textContent: '', innerHTML: '', style: {}, listeners: {},
-      addEventListener(event, fn) { this.listeners[event] = fn; }, append() {}, replaceChildren() {},
+      addEventListener(event, fn) { this.listeners[event] = fn; }, append() {}, replaceChildren() { this.textContent = ''; },
       removeAttribute(key) { delete this[key]; }, setAttribute() {}, focus() {},
     });
     return elements.get(name);
   };
   const context = vm.createContext({
     document: {getElementById: element, createElement: element},
-    window: {location: {search}}, URLSearchParams, TextEncoder, crypto: webcrypto, navigator: {},
+    window: {location: {search}}, URLSearchParams, TextEncoder, FormData, crypto: webcrypto, navigator: {},
     localStorage: {getItem: k => ls.get(k), setItem: (k, v) => ls.set(k, v), removeItem: k => ls.delete(k)},
     setTimeout() {}, clearTimeout() {},
     fetch: async (url, options) => {
       requests.push(url);
       if (intercept) await intercept(url);
+      if (respond) { const response = await respond(url, options); if (response) return response; }
       let result;
       if (url.endsWith('/health')) result = {ready: true, video_issues: []};
       else if (url.startsWith('/api/v2/jobs/')) result = {
@@ -56,6 +57,49 @@ test('refresh a completed video-only job restores its exact text and actions', a
   assert.equal(b.run('answer.answer_id'), aid);
   assert.equal(b.run('currentVideo'), vid);
   assert.equal(b.element('actions').hidden, false);
+});
+
+test('submission snapshots output mode and PDF ranges before asynchronous uploads', async () => {
+  let unblock, submitted;
+  const gate = new Promise(r => { unblock = r; });
+  const b = browser({
+    job: {kind: 'generation', result: null, answer_id: null},
+    respond: async (url, options) => {
+      if (url === '/api/v2/files') { await gate; return {ok: true, json: async () => ({file_id: id('file', 'e')})}; }
+      if (url === '/api/v2/generations') { submitted = JSON.parse(options.body); return {ok: true, json: async () => ({job_id: jid})}; }
+    },
+  });
+  await flush();
+  b.element('output-mode').value = 'text';
+  b.element('text').value = 'original question';
+  b.run("fileRows = [{file: 'first.pdf', start: {value: '1'}, end: {value: '2'}}, {file: 'second.pdf', start: {value: '3'}, end: {value: '4'}}]");
+  const submit = b.element('form').listeners.submit({preventDefault() {}});
+  await flush();
+  b.element('output-mode').value = 'both';
+  b.element('text').value = 'changed question';
+  b.run("fileRows[1].start.value = '7'; fileRows[1].end.value = '8'");
+  // Repeated submission while uploading must not enqueue a second task.
+  await b.element('form').listeners.submit({preventDefault() {}});
+  unblock(); await submit;
+  assert.equal(submitted.output_mode, 'text');
+  assert.equal(submitted.source.instruction, 'original question');
+  assert.deepEqual(submitted.source.inputs[2].selection, {kind: 'pages', start: 3, end: 4});
+  assert.equal(b.requests.filter(url => url === '/api/v2/generations').length, 1);
+});
+
+test('starting a view clears old status and diagnostic artifacts', async () => {
+  const b = browser(); await flush();
+  for (const name of ['job', 'message', 'error', 'artifacts', 'status']) b.element(name).textContent = 'old';
+  b.element('diagnostics').hidden = false;
+  b.run('beginView()');
+  for (const name of ['job', 'message', 'error', 'artifacts', 'status']) assert.equal(b.element(name).textContent, '');
+  assert.equal(b.element('diagnostics').hidden, true);
+});
+
+test('non-JSON gateway failure preserves HTTP status without leaking its body', async () => {
+  const b = browser({respond: async url => url === '/broken' ? {ok: false, status: 502, json: async () => { throw new SyntaxError('private gateway body'); }} : undefined});
+  await flush();
+  await assert.rejects(b.run("request('/broken')"), error => error.status === 502 && error.message === '请求失败（HTTP 502）');
 });
 test('running video job restores its source before result exists', async () => {
   const b = browser({storage: {'manimagent.textJob': jid}, job: {status: 'running', stage: 'video', result: null}});
@@ -108,4 +152,18 @@ test('saving an edit detaches an animation poll already in flight', async () => 
   assert.equal(b.run('currentVideo'), null);
   assert.equal(b.element('video-panel').hidden, true);
   assert.equal(b.ls.has('manimagent.textJob'), false);
+});
+
+test('a saved revision that fails to load releases detached animation controls', async () => {
+  const b = browser({
+    search: '?answer_id=' + aid,
+    respond: async url => url.endsWith(bid) ? {ok: false, status: 503, json: async () => ({error: {message: '正文暂不可用'}})} : undefined,
+  });
+  await flush();
+  b.run(`currentJob = '${jid}'; setBusy(true)`);
+  await b.element('save').onclick();
+  assert.equal(b.run('currentJob'), null);
+  assert.equal(b.element('generate').disabled, false);
+  assert.equal(b.element('animate').disabled, false);
+  assert.match(b.element('message').textContent, /正文暂不可用/);
 });

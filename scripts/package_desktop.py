@@ -12,7 +12,23 @@ import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))["project"]["version"]
+PROJECT = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+VERSION = PROJECT["project"]["version"]
+SOURCE_PATHS = [
+    Path(name)
+    for name in [
+        *PROJECT["tool"]["hatch"]["build"]["targets"]["sdist"]["only-include"],
+        "start.cmd",
+    ]
+]
+EXAMPLE_FILES = ["example.mp4", "answer.md", "plan.json", "video.json", "result.json"]
+
+
+def delivery_path(destination: Path, name: str | Path) -> Path:
+    path = (destination / name).resolve()
+    if not path.is_relative_to(destination) or path == destination:
+        raise SystemExit("Delivery contains an unsafe path or a link outside its destination.")
+    return path
 
 
 def main():
@@ -21,11 +37,20 @@ def main():
     parser.add_argument("--example", type=Path, required=True)
     args = parser.parse_args()
     destination = args.destination.resolve()
-    marker = destination / "delivery.json"
+    if destination.is_relative_to(ROOT) or ROOT.is_relative_to(destination):
+        raise SystemExit("Delivery must be outside the source checkout and its parent directories.")
+    marker = delivery_path(destination, "delivery.json")
     if destination.exists() and any(destination.iterdir()) and not marker.exists():
         raise SystemExit(
             "Destination contains files and is not a previous delivery; choose a new folder."
         )
+    previous = json.loads(marker.read_text(encoding="utf-8"))["files"] if marker.exists() else {}
+    previous_paths = [delivery_path(destination, name) for name in previous]
+    result = json.loads((args.example / "result.json").read_text(encoding="utf-8"))
+    if not result.get("passed") or any(
+        not (args.example / name).is_file() for name in EXAMPLE_FILES
+    ):
+        raise SystemExit("Example must contain every artifact and pass real end-to-end validation")
     destination.mkdir(parents=True, exist_ok=True)
     raw = subprocess.check_output(
         ["git", "ls-files", "-z", "--cached", "--others", "--exclude-standard"], cwd=ROOT
@@ -35,31 +60,33 @@ def main():
     for name in paths:
         relative = Path(name)
         if (
-            relative.parts[0] in {"runs", "dist", "build", ".git", ".venv"}
-            or relative.name == "config.yaml"
-            or (relative.name.startswith(".env") and ".example" not in relative.name)
+            not any(relative.is_relative_to(allowed) for allowed in SOURCE_PATHS)
+            or relative.name in {"config.yaml", "credentials.json"}
+            or (relative.name.startswith(".env") and not relative.name.endswith(".example"))
         ):
             continue
         source = (ROOT / relative).resolve()
         if not source.is_relative_to(ROOT) or not source.is_file():
             continue
-        target = destination / relative
+        target = delivery_path(destination, relative)
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(source, target)
         copied.append(relative.as_posix())
-    examples = destination / "examples" / "vector-projection"
+    examples = delivery_path(destination, "examples/vector-projection")
     examples.mkdir(parents=True, exist_ok=True)
-    result = json.loads((args.example / "result.json").read_text(encoding="utf-8"))
-    if not result.get("passed"):
-        raise SystemExit("Example has not passed real end-to-end validation")
-    for name in ["example.mp4", "answer.md", "plan.json", "video.json", "result.json"]:
-        shutil.copyfile(args.example / name, examples / name)
-        copied.append((examples / name).relative_to(destination).as_posix())
+    for name in EXAMPLE_FILES:
+        target = delivery_path(destination, examples / name)
+        shutil.copyfile(args.example / name, target)
+        copied.append(target.relative_to(destination).as_posix())
     for file in (ROOT / "dist").glob(f"manimagent-{VERSION}*"):
-        target = destination / "dist" / file.name
+        target = delivery_path(destination, Path("dist") / file.name)
         target.parent.mkdir(exist_ok=True)
         shutil.copyfile(file, target)
         copied.append(target.relative_to(destination).as_posix())
+    # Remove only files owned by the previous manifest. User-added files are left alone.
+    for name, path in zip(previous, previous_paths, strict=True):
+        if name not in copied:
+            path.unlink(missing_ok=True)
     manifest = {
         "version": VERSION,
         "example": result,

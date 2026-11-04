@@ -18,7 +18,13 @@ from pathlib import Path
 
 from manimagent.animation_renderer import NativeRenderer
 from manimagent.llm_settings import dpapi
-from scripts.test_animation_e2e import KEY_ENV, QUESTION, save
+
+if __package__:
+    from .review_support import save
+    from .test_animation_e2e import KEY_ENV, QUESTION
+else:
+    from review_support import save
+    from test_animation_e2e import KEY_ENV, QUESTION
 
 ROOT = Path(__file__).resolve().parents[1]
 TOPICS = {
@@ -38,6 +44,7 @@ TOPICS = {
 def source_hash():
     paths = sorted((ROOT / "src/manimagent").glob("*.py")) + [
         ROOT / "scripts/test_animation_e2e.py",
+        ROOT / "scripts/review_support.py",
         Path(__file__),
         ROOT / "uv.lock",
     ]
@@ -123,6 +130,7 @@ def main():
         after = source_hash()
         return {
             **result,
+            "passed": code == 0 and result.get("passed") is True,
             "source_hash_before": before,
             "source_hash_after": after,
             "fixed_source": after == version,

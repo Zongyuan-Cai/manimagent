@@ -10,6 +10,7 @@ import time
 import urllib.request
 import webbrowser
 from pathlib import Path
+from urllib.parse import urlsplit
 
 import uvicorn
 
@@ -21,8 +22,20 @@ def existing_service(root):
     """Only reopen the service that owns this exact data directory."""
     try:
         owner = json.loads((root / "instance.json").read_text(encoding="utf-8"))
-        url = owner.get("url")
-        if not url or not url.startswith("http://127.0.0.1:"):
+        url = owner.get("url") if isinstance(owner, dict) else None
+        if not isinstance(url, str):
+            return None
+        address = urlsplit(url)
+        if (
+            address.scheme != "http"
+            or address.hostname != "127.0.0.1"
+            or not address.port
+            or address.username
+            or address.password
+            or address.path
+            or address.query
+            or address.fragment
+        ):
             return None
         opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
         with opener.open(url + "/api/v2/health", timeout=1) as response:
@@ -48,22 +61,6 @@ def main():
                 return
             time.sleep(0.3)
         raise SystemExit(str(exc)) from exc
-    port = None
-    for candidate in range(8000, 8011):
-        with socket.socket() as sock:
-            try:
-                sock.bind(("127.0.0.1", candidate))
-                port = candidate
-                break
-            except OSError:
-                continue
-    if port is None:
-        manager.stop()
-        raise SystemExit(
-            "Ports 8000-8010 are busy; close an old server or use manimagent serve --port."
-        )
-    url = f"http://127.0.0.1:{port}"
-    manager.instance.publish(url)
 
     def open_ready():
         for _ in range(60):
@@ -72,9 +69,25 @@ def main():
                 return
             time.sleep(0.5)
 
-    threading.Thread(target=open_ready, daemon=True).start()
     try:
-        uvicorn.run(app, host="127.0.0.1", port=port, workers=1)
+        # Keep the chosen port bound until Uvicorn takes ownership; probing then
+        # closing it lets another application steal the advertised port.
+        with socket.socket() as sock:
+            for port in range(8000, 8011):
+                try:
+                    sock.bind(("127.0.0.1", port))
+                    break
+                except OSError:
+                    continue
+            else:
+                raise SystemExit(
+                    "Ports 8000-8010 are busy; close an old server or use manimagent serve --port."
+                )
+            manager.instance.publish(f"http://127.0.0.1:{port}")
+            threading.Thread(target=open_ready, daemon=True).start()
+            uvicorn.Server(uvicorn.Config(app, host="127.0.0.1", port=port, workers=1)).run(
+                sockets=[sock]
+            )
     finally:
         manager.stop()
 

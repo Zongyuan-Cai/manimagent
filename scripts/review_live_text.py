@@ -25,16 +25,13 @@ from manimagent.api import create_app
 from manimagent.config import ModelConfig, Settings
 from manimagent.llm_settings import dpapi
 
+if __package__:
+    from .review_support import save, wait_job
+else:
+    from review_support import save, wait_job
+
 ROOT = Path(__file__).resolve().parents[1]
 KEY_ENV = "MANIMAGENT_REVIEW_DEEPSEEK_KEY"
-
-
-def save(path: Path, value):
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(
-        value if isinstance(value, str) else json.dumps(value, ensure_ascii=False, indent=2),
-        encoding="utf-8",
-    )
 
 
 def pdf_bytes(text: str, paint: str = "") -> bytes:
@@ -404,15 +401,7 @@ def run_case(case, output: Path):
             )
             assert response.status_code == 202, f"generation HTTP {response.status_code}"
             identifier = response.json()["job_id"]
-            deadline = time.monotonic() + 260
-            while True:
-                response = client.get(f"/api/v2/jobs/{identifier}")
-                assert response.status_code == 200, f"poll HTTP {response.status_code}"
-                job = response.json()
-                if job["status"] not in {"queued", "running"}:
-                    break
-                assert time.monotonic() < deadline, "live job exceeded deadline"
-                time.sleep(0.15)
+            job = wait_job(client, identifier, timeout=260)
             result.update(
                 status=job["status"],
                 usage=job["usage"],
@@ -468,6 +457,8 @@ def main():
     parser.add_argument("--limit", type=int)
     parser.add_argument("--names", default="")
     args = parser.parse_args()
+    if args.limit is not None and args.limit <= 0:
+        parser.error("--limit must be positive")
     if args.secret_file:
         os.environ[KEY_ENV] = dpapi(args.secret_file.read_bytes(), decrypt=True).decode("utf-8")
     if not os.getenv(KEY_ENV):
@@ -477,7 +468,7 @@ def main():
         names = set(args.names.split(","))
         selected = [c for c in selected if c["name"] in names]
         assert len(selected) == len(names), "unknown case name"
-    if args.limit:
+    if args.limit is not None:
         selected = selected[: args.limit]
     results = []
     args.output.mkdir(parents=True, exist_ok=True)
@@ -511,7 +502,8 @@ def main():
                 ),
                 flush=True,
             )
+    return int(not results or not all(result["passed"] for result in results))
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

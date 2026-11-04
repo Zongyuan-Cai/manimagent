@@ -1,28 +1,29 @@
 let llmRevision = 0;
 let llmCards = [];
+let llmBusy = false;
+const llmRoles = {answer_writer: 'llm-writer', answer_checker: 'llm-checker', video_planner: 'llm-planner', scene_generator: 'llm-scene', plan_checker: 'llm-plan-checker'};
 
-function llmInput(card, parent, key, label, value, type = 'text') {
+function setLLMBusy(busy) {
+  llmBusy = busy;
+  for (const id of ['llm-save', 'llm-reload', 'llm-add']) el(id).disabled = busy;
+}
+
+function llmField(card, parent, key, label, value, type = 'text') {
   const container = document.createElement('div');
-  const input = document.createElement('input');
-  const id = `llm-${card.identifier}-${key}`;
-  const caption = document.createElement('label'); caption.htmlFor = id; caption.textContent = label;
-  input.id = id; input.type = type; input.value = value ?? '';
+  const input = document.createElement(Array.isArray(type) ? 'select' : 'input');
+  input.id = `llm-${card.identifier}-${key}`;
+  const caption = document.createElement('label'); caption.htmlFor = input.id; caption.textContent = label;
+  if (Array.isArray(type)) {
+    for (const [id, name] of type) { const option = document.createElement('option'); option.value = id; option.textContent = name; input.append(option); }
+  } else { input.type = type; }
+  input.value = value ?? '';
   if (type === 'password') input.autocomplete = 'new-password';
   container.append(caption, input); parent.append(container); card.fields[key] = input;
   return input;
 }
 
-function llmSelect(card, parent, key, label, value, choices) {
-  const container = document.createElement('div');
-  const input = document.createElement('select'); input.id = `llm-${card.identifier}-${key}`;
-  const caption = document.createElement('label'); caption.htmlFor = input.id; caption.textContent = label;
-  for (const [id, name] of choices) { const option = document.createElement('option'); option.value = id; option.textContent = name; input.append(option); }
-  input.value = value; container.append(caption, input); parent.append(container); card.fields[key] = input;
-  return input;
-}
-
 function updateRoleOptions() {
-  for (const id of ['llm-writer', 'llm-checker', 'llm-planner', 'llm-scene', 'llm-plan-checker']) {
+  for (const id of Object.values(llmRoles)) {
     const selection = el(id).value;
     el(id).replaceChildren();
     for (const card of llmCards) {
@@ -40,10 +41,10 @@ function renderModelCard(identifier, model) {
   const legend = document.createElement('legend'); legend.textContent = identifier; fieldset.append(legend);
   const grid = document.createElement('div'); grid.className = 'llm-grid'; fieldset.append(grid);
   const cfg = model.config;
-  llmInput(card, grid, 'base_url', 'API 根地址（包含版本前缀）', cfg.base_url, 'url').placeholder = 'https://gateway.example/v1';
-  llmInput(card, grid, 'model', '模型名称', cfg.model).addEventListener('input', updateRoleOptions);
-  const auth = llmSelect(card, grid, 'auth_mode', '鉴权方式', cfg.auth_mode, [['bearer', 'Bearer API Key'], ['api_key_header', '自定义 API Key 请求头'], ['none', '无鉴权（本地服务等）']]);
-  const key = llmInput(card, grid, 'api_key', model.key_configured ? 'API Key（已设置；留空保留）' : 'API Key', '', 'password');
+  llmField(card, grid, 'base_url', 'API 根地址（包含版本前缀）', cfg.base_url, 'url').placeholder = 'https://gateway.example/v1';
+  llmField(card, grid, 'model', '模型名称', cfg.model).addEventListener('input', updateRoleOptions);
+  const auth = llmField(card, grid, 'auth_mode', '鉴权方式', cfg.auth_mode, [['bearer', 'Bearer API Key'], ['api_key_header', '自定义 API Key 请求头'], ['none', '无鉴权（本地服务等）']]);
+  const key = llmField(card, grid, 'api_key', model.key_configured ? 'API Key（已设置；留空保留）' : 'API Key', '', 'password');
   key.placeholder = model.key_configured ? '已设置，输入新值可替换' : '填写服务商提供的密钥';
   const clearLabel = document.createElement('label'); clearLabel.className = 'check-label';
   const clear = document.createElement('input'); clear.type = 'checkbox';
@@ -51,13 +52,13 @@ function renderModelCard(identifier, model) {
   const advanced = document.createElement('details');
   const summary = document.createElement('summary'); summary.textContent = '高级选项'; advanced.append(summary);
   const advancedGrid = document.createElement('div'); advancedGrid.className = 'llm-grid'; advanced.append(advancedGrid); fieldset.append(advanced);
-  llmInput(card, advancedGrid, 'generate_url', '完整生成地址（可选，填写后优先使用）', cfg.generate_url, 'url');
-  const header = llmInput(card, advancedGrid, 'api_key_header', '自定义密钥头名称', cfg.api_key_header);
-  const output = llmInput(card, advancedGrid, 'max_output_tokens', '最大输出 token', cfg.max_output_tokens, 'number'); output.min = '256'; output.max = '32000'; output.required = true;
-  const context = llmInput(card, advancedGrid, 'context_window', '模型上下文上限（token）', cfg.context_window, 'number'); context.min = '1024'; context.required = true;
-  llmSelect(card, advancedGrid, 'token_parameter', '输出长度参数', cfg.token_parameter, [['max_tokens', 'max_tokens'], ['max_completion_tokens', 'max_completion_tokens']]);
-  llmSelect(card, advancedGrid, 'json_mode', '检查报告 JSON 模式', String(cfg.json_mode), [['true', '使用 response_format'], ['false', '提示词约束并校验']]);
-  llmSelect(card, advancedGrid, 'thinking', '思考模式（仅用于已确认支持的接口）', cfg.thinking || 'default', [['default', '接口默认，不发送参数'], ['disabled', '关闭 thinking'], ['enabled', '启用 thinking']]);
+  llmField(card, advancedGrid, 'generate_url', '完整生成地址（可选，填写后优先使用）', cfg.generate_url, 'url');
+  const header = llmField(card, advancedGrid, 'api_key_header', '自定义密钥头名称', cfg.api_key_header);
+  const output = llmField(card, advancedGrid, 'max_output_tokens', '最大输出 token', cfg.max_output_tokens, 'number'); output.min = '256'; output.max = '32000'; output.required = true;
+  const context = llmField(card, advancedGrid, 'context_window', '模型上下文上限（token）', cfg.context_window, 'number'); context.min = '1024'; context.required = true;
+  llmField(card, advancedGrid, 'token_parameter', '输出长度参数', cfg.token_parameter, [['max_tokens', 'max_tokens'], ['max_completion_tokens', 'max_completion_tokens']]);
+  llmField(card, advancedGrid, 'json_mode', '检查报告 JSON 模式', String(cfg.json_mode), [['true', '使用 response_format'], ['false', '提示词约束并校验']]);
+  llmField(card, advancedGrid, 'thinking', '思考模式（仅用于已确认支持的接口）', cfg.thinking || 'default', [['default', '接口默认，不发送参数'], ['disabled', '关闭 thinking'], ['enabled', '启用 thinking']]);
   const controls = document.createElement('div'); controls.className = 'llm-tests';
   const status = document.createElement('p'); status.className = 'llm-test-status'; status.setAttribute('role', 'status'); card.status = status;
   for (const [scope, title] of [['text', '测试文本调用'], ['structured', '测试结构化输出']]) {
@@ -97,23 +98,22 @@ function displayLLMSettings(data) {
   llmRevision = data.revision; llmCards = []; el('llm-models').replaceChildren();
   for (const [identifier, model] of Object.entries(data.models)) renderModelCard(identifier, model);
   updateRoleOptions();
-  el('llm-writer').value = data.roles.answer_writer; el('llm-checker').value = data.roles.answer_checker;
-  el('llm-planner').value = data.roles.video_planner; el('llm-scene').value = data.roles.scene_generator; el('llm-plan-checker').value = data.roles.plan_checker;
+  for (const [role, id] of Object.entries(llmRoles)) el(id).value = data.roles[role];
   el('llm-context').value = data.answer_context_tokens; el('llm-check-enabled').checked = data.answer_check;
 }
 
 async function loadLLMSettings() {
+  if (llmBusy) return;
+  setLLMBusy(true);
   el('llm-message').classList.remove('error-text');
   try {
     displayLLMSettings(await request('/api/v2/llm-settings'));
     const health = await refreshHealth();
-    el('llm-state').textContent = health.ready ? '已就绪' : '待配置';
-    if (!health.ready) el('llm-settings').open = true;
-    el('llm-message').textContent = '';
+    el('llm-message').textContent = health.ready ? '' : '填写模型地址、名称与密钥，再保存配置。';
   } catch (error) {
     el('llm-message').textContent = `配置读取失败：${error.message}`; el('llm-message').classList.add('error-text');
-    el('llm-state').textContent = '读取失败'; el('llm-settings').open = true;
-  }
+    el('llm-state').textContent = '读取失败';
+  } finally { setLLMBusy(false); }
 }
 
 el('llm-add').onclick = () => {
@@ -124,19 +124,21 @@ el('llm-add').onclick = () => {
 };
 el('llm-reload').onclick = loadLLMSettings;
 el('llm-form').addEventListener('submit', async event => {
-  event.preventDefault(); el('llm-save').disabled = true; el('llm-message').classList.remove('error-text');
+  event.preventDefault();
+  if (llmBusy) return;
+  setLLMBusy(true); el('llm-message').classList.remove('error-text');
   try {
     const models = Object.fromEntries(llmCards.map(card => [card.identifier, readModelDraft(card)]));
     const response = await request('/api/v2/llm-settings', {method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({
       expected_revision: llmRevision, models,
-      roles: {answer_writer: el('llm-writer').value, answer_checker: el('llm-checker').value, video_planner: el('llm-planner').value, scene_generator: el('llm-scene').value, plan_checker: el('llm-plan-checker').value},
+      roles: Object.fromEntries(Object.entries(llmRoles).map(([role, id]) => [role, el(id).value])),
       answer_check: el('llm-check-enabled').checked, answer_context_tokens: Number(el('llm-context').value),
     })});
     displayLLMSettings(response);
     const health = await refreshHealth();
-    el('llm-state').textContent = health.ready ? '已就绪' : '待配置';
     el('llm-message').textContent = health.ready ? '已保存并应用。新任务立即使用此配置。' : '配置已保存，但仍缺少接口、模型或密钥，请补全后保存。';
   } catch (error) { el('llm-message').textContent = error.message; el('llm-message').classList.add('error-text'); }
-  finally { el('llm-save').disabled = false; }
+  finally { setLLMBusy(false); }
 });
+el('configuration-link').onclick = () => { el('llm-settings').open = true; };
 loadLLMSettings();

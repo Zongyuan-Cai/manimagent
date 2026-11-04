@@ -13,11 +13,15 @@ let viewEpoch = 0;
 function clearVideo() {
   currentVideo = null;
   el('video-panel').hidden = true; el('video-player').hidden = true; el('video-actions').hidden = true;
+  el('video-jump').hidden = true;
   el('video-player').removeAttribute('src'); localStorage.removeItem('manimagent.video');
 }
 function beginView(clearShared = true) {
   viewEpoch += 1; clearTimeout(timer); currentJob = null; animationResumeJob = null;
   localStorage.removeItem('manimagent.textJob');
+  for (const id of ['job', 'message', 'error', 'artifacts']) el(id).replaceChildren();
+  el('diagnostics').hidden = true;
+  setStatus('');
   if (clearShared && window.history) {
     const url = new URL(window.location.href);
     url.searchParams.delete('answer_id'); url.searchParams.delete('video_id');
@@ -29,11 +33,11 @@ function beginView(clearShared = true) {
 
 async function request(url, options) {
   const response = await fetch(url, options);
-  const data = await response.json();
-  if (!response.ok) {
-    const error = new Error(data.error?.message || data.detail || '请求失败');
-    error.status = response.status;
-    throw error;
+  const data = await response.json().catch(() => null);
+  if (!response.ok || data === null) {
+    throw Object.assign(new Error(data?.error?.message || data?.detail || (response.ok ? '服务返回了无效数据，请重试' : `请求失败（HTTP ${response.status}）`)), {
+      status: response.status, retryable: data?.error?.retryable ?? !response.ok,
+    });
   }
   return data;
 }
@@ -44,7 +48,21 @@ function link(parent, title, url) {
   const a = document.createElement('a');
   a.textContent = title; a.href = url; a.className = 'artifact'; parent.append(a);
 }
-function release() { el('generate').disabled = false; el('animate').disabled = false; clearTimeout(timer); }
+function setBusy(busy) { el('generate').disabled = busy; el('animate').disabled = busy; }
+function release() { setBusy(false); clearTimeout(timer); }
+function setStatus(text, state = '') {
+  el('status').textContent = text; el('status').style.display = text ? 'block' : 'none';
+  el('workspace-state').textContent = {partial: '部分完成', needs_input: '待补充', needs_review: '待核对'}[state] || text || '等待输入';
+  el('workspace-state').setAttribute('data-state', state);
+}
+function watchJob(id, epoch) {
+  if (epoch !== viewEpoch) return;
+  currentJob = id; setBusy(true); setStatus('排队中');
+  el('job').textContent = `任务 ${id}`;
+  el('diagnostics').hidden = false;
+  localStorage.setItem('manimagent.textJob', id);
+  return poll(epoch, id);
+}
 
 async function showVideo(id, epoch = viewEpoch) {
   if (epoch !== viewEpoch || currentVideo === id) return;
@@ -60,6 +78,7 @@ async function showVideo(id, epoch = viewEpoch) {
     throw Object.assign(new Error('视频与当前回答版本不匹配，请基于此回答重新生成动画'), {retryable: false});
   }
   el('video-panel').hidden = false; el('video-player').hidden = false; el('video-actions').hidden = false;
+  el('video-jump').hidden = false;
   el('video-player').src = `/api/v2/videos/${id}/content`;
   el('video-download').href = `/api/v2/videos/${id}/content?download=true`;
   el('video-plan').href = `/api/v2/videos/${id}/plan`;
@@ -107,6 +126,9 @@ async function showAnswer(id, epoch = viewEpoch) {
   el('download').href = `/api/v2/answers/${id}/markdown?download=true`;
   el('warnings').textContent = nextAnswer.warnings.map(w => w.message).join('；');
   el('job').textContent = `回答版本 ${id}`;
+  el('diagnostics').hidden = false;
+  el('answer-meta').textContent = '完整解答 · 可编辑与导出';
+  if (!currentJob) setStatus('回答已载入');
   el('source-list').replaceChildren();
   for (const {materialId, material, files} of sources) {
     link(el('source-list'), `材料 ${materialId}`, `/api/v2/materials/${materialId}`);
@@ -135,8 +157,7 @@ async function poll(epoch = viewEpoch, jobId = currentJob) {
   try {
     const job = await request(`/api/v2/jobs/${jobId}`);
     if (epoch !== viewEpoch || jobId !== currentJob) return;
-    el('status').style.display = 'block';
-    el('status').textContent = labels[job.status] || job.status;
+    setStatus(labels[job.status] || job.status, job.status);
     el('message').textContent = job.message;
     if (job.resource_ref?.type === 'generation') {
       const generation = await request(`/api/v2/generations/${job.resource_ref.id}`);
@@ -150,10 +171,13 @@ async function poll(epoch = viewEpoch, jobId = currentJob) {
     if (job.stage === 'video' && !currentVideo) { el('video-panel').hidden = false; el('video-message').textContent = job.message; }
     el('artifacts').replaceChildren();
     for (const id of job.diagnostic_asset_ids) link(el('artifacts'), `诊断 ${id}`, `/api/v2/files/${id}/content`);
-    el('diagnostics').hidden = !job.diagnostic_asset_ids.length;
+    el('diagnostics').hidden = !job.diagnostic_asset_ids.length && !el('job').textContent;
     if (terminal.has(job.status)) {
       animationResumeJob = job.stage === 'video' && ['video_pacing', 'video_plan_check', 'render_layout', 'render_failed', 'render_timeout', 'output_truncated'].includes(job.error?.code) ? currentJob : null;
-      if (!answer) el('result').textContent = '本次未发布完整回答，请根据提示补充或核对材料后重新提交。';
+      if (!answer) {
+        el('result').textContent = '本次未发布完整回答，请根据提示补充或核对材料后重新提交。';
+        el('answer-meta').textContent = '等待补充或核对材料';
+      }
       release();
     } else { timer = setTimeout(() => poll(epoch, jobId), 1000); }
   } catch (error) {
@@ -165,60 +189,65 @@ async function poll(epoch = viewEpoch, jobId = currentJob) {
 }
 
 el('form').addEventListener('submit', async (event) => {
-  event.preventDefault(); clearTimeout(timer); el('generate').disabled = true; el('animate').disabled = true; el('error').textContent = '';
+  event.preventDefault();
+  if (el('generate').disabled) return;
   const epoch = beginView();
+  setBusy(true); setStatus('准备材料');
   answer = null; localStorage.removeItem('manimagent.answer');
+  el('answer-meta').textContent = '正在生成，请保留此页面或稍后回来';
   el('result').textContent = '正在准备材料与文字回答…';
   el('actions').hidden = true; el('editor').hidden = true; el('sources').hidden = true; el('warnings').textContent = '';
   try {
     const instruction = el('text').value;
+    const outputMode = el('output-mode').value;
     let source;
     if (reusedMaterialIds) source = {type: 'materials', material_ids: reusedMaterialIds, instruction};
     else {
       const inputs = [{type: 'text', text: instruction}];
       if (el('material').value.trim()) inputs.push({type: 'text', text: el('material').value});
-      for (const row of fileRows) {
+      // Capture the whole submission before uploads yield to edits in the form.
+      const files = fileRows.map(row => {
         let selection;
         if (row.start.value || row.end.value) {
           const start = Number(row.start.value), end = Number(row.end.value);
           if (!Number.isInteger(start) || !Number.isInteger(end) || start < 1 || end < start) throw new Error('请填写有效的起始页和结束页');
           selection = {kind: 'pages', start, end};
         }
+        return {row, selection};
+      });
+      for (const {row, selection} of files) {
         if (!row.uploaded) {
           const data = new FormData(); data.append('file', row.file);
           el('message').textContent = `正在上传 ${row.file.name}`;
           row.uploaded = await request('/api/v2/files', {method: 'POST', body: data});
+          if (epoch !== viewEpoch) return;
         }
         inputs.push({type: 'file', file_id: row.uploaded.file_id, ...(selection ? {selection} : {})});
       }
       source = {type: 'inputs', inputs, instruction};
     }
-    const job = await post('/api/v2/generations', {output_mode: el('output-mode').value, source});
-    if (epoch !== viewEpoch) return;
-    currentJob = job.job_id;
-    el('job').textContent = `任务 ${currentJob}`;
-    localStorage.setItem('manimagent.textJob', currentJob); poll();
-  } catch (error) { if (epoch === viewEpoch) { el('error').textContent = error.message; el('message').textContent = ''; release(); } }
+    const job = await post('/api/v2/generations', {output_mode: outputMode, source});
+    await watchJob(job.job_id, epoch);
+  } catch (error) { if (epoch === viewEpoch) { el('error').textContent = error.message; el('message').textContent = ''; el('result').textContent = '生成未完成，请检查输入后重试。'; el('answer-meta').textContent = '等待重新提交'; setStatus('未完成'); release(); } }
 });
 el('example').onclick = () => { el('text').value = '给定 a=(3,2)、b=(2,0)，求 a 在 b 方向上的投影。解释 b≠0 的前提、正交依据、投影系数与投影向量的区别，并验证残差与 b 正交。面向首次学习投影的学生完整推导。'; };
 el('animate').onclick = async () => {
-  if (!answer) return;
+  if (!answer || el('animate').disabled) return;
   const sourceAnswer = answer.answer_id, resumeJob = animationResumeJob;
   const epoch = beginView();
-  el('animate').disabled = true; el('generate').disabled = true;
+  setBusy(true); setStatus('准备动画');
   try {
     const job = await post('/api/v2/videos', {answer_id: sourceAnswer, ...(resumeJob ? {resume_job_id: resumeJob} : {})});
     if (epoch !== viewEpoch) return;
-    currentJob = job.job_id; currentVideo = null;
-    el('video-panel').hidden = false; el('video-player').hidden = true; el('video-actions').hidden = true;
-    localStorage.setItem('manimagent.textJob', currentJob); poll();
-  } catch (error) { if (epoch === viewEpoch) { el('message').textContent = error.message; release(); } }
+    el('video-panel').hidden = false;
+    await watchJob(job.job_id, epoch);
+  } catch (error) { if (epoch === viewEpoch) { el('message').textContent = error.message; setStatus('动画未完成'); release(); } }
 };
 el('copy').onclick = async () => { try { await navigator.clipboard.writeText(answer.markdown); el('message').textContent = '正文已复制'; } catch { el('message').textContent = '复制失败，可下载 Markdown'; } };
 el('result').addEventListener('click', event => {
   if (event.target.closest('a')?.getAttribute('href')?.startsWith('#block_')) el('sources').open = true;
 });
-el('edit').onclick = () => { el('revision').value = answer.markdown; el('editor').hidden = false; };
+el('edit').onclick = () => { el('revision').value = answer.markdown; el('editor').hidden = false; el('revision').focus(); };
 el('cancel').onclick = () => { el('editor').hidden = true; };
 el('save').onclick = async () => {
   let epoch = viewEpoch;
@@ -231,17 +260,17 @@ el('save').onclick = async () => {
     if (epoch !== viewEpoch) return;
     release();
     el('message').textContent = '已保存新版本，旧回答保持可读';
-  } catch (error) { if (epoch === viewEpoch) el('message').textContent = error.message; }
+  } catch (error) { if (epoch === viewEpoch) { el('message').textContent = error.message; release(); } }
   finally { el('save').disabled = false; }
 };
-el('reuse').onclick = () => { reusedMaterialIds = answer.material_ids; el('text').focus(); el('message').textContent = '已复用此回答的材料。修改问题后点击生成文字回答。'; };
+el('reuse').onclick = () => { reusedMaterialIds = answer.material_ids; el('text').focus(); el('message').textContent = '已复用此回答的材料。修改问题后点击“开始生成”。'; };
 async function refreshHealth() {
   const data = await request('/api/v2/health');
-  el('health').textContent = data.ready ? (data.video_issues?.length ? data.video_issues.join('；') : '') : `回答模型尚未就绪：${data.issues.join('；')}。可展开 LLM 配置完成设置；上传与独立解析仍可使用。`;
+  el('llm-state').textContent = data.ready ? '已就绪' : '待配置';
+  el('health').textContent = data.ready ? (data.video_issues?.length ? data.video_issues.join('；') : '') : `请先完成右上角的模型设置。${data.issues.join('；')}。`;
   el('health').style.display = data.ready && !data.video_issues?.length ? 'none' : 'block';
   return data;
 }
-refreshHealth().catch(() => {});
 async function restoreView() {
   const shared = new URLSearchParams(window.location.search);
   const valid = (kind, value) => new RegExp(`^${kind}_[a-f0-9]{32}$`).test(value || '');
@@ -256,10 +285,7 @@ async function restoreView() {
       if (aid) await showAnswer(aid, epoch);
       if (vid) await showVideo(vid, epoch);
     } else if (valid('job', savedJob)) {
-      currentJob = savedJob;
-      localStorage.setItem('manimagent.textJob', savedJob);
-      el('generate').disabled = true; el('animate').disabled = true;
-      await poll(epoch, savedJob);
+      await watchJob(savedJob, epoch);
     } else {
       if (valid('answer', savedAnswer)) await showAnswer(savedAnswer, epoch);
       if (valid('video', savedVideo)) await showVideo(savedVideo, epoch);

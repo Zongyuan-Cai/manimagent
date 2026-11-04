@@ -12,7 +12,13 @@ from pathlib import Path
 
 from manimagent.config import ModelConfig, Settings
 from manimagent.llm_settings import dpapi
-from scripts.review_live_text import KEY_ENV, ROOT, pdf_bytes, save
+
+if __package__:
+    from .review_live_text import KEY_ENV, ROOT, pdf_bytes
+    from .review_support import save
+else:
+    from review_live_text import KEY_ENV, ROOT, pdf_bytes
+    from review_support import save
 
 
 def main():
@@ -97,6 +103,7 @@ def main():
             result["exit_code"] = completed.returncode
             assert completed.returncode == expected_code, "CLI exit code differs"
             after = set((runtime / "runs" / "private" / "jobs").glob("*.json"))
+            assert len(after - before) == int(expected_status is not None), "CLI job count differs"
             for job_path in sorted(after - before):
                 job = json.loads(job_path.read_text(encoding="utf-8"))
                 result.update(
@@ -124,7 +131,8 @@ def main():
             {"cases": results, "passed": sum(r["passed"] for r in results), "total": len(results)},
         )
         print(json.dumps(result, ensure_ascii=False), flush=True)
+    return int(not all(result["passed"] for result in results))
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

@@ -2,12 +2,11 @@
 
 from __future__ import annotations
 
-import json
 import os
 import uuid
 from pathlib import Path
 
-from manimagent.content_store import ContentError
+from manimagent.content_store import ContentError, write_json
 
 
 class InstanceLease:
@@ -46,12 +45,9 @@ class InstanceLease:
     def publish(self, url: str | None = None):
         if self.stream is None:
             raise RuntimeError("Data directory is not owned")
-        path = self.root / "instance.json"
-        temporary = path.with_suffix(".tmp")
-        temporary.write_text(
-            json.dumps({"id": self.identifier, "pid": os.getpid(), "url": url}), encoding="utf-8"
+        write_json(
+            self.root / "instance.json", {"id": self.identifier, "pid": os.getpid(), "url": url}
         )
-        os.replace(temporary, path)
 
     def release(self):
         if self.stream is None:

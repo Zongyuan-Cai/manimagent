@@ -53,7 +53,6 @@ class NativeRenderer:
             PYTHONPATH=str(Path(__file__).resolve().parents[1]),
             PYTHONUTF8="1",
             MPLBACKEND="Agg",
-            MPLCONFIGDIR="matplotlib-cache",
         )
         return result
 
@@ -114,7 +113,6 @@ class NativeRenderer:
     def _run(self, action: str, directory: Path, payload: dict, budget: Budget, cap: float) -> dict:
         import psutil
 
-        directory.mkdir(parents=True, exist_ok=True)
         source = directory / "input.json"
         source.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
         timeout = min(cap, budget.remaining() - 15)

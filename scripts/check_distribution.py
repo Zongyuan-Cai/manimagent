@@ -141,7 +141,10 @@ def smoke_install(package: Path, uv: str, version: str) -> None:
                     raise ValueError(
                         "Installed application version differs from the source project"
                     )
-                if "LLM 配置" not in get("/").decode("utf-8"):
+                html = get("/").decode("utf-8")
+                if not all(
+                    f'id="{identifier}"' in html for identifier in ("llm-settings", "llm-form")
+                ):
                     raise ValueError("Packaged UI did not render its configuration controls")
                 for asset in REQUIRED_ASSETS - {"manimagent/web/index.html"}:
                     if not get(asset.replace("manimagent/web/", "/static/", 1)):

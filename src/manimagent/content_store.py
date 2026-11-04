@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import hashlib
+import io
 import json
 import os
 import re
-import shutil
 import threading
 import uuid
 import zipfile
@@ -24,6 +24,23 @@ _JSON_IO_LOCK = threading.RLock()
 def read_json_bytes(path: Path) -> bytes:
     with _JSON_IO_LOCK:
         return path.read_bytes()
+
+
+def write_json(path: Path, value: BaseModel | dict) -> None:
+    """Publish private JSON atomically, sharing the Windows reader lock."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_suffix("." + uuid.uuid4().hex + ".tmp")
+    try:
+        descriptor = os.open(temporary, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        with os.fdopen(descriptor, "w", encoding="utf-8", newline="") as stream:
+            data = value.model_dump(mode="json") if isinstance(value, BaseModel) else value
+            json.dump(data, stream, ensure_ascii=False, indent=2)
+            stream.flush()
+            os.fsync(stream.fileno())
+        with _JSON_IO_LOCK:
+            os.replace(temporary, path)
+    finally:
+        temporary.unlink(missing_ok=True)
 
 
 def new_id(prefix: str) -> str:
@@ -62,19 +79,7 @@ class ContentStore:
         return self.root / collection / (identifier + suffix)
 
     def save(self, collection: str, identifier: str, value: BaseModel | dict) -> None:
-        path = self.path(collection, identifier)
-        path.parent.mkdir(parents=True, exist_ok=True)
-        temporary = path.with_suffix("." + uuid.uuid4().hex + ".tmp")
-        try:
-            data = value.model_dump(mode="json") if isinstance(value, BaseModel) else value
-            with temporary.open("w", encoding="utf-8", newline="") as stream:
-                json.dump(data, stream, ensure_ascii=False, indent=2)
-                stream.flush()
-                os.fsync(stream.fileno())
-            with _JSON_IO_LOCK:
-                os.replace(temporary, path)
-        finally:
-            temporary.unlink(missing_ok=True)
+        write_json(self.path(collection, identifier), value)
 
     def load(self, collection: str, identifier: str, schema):
         try:
@@ -95,6 +100,20 @@ class ContentStore:
         return self.path("files", identifier, ".content")
 
     def put_file(self, stream: BinaryIO, filename: str, media_type: str = "") -> FileAsset:
+        # Never trust the submitted MIME type or a client-supplied path.
+        name = re.split(r"[/\\]", filename)[-1]
+        name = "".join(c for c in name if c.isprintable()).strip()[:180] or "material.txt"
+        return self._write_file(stream, name, max_bytes=self.settings.max_upload_bytes)
+
+    def _write_file(
+        self,
+        stream: BinaryIO,
+        filename: str,
+        media_type: str | None = None,
+        *,
+        max_bytes: int | None = None,
+    ) -> FileAsset:
+        """Stream, checksum and publish one asset; uploads require format detection."""
         identifier = new_id("file")
         path = self.file_path(identifier)
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -104,19 +123,20 @@ class ContentStore:
             with temporary.open("xb") as target:
                 while chunk := stream.read(64 * 1024):
                     size += len(chunk)
-                    if size > self.settings.max_upload_bytes:
-                        raise ContentError("upload_too_large", "文件超过上传上限，请缩小文件", 413)
+                    if max_bytes is not None and size > max_bytes:
+                        if media_type is None:
+                            raise ContentError(
+                                "upload_too_large", "文件超过上传上限，请缩小文件", 413
+                            )
+                        raise ContentError("invalid_render", "渲染产物超过 256 MiB 限额")
                     digest.update(chunk)
                     target.write(chunk)
                 target.flush()
                 os.fsync(target.fileno())
-            name = re.split(r"[/\\]", filename)[-1]
-            name = "".join(c for c in name if c.isprintable()).strip()[:180] or "material.txt"
-            confirmed = self.detect(temporary, name)
             asset = FileAsset(
                 file_id=identifier,
-                filename=name,
-                media_type=confirmed,
+                filename=filename,
+                media_type=media_type or self.detect(temporary, filename),
                 size_bytes=size,
                 sha256=digest.hexdigest(),
             )
@@ -160,52 +180,19 @@ class ContentStore:
 
     def diagnostic(self, value: dict | str) -> str:
         # Internal assets are registered separately from the upload whitelist.
-        identifier = new_id("file")
         raw = json.dumps(value, ensure_ascii=False, indent=2) if isinstance(value, dict) else value
-        data = raw.encode("utf-8")
-        path = self.file_path(identifier)
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_bytes(data)
-        self.save(
-            "files",
-            identifier,
-            FileAsset(
-                file_id=identifier,
-                filename="diagnostic.json" if isinstance(value, dict) else "candidate.md",
-                media_type="application/json" if isinstance(value, dict) else "text/markdown",
-                size_bytes=len(data),
-                sha256=hashlib.sha256(data).hexdigest(),
-            ),
-        )
-        return identifier
+        return self._write_file(
+            io.BytesIO(raw.encode("utf-8")),
+            "diagnostic.json" if isinstance(value, dict) else "candidate.md",
+            "application/json" if isinstance(value, dict) else "text/markdown",
+        ).file_id
 
     def generated_file(self, source: Path, filename: str, media_type: str) -> FileAsset:
         """Register trusted renderer output, separate from the user upload whitelist."""
         if not source.is_file() or not 0 < source.stat().st_size <= 256 * 1024 * 1024:
             raise ContentError("invalid_render", "渲染产物不存在或超过 256 MiB 限额")
-        identifier = new_id("file")
-        target = self.file_path(identifier)
-        target.parent.mkdir(parents=True, exist_ok=True)
-        temporary = target.with_suffix(".tmp")
-        try:
-            shutil.copyfile(source, temporary)
-            with temporary.open("rb") as stream:
-                checksum = hashlib.file_digest(stream, "sha256").hexdigest()
-            os.replace(temporary, target)
-            asset = FileAsset(
-                file_id=identifier,
-                filename=filename,
-                media_type=media_type,
-                size_bytes=target.stat().st_size,
-                sha256=checksum,
-            )
-            self.save("files", identifier, asset)
-            return asset
-        except BaseException:
-            target.unlink(missing_ok=True)
-            raise
-        finally:
-            temporary.unlink(missing_ok=True)
+        with source.open("rb") as stream:
+            return self._write_file(stream, filename, media_type, max_bytes=256 * 1024 * 1024)
 
     def verify_file(self, identifier: str) -> FileAsset:
         asset = self.load("files", identifier, FileAsset)

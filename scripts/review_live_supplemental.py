@@ -13,21 +13,18 @@ from fastapi.testclient import TestClient
 from manimagent.api import create_app
 from manimagent.config import ModelConfig, Settings
 from manimagent.llm_settings import dpapi
-from scripts.review_live_text import KEY_ENV, ROOT, save
+
+if __package__:
+    from .review_live_text import KEY_ENV, ROOT
+    from .review_support import save, wait_job
+else:
+    from review_live_text import KEY_ENV, ROOT
+    from review_support import save, wait_job
 
 
 def wait(client, response):
     assert response.status_code == 202, f"submit HTTP {response.status_code}"
-    identifier = response.json()["job_id"]
-    deadline = time.monotonic() + 240
-    while time.monotonic() < deadline:
-        r = client.get(f"/api/v2/jobs/{identifier}")
-        assert r.status_code == 200, f"poll HTTP {r.status_code}"
-        job = r.json()
-        if job["status"] not in {"queued", "running"}:
-            return job
-        time.sleep(0.15)
-    raise TimeoutError("job timed out")
+    return wait_job(client, response.json()["job_id"], timeout=240)
 
 
 def submit(client, inputs=None, instruction="完整解答材料中的题目并引用来源。", source=None):
@@ -308,6 +305,7 @@ def main():
                 return {"status": job["status"], "usage": job["usage"]}
 
         record(name, boundary)
+    return int(not all(result["passed"] for result in results))
 
 
 def re_search_negative_eight(markdown):
@@ -317,4 +315,4 @@ def re_search_negative_eight(markdown):
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

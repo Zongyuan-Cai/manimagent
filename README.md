@@ -11,7 +11,9 @@ uv sync --frozen --extra dev --extra animation
 uv run manimagent serve
 ```
 
-打开 http://127.0.0.1:8000，在“LLM 配置”填写服务地址、模型和 API Key，测试并保存。也可以使用 `.env` 与 `config.yaml` 提供初始配置。当前模型配置为 DeepSeek 官方 `deepseek-flash`，密钥仅保存在本机私有凭据存储中。
+打开 http://127.0.0.1:8000，点击“模型设置”填写服务地址、模型和 API Key，测试并保存。也可以使用 `.env` 与 `config.yaml` 提供初始配置。当前模型配置为 DeepSeek 官方 `deepseek-flash`，密钥仅保存在本机私有凭据存储中。
+
+网页采用输入与解答并排的工作台。首次使用点击右上角配置入口；日常在左侧提交题目与材料，在右侧阅读、修订、导出回答或查看动画，手机上按顺序排列。改版与代码精简记录见[全代码复审与前端验收](testresult/review-ui-20261104/报告.md)。
 
 ```powershell
 uv run manimagent doctor
