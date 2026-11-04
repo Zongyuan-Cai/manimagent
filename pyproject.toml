@@ -33,7 +33,7 @@ manimagent = "manimagent.cli:main"
 packages = ["src/manimagent"]
 
 [tool.hatch.build.targets.sdist]
-only-include = ["src/manimagent", "tests", "scripts", "docs", "README.md", "pyproject.toml", "uv.lock", "config.example.yaml", ".env.example"]
+only-include = ["src/manimagent", "tests", "scripts", "evals", "docs", "README.md", "pyproject.toml", "uv.lock", "config.example.yaml", ".env.example"]
 
 [tool.hatch.build]
 exclude = ["/legacy_mvp", "/testmaterial", "/testresult", "/runs", "/config.yaml", "/.env", "/.venv-before-separation"]

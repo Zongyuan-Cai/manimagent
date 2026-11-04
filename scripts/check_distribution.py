@@ -20,9 +20,14 @@ from pathlib import Path, PurePosixPath
 
 REQUIRED_ASSETS = {
     "manimagent/web/index.html",
-    "manimagent/web/app.js",
+    "manimagent/web/main.js",
+    "manimagent/web/api.js",
+    "manimagent/web/dom.js",
+    "manimagent/web/workspace.js",
+    "manimagent/web/results.js",
+    "manimagent/web/settings.js",
+    "manimagent/web/package.json",
     "manimagent/web/app.css",
-    "manimagent/web/llm-settings.js",
     "manimagent/web/vendor/tex-svg.js",
 }
 FORBIDDEN_PARTS = {

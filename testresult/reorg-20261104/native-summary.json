@@ -1,0 +1,53 @@
+{
+  "status": "success",
+  "video_path": "complete.mp4",
+  "media": {
+    "width": 1280,
+    "height": 720,
+    "fps": 30.0,
+    "codec": "h264",
+    "pix_fmt": "yuv420p",
+    "duration_seconds": 161.73333333333332,
+    "audio_streams": 0,
+    "decoded_frames": 4852
+  },
+  "frames": [
+    {
+      "path": "frame_000.png",
+      "requested_seconds": 40.33333333333333,
+      "actual_seconds": 40.333333333333336
+    },
+    {
+      "path": "frame_001.png",
+      "requested_seconds": 40.53333333333333,
+      "actual_seconds": 40.53333333333333
+    },
+    {
+      "path": "frame_002.png",
+      "requested_seconds": 80.76666666666667,
+      "actual_seconds": 80.76666666666667
+    },
+    {
+      "path": "frame_003.png",
+      "requested_seconds": 80.96666666666665,
+      "actual_seconds": 80.96666666666667
+    },
+    {
+      "path": "frame_004.png",
+      "requested_seconds": 121.19999999999999,
+      "actual_seconds": 121.2
+    },
+    {
+      "path": "frame_005.png",
+      "requested_seconds": 121.39999999999998,
+      "actual_seconds": 121.4
+    },
+    {
+      "path": "frame_006.png",
+      "requested_seconds": 161.23333333333332,
+      "actual_seconds": 161.23333333333332
+    }
+  ],
+  "pytest_passed": 2,
+  "pytest_elapsed_seconds": 198.73
+}

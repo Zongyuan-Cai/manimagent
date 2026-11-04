@@ -1,3 +1,4 @@
+import ast
 import json
 import subprocess
 import sys
@@ -11,6 +12,31 @@ from manimagent.api import create_app
 from manimagent.config import ModelConfig, Settings, load_settings
 
 ROOT = Path(__file__).resolve().parents[2]
+
+
+def test_capabilities_do_not_depend_on_application_entrypoints():
+    source = ROOT / "src/manimagent"
+    for capability in ("llm", "materials", "answers", "video"):
+        forbidden = ("manimagent.api", "manimagent.jobs", "manimagent.cli")
+        if capability == "llm":
+            forbidden += ("manimagent.materials", "manimagent.answers", "manimagent.video")
+        for path in (source / capability).rglob("*.py"):
+            for node in ast.walk(ast.parse(path.read_text(encoding="utf-8"))):
+                modules = []
+                if isinstance(node, ast.Import):
+                    modules = [alias.name for alias in node.names]
+                elif isinstance(node, ast.ImportFrom):
+                    if node.level:
+                        package = ["manimagent", *path.relative_to(source).parts[:-1]]
+                        prefix = package[: len(package) - node.level + 1]
+                        modules = [".".join([*prefix, node.module or ""]).rstrip(".")]
+                    else:
+                        modules = [node.module or ""]
+                assert not any(
+                    module == entry or module.startswith(entry + ".")
+                    for module in modules
+                    for entry in forbidden
+                ), f"{path.relative_to(source)} imports an application entrypoint: {modules}"
 
 
 def test_current_application_does_not_import_or_expose_historical_mvp(tmp_path):

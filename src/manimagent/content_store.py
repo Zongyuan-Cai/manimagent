@@ -13,8 +13,8 @@ from typing import BinaryIO
 
 from pydantic import BaseModel
 
-from manimagent.config import Settings
-from manimagent.schemas import Error, FileAsset
+from manimagent.errors import ContentError
+from manimagent.schemas import FileAsset
 
 # All stores in one service process share the same atomic JSON publication lock.
 # Windows readers can otherwise race os.replace and fail with sharing violations.
@@ -47,18 +47,10 @@ def new_id(prefix: str) -> str:
     return prefix + "_" + uuid.uuid4().hex
 
 
-class ContentError(RuntimeError):
-    def __init__(self, code: str, message: str, status: int = 422, state: str = "failed"):
-        super().__init__(message)
-        self.error = Error(code=code, message=message)
-        self.http_status = status
-        self.state = state
-
-
 class ContentStore:
-    def __init__(self, settings: Settings):
-        self.settings = settings
-        self.root = (settings.private_dir or settings.runs_dir / "private").resolve()
+    def __init__(self, root: Path, max_upload_bytes: int):
+        self.root = root.resolve()
+        self.max_upload_bytes = max_upload_bytes
         self.root.mkdir(parents=True, exist_ok=True)
 
     def path(self, collection: str, identifier: str, suffix: str = ".json") -> Path:
@@ -103,7 +95,7 @@ class ContentStore:
         # Never trust the submitted MIME type or a client-supplied path.
         name = re.split(r"[/\\]", filename)[-1]
         name = "".join(c for c in name if c.isprintable()).strip()[:180] or "material.txt"
-        return self._write_file(stream, name, max_bytes=self.settings.max_upload_bytes)
+        return self._write_file(stream, name, max_bytes=self.max_upload_bytes)
 
     def _write_file(
         self,

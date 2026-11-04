@@ -5,192 +5,16 @@ import json
 import httpx
 import pytest
 from fastapi.testclient import TestClient
-from pydantic import ValidationError
 
-from manimagent.animation import teaching_units
-from manimagent.animation_models import (
-    BeatDraft,
-    Diagram,
-    GraphicObject,
-    SceneDraft,
+from manimagent.api import create_app
+from manimagent.errors import ContentError
+from manimagent.llm.client import ChatProvider
+from manimagent.video.models import (
     digest,
 )
-from manimagent.animation_renderer import NativeRenderer
-from manimagent.api import create_app
-from manimagent.config import ModelConfig, Settings
-from manimagent.content_store import ContentError
-from manimagent.providers import ChatProvider
+from manimagent.video.renderer.process import NativeRenderer
 from tests.support import wait_job
-
-
-class TemplateRenderer:
-    """Controlled renderer evidence, deliberately distinct from real rendering tests."""
-
-    def __init__(self, fail=False):
-        self.fail = fail
-        self.render_calls = []
-
-    def preflight(self):
-        return []
-
-    def validate_runtime(self, directory, budget):
-        return {"status": "success", "test_renderer": True}
-
-    def validate_layout(self, scene, directory, outline, scene_count, budget, index):
-        return {"status": "success", "test_renderer": True}
-
-    def render(self, scene, directory, plan, budget, index):
-        self.render_calls.append(scene.scene_id)
-        if self.fail:
-            raise ContentError("render_failed", "测试渲染失败")
-        directory.mkdir(parents=True, exist_ok=True)
-        (directory / "scene.mp4").write_bytes(b"controlled-scene")
-        events = []
-        frames = []
-        for i, b in enumerate(scene.beats):
-            (directory / f"frame_{i}.png").write_bytes(b"controlled-image")
-            events.append(
-                {
-                    "beat_id": b.beat_id,
-                    "unit_ids": b.unit_ids,
-                    "start_seconds": b.start_seconds,
-                    "stable_seconds": b.stable_seconds,
-                    "end_seconds": b.end_seconds,
-                    "objects": [],
-                }
-            )
-            frames.append({"path": f"frame_{i}.png", "actual_seconds": b.stable_seconds + 0.5})
-        return {
-            "video_path": "scene.mp4",
-            "events": events,
-            "frames": frames,
-            "media": {"duration_seconds": scene.duration_seconds},
-            "wall_seconds": 0.01,
-        }
-
-    def assemble(self, sources, directory, plan, budget):
-        directory.mkdir(parents=True, exist_ok=True)
-        (directory / "complete.mp4").write_bytes(b"controlled-complete-movie")
-        return {"video_path": "complete.mp4", "media": {"duration_seconds": plan.duration_seconds}}
-
-
-def config(tmp_path):
-    return Settings(
-        runs_dir=tmp_path,
-        models={
-            "text": ModelConfig(
-                base_url="https://test.invalid/v1",
-                model="controlled",
-                auth_mode="none",
-                context_window=128000,
-            )
-        },
-        video_context_tokens=96000,
-    )
-
-
-def transport(settings, calls, check="pass"):
-    def handler(request):
-        body = json.loads(request.content)
-        system = body["messages"][0]["content"]
-        payload = json.loads(body["messages"][1]["content"])
-        if "先规划整体" in system:
-            role = "outline"
-            units = [u["unit_id"] for u in payload["teaching_units"]]
-            output = {
-                "status": "ready",
-                "message": "教学范围适合",
-                "title": "向量与计算",
-                "audience": "首次学习本题方法的学生",
-                "difficulty": "basic",
-                "difficulty_reason": "单一方法分步推导",
-                "duration_reason": "包括条件、推理、计算与验证",
-                "scenes": [
-                    {
-                        "scene_id": f"s{i}",
-                        "title": f"教学单元{i}",
-                        "objective": "解释完整推理过程",
-                        "unit_ids": units[i - 1 :: 3],
-                        "beat_count": 3,
-                    }
-                    for i in range(1, 4)
-                ],
-            }
-        elif "仅生成指定场景" in system:
-            role = "chunk"
-            scene = payload["scene"]
-            output = {
-                "scene_id": scene["scene_id"],
-                "beats": [
-                    {
-                        "beat_id": f"b{i}",
-                        "unit_ids": scene["unit_ids"],
-                        "headline": f"单元{scene['scene_id']}第{i}步的推理",
-                        "screen_text": f"这是场景{scene['scene_id']}的第{i}步。先保留题目给定的条件，解释计算依据，再逐项计算并核对结果，确认所得结论与条件相符。",
-                        "formulas": [f"x={i}"],
-                        "spoken_text": "先保留题目给定的条件，然后解释这一操作的依据，最后核对得到的结果。",
-                        "cue_text": "先保留",
-                        "cue_objects": [],
-                        "reading_reason": "阅读条件与推理依据",
-                        "diagram": {"kind": "none"},
-                    }
-                    for i in range(1, 4)
-                ],
-            }
-        elif "独立对照固定正文" in system:
-            role = "plan_check"
-            plan = payload["plan"]
-            output = {
-                "decision": check,
-                "message": "全部单元已检查" if check == "pass" else "测试中无法确认覆盖",
-                "units": [
-                    {
-                        "unit_id": u["unit_id"],
-                        "decision": "pass" if check == "pass" else "unknown",
-                        "scene_ids": [
-                            s["scene_id"] for s in plan["scenes"] if u["unit_id"] in s["unit_ids"]
-                        ],
-                        "evidence": "对应节拍包含条件、依据和结论",
-                    }
-                    for u in plan["teaching_units"]
-                ],
-                "problem_scene_ids": [],
-            }
-        elif "检查候选解答" in system:
-            role = "answer_check"
-            output = {"decision": "pass", "message": "完整解答已核对"}
-        else:
-            role = "writer"
-            ref = payload["allowed_source_refs"][0]
-            marker = f"[[{ref['material_id']}:{ref['block_id']}]]"
-            output = f"# 已知条件\n\n给定 x=1。{marker}\n\n# 计算依据\n\n采用给定数值直接相加，1+1=2。\n\n# 结论核对\n\n答案为2，满足给定计算。"
-        calls.append(role)
-        text = output if isinstance(output, str) else json.dumps(output, ensure_ascii=False)
-        return httpx.Response(
-            200,
-            json={
-                "choices": [{"finish_reason": "stop", "message": {"content": text}}],
-                "usage": {"prompt_tokens": 20, "completion_tokens": 30},
-            },
-        )
-
-    return ChatProvider(settings, transport=httpx.MockTransport(handler))
-
-
-def submit(client, mode="both"):
-    response = client.post(
-        "/api/v2/generations",
-        json={
-            "output_mode": mode,
-            "source": {
-                "type": "inputs",
-                "instruction": "完整讲解计算方法",
-                "inputs": [{"type": "text", "text": "给定 x=1，计算 x+x 并解释。"}],
-            },
-        },
-    )
-    assert response.status_code == 202, response.text
-    return wait_job(client, response.json()["job_id"])
+from tests.support.animation import TemplateRenderer, config, submit, transport
 
 
 def test_both_outputs_share_answer_and_video_only_retry_never_calls_writer(tmp_path):
@@ -285,77 +109,6 @@ def test_changing_checker_profile_invalidates_receipt_before_video(tmp_path):
         assert calls.count("writer") == 1
 
 
-def test_native_environment_never_contains_api_keys_or_proxy_credentials(monkeypatch):
-    monkeypatch.setenv("MY_LLM_API_KEY", "private-value")
-    monkeypatch.setenv("HTTPS_PROXY", "https://private:password@proxy.invalid")
-    child = NativeRenderer.child_environment()
-    assert "MY_LLM_API_KEY" not in child and "HTTPS_PROXY" not in child
-    assert child["MPLBACKEND"] == "Agg"
-
-
-def test_source_ranges_preserve_unicode_code_fences_and_display_math():
-    markdown = "# 向量😀\n\n已知条件。\n\n```python\nx = 1\n\nprint(x)\n```\n\n\\[\na+b\n\n=c\n\\]\n\n结论。"
-    units = teaching_units(markdown)
-    assert all(markdown[u.start : u.end] == u.text and digest(u.text) == u.sha256 for u in units)
-    assert any("x = 1\n\nprint(x)" in u.text for u in units)
-    assert any("a+b\n\n=c" in u.text for u in units)
-    assert all(
-        c.isspace() or any(u.start <= i < u.end for u in units) for i, c in enumerate(markdown)
-    )
-
-
-def test_equation_paragraphs_do_not_artificially_exceed_unit_limit():
-    markdown = "# 逐项推导\n\n" + "\n\n".join(
-        f"条件{i}成立。\n\n\\[x_{i}={i}\\]" for i in range(45)
-    )
-    units = teaching_units(markdown)
-    assert 3 <= len(units) <= 70
-    assert all(markdown[u.start : u.end] == u.text and digest(u.text) == u.sha256 for u in units)
-    assert all(
-        c.isspace() or any(u.start <= i < u.end for u in units) for i, c in enumerate(markdown)
-    )
-
-
-@pytest.mark.parametrize("exit_code", [0, 1, -1])
-def test_live_benchmark_requires_successful_process_exit(tmp_path, monkeypatch, exit_code):
-    from pathlib import Path
-    from types import SimpleNamespace
-
-    from scripts import review_live_animation as runner
-
-    def process(command, **kwargs):
-        directory = Path(command[command.index("--output") + 1])
-        runner.save(directory / "result.json", {"passed": True})
-        return SimpleNamespace(wait=lambda timeout: exit_code)
-
-    monkeypatch.setenv(runner.KEY_ENV, "unused-controlled-credential")
-    monkeypatch.setattr(runner, "source_hash", lambda: "fixed")
-    monkeypatch.setattr(runner.subprocess, "Popen", process)
-    monkeypatch.setattr(
-        runner.sys,
-        "argv",
-        ["benchmark", "--output", str(tmp_path), "--topics", "projection", "--repeats", "1"],
-    )
-    with pytest.raises(SystemExit) as stopped:
-        runner.main()
-    assert stopped.value.code == (0 if exit_code == 0 else 1)
-    summary = json.loads((tmp_path / "summary.json").read_text(encoding="utf-8"))
-    assert summary["passed"] == (1 if exit_code == 0 else 0)
-
-
-@pytest.mark.parametrize("points", [[[0, 0], [0, 0]], [[float("nan"), 0], [1, 1]], [[0, 0]]])
-def test_degenerate_or_nonfinite_vectors_are_rejected(points):
-    with pytest.raises(ValidationError):
-        GraphicObject(object_id="a", kind="vector", points=points)
-
-
-def test_outside_coordinates_and_arbitrary_code_are_rejected():
-    with pytest.raises(ValidationError):
-        Diagram(kind="plane", objects=[{"object_id": "p", "kind": "point", "points": [[15, 1]]}])
-    with pytest.raises(ValidationError):
-        SceneDraft(scene_id="s1", beats=[], python_code="print('unsafe')")
-
-
 def test_resume_reuses_bound_chunks_but_rechecks_plan(tmp_path):
     settings = config(tmp_path)
     calls = []
@@ -398,23 +151,6 @@ def test_resume_cannot_cross_answer_revision(tmp_path):
         assert calls == before and failed["usage"]["model_calls"] == 0
 
 
-@pytest.mark.parametrize(
-    "formula", [r"\input{private}", r"\begin{array}1\end{array}", "$x$", "中文公式"]
-)
-def test_mathtext_rejects_file_macros_environments_and_non_math_input(formula):
-    with pytest.raises(ValidationError):
-        BeatDraft(
-            beat_id="b1",
-            unit_ids=["u001"],
-            headline="读取公式",
-            screen_text="解释这个公式的计算依据和意义。",
-            formulas=[formula],
-            spoken_text="先解释这个公式的每个符号，再对应到题目条件。",
-            cue_text="先解释",
-            reading_reason="理解公式",
-        )
-
-
 def test_short_actual_video_cannot_pass_planned_duration_gate(tmp_path):
     from types import SimpleNamespace
 
@@ -433,26 +169,6 @@ def test_short_actual_video_cannot_pass_planned_duration_gate(tmp_path):
             Budget(config(tmp_path), Usage()),
             0,
         )
-
-
-def test_mathtext_aliases_and_prompt_examples_keep_command_prefixes():
-    from manimagent.animation import OUTLINE_PROMPT, PLAN_PROMPT, SCENE_PROMPT
-
-    slash = chr(92)
-    assert BeatDraft.safe_formulas(["frac{1}{2}"]) == [slash + "frac{1}{2}"]
-    assert BeatDraft.safe_formulas([slash * 2 + "frac{1}{2}"]) == [slash + "frac{1}{2}"]
-    assert BeatDraft.safe_formulas([slash + "mathbf a"]) == [slash + "mathbf{a}"]
-    assert BeatDraft.safe_formulas([r"\frac34", r"\frac3{4}", r"\frac{3}4"]) == [r"\frac{3}{4}"] * 3
-    assert BeatDraft.safe_formulas([r"\fraction", r"\fracab"]) == [r"\fraction", r"\fracab"]
-    assert BeatDraft.safe_formulas([slash + "lVert b" + slash + "rVert"]) == [
-        slash + "Vert b" + slash + "Vert"
-    ]
-    assert slash + "frac{a}{b}" in SCENE_PROMPT and slash + "mathbf{a}" in SCENE_PROMPT
-    assert all(
-        ord(c) >= 32 or c in "\n\r\t"
-        for prompt in [OUTLINE_PROMPT, SCENE_PROMPT, PLAN_PROMPT]
-        for c in prompt
-    )
 
 
 def test_short_video_repair_expands_explanation_instead_of_shortening_it(tmp_path):

@@ -7,99 +7,17 @@ import httpx
 import pytest
 from docx import Document
 from fastapi.testclient import TestClient
-from pypdf import PdfWriter
-from pypdf.generic import DecodedStreamObject, DictionaryObject, NameObject
 
 from manimagent.api import create_app
-from manimagent.budget import Budget
-from manimagent.config import ModelConfig, Settings
-from manimagent.content_store import ContentError, ContentStore, new_id
-from manimagent.markdown_view import render_markdown
-from manimagent.providers import ChatProvider, ProviderError
-from manimagent.schemas import Generation, Job, TextGenerationRequest, Usage
-from manimagent.text_jobs import TextJobManager
-from tests.support import wait_job
-
-
-def settings_for(tmp_path, **kwargs):
-    return Settings(
-        runs_dir=tmp_path / "runs",
-        models={
-            "text": ModelConfig(
-                base_url="https://model.example/team/v1", model="text-model", auth_mode="none"
-            )
-        },
-        **kwargs,
-    )
-
-
-def controlled_provider(settings, calls, decision="pass", finish="stop", invalid_ref=False):
-    def handler(request):
-        body = json.loads(request.content)
-        calls.append(body)
-        if "response_format" in body:
-            content = json.dumps({"decision": decision, "message": "检查结果"})
-        else:
-            payload = json.loads(body["messages"][1]["content"])
-            ref = payload["allowed_source_refs"][0]
-            if invalid_ref:
-                ref["block_id"] = new_id("block")
-            content = (
-                "# 投影解答\n\n投影系数是 $3$，投影向量为 $(3,0)$。\n\n"
-                "\\[\\operatorname{proj}_{b}(a)=(3,0)\\]\n\n"
-                f"[[{ref['material_id']}:{ref['block_id']}]]\n"
-            )
-        return httpx.Response(
-            200,
-            json={
-                "choices": [{"message": {"content": content}, "finish_reason": finish}],
-                "usage": {"prompt_tokens": 100, "completion_tokens": 50},
-            },
-        )
-
-    return ChatProvider(settings, httpx.MockTransport(handler))
-
-
-def submit(client, inputs=None, **source_kwargs):
-    return client.post(
-        "/api/v2/generations",
-        json={
-            "source": {
-                "type": "inputs",
-                "inputs": inputs or [{"type": "text", "text": "a=(3,2), b=(1,0)"}],
-                "instruction": "求投影并解释",
-                **source_kwargs,
-            }
-        },
-    )
-
-
-def get_generation_answer(client, job):
-    generation = client.get(f"/api/v2/generations/{job['resource_ref']['id']}").json()
-    answer = client.get(f"/api/v2/answers/{generation['answer_id']}").json()
-    return generation, answer
-
-
-def pdf_bytes(texts):
-    writer = PdfWriter()
-    font = DictionaryObject(
-        {
-            NameObject("/Type"): NameObject("/Font"),
-            NameObject("/Subtype"): NameObject("/Type1"),
-            NameObject("/BaseFont"): NameObject("/Helvetica"),
-        }
-    )
-    for text in texts:
-        page = writer.add_blank_page(width=600, height=800)
-        page[NameObject("/Resources")] = DictionaryObject(
-            {NameObject("/Font"): DictionaryObject({NameObject("/F1"): writer._add_object(font)})}
-        )
-        content = DecodedStreamObject()
-        content.set_data(f"BT /F1 12 Tf 50 750 Td ({text}) Tj ET".encode("ascii") if text else b"")
-        page[NameObject("/Contents")] = writer._add_object(content)
-    stream = io.BytesIO()
-    writer.write(stream)
-    return stream.getvalue()
+from manimagent.config import Settings
+from manimagent.content_store import new_id
+from manimagent.errors import ContentError
+from manimagent.jobs.manager import JobManager
+from manimagent.llm.client import ChatProvider
+from manimagent.schemas import Generation, Job, TextGenerationRequest
+from tests.support import store_for, wait_job
+from tests.support.documents import pdf_pages as pdf_bytes
+from tests.support.pipeline import controlled_provider, get_generation_answer, settings_for, submit
 
 
 def test_complete_text_answer_revision_reuse_and_rendering(tmp_path):
@@ -402,7 +320,7 @@ def test_missing_references_and_native_mode_are_rejected_before_queue(tmp_path):
 
 def test_queue_capacity_snapshot_and_restart(tmp_path):
     settings = settings_for(tmp_path, max_waiting=0)
-    manager = TextJobManager(settings)
+    manager = JobManager(settings)
     request = TextGenerationRequest(
         source={"type": "inputs", "inputs": [{"type": "text", "text": "题目"}], "instruction": "q"}
     )
@@ -416,7 +334,7 @@ def test_queue_capacity_snapshot_and_restart(tmp_path):
         (manager.store.root / "records" / f"{job.job_id}.json").read_text(encoding="utf-8")
     )
     assert record["settings"]["models"]["text"]["model"] == "text-model"
-    restarted = TextJobManager(settings)
+    restarted = JobManager(settings)
     restarted.start()
     try:
         recovered = restarted.store.load("jobs", job.job_id, Job)
@@ -447,42 +365,6 @@ def test_reuse_saved_answer_needs_no_model_configuration(tmp_path):
         assert get_generation_answer(client, job)[1] == answer
 
 
-def test_markdown_html_and_math_are_safe_and_lossless():
-    html = render_markdown(
-        r"<script>alert(1)</script> $x<y$ [bad](javascript:alert(1))" + "\n\n\\[a=\\frac{1}{2}\\]"
-    )
-    assert "<script>" not in html and 'href="javascript:' not in html
-    assert r"\(x&lt;y\)" in html and r"\[a=\frac{1}{2}\]" in html
-    assert "<img" not in render_markdown("![描述](https://remote.example/image.png)")
-
-
-def test_custom_auth_full_url_and_text_finish_errors(tmp_path, monkeypatch):
-    monkeypatch.setenv("TEXT_TEST_KEY", "private-test-key")
-    settings = settings_for(tmp_path)
-    cfg = settings.models["text"]
-    cfg.auth_mode, cfg.api_key_env, cfg.api_key_header = (
-        "api_key_header",
-        "TEXT_TEST_KEY",
-        "Gateway-Key",
-    )
-    cfg.generate_url = "https://model.example/custom/invoke"
-
-    def handler(request):
-        assert (
-            str(request.url) == cfg.generate_url
-            and request.headers["Gateway-Key"] == "private-test-key"
-        )
-        assert "authorization" not in request.headers
-        return httpx.Response(
-            200, json={"choices": [{"message": {"content": "partial"}, "finish_reason": "length"}]}
-        )
-
-    provider = ChatProvider(settings, httpx.MockTransport(handler))
-    with pytest.raises(ProviderError) as exc:
-        provider.complete_text("answer_writer", "answer", {}, Budget(settings, Usage()))
-    assert exc.value.code == "output_truncated"
-
-
 def test_independent_answer_endpoints_and_cli(tmp_path, monkeypatch, capsys):
     from manimagent.cli import main
 
@@ -511,8 +393,8 @@ def test_independent_answer_endpoints_and_cli(tmp_path, monkeypatch, capsys):
     settings = settings_for(tmp_path / "cli")
     monkeypatch.setattr("manimagent.cli.load_settings", lambda _: settings)
     monkeypatch.setattr(
-        "manimagent.cli.TextJobManager",
-        lambda cfg: TextJobManager(cfg, controlled_provider(cfg, calls)),
+        "manimagent.cli.JobManager",
+        lambda cfg: JobManager(cfg, controlled_provider(cfg, calls)),
     )
     file = tmp_path / "notes.txt"
     file.write_text("a=(3,2), b=(1,0)", encoding="utf-8")
@@ -568,7 +450,7 @@ def test_modified_original_is_rejected_and_failures_release_queue(tmp_path):
         create_app(settings, text_provider=ChatProvider(settings, httpx.MockTransport(handler)))
     ) as client:
         asset = client.post("/api/v2/files", files={"file": ("notes.txt", b"text")}).json()
-        store = ContentStore(settings)
+        store = store_for(settings)
         store.file_path(asset["file_id"]).write_bytes(b"altered")
         response = client.post(
             "/api/v2/materials/parse",
@@ -583,29 +465,3 @@ def test_modified_original_is_rejected_and_failures_release_queue(tmp_path):
                 job["error"]["code"] == "provider_auth_error" and job["usage"]["model_calls"] == 1
             )
             assert "private-key" not in json.dumps(job)
-
-
-def test_provider_unknown_usage_and_malformed_messages(tmp_path):
-    settings = settings_for(tmp_path)
-
-    def handler(request):
-        return httpx.Response(
-            200, json={"choices": [{"message": {"content": "complete"}, "finish_reason": "stop"}]}
-        )
-
-    budget = Budget(settings, Usage())
-    assert (
-        ChatProvider(settings, httpx.MockTransport(handler)).complete_text(
-            "answer_writer", "answer", {}, budget
-        )
-        == "complete"
-    )
-    assert budget.usage.model_calls == 1 and not budget.usage.tokens_reported
-
-    def bad_handler(request):
-        return httpx.Response(200, json={"choices": [{"message": []}]})
-
-    with pytest.raises(ProviderError):
-        ChatProvider(settings, httpx.MockTransport(bad_handler)).complete_text(
-            "answer_writer", "answer", {}, Budget(settings, Usage())
-        )

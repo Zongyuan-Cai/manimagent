@@ -85,10 +85,13 @@ class Settings(BaseModel):
             raise ValueError("roles 引用了不存在的模型配置")
         return self
 
-    def model_for(self, role: str) -> ModelConfig:
+    def model_id_for(self, role: str) -> str:
+        default = "text" if "text" in self.models else next(iter(self.models), "text")
         fallback = "answer_checker" if role == "plan_checker" else "answer_writer"
-        binding = self.roles.get(role, self.roles.get(fallback, "text"))
-        return self.models.get(binding, ModelConfig())
+        return self.roles.get(role, self.roles.get(fallback, default))
+
+    def model_for(self, role: str) -> ModelConfig:
+        return self.models.get(self.model_id_for(role), ModelConfig())
 
     def configuration_errors(
         self,

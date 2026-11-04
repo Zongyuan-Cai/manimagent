@@ -8,12 +8,12 @@ from pathlib import Path
 
 from pydantic import ValidationError
 
-from manimagent.animation_models import VideoRequest, VideoResult
 from manimagent.api import create_app
 from manimagent.config import load_settings
-from manimagent.content_store import ContentError
+from manimagent.errors import ContentError
+from manimagent.jobs.manager import JobManager
 from manimagent.schemas import Answer, Generation, Job, TextGenerationRequest
-from manimagent.text_jobs import TextJobManager
+from manimagent.video.models import VideoRequest, VideoResult
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -50,7 +50,7 @@ def main(argv: list[str] | None = None) -> int:
 
             uvicorn.run(create_app(settings), host=args.host, port=args.port, workers=1)
             return 0
-        manager = TextJobManager(settings)
+        manager = JobManager(settings)
         if args.command == "doctor":
             errors = manager.readiness()
             if args.animation:

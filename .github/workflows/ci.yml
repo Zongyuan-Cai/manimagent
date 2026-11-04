@@ -42,14 +42,13 @@ jobs:
       - name: Python lint and format
         if: matrix.os == 'ubuntu-latest'
         run: |
-          uv run --no-sync ruff check src tests scripts
-          uv run --no-sync ruff format --check src tests scripts
+          uv run --no-sync ruff check src tests scripts evals
+          uv run --no-sync ruff format --check src tests scripts evals
       - name: JavaScript syntax
         if: matrix.os == 'ubuntu-latest'
         run: |
-          node --check src/manimagent/web/app.js
-          node --check src/manimagent/web/llm-settings.js
-          node --test tests/web/*.test.cjs
+          for file in src/manimagent/web/*.js; do node --check "$file"; done
+          node --test tests/web/*.test.mjs
       - name: Current regression tests
         run: uv run --no-sync python -m pytest -q --junitxml=testresult/ci/current.xml
       - name: Save test report

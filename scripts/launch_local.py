@@ -15,7 +15,7 @@ from urllib.parse import urlsplit
 import uvicorn
 
 from manimagent.api import create_app
-from manimagent.content_store import ContentError
+from manimagent.errors import ContentError
 
 
 def existing_service(root):
@@ -49,7 +49,7 @@ def existing_service(root):
 def main():
     os.chdir(Path(__file__).resolve().parents[1])
     app = create_app()
-    manager = app.state.text_manager
+    manager = app.state.job_manager
     try:
         manager.start()
     except ContentError as exc:

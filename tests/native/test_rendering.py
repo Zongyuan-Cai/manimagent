@@ -6,14 +6,14 @@ from types import SimpleNamespace
 
 import pytest
 
-from manimagent.animation import resolve_scene
-from manimagent.animation_driver import probe
-from manimagent.animation_models import SceneDraft, SceneOutline
-from manimagent.animation_renderer import NativeRenderer
 from manimagent.budget import Budget
 from manimagent.config import Settings
-from manimagent.content_store import ContentError
+from manimagent.errors import ContentError
 from manimagent.schemas import Usage
+from manimagent.video.models import SceneDraft, SceneOutline
+from manimagent.video.renderer.media import probe
+from manimagent.video.renderer.process import NativeRenderer
+from manimagent.video.timeline import resolve_scene
 
 pytestmark = pytest.mark.skipif(
     os.getenv("RUN_NATIVE_TESTS") != "1", reason="opt-in native renderer"
