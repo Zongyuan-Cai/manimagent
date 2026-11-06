@@ -15,6 +15,7 @@ from manimagent.config import Settings
 from manimagent.content_store import ContentStore, new_id
 from manimagent.errors import ContentError
 from manimagent.llm.client import ChatProvider
+from manimagent.memory.service import MEMORY_CONTEXT_INSTRUCTION
 from manimagent.schemas import (
     Answer,
     AnswerCheck,
@@ -94,12 +95,23 @@ class AnswerService:
 
     def generate(self, request: AnswerRequest, budget: Budget, record: dict) -> Answer:
         bundle = self.context.build(request.material_ids, request.instruction)
+        memory_snapshot = record.get("memory_snapshot")
+        if memory_snapshot is not None:
+            bundle["user_memory"] = memory_snapshot
+        writer_instruction = WRITER_INSTRUCTION + (
+            "\n" + MEMORY_CONTEXT_INSTRUCTION if memory_snapshot is not None else ""
+        )
         record["context"] = bundle
-        self.context.check_budget("answer_writer", WRITER_INSTRUCTION, bundle, record)
+        self.context.check_budget("answer_writer", writer_instruction, bundle, record)
         # Persist the exact context before the first model call, including failed attempts.
         self.store.save("records", record["job_id"], record)
-        markdown = self.provider.complete_text("answer_writer", WRITER_INSTRUCTION, bundle, budget)
+        markdown = self.provider.complete_text("answer_writer", writer_instruction, bundle, budget)
         answer = derive_answer(markdown, request.material_ids, request.instruction, bundle)
+        answer.memory_snapshot = memory_snapshot
+        answer.warnings.extend(
+            AnswerNotice(code=warning["code"], message=warning["message"])
+            for warning in record.get("memory_warnings", [])
+        )
         if self.settings.answer_check:
             check_payload = {**bundle, "candidate_markdown": markdown}
             check_prompt = CHECK_INSTRUCTION + json.dumps(
@@ -160,5 +172,6 @@ class AnswerService:
         answer = derive_answer(
             request.markdown, base.material_ids, base.instruction, bundle, base.answer_id, warnings
         )
+        answer.memory_snapshot = base.memory_snapshot
         self.store.save("answers", answer.answer_id, answer)
         return answer

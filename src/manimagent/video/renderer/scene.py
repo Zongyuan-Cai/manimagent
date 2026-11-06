@@ -113,7 +113,7 @@ def render(data: dict, directory: Path) -> dict:
                     layout.label(wrapped(beat.screen_text), 28), 12.4, 1.0
                 ).move_to([0, -2.83, 0])
                 page = layout.label(
-                    f"{index + 1} / {len(spec.beats)}  ·  无声教学", 17, "muted"
+                    f"{index + 1} / {len(spec.beats)}  ·  教学讲解", 17, "muted"
                 ).move_to([5.4, -3.76, 0])
                 content = VGroup(title, equations, caption, page, diagram)
                 for part in [title, equations, caption, diagram]:
@@ -146,10 +146,13 @@ def render(data: dict, directory: Path) -> dict:
                 self.play(
                     Indicate(highlight, scale_factor=1, color=layout.palette["gold"]), run_time=0.5
                 )
-                duration = beat.end_seconds - beat.start_seconds
-                if start + duration < self.time:
+                # Frozen waits floor duration / frame_duration in Manim. Count
+                # frames against the absolute plan to prevent per-beat drift.
+                remaining_frames = round(beat.end_seconds * 30) - round(float(self.time) * 30)
+                if remaining_frames < 0:
                     raise ValueError("timing: 动作超过分配时间")
-                self.wait(start + duration - self.time, frozen_frame=True)
+                if remaining_frames:
+                    self.wait((remaining_frames + 0.001) / 30, frozen_frame=True)
                 evidence.append(
                     {
                         "beat_id": beat.beat_id,
@@ -173,7 +176,8 @@ def render(data: dict, directory: Path) -> dict:
                         "matrix_cells": matrix_cells,
                         "caption_bounds": layout.bounds(caption),
                         "content_bounds": layout.bounds(VGroup(title, equations, diagram)),
-                        "time_source": "estimated",
+                        "time_source": beat.time_source,
+                        "cue_time_source": beat.cue_time_source,
                         "frame_seconds": min(float(self.time) - 0.2, stable + 0.6),
                     }
                 )

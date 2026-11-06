@@ -52,6 +52,8 @@ class VideoReviewer:
         bundle = ContextAssembler(self.store, self.settings).build(
             answer.material_ids, answer.instruction
         )
+        if answer.memory_snapshot is not None:
+            bundle["user_memory"] = answer.memory_snapshot
         check = self.call(
             "answer_checker",
             CHECK_INSTRUCTION,

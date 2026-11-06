@@ -109,15 +109,22 @@ def main():
     (ROOT / "错误编码.txt").write_bytes(b"\xff\xfe\x00\x01")
     (ROOT / "不支持.csv").write_text("a,b\n3,2\n", encoding="utf-8")
     (ROOT / "超限.txt").write_bytes(b"x" * (20 * 1024 * 1024 + 1))
+    print(f"Created fixtures; indexed {write_manifest()} files")
+
+
+def write_manifest() -> int:
+    """Record the files currently on disk without treating documentation as test input."""
     manifest = [
-        {"file": str(p.relative_to(ROOT)), "bytes": p.stat().st_size}
+        {"file": p.relative_to(ROOT).as_posix(), "bytes": p.stat().st_size}
         for p in sorted(ROOT.rglob("*"))
-        if p.is_file() and p.name != "manifest.json"
+        if p.is_file() and p.name not in {"manifest.json", "README.md"}
     ]
     (ROOT / "manifest.json").write_text(
-        json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8"
+        json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+        newline="\n",
     )
-    print(f"Created {len(manifest)} fixtures")
+    return len(manifest)
 
 
 if __name__ == "__main__":

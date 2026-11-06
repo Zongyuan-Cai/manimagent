@@ -1,0 +1,23 @@
+{
+  "source_hash": "5f718d20df22decb072cfae35b5340808a61195888cf9d277c9721d086ccef30",
+  "pytest": {
+    "passed": 232,
+    "skipped": 4,
+    "seconds": 56.91
+  },
+  "web_tests": {
+    "passed": 17
+  },
+  "native_audio_mux": {
+    "passed": 1,
+    "seconds": 2.58
+  },
+  "native_fractional_timing": {
+    "passed": 1,
+    "seconds": 20.47,
+    "decoded_frames": 1055
+  },
+  "ruff_check": "passed",
+  "ruff_format_check": "passed",
+  "notes": "Four native tests are opt-in; two targeted native tests were run separately. This is not a claim that all native tests ran."
+}

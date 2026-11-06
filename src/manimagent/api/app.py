@@ -15,7 +15,7 @@ from manimagent.errors import ContentError
 from manimagent.jobs.manager import JobManager
 from manimagent.llm.client import ChatProvider
 
-from . import jobs, resources
+from . import jobs, memory, resources
 from . import settings as settings_routes
 from .middleware import UploadLimitMiddleware
 
@@ -57,7 +57,7 @@ def create_app(
     app = FastAPI(title="ManimAgent", version=__version__, lifespan=lifespan)
     app.state.job_manager = manager
     app.add_middleware(UploadLimitMiddleware, max_bytes=settings.max_upload_bytes)
-    for routes in (settings_routes, resources, jobs):
+    for routes in (settings_routes, resources, jobs, memory):
         app.include_router(routes.router(manager))
     web = Path(__file__).resolve().parents[1] / "web"
     app.mount("/static", WebAssets(directory=web), name="static")

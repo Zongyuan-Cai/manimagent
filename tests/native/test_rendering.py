@@ -1,6 +1,10 @@
 """Opt-in real Manim/FFmpeg tests: RUN_NATIVE_TESTS=1, with the animation extra."""
 
+import math
 import os
+import subprocess
+import wave
+from array import array
 from itertools import combinations
 from types import SimpleNamespace
 
@@ -50,6 +54,28 @@ def planned(identifier, diagrams):
         ],
     )
     return resolve_scene(outline, draft)
+
+
+def test_fractional_beat_waits_preserve_exact_final_frame_count(tmp_path):
+    scene = planned("fractional", [{"kind": "none"}] * 3)
+    clock = 0.0
+    for beat, frames in zip(scene.beats, [416, 310, 329], strict=True):
+        beat.start_seconds = clock
+        beat.stable_seconds = clock + 1
+        beat.cue_seconds = clock + 1.7
+        beat.narration_end_seconds = clock + 8
+        clock += frames / 30
+        beat.end_seconds = clock
+    scene.duration_seconds = clock
+    plan = SimpleNamespace(outline=SimpleNamespace(title="语音帧数回归"), scenes=[scene])
+    result = NativeRenderer().render(scene, tmp_path, plan, Budget(Settings(), Usage()), 0)
+    info = probe(tmp_path / result["video_path"], decode=True)
+    assert info["decoded_frames"] == 1055
+    assert abs(info["duration_seconds"] - clock) < 0.0001
+    assert all(
+        abs(event["end_seconds"] - beat.end_seconds) < 0.001
+        for event, beat in zip(result["events"], scene.beats, strict=True)
+    )
 
 
 def test_real_render_precision_geometry_and_decoded_complete_movie(tmp_path):
@@ -179,3 +205,77 @@ def test_unreadable_matrix_is_rejected_before_movie_render(tmp_path):
             0,
         )
     assert not (tmp_path / "scene.mp4").exists()
+
+
+def test_real_audio_mux_decodes_both_streams_and_rejects_missing_or_short_audio(tmp_path):
+    """Synthetic PCM tone, not MiMo speech: exercise the real mux worker and AAC decoder."""
+    import av
+    import imageio_ffmpeg
+
+    directory = tmp_path / "final"
+    directory.mkdir()
+    silent = directory / "complete.mp4"
+    subprocess.run(
+        [
+            imageio_ffmpeg.get_ffmpeg_exe(),
+            "-v",
+            "error",
+            "-f",
+            "lavfi",
+            "-i",
+            "color=c=navy:s=1280x720:r=30:d=2",
+            "-c:v",
+            "libx264",
+            "-pix_fmt",
+            "yuv420p",
+            "-an",
+            "-y",
+            str(silent),
+        ],
+        capture_output=True,
+        check=True,
+        timeout=30,
+        creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
+    )
+    with pytest.raises(ValueError, match="流数量"):
+        probe(silent, decode=True, expect_audio=True)
+
+    rate = 24000
+    audio = tmp_path / "synthetic_fixture.wav"
+    samples = array(
+        "h",
+        [
+            0 if index < rate // 4 else round(6000 * math.sin(2 * math.pi * 440 * index / rate))
+            for index in range(2 * rate)
+        ],
+    )
+    if os.sys.byteorder != "little":
+        samples.byteswap()
+    with wave.open(str(audio), "wb") as target:
+        target.setnchannels(1)
+        target.setsampwidth(2)
+        target.setframerate(rate)
+        target.writeframes(samples.tobytes())
+    renderer = NativeRenderer()
+    budget = Budget(Settings(runs_dir=tmp_path), Usage())
+    result = renderer.mux_audio(directory, audio, SimpleNamespace(duration_seconds=2.0), budget)
+    output = directory / result["video_path"]
+    metadata = probe(output, decode=True, expect_audio=True)
+    assert metadata["decoded_frames"] == 60
+    assert metadata["audio_streams"] == 1
+    assert metadata["audio_codec"] == "aac"
+    assert abs(metadata["duration_seconds"] - metadata["audio_duration_seconds"]) < 0.05
+    assert abs(metadata["decoded_audio_samples"] / metadata["audio_sample_rate"] - 2) < 0.05
+    with av.open(str(output)) as container:
+        assert any(abs(frame.to_ndarray()).max() > 0.01 for frame in container.decode(audio=0))
+    with pytest.raises(ValueError, match="流数量"):
+        probe(output, expect_audio=False)
+
+    # A missing tail must fail validation rather than publish clipped narration.
+    with wave.open(str(audio), "wb") as target:
+        target.setnchannels(1)
+        target.setsampwidth(2)
+        target.setframerate(rate)
+        target.writeframes(samples[:rate].tobytes())
+    with pytest.raises(ContentError, match="时长"):
+        renderer.mux_audio(directory, audio, SimpleNamespace(duration_seconds=2.0), budget)

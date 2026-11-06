@@ -1,0 +1,43 @@
+{
+  "schema_version": "1.0",
+  "job_id": "job_6fa36a8bf190421395deb2a52bdf72fc",
+  "kind": "generation",
+  "answer_id": null,
+  "status": "completed",
+  "stage": "completed",
+  "message": "文字与教学动画已完成",
+  "resource_ref": {
+    "type": "generation",
+    "id": "generation_6c3d67abac054160846413c04c8f4dc4"
+  },
+  "result": {
+    "type": "generation",
+    "id": "generation_6c3d67abac054160846413c04c8f4dc4"
+  },
+  "error": null,
+  "diagnostic_asset_ids": [
+    "file_5ac1cb196b2c49eba297d5ec2cfb646b",
+    "file_00a68eee443a43739cafc458c7b28293",
+    "file_fb1fe9bc631b4ef4b1eabb01af18f2a2",
+    "file_35017bff11a04ae49d9041cac3b318a0",
+    "file_df55891d91c8497fbe79c1b52ef460d9",
+    "file_713c2d9235cc48fba564eea5716ced50",
+    "file_e77df481a7404749a0e87f23c5bd1a1c",
+    "file_a814ef08feca43b89541e291b1518b39",
+    "file_c51e39da9f594543899c04d4b24ca70b",
+    "file_0f29438c56c44668804e1fc09d63f2f8",
+    "file_2c021e8460ee47cc8c26369b1fbb2293",
+    "file_81df2159c0ca41cfb9cfb2e60726107b",
+    "file_400c4154af02401882fe8753dd38f792",
+    "file_c8f519cc32304ba6abc48c6ba1c7a529"
+  ],
+  "usage": {
+    "model_calls": 13,
+    "input_tokens": 80430,
+    "output_tokens": 21632,
+    "tokens_reported": true,
+    "elapsed_seconds": 494.766
+  },
+  "created_at": "2026-11-06T04:38:22.639618+00:00",
+  "updated_at": "2026-11-06T04:46:37.460765+00:00"
+}

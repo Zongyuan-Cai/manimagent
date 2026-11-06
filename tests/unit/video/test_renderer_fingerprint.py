@@ -60,6 +60,8 @@ def renderer_tree(tmp_path, monkeypatch):
         "config.py",
         "errors.py",
         "schemas.py",
+        "memory/__init__.py",
+        "memory/models.py",
         "video/__init__.py",
         "video/models.py",
         "video/notation.py",
@@ -79,7 +81,8 @@ def renderer_tree(tmp_path, monkeypatch):
 
 
 @pytest.mark.parametrize(
-    "relative", ["video/renderer/layout.py", "video/models.py", "video/notation.py"]
+    "relative",
+    ["video/renderer/layout.py", "video/models.py", "video/notation.py", "memory/models.py"],
 )
 def test_geometry_and_contract_changes_invalidate_renderer_fingerprint(renderer_tree, relative):
     before = process.renderer_fingerprint()

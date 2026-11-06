@@ -21,6 +21,15 @@ video_max_output_tokens: 10000
 video_context_tokens: 96000
 video_font: auto
 video_memory_mb: 2048
+tts:
+  enabled: false  # Or set MANIMAGENT_TTS_ENABLED=true in the local .env file.
+  base_url: https://api.xiaomimimo.com/v1
+  model: mimo-v2.5-tts
+  api_key_env: MIMO_API_KEY
+  voice: mimo_default
+  timeout: 60
+  max_calls: 64
+  max_retries: 1
 models:
   text:
     base_url: ${MANIMAGENT_TEXT_BASE_URL}

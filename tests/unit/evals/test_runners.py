@@ -55,7 +55,8 @@ def test_shared_live_polling_reports_http_errors_before_reading_job_shape():
 
 
 @pytest.mark.parametrize(
-    "module", ["text", "text_review", "text_supplemental", "cli", "video", "video_benchmark"]
+    "module",
+    ["text", "text_review", "text_supplemental", "cli", "video", "video_benchmark", "narrated"],
 )
 def test_live_evaluations_have_explicit_module_entrypoints(module):
     result = subprocess.run(

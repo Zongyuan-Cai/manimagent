@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0",
+  "job_id": "job_a5061ecee3dd46399705f3fa7835ff99",
+  "kind": "generation",
+  "answer_id": null,
+  "status": "partial",
+  "stage": "video",
+  "message": "文字已保存；动画未完成：数学内容与固定答案一致；仅s4旁白语速偏快，建议补齐公式读法并略延时长。",
+  "resource_ref": {
+    "type": "generation",
+    "id": "generation_8ec110c6009b4ea9aa947e57d44400b0"
+  },
+  "result": {
+    "type": "generation",
+    "id": "generation_8ec110c6009b4ea9aa947e57d44400b0"
+  },
+  "error": {
+    "code": "video_plan_check",
+    "message": "数学内容与固定答案一致；仅s4旁白语速偏快，建议补齐公式读法并略延时长。",
+    "retryable": false,
+    "details": {}
+  },
+  "diagnostic_asset_ids": [
+    "file_9d27cfa6a00e410d833301539a7c958e",
+    "file_318c01d0622b45f0a21b85ab8d8ef337",
+    "file_01ad562f60b245b2a1f7ae2cd8612e27",
+    "file_3dff1a588669438f9915ae729d2994aa",
+    "file_8ed3abf236194bc7b140dff94c6795f9",
+    "file_714de71774b444e39184f1343bbb033a",
+    "file_6293123e1d8f4e67b531569ea3f05be3",
+    "file_7e7bf06d7f784ac28aeabd8e159a83f7",
+    "file_2f9acb876c96475684d17559f7f15f7a",
+    "file_909992e72e4f4afc8648691ddea56af8",
+    "file_aa33a54036d14af8ac1cac40f3bb67b7"
+  ],
+  "usage": {
+    "model_calls": 10,
+    "input_tokens": 52926,
+    "output_tokens": 23643,
+    "tokens_reported": true,
+    "elapsed_seconds": 166.563
+  },
+  "created_at": "2026-11-06T04:29:59.122592+00:00",
+  "updated_at": "2026-11-06T04:32:45.759408+00:00"
+}

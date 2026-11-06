@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0",
+  "job_id": "job_9f81ec6e7e8d4308baea772aef7da411",
+  "kind": "generation",
+  "answer_id": null,
+  "status": "partial",
+  "stage": "video",
+  "message": "文字已保存；动画未完成：按各场景结束时间合计约4分44秒，与duration_reason“约三分半”不符；建议修正为约4分45秒或压缩节拍。其余单元与数学内容通过。",
+  "resource_ref": {
+    "type": "generation",
+    "id": "generation_6027eef0d36749d19900b46252e97748"
+  },
+  "result": {
+    "type": "generation",
+    "id": "generation_6027eef0d36749d19900b46252e97748"
+  },
+  "error": {
+    "code": "video_plan_check",
+    "message": "按各场景结束时间合计约4分44秒，与duration_reason“约三分半”不符；建议修正为约4分45秒或压缩节拍。其余单元与数学内容通过。",
+    "retryable": false,
+    "details": {}
+  },
+  "diagnostic_asset_ids": [
+    "file_907e9191a9944ad49dda4ffe0ac8e4fb",
+    "file_20d8c01fecd24156a3f2397a225df6bd",
+    "file_94382d5eaa4a4c5c9167f9d40e533567",
+    "file_ec29abc08826471092427d6d21b471bd",
+    "file_68570d00c6894e24a12dd19dd509955a",
+    "file_928f9f7e881d4acb88ee8ece0f09628c",
+    "file_368630191ccf438ca81269029203ca15",
+    "file_397136358d02449fb1c073b0365b1c67",
+    "file_05ccdbbb870c481d969cb045c0306894",
+    "file_08a6e0b0cdbd42d9a30c80a6adbe5c1d",
+    "file_39c517f137024372b4fb68adecbd9e88"
+  ],
+  "usage": {
+    "model_calls": 11,
+    "input_tokens": 56667,
+    "output_tokens": 36871,
+    "tokens_reported": true,
+    "elapsed_seconds": 284.5
+  },
+  "created_at": "2026-11-05T15:34:06.256102+00:00",
+  "updated_at": "2026-11-05T15:38:50.816993+00:00"
+}

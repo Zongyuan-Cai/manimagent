@@ -1,0 +1,10 @@
+{
+  "sample_width": 2,
+  "sample_rate": 24000,
+  "channels": 1,
+  "peak": 0.769683837890625,
+  "rms": 0.074049538096821,
+  "non_silent": true,
+  "tts_clip_count": 23,
+  "same_final_source": true
+}

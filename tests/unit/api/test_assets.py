@@ -14,6 +14,7 @@ from manimagent.config import Settings
         "workspace.js",
         "results.js",
         "settings.js",
+        "memory.js",
         "app.css",
         "package.json",
     ],

@@ -1,0 +1,17 @@
+{
+  "policy_version": "user-memory-1",
+  "captured_at": "2026-11-06T04:30:00.438630+00:00",
+  "scope": "global",
+  "session_id": "acceptance_lesson",
+  "entries": [
+    {
+      "memory_id": "memory_9cf52d5c6c164959b236b8cf5fd3b2f8",
+      "field": "explanation.stepwise",
+      "value": "喜欢分步骤讲解,每一步都先说明依据",
+      "scope": "global",
+      "layer": "deep",
+      "temporary": false,
+      "updated_at": "2026-11-06T04:29:58.900778+00:00"
+    }
+  ]
+}

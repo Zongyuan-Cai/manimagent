@@ -1,0 +1,70 @@
+{
+  "passed": false,
+  "source_hash_before": "e8efabec85621d01d344da75b2b368e3836f0a965979b32746208345e8e4c88a",
+  "model": "deepseek-flash",
+  "tts_model": "mimo-v2.5-tts",
+  "tts_voice": "mimo_default",
+  "video_max_output_tokens": 16000,
+  "roles": {
+    "answer_writer": {
+      "model": "deepseek-flash",
+      "thinking": "default"
+    },
+    "answer_checker": {
+      "model": "deepseek-flash",
+      "thinking": "default"
+    },
+    "video_planner": {
+      "model": "deepseek-flash",
+      "thinking": "default"
+    },
+    "scene_generator": {
+      "model": "deepseek-flash",
+      "thinking": "default"
+    },
+    "plan_checker": {
+      "model": "deepseek-flash",
+      "thinking": "disabled"
+    }
+  },
+  "uploaded_files": [
+    "tts-二次方程.txt"
+  ],
+  "memory_observation_usage": {
+    "model_calls": 1,
+    "input_tokens": 531,
+    "output_tokens": 46,
+    "tokens_reported": true,
+    "elapsed_seconds": 1.25
+  },
+  "job_id": "job_a5061ecee3dd46399705f3fa7835ff99",
+  "answer_id": "answer_9890589944f54c88b3c623f055c8bd80",
+  "status": "partial",
+  "usage": {
+    "model_calls": 10,
+    "input_tokens": 52926,
+    "output_tokens": 23643,
+    "tokens_reported": true,
+    "elapsed_seconds": 166.563
+  },
+  "error": {
+    "code": "video_plan_check",
+    "message": "数学内容与固定答案一致；仅s4旁白语速偏快，建议补齐公式读法并略延时长。",
+    "retryable": false,
+    "details": {}
+  },
+  "memory": {
+    "entry_count": 1,
+    "consistent_snapshot": true,
+    "roles_using_snapshot": [
+      "answer_checker",
+      "answer_writer",
+      "scene_generator",
+      "video_planner"
+    ],
+    "learning_calls": 1
+  },
+  "elapsed_seconds": 168.422,
+  "source_hash_after": "e8efabec85621d01d344da75b2b368e3836f0a965979b32746208345e8e4c88a",
+  "fixed_source": true
+}

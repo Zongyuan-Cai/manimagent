@@ -92,6 +92,8 @@ class VideoPlanner:
             "required_unit_ids": sorted(self.all_units),
             "profile": {"min_seconds": 120, "max_seconds": 360, "max_scenes": 8, "max_beats": 42},
         }
+        if self.answer.memory_snapshot is not None:
+            self.payload["user_memory"] = self.answer.memory_snapshot
 
     def build_outline(self):
         self.progress("正在分析教学单元并规划整体场景")

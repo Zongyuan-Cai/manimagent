@@ -1,0 +1,409 @@
+{
+  "schema_version": "1.0",
+  "video_id": "video_e1ea005789a54a55a28e1d3eb2e6c9ef",
+  "answer_id": "answer_b133b57c255a46dcb15a35755b665d46",
+  "answer_hash": "19fcea395a5d875d215a3eda3b81f737828d759ce3e57daa8720c1021f942885",
+  "plan_id": "plan_9c6a82ed4a9c4c1eafa7fc9d1065837f",
+  "video_asset_id": "file_51bb2df8f4154779964ea136c270b5de",
+  "subtitle_asset_id": null,
+  "audio_asset_id": "file_1c34ce6f8d364b9490bcf408cb512d97",
+  "duration_seconds": 292.23333333333335,
+  "time_source": "audio_measured",
+  "cue_time_source": "estimated",
+  "review_mode": "trusted_template_geometry_and_layout",
+  "visual_model_review": "not_run",
+  "step_mapping": [
+    {
+      "step_id": "step_1",
+      "scene_ids": [
+        "s1",
+        "s2",
+        "s3",
+        "s4",
+        "s5",
+        "s6",
+        "s7"
+      ],
+      "start_seconds": 0,
+      "end_seconds": 292.23333333333335
+    }
+  ],
+  "unit_mapping": [
+    {
+      "unit_id": "u001",
+      "start": 0,
+      "end": 180,
+      "sha256": "77bf17b42b0ac89945e3223540aa12663e8f0a3de6f8042ad747ce4b88b42145",
+      "intervals": [
+        {
+          "scene_id": "s1",
+          "beat_id": "b1",
+          "start_seconds": 0.0,
+          "end_seconds": 14.1667
+        },
+        {
+          "scene_id": "s1",
+          "beat_id": "b2",
+          "start_seconds": 14.1667,
+          "end_seconds": 25.1333
+        },
+        {
+          "scene_id": "s1",
+          "beat_id": "b3",
+          "start_seconds": 25.1333,
+          "end_seconds": 35.8667
+        }
+      ]
+    },
+    {
+      "unit_id": "u002",
+      "start": 181,
+      "end": 329,
+      "sha256": "1e306042cacd48873e38fd38a3d9bf749478c7e32583c30027eaf1dbe42b8743",
+      "intervals": [
+        {
+          "scene_id": "s2",
+          "beat_id": "b1",
+          "start_seconds": 35.8667,
+          "end_seconds": 48.4333
+        },
+        {
+          "scene_id": "s2",
+          "beat_id": "b2",
+          "start_seconds": 48.4333,
+          "end_seconds": 62.3
+        },
+        {
+          "scene_id": "s2",
+          "beat_id": "b3",
+          "start_seconds": 62.3,
+          "end_seconds": 74.2333
+        }
+      ]
+    },
+    {
+      "unit_id": "u003",
+      "start": 330,
+      "end": 597,
+      "sha256": "522a803a15bd42a94e119e498514c72657f377870d13ea03275fad20bd83546c",
+      "intervals": [
+        {
+          "scene_id": "s3",
+          "beat_id": "s3_b1",
+          "start_seconds": 74.2333,
+          "end_seconds": 84.9667
+        },
+        {
+          "scene_id": "s3",
+          "beat_id": "s3_b2",
+          "start_seconds": 84.9667,
+          "end_seconds": 97.1333
+        },
+        {
+          "scene_id": "s3",
+          "beat_id": "s3_b3",
+          "start_seconds": 97.1333,
+          "end_seconds": 110.0333
+        }
+      ]
+    },
+    {
+      "unit_id": "u004",
+      "start": 598,
+      "end": 658,
+      "sha256": "7c45e064527a46fb83d8c56c86e5ee997be4a1f97069393fcce3f91ad6106f2e",
+      "intervals": [
+        {
+          "scene_id": "s3",
+          "beat_id": "s3_b4",
+          "start_seconds": 110.0333,
+          "end_seconds": 123.2333
+        }
+      ]
+    },
+    {
+      "unit_id": "u005",
+      "start": 659,
+      "end": 929,
+      "sha256": "0157722b042c646df9f6af5b93b869d82dd72ca423886818277cc6de95d4a2e9",
+      "intervals": [
+        {
+          "scene_id": "s4",
+          "beat_id": "b1",
+          "start_seconds": 123.2333,
+          "end_seconds": 133.5667
+        },
+        {
+          "scene_id": "s4",
+          "beat_id": "b2",
+          "start_seconds": 133.5667,
+          "end_seconds": 145.0333
+        },
+        {
+          "scene_id": "s4",
+          "beat_id": "b3",
+          "start_seconds": 145.0333,
+          "end_seconds": 157.5333
+        }
+      ]
+    },
+    {
+      "unit_id": "u006",
+      "start": 930,
+      "end": 1212,
+      "sha256": "9b8693024fd319b65b2936f1e1b6d238fb2fced4fa2c5f669f5f42a48cd66f23",
+      "intervals": [
+        {
+          "scene_id": "s5",
+          "beat_id": "b1",
+          "start_seconds": 157.5333,
+          "end_seconds": 174.6
+        },
+        {
+          "scene_id": "s5",
+          "beat_id": "b2",
+          "start_seconds": 174.6,
+          "end_seconds": 193.5667
+        },
+        {
+          "scene_id": "s5",
+          "beat_id": "b3",
+          "start_seconds": 193.5667,
+          "end_seconds": 208.5667
+        }
+      ]
+    },
+    {
+      "unit_id": "u007",
+      "start": 1213,
+      "end": 1354,
+      "sha256": "b820e21e313bb9824b8325839e824f793a4f5f5e7e645e62a07d1ac43ac83170",
+      "intervals": [
+        {
+          "scene_id": "s5",
+          "beat_id": "b3",
+          "start_seconds": 193.5667,
+          "end_seconds": 208.5667
+        },
+        {
+          "scene_id": "s5",
+          "beat_id": "b4",
+          "start_seconds": 208.5667,
+          "end_seconds": 222.4
+        }
+      ]
+    },
+    {
+      "unit_id": "u008",
+      "start": 1355,
+      "end": 1397,
+      "sha256": "596d217a6b0a9a1eb956f2dad1a35cbd776978fce3a2e9ee459f7bf434ef702f",
+      "intervals": [
+        {
+          "scene_id": "s6",
+          "beat_id": "b1",
+          "start_seconds": 222.4,
+          "end_seconds": 233.3667
+        }
+      ]
+    },
+    {
+      "unit_id": "u009",
+      "start": 1398,
+      "end": 1450,
+      "sha256": "a5b15248f791d0cc17a526ea3a4e05986d97aeefe3ad7df7f9c1b9334c0f5965",
+      "intervals": [
+        {
+          "scene_id": "s6",
+          "beat_id": "b2",
+          "start_seconds": 233.3667,
+          "end_seconds": 248.6667
+        }
+      ]
+    },
+    {
+      "unit_id": "u010",
+      "start": 1451,
+      "end": 1528,
+      "sha256": "a1b386541d826fdc899f7da7e8f5d9cdfc53b0c4956ab614566e09a9c9a516a6",
+      "intervals": [
+        {
+          "scene_id": "s6",
+          "beat_id": "b3",
+          "start_seconds": 248.6667,
+          "end_seconds": 263.9667
+        }
+      ]
+    },
+    {
+      "unit_id": "u011",
+      "start": 1529,
+      "end": 1699,
+      "sha256": "fb7276f7971006376b2b1a2fc3bb78fb1f8bcc98fa58ca68e757ec42f7780278",
+      "intervals": [
+        {
+          "scene_id": "s7",
+          "beat_id": "s7_b1",
+          "start_seconds": 263.9667,
+          "end_seconds": 273.9667
+        },
+        {
+          "scene_id": "s7",
+          "beat_id": "s7_b2",
+          "start_seconds": 273.9667,
+          "end_seconds": 282.5333
+        },
+        {
+          "scene_id": "s7",
+          "beat_id": "s7_b3",
+          "start_seconds": 282.5333,
+          "end_seconds": 292.2333
+        }
+      ]
+    }
+  ],
+  "report_asset_ids": [
+    "file_668c927f12c648bfb652f813b006f123"
+  ],
+  "frame_mapping": [
+    {
+      "scene_id": "s1",
+      "beat_id": "b1",
+      "asset_id": "file_a09fc04ec00d4e46a67ca9f83b8e8fcc",
+      "seconds": 1.6
+    },
+    {
+      "scene_id": "s1",
+      "beat_id": "b2",
+      "asset_id": "file_ebe88d64dac744ceac463e8f2695f21d",
+      "seconds": 15.8
+    },
+    {
+      "scene_id": "s1",
+      "beat_id": "b3",
+      "asset_id": "file_88de8937766e467c95de2025648fd644",
+      "seconds": 26.7667
+    },
+    {
+      "scene_id": "s2",
+      "beat_id": "b1",
+      "asset_id": "file_5303797bf058489f897798bdec70bb5a",
+      "seconds": 37.4667
+    },
+    {
+      "scene_id": "s2",
+      "beat_id": "b2",
+      "asset_id": "file_6af2e47de7e34155b155e8651f20ec10",
+      "seconds": 50.0667
+    },
+    {
+      "scene_id": "s2",
+      "beat_id": "b3",
+      "asset_id": "file_b97722833c5d47a1a03e55d5da38e6a3",
+      "seconds": 63.9333
+    },
+    {
+      "scene_id": "s3",
+      "beat_id": "s3_b1",
+      "asset_id": "file_73ee30c7a8ba41e5988b3b915485437e",
+      "seconds": 75.8333
+    },
+    {
+      "scene_id": "s3",
+      "beat_id": "s3_b2",
+      "asset_id": "file_5e6f9bca29e440efbf1141831eacab85",
+      "seconds": 86.6
+    },
+    {
+      "scene_id": "s3",
+      "beat_id": "s3_b3",
+      "asset_id": "file_06f7354812e141caa94be729385d6715",
+      "seconds": 98.7667
+    },
+    {
+      "scene_id": "s3",
+      "beat_id": "s3_b4",
+      "asset_id": "file_bcf7f641ba734bbf82fdb70a5dc50baf",
+      "seconds": 111.6667
+    },
+    {
+      "scene_id": "s4",
+      "beat_id": "b1",
+      "asset_id": "file_c1c606785fab44569671fa64ecec2be1",
+      "seconds": 124.8333
+    },
+    {
+      "scene_id": "s4",
+      "beat_id": "b2",
+      "asset_id": "file_bc0b8573484a4af7bc98db8f121ab003",
+      "seconds": 135.2
+    },
+    {
+      "scene_id": "s4",
+      "beat_id": "b3",
+      "asset_id": "file_297ae8dd890f48d59784b30697b1111c",
+      "seconds": 146.6667
+    },
+    {
+      "scene_id": "s5",
+      "beat_id": "b1",
+      "asset_id": "file_25ad807bc55d4c04bfa5c510549b2a42",
+      "seconds": 159.1333
+    },
+    {
+      "scene_id": "s5",
+      "beat_id": "b2",
+      "asset_id": "file_fa77ae6ec62d41e18b04c7b19cf145b4",
+      "seconds": 176.2333
+    },
+    {
+      "scene_id": "s5",
+      "beat_id": "b3",
+      "asset_id": "file_76ccd85de7134e5dbf3fc7b92a7ab88d",
+      "seconds": 195.2
+    },
+    {
+      "scene_id": "s5",
+      "beat_id": "b4",
+      "asset_id": "file_e325f56347634792b9f817c17c25d0a9",
+      "seconds": 210.2
+    },
+    {
+      "scene_id": "s6",
+      "beat_id": "b1",
+      "asset_id": "file_0c9f19e2cb7c4c9c8b5d3ef9c1b9bbdc",
+      "seconds": 224.0
+    },
+    {
+      "scene_id": "s6",
+      "beat_id": "b2",
+      "asset_id": "file_95c86fb511284cca8cc8663da19d838c",
+      "seconds": 235.0
+    },
+    {
+      "scene_id": "s6",
+      "beat_id": "b3",
+      "asset_id": "file_251ccb57b32e4b0180d5a5ade8d64a23",
+      "seconds": 250.3
+    },
+    {
+      "scene_id": "s7",
+      "beat_id": "s7_b1",
+      "asset_id": "file_3b02c5da795b4bdb851ec394bd2f4b48",
+      "seconds": 265.5667
+    },
+    {
+      "scene_id": "s7",
+      "beat_id": "s7_b2",
+      "asset_id": "file_b8925bf1e01f40c98aae10868f75b62b",
+      "seconds": 275.6
+    },
+    {
+      "scene_id": "s7",
+      "beat_id": "s7_b3",
+      "asset_id": "file_97f23865c27f4ae3a9152d4f00e2d057",
+      "seconds": 284.1667
+    }
+  ],
+  "created_at": "2026-11-06T04:46:37.406105+00:00"
+}

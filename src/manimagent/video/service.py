@@ -35,6 +35,8 @@ class VideoService:
             settings,
         )
         self.reviewer = VideoReviewer(store, provider, settings, self.call)
+        self.audio_path = None
+        self.audio_evidence = []
 
     def call(self, role, instruction, payload, schema, budget):
         cfg = self.settings.model_for(role)
@@ -63,11 +65,23 @@ class VideoService:
         self, request: VideoRequest, budget: Budget, record: dict, progress=lambda message: None
     ) -> VideoResult:
         started = time.monotonic()
+        synthesizer = None
+        narrated = request.video_profile_id == "standard_narrated" or (
+            request.video_profile_id == "auto" and self.settings.tts.enabled
+        )
+        if narrated:
+            from manimagent.video.tts import MiMoTTS
+
+            synthesizer = MiMoTTS(
+                self.settings.tts, credential_resolver=self.provider.credential_resolver
+            )
+            synthesizer.validate_configuration()
         progress("正在检查本地渲染器、中文字体与编码器")
         record["renderer_runtime"] = self.renderer.validate_runtime(
             self.store.root / "renders" / record["job_id"] / "preflight", budget
         )
         answer = self.store.load("answers", request.answer_id, Answer)
+        record["memory_snapshot"] = answer.memory_snapshot
         record.update(
             video_answer_id=answer.answer_id,
             video_answer_hash=digest(answer.markdown),
@@ -97,6 +111,22 @@ class VideoService:
             progress,
         )
         plan, report = planner.build()
+        if narrated:
+            from manimagent.video.narration import narrate_plan
+
+            record["tts"] = self.audio_evidence
+            try:
+                plan, self.audio_path, self.audio_evidence = narrate_plan(
+                    plan,
+                    synthesizer,
+                    self.store.root / "renders" / record["job_id"] / "audio",
+                    budget,
+                    progress,
+                    evidence=self.audio_evidence,
+                )
+            finally:
+                record["tts_attempts"] = synthesizer.calls
+                self.store.save("records", record["job_id"], record)
         self.store.save("video_plans", plan.plan_id, plan)
         record["video_plan_id"] = plan.plan_id
         self.store.save("records", record["job_id"], record)
@@ -147,6 +177,9 @@ class VideoService:
             self.store.save("records", record["job_id"], record)
         progress("正在按顺序合成、完整解码并校验最终视频")
         final = self.renderer.assemble(outputs, root / "final", plan, budget)
+        if self.audio_path is not None:
+            progress("正在封装旁白并校验音视频完整解码")
+            final = self.renderer.mux_audio(root / "final", self.audio_path, plan, budget)
         if any(not intervals for intervals in mapping.values()):
             raise ContentError("video_coverage", "最终视频遗漏教学单元", state="needs_review")
         return RenderedVideo(root, final, evidence, mapping)
@@ -163,14 +196,21 @@ class VideoService:
         asset = self.store.generated_file(
             root / "final" / final["video_path"], "teaching.mp4", "video/mp4"
         )
+        audio_asset = (
+            self.store.generated_file(self.audio_path, "narration.wav", "audio/wav")
+            if self.audio_path is not None
+            else None
+        )
         report_asset = self.store.diagnostic(
             {
                 "answer_id": answer.answer_id,
                 "answer_hash": plan.answer_hash,
                 "plan_id": plan.plan_id,
                 "prompt_version": PROMPT_VERSION,
-                "time_source": "estimated",
-                "audio": "not_generated",
+                "time_source": plan.time_source,
+                "cue_time_source": "estimated",
+                "audio": "mimo_tts" if audio_asset else "not_generated",
+                "tts": self.audio_evidence,
                 "visual_model_review": "not_run",
                 "review_mode": "trusted_template_geometry_and_layout",
                 "plan_check": report.model_dump(),
@@ -207,6 +247,8 @@ class VideoService:
             answer_hash=plan.answer_hash,
             plan_id=plan.plan_id,
             video_asset_id=asset.file_id,
+            audio_asset_id=audio_asset.file_id if audio_asset else None,
+            time_source=plan.time_source,
             duration_seconds=final_duration,
             step_mapping=[
                 {

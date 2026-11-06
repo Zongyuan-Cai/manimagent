@@ -111,9 +111,9 @@ ManimAgent 已使用 LangGraph，可以借鉴其后端协议和分页读取思�
 
 ### 当前实现与既有设计
 
-以下基线与迁移步骤保留调研时的上下文；其中 LangGraph、纯文本 GenerationRequest 和视觉模型属于现已冻结的历史 MVP。文字阶段覆盖记录见[归档](../archive/文字链路实现与覆盖检查.md)，当前能力以[实现说明](../current/能力与接口.md)为准。
+以下基线与迁移步骤保留调研时的上下文；其中 LangGraph、纯文本 GenerationRequest 和视觉模型属于已从当前树移除的历史 MVP。文字阶段覆盖记录见[历史快照](https://github.com/Zongyuan-Cai/manimagent/blob/3e1605c120cd31269406b146b22a6aec85075dbc/docs/archive/文字链路实现与覆盖检查.md)，当前能力以[实现说明](../current/能力与接口.md)为准。
 
-调研时的旧版运行代码只有纯文本生成请求，`GenerationRequest` 将文本限制为 1 至 3000 字符；API 没有材料上传端点。`ChatProvider.complete()` 把业务 payload 序列化成 user 文本，传入图片时追加 base64 `image_url` 内容块。因此现有视觉检查能力可供后续页面图像核对参考，但文档文件输入和多协议适配仍需单独实现。[历史请求校验](../../legacy_mvp/src/manimagent/schemas.py)、[历史 API](../../legacy_mvp/src/manimagent/api.py)、[历史模型调用](../../legacy_mvp/src/manimagent/providers.py)
+调研时的旧版运行代码只有纯文本生成请求，`GenerationRequest` 将文本限制为 1 至 3000 字符；API 没有材料上传端点。`ChatProvider.complete()` 把业务 payload 序列化成 user 文本，传入图片时追加 base64 `image_url` 内容块。因此现有视觉检查能力可供后续页面图像核对参考，但文档文件输入和多协议适配仍需单独实现。[历史请求校验](https://github.com/Zongyuan-Cai/manimagent/blob/3e1605c120cd31269406b146b22a6aec85075dbc/legacy_mvp/src/manimagent/schemas.py)、[历史 API](https://github.com/Zongyuan-Cai/manimagent/blob/3e1605c120cd31269406b146b22a6aec85075dbc/legacy_mvp/src/manimagent/api.py)、[历史模型调用](https://github.com/Zongyuan-Cai/manimagent/blob/3e1605c120cd31269406b146b22a6aec85075dbc/legacy_mvp/src/manimagent/providers.py)
 
 现有[材料输入与解析设计](../design/02-材料输入与解析.md)已经规定原件、MaterialIR、来源位置、解析路由和待核对状态；[LLM 接入设计](../design/01-LLM接入与调用.md)已经规定 ProviderFileRef 与能力记录。可以沿用这些边界，将本次调研的做法用于具体实现。
 

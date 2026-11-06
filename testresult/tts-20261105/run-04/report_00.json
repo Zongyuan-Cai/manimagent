@@ -1,0 +1,2021 @@
+{
+  "answer_id": "answer_3c428c6a39df426c9c57827bf205f12c",
+  "answer_hash": "2e32f647b4f0a9713eb65e8d71468ba99fc39b0d05be21aed1e92db758ca2cc5",
+  "plan_id": "plan_4da907ff18574121ad3a59d9d7632a91",
+  "prompt_version": "narrated-templates-9",
+  "time_source": "audio_measured",
+  "cue_time_source": "estimated",
+  "audio": "mimo_tts",
+  "tts": [
+    {
+      "path": "beat_000.wav",
+      "attempts": 1,
+      "duration_seconds": 12.0,
+      "sample_rate": 24000,
+      "frames": 288000,
+      "channels": 1,
+      "sample_width": 2,
+      "model": "mimo-v2.5-tts",
+      "voice": "mimo_default",
+      "usage": {
+        "prompt_tokens": 183,
+        "completion_tokens": 77,
+        "total_tokens": 260
+      },
+      "scene_id": "s1",
+      "beat_id": "s1_b1",
+      "start_seconds": 1.0,
+      "end_seconds": 13.0,
+      "cue_time_source": "estimated"
+    },
+    {
+      "path": "beat_001.wav",
+      "attempts": 1,
+      "duration_seconds": 11.68,
+      "sample_rate": 24000,
+      "frames": 280320,
+      "channels": 1,
+      "sample_width": 2,
+      "model": "mimo-v2.5-tts",
+      "voice": "mimo_default",
+      "usage": {
+        "prompt_tokens": 176,
+        "completion_tokens": 75,
+        "total_tokens": 251
+      },
+      "scene_id": "s1",
+      "beat_id": "s1_b2",
+      "start_seconds": 15.0,
+      "end_seconds": 26.68,
+      "cue_time_source": "estimated"
+    },
+    {
+      "path": "beat_002.wav",
+      "attempts": 1,
+      "duration_seconds": 9.12,
+      "sample_rate": 24000,
+      "frames": 218880,
+      "channels": 1,
+      "sample_width": 2,
+      "model": "mimo-v2.5-tts",
+      "voice": "mimo_default",
+      "usage": {
+        "prompt_tokens": 175,
+        "completion_tokens": 59,
+        "total_tokens": 234
+      },
+      "scene_id": "s1",
+      "beat_id": "s1_b3",
+      "start_seconds": 28.7,
+      "end_seconds": 37.82,
+      "cue_time_source": "estimated"
+    },
+    {
+      "path": "beat_003.wav",
+      "attempts": 1,
+      "duration_seconds": 9.6,
+      "sample_rate": 24000,
+      "frames": 230400,
+      "channels": 1,
+      "sample_width": 2,
+      "model": "mimo-v2.5-tts",
+      "voice": "mimo_default",
+      "usage": {
+        "prompt_tokens": 177,
+        "completion_tokens": 62,
+        "total_tokens": 239
+      },
+      "scene_id": "s2",
+      "beat_id": "b1",
+      "start_seconds": 41.433333,
+      "end_seconds": 51.033333,
+      "cue_time_source": "estimated"
+    },
+    {
+      "path": "beat_004.wav",
+      "attempts": 1,
+      "duration_seconds": 8.96,
+      "sample_rate": 24000,
+      "frames": 215040,
+      "channels": 1,
+      "sample_width": 2,
+      "model": "mimo-v2.5-tts",
+      "voice": "mimo_default",
+      "usage": {
+        "prompt_tokens": 176,
+        "completion_tokens": 58,
+        "total_tokens": 234
+      },
+      "scene_id": "s2",
+      "beat_id": "b2",
+      "start_seconds": 53.033333,
+      "end_seconds": 61.993333,
+      "cue_time_source": "estimated"
+    },
+    {
+      "path": "beat_005.wav",
+      "attempts": 1,
+      "duration_seconds": 10.88,
+      "sample_rate": 24000,
+      "frames": 261120,
+      "channels": 1,
+      "sample_width": 2,
+      "model": "mimo-v2.5-tts",
+      "voice": "mimo_default",
+      "usage": {
+        "prompt_tokens": 181,
+        "completion_tokens": 70,
+        "total_tokens": 251
+      },
+      "scene_id": "s2",
+      "beat_id": "b3",
+      "start_seconds": 63.99999966666667,
+      "end_seconds": 74.87999966666666,
+      "cue_time_source": "estimated"
+    },
+    {
+      "path": "beat_006.wav",
+      "attempts": 1,
+      "duration_seconds": 14.72,
+      "sample_rate": 24000,
+      "frames": 353280,
+      "channels": 1,
+      "sample_width": 2,
+      "model": "mimo-v2.5-tts",
+      "voice": "mimo_default",
+      "usage": {
+        "prompt_tokens": 187,
+        "completion_tokens": 94,
+        "total_tokens": 281
+      },
+      "scene_id": "s2",
+      "beat_id": "b4",
+      "start_seconds": 76.89999966666667,
+      "end_seconds": 91.61999966666667,
+      "cue_time_source": "estimated"
+    },
+    {
+      "path": "beat_007.wav",
+      "attempts": 1,
+      "duration_seconds": 9.44,
+      "sample_rate": 24000,
+      "frames": 226560,
+      "channels": 1,
+      "sample_width": 2,
+      "model": "mimo-v2.5-tts",
+      "voice": "mimo_default",
+      "usage": {
+        "prompt_tokens": 176,
+        "completion_tokens": 61,
+        "total_tokens": 237
+      },
+      "scene_id": "s3",
+      "beat_id": "s3b1",
+      "start_seconds": 93.633333,
+      "end_seconds": 103.07333299999999,
+      "cue_time_source": "estimated"
+    },
+    {
+      "path": "beat_008.wav",
+      "attempts": 1,
+      "duration_seconds": 9.12,
+      "sample_rate": 24000,
+      "frames": 218880,
+      "channels": 1,
+      "sample_width": 2,
+      "model": "mimo-v2.5-tts",
+      "voice": "mimo_default",
+      "usage": {
+        "prompt_tokens": 178,
+        "completion_tokens": 59,
+        "total_tokens": 237
+      },
+      "scene_id": "s3",
+      "beat_id": "s3b2",
+      "start_seconds": 105.133333,
+      "end_seconds": 114.253333,
+      "cue_time_source": "estimated"
+    },
+    {
+      "path": "beat_009.wav",
+      "attempts": 1,
+      "duration_seconds": 12.0,
+      "sample_rate": 24000,
+      "frames": 288000,
+      "channels": 1,
+      "sample_width": 2,
+      "model": "mimo-v2.5-tts",
+      "voice": "mimo_default",
+      "usage": {
+        "prompt_tokens": 179,
+        "completion_tokens": 77,
+        "total_tokens": 256
+      },
+      "scene_id": "s3",
+      "beat_id": "s3b3",
+      "start_seconds": 117.93333299999999,
+      "end_seconds": 129.933333,
+      "cue_time_source": "estimated"
+    },
+    {
+      "path": "beat_010.wav",
+      "attempts": 1,
+      "duration_seconds": 11.52,
+      "sample_rate": 24000,
+      "frames": 276480,
+      "channels": 1,
+      "sample_width": 2,
+      "model": "mimo-v2.5-tts",
+      "voice": "mimo_default",
+      "usage": {
+        "prompt_tokens": 184,
+        "completion_tokens": 74,
+        "total_tokens": 258
+      },
+      "scene_id": "s4",
+      "beat_id": "s4_b1",
+      "start_seconds": 131.933333,
+      "end_seconds": 143.45333300000001,
+      "cue_time_source": "estimated"
+    },
+    {
+      "path": "beat_011.wav",
+      "attempts": 1,
+      "duration_seconds": 10.4,
+      "sample_rate": 24000,
+      "frames": 249600,
+      "channels": 1,
+      "sample_width": 2,
+      "model": "mimo-v2.5-tts",
+      "voice": "mimo_default",
+      "usage": {
+        "prompt_tokens": 176,
+        "completion_tokens": 67,
+        "total_tokens": 243
+      },
+      "scene_id": "s4",
+      "beat_id": "s4_b2",
+      "start_seconds": 145.46666633333334,
+      "end_seconds": 155.86666633333334,
+      "cue_time_source": "estimated"
+    },
+    {
+      "path": "beat_012.wav",
+      "attempts": 1,
+      "duration_seconds": 8.32,
+      "sample_rate": 24000,
+      "frames": 199680,
+      "channels": 1,
+      "sample_width": 2,
+      "model": "mimo-v2.5-tts",
+      "voice": "mimo_default",
+      "usage": {
+        "prompt_tokens": 175,
+        "completion_tokens": 54,
+        "total_tokens": 229
+      },
+      "scene_id": "s4",
+      "beat_id": "s4_b3",
+      "start_seconds": 158.26666633333335,
+      "end_seconds": 166.58666633333334,
+      "cue_time_source": "estimated"
+    },
+    {
+      "path": "beat_013.wav",
+      "attempts": 1,
+      "duration_seconds": 8.48,
+      "sample_rate": 24000,
+      "frames": 203520,
+      "channels": 1,
+      "sample_width": 2,
+      "model": "mimo-v2.5-tts",
+      "voice": "mimo_default",
+      "usage": {
+        "prompt_tokens": 175,
+        "completion_tokens": 55,
+        "total_tokens": 230
+      },
+      "scene_id": "s4",
+      "beat_id": "s4_b4",
+      "start_seconds": 171.66666633333335,
+      "end_seconds": 180.14666633333334,
+      "cue_time_source": "estimated"
+    },
+    {
+      "path": "beat_014.wav",
+      "attempts": 1,
+      "duration_seconds": 12.64,
+      "sample_rate": 24000,
+      "frames": 303360,
+      "channels": 1,
+      "sample_width": 2,
+      "model": "mimo-v2.5-tts",
+      "voice": "mimo_default",
+      "usage": {
+        "prompt_tokens": 187,
+        "completion_tokens": 81,
+        "total_tokens": 268
+      },
+      "scene_id": "s5",
+      "beat_id": "s5_b1",
+      "start_seconds": 183.566666,
+      "end_seconds": 196.20666599999998,
+      "cue_time_source": "estimated"
+    },
+    {
+      "path": "beat_015.wav",
+      "attempts": 1,
+      "duration_seconds": 7.84,
+      "sample_rate": 24000,
+      "frames": 188160,
+      "channels": 1,
+      "sample_width": 2,
+      "model": "mimo-v2.5-tts",
+      "voice": "mimo_default",
+      "usage": {
+        "prompt_tokens": 173,
+        "completion_tokens": 51,
+        "total_tokens": 224
+      },
+      "scene_id": "s5",
+      "beat_id": "s5_b2",
+      "start_seconds": 198.23333266666666,
+      "end_seconds": 206.07333266666666,
+      "cue_time_source": "estimated"
+    },
+    {
+      "path": "beat_016.wav",
+      "attempts": 1,
+      "duration_seconds": 8.96,
+      "sample_rate": 24000,
+      "frames": 215040,
+      "channels": 1,
+      "sample_width": 2,
+      "model": "mimo-v2.5-tts",
+      "voice": "mimo_default",
+      "usage": {
+        "prompt_tokens": 173,
+        "completion_tokens": 58,
+        "total_tokens": 231
+      },
+      "scene_id": "s5",
+      "beat_id": "s5_b3",
+      "start_seconds": 208.09999933333333,
+      "end_seconds": 217.05999933333334,
+      "cue_time_source": "estimated"
+    },
+    {
+      "path": "beat_017.wav",
+      "attempts": 1,
+      "duration_seconds": 7.84,
+      "sample_rate": 24000,
+      "frames": 188160,
+      "channels": 1,
+      "sample_width": 2,
+      "model": "mimo-v2.5-tts",
+      "voice": "mimo_default",
+      "usage": {
+        "prompt_tokens": 169,
+        "completion_tokens": 51,
+        "total_tokens": 220
+      },
+      "scene_id": "s5",
+      "beat_id": "s5_b4",
+      "start_seconds": 219.066666,
+      "end_seconds": 226.906666,
+      "cue_time_source": "estimated"
+    },
+    {
+      "path": "beat_018.wav",
+      "attempts": 1,
+      "duration_seconds": 6.24,
+      "sample_rate": 24000,
+      "frames": 149760,
+      "channels": 1,
+      "sample_width": 2,
+      "model": "mimo-v2.5-tts",
+      "voice": "mimo_default",
+      "usage": {
+        "prompt_tokens": 169,
+        "completion_tokens": 41,
+        "total_tokens": 210
+      },
+      "scene_id": "s6",
+      "beat_id": "s6_b1",
+      "start_seconds": 228.933333,
+      "end_seconds": 235.173333,
+      "cue_time_source": "estimated"
+    },
+    {
+      "path": "beat_019.wav",
+      "attempts": 1,
+      "duration_seconds": 10.72,
+      "sample_rate": 24000,
+      "frames": 257280,
+      "channels": 1,
+      "sample_width": 2,
+      "model": "mimo-v2.5-tts",
+      "voice": "mimo_default",
+      "usage": {
+        "prompt_tokens": 174,
+        "completion_tokens": 69,
+        "total_tokens": 243
+      },
+      "scene_id": "s6",
+      "beat_id": "s6_b2",
+      "start_seconds": 240.033333,
+      "end_seconds": 250.753333,
+      "cue_time_source": "estimated"
+    },
+    {
+      "path": "beat_020.wav",
+      "attempts": 1,
+      "duration_seconds": 7.2,
+      "sample_rate": 24000,
+      "frames": 172800,
+      "channels": 1,
+      "sample_width": 2,
+      "model": "mimo-v2.5-tts",
+      "voice": "mimo_default",
+      "usage": {
+        "prompt_tokens": 169,
+        "completion_tokens": 47,
+        "total_tokens": 216
+      },
+      "scene_id": "s6",
+      "beat_id": "s6_b3",
+      "start_seconds": 252.76666633333335,
+      "end_seconds": 259.96666633333336,
+      "cue_time_source": "estimated"
+    },
+    {
+      "path": "beat_021.wav",
+      "attempts": 1,
+      "duration_seconds": 9.44,
+      "sample_rate": 24000,
+      "frames": 226560,
+      "channels": 1,
+      "sample_width": 2,
+      "model": "mimo-v2.5-tts",
+      "voice": "mimo_default",
+      "usage": {
+        "prompt_tokens": 175,
+        "completion_tokens": 61,
+        "total_tokens": 236
+      },
+      "scene_id": "s6",
+      "beat_id": "s6_b4",
+      "start_seconds": 262.69999966666666,
+      "end_seconds": 272.13999966666665,
+      "cue_time_source": "estimated"
+    },
+    {
+      "path": "beat_022.wav",
+      "attempts": 1,
+      "duration_seconds": 7.36,
+      "sample_rate": 24000,
+      "frames": 176640,
+      "channels": 1,
+      "sample_width": 2,
+      "model": "mimo-v2.5-tts",
+      "voice": "mimo_default",
+      "usage": {
+        "prompt_tokens": 169,
+        "completion_tokens": 48,
+        "total_tokens": 217
+      },
+      "scene_id": "s6",
+      "beat_id": "s6_b5",
+      "start_seconds": 274.16666633333335,
+      "end_seconds": 281.52666633333337,
+      "cue_time_source": "estimated"
+    },
+    {
+      "path": "beat_023.wav",
+      "attempts": 1,
+      "duration_seconds": 11.36,
+      "sample_rate": 24000,
+      "frames": 272640,
+      "channels": 1,
+      "sample_width": 2,
+      "model": "mimo-v2.5-tts",
+      "voice": "mimo_default",
+      "usage": {
+        "prompt_tokens": 181,
+        "completion_tokens": 73,
+        "total_tokens": 254
+      },
+      "scene_id": "s6",
+      "beat_id": "s6_b6",
+      "start_seconds": 284.2999996666667,
+      "end_seconds": 295.6599996666667,
+      "cue_time_source": "estimated"
+    }
+  ],
+  "visual_model_review": "not_run",
+  "review_mode": "trusted_template_geometry_and_layout",
+  "plan_check": {
+    "decision": "pass",
+    "message": "所有教学单元均由对应场景的屏幕文字与公式承接，数学内容与固定答案一致，旁白读法自然，未发现数学或节奏问题。",
+    "units": [
+      {
+        "unit_id": "u001",
+        "decision": "pass",
+        "scene_ids": [
+          "s1"
+        ],
+        "evidence": "s1_b1显示原方程与三项任务，s1_b2给出标准形式ax²+bx+c=0且a≠0，s1_b3显示a=1、b=-5、c=6。"
+      },
+      {
+        "unit_id": "u002",
+        "decision": "pass",
+        "scene_ids": [
+          "s2"
+        ],
+        "evidence": "s2_b1设(x+p)(x+q)，b2展开得x²+(p+q)x+pq，b3列p+q=-5、pq=6，b4验证-2、-3并写分解式。"
+      },
+      {
+        "unit_id": "u003",
+        "decision": "pass",
+        "scene_ids": [
+          "s3"
+        ],
+        "evidence": "s3b1显示x²-5x+6=(x-2)(x-3)，s3b2写出零乘积法则AB=0则A=0或B=0，s3b3解得x=2或x=3。"
+      },
+      {
+        "unit_id": "u004",
+        "decision": "pass",
+        "scene_ids": [
+          "s4"
+        ],
+        "evidence": "s4_b1给出求根公式，s4_b2列出系数与Δ=b²-4ac，b3算出Δ=1，b4由Δ=1>0得两个不同实根。"
+      },
+      {
+        "unit_id": "u005",
+        "decision": "pass",
+        "scene_ids": [
+          "s5"
+        ],
+        "evidence": "s5_b1代入得(5±1)/2，b2加号得3，b3减号得2，b4显示x=2或x=3并与因式分解一致。"
+      },
+      {
+        "unit_id": "u006",
+        "decision": "pass",
+        "scene_ids": [
+          "s6"
+        ],
+        "evidence": "s6_b1写出原方程x²-5x+6=0并说明把根代入左边看是否为零。"
+      },
+      {
+        "unit_id": "u007",
+        "decision": "pass",
+        "scene_ids": [
+          "s6"
+        ],
+        "evidence": "s6_b2显示2²-5·2+6=4-10+6，s6_b3显示4-10+6=0，说明x=2成立。"
+      },
+      {
+        "unit_id": "u008",
+        "decision": "pass",
+        "scene_ids": [
+          "s6"
+        ],
+        "evidence": "s6_b4显示3²-5·3+6=9-15+6，s6_b5显示9-15+6=0，说明x=3成立。"
+      },
+      {
+        "unit_id": "u009",
+        "decision": "pass",
+        "scene_ids": [
+          "s6"
+        ],
+        "evidence": "s6_b6汇总(x-2)(x-3)=0、x=(5±1)/2与代回为零，最终给出x=2或x=3。"
+      }
+    ],
+    "problem_scene_ids": []
+  },
+  "scenes": [
+    {
+      "scene_id": "s1",
+      "plan_hash": "3a9a37c1a9c53b3520519a2116087b00b0af60497df2d1db487614f1ca059074",
+      "offset_seconds": 0.0,
+      "status": "success",
+      "video_path": "scene.mp4",
+      "media": {
+        "width": 1280,
+        "height": 720,
+        "fps": 30.0,
+        "codec": "h264",
+        "pix_fmt": "yuv420p",
+        "duration_seconds": 40.43333333333333,
+        "audio_streams": 0
+      },
+      "events": [
+        {
+          "beat_id": "s1_b1",
+          "unit_ids": [
+            "u001"
+          ],
+          "start_seconds": 0.0,
+          "stable_seconds": 1.0,
+          "cue_seconds": 1.0,
+          "end_seconds": 14.000000000000002,
+          "screen_text": "材料要求用因式分解、求根公式分别求解，再把两根代回原式；本题不需画函数图。",
+          "formulas": [
+            "x^2-5x+6=0"
+          ],
+          "formula_lines": [
+            "x^2-5x+6=0"
+          ],
+          "formula_em": 0.6,
+          "formula_bounds": [
+            {
+              "left": -2.2021633506733562,
+              "right": 2.2021633506733562,
+              "bottom": -0.08749999999999997,
+              "top": 0.4875
+            }
+          ],
+          "inline_matrix_cells": [],
+          "objects": [],
+          "matrix_cells": [],
+          "caption_bounds": {
+            "left": -6.2,
+            "right": 6.2,
+            "bottom": -3.282194941776089,
+            "top": -2.377805058223911
+          },
+          "content_bounds": {
+            "left": -2.2021633506733562,
+            "right": 2.2021633506733562,
+            "bottom": -0.08749999999999997,
+            "top": 1.94785155
+          },
+          "time_source": "audio_measured",
+          "cue_time_source": "estimated",
+          "frame_seconds": 1.6
+        },
+        {
+          "beat_id": "s1_b2",
+          "unit_ids": [
+            "u001"
+          ],
+          "start_seconds": 14.000000000000002,
+          "stable_seconds": 15.033333333333333,
+          "cue_seconds": 15.033333333333333,
+          "end_seconds": 27.699999999999996,
+          "screen_text": "一元二次方程的标准形式是二次项、一次项、常数项依次排列，且二次项系数不能为零。",
+          "formulas": [
+            "ax^2+bx+c=0,\\quad a\\neq0"
+          ],
+          "formula_lines": [
+            "ax^2+bx+c=0,\\quad a\\neq0"
+          ],
+          "formula_em": 0.6,
+          "formula_bounds": [
+            {
+              "left": -3.5477283314561547,
+              "right": 3.5477283314561547,
+              "bottom": -0.11874999999999997,
+              "top": 0.51875
+            }
+          ],
+          "inline_matrix_cells": [],
+          "objects": [],
+          "matrix_cells": [],
+          "caption_bounds": {
+            "left": -6.2,
+            "right": 6.2,
+            "bottom": -3.282722531730435,
+            "top": -2.377277468269565
+          },
+          "content_bounds": {
+            "left": -3.5477283314561547,
+            "right": 3.5477283314561547,
+            "bottom": -0.11874999999999997,
+            "top": 1.946289075
+          },
+          "time_source": "audio_measured",
+          "cue_time_source": "estimated",
+          "frame_seconds": 15.633333333333333
+        },
+        {
+          "beat_id": "s1_b3",
+          "unit_ids": [
+            "u001"
+          ],
+          "start_seconds": 27.699999999999996,
+          "stable_seconds": 28.73333333333336,
+          "cue_seconds": 28.73333333333336,
+          "end_seconds": 40.43333333333338,
+          "screen_text": "与标准形式逐项对照，本题二次项系数是一，一次项系数是负五，常数项是六；负号不能漏。",
+          "formulas": [
+            "a=1,\\quad b=-5,\\quad c=6"
+          ],
+          "formula_lines": [
+            "a=1,\\quad b=-5,\\quad c=6"
+          ],
+          "formula_em": 0.6,
+          "formula_bounds": [
+            {
+              "left": -3.403849121598002,
+              "right": 3.403849121598002,
+              "bottom": -0.06874999999999998,
+              "top": 0.46875
+            }
+          ],
+          "inline_matrix_cells": [],
+          "objects": [],
+          "matrix_cells": [],
+          "caption_bounds": {
+            "left": -6.2,
+            "right": 6.2,
+            "bottom": -3.281518246106555,
+            "top": -2.3784817538934453
+          },
+          "content_bounds": {
+            "left": -3.403849121598002,
+            "right": 3.403849121598002,
+            "bottom": -0.06874999999999998,
+            "top": 1.94609375
+          },
+          "time_source": "audio_measured",
+          "cue_time_source": "estimated",
+          "frame_seconds": 29.33333333333336
+        }
+      ],
+      "frames": [
+        {
+          "path": "frame_000.png",
+          "requested_seconds": 1.6,
+          "actual_seconds": 1.6
+        },
+        {
+          "path": "frame_001.png",
+          "requested_seconds": 15.633333333333333,
+          "actual_seconds": 15.633333333333333
+        },
+        {
+          "path": "frame_002.png",
+          "requested_seconds": 29.33333333333336,
+          "actual_seconds": 29.333333333333332
+        }
+      ],
+      "font": "Microsoft YaHei",
+      "wall_seconds": 18.36,
+      "peak_memory_mb": 453.38,
+      "renderer_hash": "8f2aea52e398d53c3c3e5ef0f4eabb8254fce53674e17a9bca712c962c9eac3a"
+    },
+    {
+      "scene_id": "s2",
+      "plan_hash": "3a9a37c1a9c53b3520519a2116087b00b0af60497df2d1db487614f1ca059074",
+      "offset_seconds": 40.43333333333333,
+      "status": "success",
+      "video_path": "scene.mp4",
+      "media": {
+        "width": 1280,
+        "height": 720,
+        "fps": 30.0,
+        "codec": "h264",
+        "pix_fmt": "yuv420p",
+        "duration_seconds": 52.2,
+        "audio_streams": 0
+      },
+      "events": [
+        {
+          "beat_id": "b1",
+          "unit_ids": [
+            "u002"
+          ],
+          "start_seconds": 0.0,
+          "stable_seconds": 1.0,
+          "cue_seconds": 1.0,
+          "end_seconds": 11.600000000000001,
+          "screen_text": "二次项系数是1，可尝试把二次三项式写成两个一次因式的乘积。",
+          "formulas": [
+            "x^2-5x+6=(x+p)(x+q)"
+          ],
+          "formula_lines": [
+            "x^2-5x+6=(x+p)(x+q)"
+          ],
+          "formula_em": 0.6,
+          "formula_bounds": [
+            {
+              "left": -3.9377709157167904,
+              "right": 3.9377709157167904,
+              "bottom": -0.14375,
+              "top": 0.54375
+            }
+          ],
+          "inline_matrix_cells": [],
+          "objects": [],
+          "matrix_cells": [],
+          "caption_bounds": {
+            "left": -5.4180176,
+            "right": 5.4180176,
+            "bottom": -3.020625,
+            "top": -2.6393750000000002
+          },
+          "content_bounds": {
+            "left": -3.9377709157167904,
+            "right": 3.9377709157167904,
+            "bottom": -0.14375,
+            "top": 1.9466797
+          },
+          "time_source": "audio_measured",
+          "cue_time_source": "estimated",
+          "frame_seconds": 1.6
+        },
+        {
+          "beat_id": "b2",
+          "unit_ids": [
+            "u002"
+          ],
+          "start_seconds": 11.600000000000001,
+          "stable_seconds": 12.633333333333333,
+          "cue_seconds": 12.633333333333333,
+          "end_seconds": 22.566666666666663,
+          "screen_text": "展开乘积后，一次项系数是p+q，常数项是pq；再与原式逐项对应。",
+          "formulas": [
+            "(x+p)(x+q)=x^2+(p+q)x+pq"
+          ],
+          "formula_lines": [
+            "(x+p)(x+q)=x^2+(p+q)x+pq"
+          ],
+          "formula_em": 0.6,
+          "formula_bounds": [
+            {
+              "left": -4.905539109765453,
+              "right": 4.905539109765453,
+              "bottom": -0.14375,
+              "top": 0.54375
+            }
+          ],
+          "inline_matrix_cells": [],
+          "objects": [],
+          "matrix_cells": [],
+          "caption_bounds": {
+            "left": -5.753491225,
+            "right": 5.753491225,
+            "bottom": -3.0417187500000002,
+            "top": -2.61828125
+          },
+          "content_bounds": {
+            "left": -4.905539109765453,
+            "right": 4.905539109765453,
+            "bottom": -0.14375,
+            "top": 1.9484375
+          },
+          "time_source": "audio_measured",
+          "cue_time_source": "estimated",
+          "frame_seconds": 13.233333333333333
+        },
+        {
+          "beat_id": "b3",
+          "unit_ids": [
+            "u002"
+          ],
+          "start_seconds": 22.566666666666663,
+          "stable_seconds": 23.600000000000026,
+          "cue_seconds": 23.600000000000026,
+          "end_seconds": 35.46666666666672,
+          "screen_text": "与原式对应，需要p+q=-5、pq=6，即找和为负5、积为6的两个数。",
+          "formulas": [
+            "p+q=-5\\quad pq=6"
+          ],
+          "formula_lines": [
+            "p+q=-5\\quad pq=6"
+          ],
+          "formula_em": 0.6,
+          "formula_bounds": [
+            {
+              "left": -2.797723443381023,
+              "right": 2.797723443381023,
+              "bottom": -0.08749999999999997,
+              "top": 0.4875
+            }
+          ],
+          "inline_matrix_cells": [],
+          "objects": [],
+          "matrix_cells": [],
+          "caption_bounds": {
+            "left": -5.8041504,
+            "right": 5.8041504,
+            "bottom": -3.0417187500000002,
+            "top": -2.61828125
+          },
+          "content_bounds": {
+            "left": -2.797723443381023,
+            "right": 2.797723443381023,
+            "bottom": -0.08749999999999997,
+            "top": 1.945117175
+          },
+          "time_source": "audio_measured",
+          "cue_time_source": "estimated",
+          "frame_seconds": 24.200000000000028
+        },
+        {
+          "beat_id": "b4",
+          "unit_ids": [
+            "u002"
+          ],
+          "start_seconds": 35.46666666666672,
+          "stable_seconds": 36.500000000000014,
+          "cue_seconds": 36.500000000000014,
+          "end_seconds": 52.19999999999999,
+          "screen_text": "负二与负三的积是6，和是负5，所以原式分解为x减2乘x减3。",
+          "formulas": [
+            "p=-2\\quad q=-3",
+            "(-2)+(-3)=-5\\quad(-2)(-3)=6",
+            "x^2-5x+6=(x-2)(x-3)"
+          ],
+          "formula_lines": [
+            "p=-2\\quad q=-3",
+            "(-2)+(-3)=-5\\quad(-2)(-3)=6",
+            "x^2-5x+6=(x-2)(x-3)"
+          ],
+          "formula_em": 0.571429,
+          "formula_bounds": [
+            {
+              "left": -2.18141449629995,
+              "right": 2.18141449629995,
+              "bottom": 0.8023809523809524,
+              "top": 1.3499999999999999
+            },
+            {
+              "left": -4.59799081035923,
+              "right": 4.59799081035923,
+              "bottom": -0.026190476190475986,
+              "top": 0.4976190476190476
+            },
+            {
+              "left": -3.80003023572554,
+              "right": 3.80003023572554,
+              "bottom": -0.95,
+              "top": -0.33095238095238083
+            }
+          ],
+          "inline_matrix_cells": [],
+          "objects": [],
+          "matrix_cells": [],
+          "caption_bounds": {
+            "left": -5.1822265750000005,
+            "right": 5.1822265750000005,
+            "bottom": -3.0200390500000003,
+            "top": -2.63996095
+          },
+          "content_bounds": {
+            "left": -4.59799081035923,
+            "right": 4.59799081035923,
+            "bottom": -0.95,
+            "top": 1.94589845
+          },
+          "time_source": "audio_measured",
+          "cue_time_source": "estimated",
+          "frame_seconds": 37.100000000000016
+        }
+      ],
+      "frames": [
+        {
+          "path": "frame_000.png",
+          "requested_seconds": 1.6,
+          "actual_seconds": 1.6
+        },
+        {
+          "path": "frame_001.png",
+          "requested_seconds": 13.233333333333333,
+          "actual_seconds": 13.233333333333333
+        },
+        {
+          "path": "frame_002.png",
+          "requested_seconds": 24.200000000000028,
+          "actual_seconds": 24.2
+        },
+        {
+          "path": "frame_003.png",
+          "requested_seconds": 37.100000000000016,
+          "actual_seconds": 37.1
+        }
+      ],
+      "font": "Microsoft YaHei",
+      "wall_seconds": 22.641,
+      "peak_memory_mb": 451.22,
+      "renderer_hash": "8f2aea52e398d53c3c3e5ef0f4eabb8254fce53674e17a9bca712c962c9eac3a"
+    },
+    {
+      "scene_id": "s3",
+      "plan_hash": "3a9a37c1a9c53b3520519a2116087b00b0af60497df2d1db487614f1ca059074",
+      "offset_seconds": 92.63333333333333,
+      "status": "success",
+      "video_path": "scene.mp4",
+      "media": {
+        "width": 1280,
+        "height": 720,
+        "fps": 30.0,
+        "codec": "h264",
+        "pix_fmt": "yuv420p",
+        "duration_seconds": 38.3,
+        "audio_streams": 0
+      },
+      "events": [
+        {
+          "beat_id": "s3b1",
+          "unit_ids": [
+            "u003"
+          ],
+          "start_seconds": 0.0,
+          "stable_seconds": 1.0,
+          "cue_seconds": 1.0,
+          "end_seconds": 11.500000000000002,
+          "screen_text": "两个数和为负五、积为六，故三项式分解为x减二与x减三的乘积，展开恒等。",
+          "formulas": [
+            "x^2-5x+6=(x-2)(x-3)"
+          ],
+          "formula_lines": [
+            "x^2-5x+6=(x-2)(x-3)"
+          ],
+          "formula_em": 0.6,
+          "formula_bounds": [
+            {
+              "left": -3.990031747511817,
+              "right": 3.990031747511817,
+              "bottom": -0.125,
+              "top": 0.525
+            }
+          ],
+          "inline_matrix_cells": [],
+          "objects": [],
+          "matrix_cells": [],
+          "caption_bounds": {
+            "left": -6.0236328,
+            "right": 6.0236328,
+            "bottom": -3.280976575,
+            "top": -2.379023425
+          },
+          "content_bounds": {
+            "left": -3.990031747511817,
+            "right": 3.990031747511817,
+            "bottom": -0.125,
+            "top": 1.946484375
+          },
+          "time_source": "audio_measured",
+          "cue_time_source": "estimated",
+          "frame_seconds": 1.6
+        },
+        {
+          "beat_id": "s3b2",
+          "unit_ids": [
+            "u003"
+          ],
+          "start_seconds": 11.500000000000002,
+          "stable_seconds": 12.533333333333333,
+          "cue_seconds": 12.533333333333333,
+          "end_seconds": 24.299999999999997,
+          "screen_text": "把分解式代回原方程，左边成为两个因式的乘积；乘积为零，至少一个因式为零。",
+          "formulas": [
+            "(x-2)(x-3)=0",
+            "AB=0\\quad\\Rightarrow\\quad A=0\\quad\\mathrm{or}\\quad B=0"
+          ],
+          "formula_lines": [
+            "(x-2)(x-3)=0",
+            "AB=0\\quad\\Rightarrow\\quad A=0\\quad\\mathrm{or}\\quad B=0"
+          ],
+          "formula_em": 0.6,
+          "formula_bounds": [
+            {
+              "left": -2.5267192982456135,
+              "right": 2.5267192982456135,
+              "bottom": 0.3162500000000001,
+              "top": 0.86625
+            },
+            {
+              "left": -4.422393521338566,
+              "right": 4.422393521338566,
+              "bottom": -0.4662499999999999,
+              "top": -0.0037499999999999756
+            }
+          ],
+          "inline_matrix_cells": [],
+          "objects": [],
+          "matrix_cells": [],
+          "caption_bounds": {
+            "left": -6.2,
+            "right": 6.2,
+            "bottom": -3.282687246741626,
+            "top": -2.377312753258374
+          },
+          "content_bounds": {
+            "left": -4.422393521338566,
+            "right": 4.422393521338566,
+            "bottom": -0.4662499999999999,
+            "top": 1.946289075
+          },
+          "time_source": "audio_measured",
+          "cue_time_source": "estimated",
+          "frame_seconds": 13.133333333333333
+        },
+        {
+          "beat_id": "s3b3",
+          "unit_ids": [
+            "u003"
+          ],
+          "start_seconds": 24.299999999999997,
+          "stable_seconds": 25.33333333333336,
+          "cue_seconds": 25.33333333333336,
+          "end_seconds": 38.300000000000054,
+          "screen_text": "分别令每个因式为零，得到两个一次方程，解得x等于二或x等于三。",
+          "formulas": [
+            "x-2=0\\quad\\mathrm{or}\\quad x-3=0",
+            "x=2\\quad\\mathrm{or}\\quad x=3"
+          ],
+          "formula_lines": [
+            "x-2=0\\quad\\mathrm{or}\\quad x-3=0",
+            "x=2\\quad\\mathrm{or}\\quad x=3"
+          ],
+          "formula_em": 0.6,
+          "formula_bounds": [
+            {
+              "left": -3.5370239224953517,
+              "right": 3.5370239224953517,
+              "bottom": 0.36,
+              "top": 0.8225
+            },
+            {
+              "left": -2.3932297046064863,
+              "right": 2.3932297046064863,
+              "bottom": -0.42249999999999993,
+              "top": 0.03999999999999998
+            }
+          ],
+          "inline_matrix_cells": [],
+          "objects": [],
+          "matrix_cells": [],
+          "caption_bounds": {
+            "left": -5.6996094,
+            "right": 5.6996094,
+            "bottom": -3.020625,
+            "top": -2.6393750000000002
+          },
+          "content_bounds": {
+            "left": -3.5370239224953517,
+            "right": 3.5370239224953517,
+            "bottom": -0.42249999999999993,
+            "top": 1.945703125
+          },
+          "time_source": "audio_measured",
+          "cue_time_source": "estimated",
+          "frame_seconds": 25.933333333333362
+        }
+      ],
+      "frames": [
+        {
+          "path": "frame_000.png",
+          "requested_seconds": 1.6,
+          "actual_seconds": 1.6
+        },
+        {
+          "path": "frame_001.png",
+          "requested_seconds": 13.133333333333333,
+          "actual_seconds": 13.133333333333333
+        },
+        {
+          "path": "frame_002.png",
+          "requested_seconds": 25.933333333333362,
+          "actual_seconds": 25.933333333333334
+        }
+      ],
+      "font": "Microsoft YaHei",
+      "wall_seconds": 16.969,
+      "peak_memory_mb": 454.02,
+      "renderer_hash": "8f2aea52e398d53c3c3e5ef0f4eabb8254fce53674e17a9bca712c962c9eac3a"
+    },
+    {
+      "scene_id": "s4",
+      "plan_hash": "3a9a37c1a9c53b3520519a2116087b00b0af60497df2d1db487614f1ca059074",
+      "offset_seconds": 130.93333333333334,
+      "status": "success",
+      "video_path": "scene.mp4",
+      "media": {
+        "width": 1280,
+        "height": 720,
+        "fps": 30.0,
+        "codec": "h264",
+        "pix_fmt": "yuv420p",
+        "duration_seconds": 51.63333333333333,
+        "audio_streams": 0
+      },
+      "events": [
+        {
+          "beat_id": "s4_b1",
+          "unit_ids": [
+            "u004"
+          ],
+          "start_seconds": 0.0,
+          "stable_seconds": 1.0,
+          "cue_seconds": 3.942239685658153,
+          "end_seconds": 13.533333333333331,
+          "screen_text": "对 ax^2+bx+c=0（a≠0），两个根都可由求根公式直接算出。",
+          "formulas": [
+            "ax^2+bx+c=0\\quad a\\neq0",
+            "x=\\frac{-b\\pm\\sqrt{b^2-4ac}}{2a}"
+          ],
+          "formula_lines": [
+            "ax^2+bx+c=0\\quad a\\neq0",
+            "x=\\frac{-b\\pm\\sqrt{b^2-4ac}}{2a}"
+          ],
+          "formula_em": 0.6,
+          "formula_bounds": [
+            {
+              "left": -3.3890759182730386,
+              "right": 3.3890759182730386,
+              "bottom": 0.5662500000000001,
+              "top": 1.1412499999999999
+            },
+            {
+              "left": -2.234414514131128,
+              "right": 2.234414514131128,
+              "bottom": -0.74125,
+              "top": 0.2462499999999999
+            }
+          ],
+          "inline_matrix_cells": [],
+          "objects": [],
+          "matrix_cells": [],
+          "caption_bounds": {
+            "left": -5.309106470000001,
+            "right": 5.309106470000001,
+            "bottom": -3.0258008,
+            "top": -2.6341992000000003
+          },
+          "content_bounds": {
+            "left": -3.3890759182730386,
+            "right": 3.3890759182730386,
+            "bottom": -0.74125,
+            "top": 1.945507825
+          },
+          "time_source": "audio_measured",
+          "cue_time_source": "estimated",
+          "frame_seconds": 1.6
+        },
+        {
+          "beat_id": "s4_b2",
+          "unit_ids": [
+            "u004"
+          ],
+          "start_seconds": 13.533333333333331,
+          "stable_seconds": 14.566666666666663,
+          "cue_seconds": 21.357480314960625,
+          "end_seconds": 26.333333333333353,
+          "screen_text": "本题 a=1，b=-5，c=6；先算判别式 b²-4ac，再代入公式。",
+          "formulas": [
+            "a=1,\\quad b=-5,\\quad c=6",
+            "\\Delta=b^2-4ac"
+          ],
+          "formula_lines": [
+            "a=1,\\quad b=-5,\\quad c=6",
+            "\\Delta=b^2-4ac"
+          ],
+          "formula_em": 0.6,
+          "formula_bounds": [
+            {
+              "left": -3.403849121598002,
+              "right": 3.403849121598002,
+              "bottom": 0.3787499999999999,
+              "top": 0.9162499999999998
+            },
+            {
+              "left": -1.8519077170583578,
+              "right": 1.8519077170583578,
+              "bottom": -0.5162499999999999,
+              "top": 0.05874999999999991
+            }
+          ],
+          "inline_matrix_cells": [],
+          "objects": [],
+          "matrix_cells": [],
+          "caption_bounds": {
+            "left": -5.076025400000001,
+            "right": 5.076025400000001,
+            "bottom": -3.019453125,
+            "top": -2.640546875
+          },
+          "content_bounds": {
+            "left": -3.403849121598002,
+            "right": 3.403849121598002,
+            "bottom": -0.5162499999999999,
+            "top": 1.947265625
+          },
+          "time_source": "audio_measured",
+          "cue_time_source": "estimated",
+          "frame_seconds": 15.166666666666663
+        },
+        {
+          "beat_id": "s4_b3",
+          "unit_ids": [
+            "u004"
+          ],
+          "start_seconds": 26.333333333333353,
+          "stable_seconds": 27.366666666666717,
+          "cue_seconds": 27.366666666666717,
+          "end_seconds": 39.733333333333405,
+          "screen_text": "代入得 (-5)²-4·1·6=25-24=1，所以判别式 Δ 等于 1。",
+          "formulas": [
+            "\\Delta=(-5)^2-4\\cdot1\\cdot6",
+            "\\Delta=25-24=1"
+          ],
+          "formula_lines": [
+            "\\Delta=(-5)^2-4\\cdot1\\cdot6",
+            "\\Delta=25-24=1"
+          ],
+          "formula_em": 0.6,
+          "formula_bounds": [
+            {
+              "left": -2.787337653973753,
+              "right": 2.787337653973753,
+              "bottom": 0.26625,
+              "top": 0.91625
+            },
+            {
+              "left": -2.276929965544309,
+              "right": 2.276929965544309,
+              "bottom": -0.5162500000000001,
+              "top": -0.05375000000000002
+            }
+          ],
+          "inline_matrix_cells": [],
+          "objects": [],
+          "matrix_cells": [],
+          "caption_bounds": {
+            "left": -4.54677735,
+            "right": 4.54677735,
+            "bottom": -3.0258008,
+            "top": -2.6341992000000003
+          },
+          "content_bounds": {
+            "left": -2.787337653973753,
+            "right": 2.787337653973753,
+            "bottom": -0.5162500000000001,
+            "top": 1.9466797
+          },
+          "time_source": "audio_measured",
+          "cue_time_source": "estimated",
+          "frame_seconds": 27.96666666666672
+        },
+        {
+          "beat_id": "s4_b4",
+          "unit_ids": [
+            "u004"
+          ],
+          "start_seconds": 39.733333333333405,
+          "stable_seconds": 40.7666666666667,
+          "cue_seconds": 41.23103085026342,
+          "end_seconds": 51.63333333333334,
+          "screen_text": "因为 Δ=1>0，所以方程有两个不同的实数根，下一步可分别代入公式求根。",
+          "formulas": [
+            "\\Delta=1>0"
+          ],
+          "formula_lines": [
+            "\\Delta=1>0"
+          ],
+          "formula_em": 0.6,
+          "formula_bounds": [
+            {
+              "left": -1.326045107952902,
+              "right": 1.326045107952902,
+              "bottom": -0.031249999999999972,
+              "top": 0.43125
+            }
+          ],
+          "inline_matrix_cells": [],
+          "objects": [],
+          "matrix_cells": [],
+          "caption_bounds": {
+            "left": -6.149877925000001,
+            "right": 6.149877925000001,
+            "bottom": -3.2815625,
+            "top": -2.3784375
+          },
+          "content_bounds": {
+            "left": -1.4044433500000002,
+            "right": 1.4044433500000002,
+            "bottom": -0.031249999999999972,
+            "top": 1.946289075
+          },
+          "time_source": "audio_measured",
+          "cue_time_source": "estimated",
+          "frame_seconds": 41.3666666666667
+        }
+      ],
+      "frames": [
+        {
+          "path": "frame_000.png",
+          "requested_seconds": 1.6,
+          "actual_seconds": 1.6
+        },
+        {
+          "path": "frame_001.png",
+          "requested_seconds": 15.166666666666663,
+          "actual_seconds": 15.166666666666666
+        },
+        {
+          "path": "frame_002.png",
+          "requested_seconds": 27.96666666666672,
+          "actual_seconds": 27.966666666666665
+        },
+        {
+          "path": "frame_003.png",
+          "requested_seconds": 41.3666666666667,
+          "actual_seconds": 41.36666666666667
+        }
+      ],
+      "font": "Microsoft YaHei",
+      "wall_seconds": 23.219,
+      "peak_memory_mb": 461.94,
+      "renderer_hash": "8f2aea52e398d53c3c3e5ef0f4eabb8254fce53674e17a9bca712c962c9eac3a"
+    },
+    {
+      "scene_id": "s5",
+      "plan_hash": "3a9a37c1a9c53b3520519a2116087b00b0af60497df2d1db487614f1ca059074",
+      "offset_seconds": 182.56666666666666,
+      "status": "success",
+      "video_path": "scene.mp4",
+      "media": {
+        "width": 1280,
+        "height": 720,
+        "fps": 30.0,
+        "codec": "h264",
+        "pix_fmt": "yuv420p",
+        "duration_seconds": 45.36666666666667,
+        "audio_streams": 0
+      },
+      "events": [
+        {
+          "beat_id": "s5_b1",
+          "unit_ids": [
+            "u005"
+          ],
+          "start_seconds": 0.0,
+          "stable_seconds": 1.0,
+          "cue_seconds": 6.881751824817518,
+          "end_seconds": 14.666666666666664,
+          "screen_text": "把 a=1、b=-5、c=6 代入公式，负负得正，根号内为1。",
+          "formulas": [
+            "x=\\frac{-(-5)\\pm\\sqrt{1}}{2\\cdot 1}",
+            "x=\\frac{5\\pm 1}{2}"
+          ],
+          "formula_lines": [
+            "x=\\frac{-(-5)\\pm\\sqrt{1}}{2\\cdot 1}",
+            "x=\\frac{5\\pm 1}{2}"
+          ],
+          "formula_em": 0.6,
+          "formula_bounds": [
+            {
+              "left": -1.8054787059338562,
+              "right": 1.8054787059338562,
+              "bottom": 0.26,
+              "top": 1.2100000000000002
+            },
+            {
+              "left": -1.1176025527712998,
+              "right": 1.1176025527712998,
+              "bottom": -0.8100000000000003,
+              "top": -0.06000000000000011
+            }
+          ],
+          "inline_matrix_cells": [],
+          "objects": [],
+          "matrix_cells": [],
+          "caption_bounds": {
+            "left": -4.779931645,
+            "right": 4.779931645,
+            "bottom": -3.01984375,
+            "top": -2.64015625
+          },
+          "content_bounds": {
+            "left": -1.8054787059338562,
+            "right": 1.8054787059338562,
+            "bottom": -0.8100000000000003,
+            "top": 1.9466797
+          },
+          "time_source": "audio_measured",
+          "cue_time_source": "estimated",
+          "frame_seconds": 1.6
+        },
+        {
+          "beat_id": "s5_b2",
+          "unit_ids": [
+            "u005"
+          ],
+          "start_seconds": 14.666666666666664,
+          "stable_seconds": 15.699999999999996,
+          "cue_seconds": 15.699999999999996,
+          "end_seconds": 24.53333333333334,
+          "screen_text": "加号情形：分子五加一得六，再除以二，所以这个根是三。",
+          "formulas": [
+            "x=\\frac{5+1}{2}=\\frac{6}{2}=3"
+          ],
+          "formula_lines": [
+            "x=\\frac{5+1}{2}=\\frac{6}{2}=3"
+          ],
+          "formula_em": 0.6,
+          "formula_bounds": [
+            {
+              "left": -2.2144301662764274,
+              "right": 2.2144301662764274,
+              "bottom": -0.17499999999999993,
+              "top": 0.575
+            }
+          ],
+          "inline_matrix_cells": [],
+          "objects": [],
+          "matrix_cells": [],
+          "caption_bounds": {
+            "left": -4.92001955,
+            "right": 4.92001955,
+            "bottom": -3.01984375,
+            "top": -2.64015625
+          },
+          "content_bounds": {
+            "left": -2.2144301662764274,
+            "right": 2.2144301662764274,
+            "bottom": -0.17499999999999993,
+            "top": 1.94453125
+          },
+          "time_source": "audio_measured",
+          "cue_time_source": "estimated",
+          "frame_seconds": 16.299999999999997
+        },
+        {
+          "beat_id": "s5_b3",
+          "unit_ids": [
+            "u005"
+          ],
+          "start_seconds": 24.53333333333334,
+          "stable_seconds": 25.566666666666702,
+          "cue_seconds": 25.566666666666702,
+          "end_seconds": 35.50000000000006,
+          "screen_text": "减号情形：分子五减一得四，再除以二，所以另一个根是二。",
+          "formulas": [
+            "x=\\frac{5-1}{2}=\\frac{4}{2}=2"
+          ],
+          "formula_lines": [
+            "x=\\frac{5-1}{2}=\\frac{4}{2}=2"
+          ],
+          "formula_em": 0.6,
+          "formula_bounds": [
+            {
+              "left": -2.2248960530619963,
+              "right": 2.2248960530619963,
+              "bottom": -0.175,
+              "top": 0.575
+            }
+          ],
+          "inline_matrix_cells": [],
+          "objects": [],
+          "matrix_cells": [],
+          "caption_bounds": {
+            "left": -5.1112305000000005,
+            "right": 5.1112305000000005,
+            "bottom": -3.019648425,
+            "top": -2.640351575
+          },
+          "content_bounds": {
+            "left": -2.2248960530619963,
+            "right": 2.2248960530619963,
+            "bottom": -0.175,
+            "top": 1.942578125
+          },
+          "time_source": "audio_measured",
+          "cue_time_source": "estimated",
+          "frame_seconds": 26.166666666666703
+        },
+        {
+          "beat_id": "s5_b4",
+          "unit_ids": [
+            "u005"
+          ],
+          "start_seconds": 35.50000000000006,
+          "stable_seconds": 36.53333333333335,
+          "cue_seconds": 36.53333333333335,
+          "end_seconds": 45.36666666666666,
+          "screen_text": "公式得到二和三，与因式分解的根相同，说明核对通过。",
+          "formulas": [
+            "x=2\\quad\\mathrm{or}\\quad x=3"
+          ],
+          "formula_lines": [
+            "x=2\\quad\\mathrm{or}\\quad x=3"
+          ],
+          "formula_em": 0.6,
+          "formula_bounds": [
+            {
+              "left": -2.3932297046064863,
+              "right": 2.3932297046064863,
+              "bottom": -0.031249999999999972,
+              "top": 0.43125
+            }
+          ],
+          "inline_matrix_cells": [],
+          "objects": [],
+          "matrix_cells": [],
+          "caption_bounds": {
+            "left": -4.724121105000001,
+            "right": 4.724121105000001,
+            "bottom": -3.019648425,
+            "top": -2.640351575
+          },
+          "content_bounds": {
+            "left": -2.3932297046064863,
+            "right": 2.3932297046064863,
+            "bottom": -0.031249999999999972,
+            "top": 1.94628905
+          },
+          "time_source": "audio_measured",
+          "cue_time_source": "estimated",
+          "frame_seconds": 37.133333333333354
+        }
+      ],
+      "frames": [
+        {
+          "path": "frame_000.png",
+          "requested_seconds": 1.6,
+          "actual_seconds": 1.6
+        },
+        {
+          "path": "frame_001.png",
+          "requested_seconds": 16.299999999999997,
+          "actual_seconds": 16.3
+        },
+        {
+          "path": "frame_002.png",
+          "requested_seconds": 26.166666666666703,
+          "actual_seconds": 26.166666666666668
+        },
+        {
+          "path": "frame_003.png",
+          "requested_seconds": 37.133333333333354,
+          "actual_seconds": 37.13333333333333
+        }
+      ],
+      "font": "Microsoft YaHei",
+      "wall_seconds": 18.906,
+      "peak_memory_mb": 443.68,
+      "renderer_hash": "8f2aea52e398d53c3c3e5ef0f4eabb8254fce53674e17a9bca712c962c9eac3a"
+    },
+    {
+      "scene_id": "s6",
+      "plan_hash": "3a9a37c1a9c53b3520519a2116087b00b0af60497df2d1db487614f1ca059074",
+      "offset_seconds": 227.93333333333334,
+      "status": "success",
+      "video_path": "scene.mp4",
+      "media": {
+        "width": 1280,
+        "height": 720,
+        "fps": 30.0,
+        "codec": "h264",
+        "pix_fmt": "yuv420p",
+        "duration_seconds": 68.73333333333333,
+        "audio_streams": 0
+      },
+      "events": [
+        {
+          "beat_id": "s6_b1",
+          "unit_ids": [
+            "u006"
+          ],
+          "start_seconds": 0.0,
+          "stable_seconds": 1.0,
+          "cue_seconds": 1.0,
+          "end_seconds": 11.100000000000001,
+          "screen_text": "验证根是否满足方程：把根代入左边，看计算结果是否为零。原方程为下式。",
+          "formulas": [
+            "x^2-5x+6=0"
+          ],
+          "formula_lines": [
+            "x^2-5x+6=0"
+          ],
+          "formula_em": 0.6,
+          "formula_bounds": [
+            {
+              "left": -2.2021633506733562,
+              "right": 2.2021633506733562,
+              "bottom": -0.08749999999999997,
+              "top": 0.4875
+            }
+          ],
+          "inline_matrix_cells": [],
+          "objects": [],
+          "matrix_cells": [],
+          "caption_bounds": {
+            "left": -6.2,
+            "right": 6.2,
+            "bottom": -3.2797384033053665,
+            "top": -2.3802615966946337
+          },
+          "content_bounds": {
+            "left": -2.2021633506733562,
+            "right": 2.2021633506733562,
+            "bottom": -0.08749999999999997,
+            "top": 1.945703125
+          },
+          "time_source": "audio_measured",
+          "cue_time_source": "estimated",
+          "frame_seconds": 1.6
+        },
+        {
+          "beat_id": "s6_b2",
+          "unit_ids": [
+            "u007"
+          ],
+          "start_seconds": 11.100000000000001,
+          "stable_seconds": 12.133333333333333,
+          "cue_seconds": 12.133333333333333,
+          "end_seconds": 23.83333333333333,
+          "screen_text": "把x=2代入左边：先算2的平方，再算5乘2，最后做加减。",
+          "formulas": [
+            "2^2-5\\cdot 2+6=4-10+6"
+          ],
+          "formula_lines": [
+            "2^2-5\\cdot 2+6=4-10+6"
+          ],
+          "formula_em": 0.6,
+          "formula_bounds": [
+            {
+              "left": -3.7294082513863223,
+              "right": 3.7294082513863223,
+              "bottom": -0.08749999999999997,
+              "top": 0.4875
+            }
+          ],
+          "inline_matrix_cells": [],
+          "objects": [],
+          "matrix_cells": [],
+          "caption_bounds": {
+            "left": -4.83942872,
+            "right": 4.83942872,
+            "bottom": -3.01984375,
+            "top": -2.64015625
+          },
+          "content_bounds": {
+            "left": -3.7294082513863223,
+            "right": 3.7294082513863223,
+            "bottom": -0.08749999999999997,
+            "top": 1.944726575
+          },
+          "time_source": "audio_measured",
+          "cue_time_source": "estimated",
+          "frame_seconds": 12.733333333333333
+        },
+        {
+          "beat_id": "s6_b3",
+          "unit_ids": [
+            "u007"
+          ],
+          "start_seconds": 23.83333333333333,
+          "stable_seconds": 24.866666666666692,
+          "cue_seconds": 25.75098039215686,
+          "end_seconds": 33.766666666666715,
+          "screen_text": "四减十加六等于零，所以x=2时左边为零，原方程成立。",
+          "formulas": [
+            "4-10+6=0"
+          ],
+          "formula_lines": [
+            "4-10+6=0"
+          ],
+          "formula_em": 0.6,
+          "formula_bounds": [
+            {
+              "left": -2.063157469283206,
+              "right": 2.063157469283206,
+              "bottom": -0.031249999999999972,
+              "top": 0.43125
+            }
+          ],
+          "inline_matrix_cells": [],
+          "objects": [],
+          "matrix_cells": [],
+          "caption_bounds": {
+            "left": -4.6765869250000005,
+            "right": 4.6765869250000005,
+            "bottom": -3.021796875,
+            "top": -2.638203125
+          },
+          "content_bounds": {
+            "left": -2.063157469283206,
+            "right": 2.063157469283206,
+            "bottom": -0.031249999999999972,
+            "top": 1.946875
+          },
+          "time_source": "audio_measured",
+          "cue_time_source": "estimated",
+          "frame_seconds": 25.466666666666693
+        },
+        {
+          "beat_id": "s6_b4",
+          "unit_ids": [
+            "u008"
+          ],
+          "start_seconds": 33.766666666666715,
+          "stable_seconds": 34.80000000000001,
+          "cue_seconds": 34.80000000000001,
+          "end_seconds": 45.23333333333332,
+          "screen_text": "把x=3代入左边：先算3的平方，再算5乘3，最后做加减。",
+          "formulas": [
+            "3^2-5\\cdot 3+6=9-15+6"
+          ],
+          "formula_lines": [
+            "3^2-5\\cdot 3+6=9-15+6"
+          ],
+          "formula_em": 0.6,
+          "formula_bounds": [
+            {
+              "left": -3.7285067297332977,
+              "right": 3.7285067297332977,
+              "bottom": -0.08749999999999997,
+              "top": 0.4875
+            }
+          ],
+          "inline_matrix_cells": [],
+          "objects": [],
+          "matrix_cells": [],
+          "caption_bounds": {
+            "left": -4.83942872,
+            "right": 4.83942872,
+            "bottom": -3.01984375,
+            "top": -2.64015625
+          },
+          "content_bounds": {
+            "left": -3.7285067297332977,
+            "right": 3.7285067297332977,
+            "bottom": -0.08749999999999997,
+            "top": 1.944726575
+          },
+          "time_source": "audio_measured",
+          "cue_time_source": "estimated",
+          "frame_seconds": 35.40000000000001
+        },
+        {
+          "beat_id": "s6_b5",
+          "unit_ids": [
+            "u008"
+          ],
+          "start_seconds": 45.23333333333332,
+          "stable_seconds": 46.266666666666616,
+          "cue_seconds": 47.097911646586326,
+          "end_seconds": 55.36666666666658,
+          "screen_text": "九减十五加六等于零，所以x=3时左边也为零，原方程成立。",
+          "formulas": [
+            "9-15+6=0"
+          ],
+          "formula_lines": [
+            "9-15+6=0"
+          ],
+          "formula_em": 0.6,
+          "formula_bounds": [
+            {
+              "left": -2.058858254244991,
+              "right": 2.058858254244991,
+              "bottom": -0.031249999999999972,
+              "top": 0.43125
+            }
+          ],
+          "inline_matrix_cells": [],
+          "objects": [],
+          "matrix_cells": [],
+          "caption_bounds": {
+            "left": -5.08010255,
+            "right": 5.08010255,
+            "bottom": -3.021796875,
+            "top": -2.638203125
+          },
+          "content_bounds": {
+            "left": -2.058858254244991,
+            "right": 2.058858254244991,
+            "bottom": -0.031249999999999972,
+            "top": 1.9470703249999999
+          },
+          "time_source": "audio_measured",
+          "cue_time_source": "estimated",
+          "frame_seconds": 46.86666666666662
+        },
+        {
+          "beat_id": "s6_b6",
+          "unit_ids": [
+            "u009"
+          ],
+          "start_seconds": 55.36666666666658,
+          "stable_seconds": 56.39999999999988,
+          "cue_seconds": 56.39999999999988,
+          "end_seconds": 68.73333333333318,
+          "screen_text": "因式分解得二、三；求根公式也得二、三；代回都为零，所以解如下。",
+          "formulas": [
+            "(x-2)(x-3)=0",
+            "x=\\frac{5\\pm 1}{2}",
+            "x=2\\quad\\mathrm{or}\\quad x=3"
+          ],
+          "formula_lines": [
+            "(x-2)(x-3)=0",
+            "x=\\frac{5\\pm 1}{2}",
+            "x=2\\quad\\mathrm{or}\\quad x=3"
+          ],
+          "formula_em": 0.574402,
+          "formula_bounds": [
+            {
+              "left": -2.41891961954835,
+              "right": 2.41891961954835,
+              "bottom": 0.8234651404786681,
+              "top": 1.3499999999999999
+            },
+            {
+              "left": -1.0699212784074879,
+              "right": 1.0699212784074879,
+              "bottom": -0.20088449531737768,
+              "top": 0.517117585848075
+            },
+            {
+              "left": -2.291125211485918,
+              "right": 2.291125211485918,
+              "bottom": -0.95,
+              "top": -0.5072320499479708
+            }
+          ],
+          "inline_matrix_cells": [],
+          "objects": [],
+          "matrix_cells": [],
+          "caption_bounds": {
+            "left": -5.877050775000001,
+            "right": 5.877050775000001,
+            "bottom": -3.020429675,
+            "top": -2.639570325
+          },
+          "content_bounds": {
+            "left": -2.41891961954835,
+            "right": 2.41891961954835,
+            "bottom": -0.95,
+            "top": 1.94609375
+          },
+          "time_source": "audio_measured",
+          "cue_time_source": "estimated",
+          "frame_seconds": 56.99999999999988
+        }
+      ],
+      "frames": [
+        {
+          "path": "frame_000.png",
+          "requested_seconds": 1.6,
+          "actual_seconds": 1.6
+        },
+        {
+          "path": "frame_001.png",
+          "requested_seconds": 12.733333333333333,
+          "actual_seconds": 12.733333333333333
+        },
+        {
+          "path": "frame_002.png",
+          "requested_seconds": 25.466666666666693,
+          "actual_seconds": 25.466666666666665
+        },
+        {
+          "path": "frame_003.png",
+          "requested_seconds": 35.40000000000001,
+          "actual_seconds": 35.4
+        },
+        {
+          "path": "frame_004.png",
+          "requested_seconds": 46.86666666666662,
+          "actual_seconds": 46.86666666666667
+        },
+        {
+          "path": "frame_005.png",
+          "requested_seconds": 56.99999999999988,
+          "actual_seconds": 57.0
+        }
+      ],
+      "font": "Microsoft YaHei",
+      "wall_seconds": 29.782,
+      "peak_memory_mb": 455.25,
+      "renderer_hash": "8f2aea52e398d53c3c3e5ef0f4eabb8254fce53674e17a9bca712c962c9eac3a"
+    }
+  ],
+  "final": {
+    "status": "success",
+    "video_path": "narrated.mp4",
+    "media": {
+      "width": 1280,
+      "height": 720,
+      "fps": 30.0,
+      "codec": "h264",
+      "pix_fmt": "yuv420p",
+      "duration_seconds": 296.6666666666667,
+      "audio_streams": 1,
+      "decoded_frames": 8900,
+      "audio_duration_seconds": 296.667,
+      "audio_codec": "aac",
+      "audio_sample_rate": 24000,
+      "decoded_audio_samples": 7120896
+    },
+    "wall_seconds": 7.437,
+    "peak_memory_mb": 66.04,
+    "renderer_hash": "8f2aea52e398d53c3c3e5ef0f4eabb8254fce53674e17a9bca712c962c9eac3a"
+  },
+  "repairs": 0,
+  "wall_seconds": 373.61
+}

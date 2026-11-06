@@ -1,0 +1,398 @@
+{
+  "schema_version": "1.0",
+  "video_id": "video_e76d0635b68245b8a24ffb232ef79ee3",
+  "answer_id": "answer_3c428c6a39df426c9c57827bf205f12c",
+  "answer_hash": "2e32f647b4f0a9713eb65e8d71468ba99fc39b0d05be21aed1e92db758ca2cc5",
+  "plan_id": "plan_4da907ff18574121ad3a59d9d7632a91",
+  "video_asset_id": "file_512631d1c4c44935b8134dfe118f52fe",
+  "subtitle_asset_id": null,
+  "audio_asset_id": "file_c3abd7edcf8b4b0bbc5790488419d9f2",
+  "duration_seconds": 296.6666666666667,
+  "time_source": "audio_measured",
+  "cue_time_source": "estimated",
+  "review_mode": "trusted_template_geometry_and_layout",
+  "visual_model_review": "not_run",
+  "step_mapping": [
+    {
+      "step_id": "step_1",
+      "scene_ids": [
+        "s1",
+        "s2",
+        "s3",
+        "s4",
+        "s5",
+        "s6"
+      ],
+      "start_seconds": 0,
+      "end_seconds": 296.6666666666667
+    }
+  ],
+  "unit_mapping": [
+    {
+      "unit_id": "u001",
+      "start": 0,
+      "end": 256,
+      "sha256": "5b35e14d88402a01fba926dd01671542b0ec7f5aadb397200017e65b7ee47ba2",
+      "intervals": [
+        {
+          "scene_id": "s1",
+          "beat_id": "s1_b1",
+          "start_seconds": 0.0,
+          "end_seconds": 14.0
+        },
+        {
+          "scene_id": "s1",
+          "beat_id": "s1_b2",
+          "start_seconds": 14.0,
+          "end_seconds": 27.7
+        },
+        {
+          "scene_id": "s1",
+          "beat_id": "s1_b3",
+          "start_seconds": 27.7,
+          "end_seconds": 40.4333
+        }
+      ]
+    },
+    {
+      "unit_id": "u002",
+      "start": 257,
+      "end": 552,
+      "sha256": "3b737593af5a2d3b296dc5feff31c714b6c3277bb9d9cccb98fa42c5ea45eb18",
+      "intervals": [
+        {
+          "scene_id": "s2",
+          "beat_id": "b1",
+          "start_seconds": 40.4333,
+          "end_seconds": 52.0333
+        },
+        {
+          "scene_id": "s2",
+          "beat_id": "b2",
+          "start_seconds": 52.0333,
+          "end_seconds": 63.0
+        },
+        {
+          "scene_id": "s2",
+          "beat_id": "b3",
+          "start_seconds": 63.0,
+          "end_seconds": 75.9
+        },
+        {
+          "scene_id": "s2",
+          "beat_id": "b4",
+          "start_seconds": 75.9,
+          "end_seconds": 92.6333
+        }
+      ]
+    },
+    {
+      "unit_id": "u003",
+      "start": 553,
+      "end": 735,
+      "sha256": "079b64337401ab191fa41dea8927032f4bafb0ee55351a9bad9e882b756e6661",
+      "intervals": [
+        {
+          "scene_id": "s3",
+          "beat_id": "s3b1",
+          "start_seconds": 92.6333,
+          "end_seconds": 104.1333
+        },
+        {
+          "scene_id": "s3",
+          "beat_id": "s3b2",
+          "start_seconds": 104.1333,
+          "end_seconds": 116.9333
+        },
+        {
+          "scene_id": "s3",
+          "beat_id": "s3b3",
+          "start_seconds": 116.9333,
+          "end_seconds": 130.9333
+        }
+      ]
+    },
+    {
+      "unit_id": "u004",
+      "start": 736,
+      "end": 1027,
+      "sha256": "4d05557a506c940bfffecbaeff5d3dab69a1029cc977d402349c49f814429bf1",
+      "intervals": [
+        {
+          "scene_id": "s4",
+          "beat_id": "s4_b1",
+          "start_seconds": 130.9333,
+          "end_seconds": 144.4667
+        },
+        {
+          "scene_id": "s4",
+          "beat_id": "s4_b2",
+          "start_seconds": 144.4667,
+          "end_seconds": 157.2667
+        },
+        {
+          "scene_id": "s4",
+          "beat_id": "s4_b3",
+          "start_seconds": 157.2667,
+          "end_seconds": 170.6667
+        },
+        {
+          "scene_id": "s4",
+          "beat_id": "s4_b4",
+          "start_seconds": 170.6667,
+          "end_seconds": 182.5667
+        }
+      ]
+    },
+    {
+      "unit_id": "u005",
+      "start": 1028,
+      "end": 1247,
+      "sha256": "2cb54ba4346db3ec2b7cef7aaaa0f186ea52e9bd4533a2b633b8a07fb104a6af",
+      "intervals": [
+        {
+          "scene_id": "s5",
+          "beat_id": "s5_b1",
+          "start_seconds": 182.5667,
+          "end_seconds": 197.2333
+        },
+        {
+          "scene_id": "s5",
+          "beat_id": "s5_b2",
+          "start_seconds": 197.2333,
+          "end_seconds": 207.1
+        },
+        {
+          "scene_id": "s5",
+          "beat_id": "s5_b3",
+          "start_seconds": 207.1,
+          "end_seconds": 218.0667
+        },
+        {
+          "scene_id": "s5",
+          "beat_id": "s5_b4",
+          "start_seconds": 218.0667,
+          "end_seconds": 227.9333
+        }
+      ]
+    },
+    {
+      "unit_id": "u006",
+      "start": 1248,
+      "end": 1289,
+      "sha256": "02c96d7962edc434ca90e2c45b2b33caf1413931cd183cff98f4d21ef65272c1",
+      "intervals": [
+        {
+          "scene_id": "s6",
+          "beat_id": "s6_b1",
+          "start_seconds": 227.9333,
+          "end_seconds": 239.0333
+        }
+      ]
+    },
+    {
+      "unit_id": "u007",
+      "start": 1290,
+      "end": 1349,
+      "sha256": "1731bed9982c352462395293fbfbed8929f8d15b1e2344feb12a6fe54eb373ff",
+      "intervals": [
+        {
+          "scene_id": "s6",
+          "beat_id": "s6_b2",
+          "start_seconds": 239.0333,
+          "end_seconds": 251.7667
+        },
+        {
+          "scene_id": "s6",
+          "beat_id": "s6_b3",
+          "start_seconds": 251.7667,
+          "end_seconds": 261.7
+        }
+      ]
+    },
+    {
+      "unit_id": "u008",
+      "start": 1350,
+      "end": 1414,
+      "sha256": "4b220efe86373df434458426a2abb41605f68676faa1c3c2b915b4c99fbd70b5",
+      "intervals": [
+        {
+          "scene_id": "s6",
+          "beat_id": "s6_b4",
+          "start_seconds": 261.7,
+          "end_seconds": 273.1667
+        },
+        {
+          "scene_id": "s6",
+          "beat_id": "s6_b5",
+          "start_seconds": 273.1667,
+          "end_seconds": 283.3
+        }
+      ]
+    },
+    {
+      "unit_id": "u009",
+      "start": 1415,
+      "end": 1683,
+      "sha256": "31d170a0356839adb94787568cef62d58381a2fba99919bd4f1303664b1a70ef",
+      "intervals": [
+        {
+          "scene_id": "s6",
+          "beat_id": "s6_b6",
+          "start_seconds": 283.3,
+          "end_seconds": 296.6667
+        }
+      ]
+    }
+  ],
+  "report_asset_ids": [
+    "file_253d4ff316ec40a98e95f8bf004503df"
+  ],
+  "frame_mapping": [
+    {
+      "scene_id": "s1",
+      "beat_id": "s1_b1",
+      "asset_id": "file_26edfb3e8a0c47888804cb2e5752d385",
+      "seconds": 1.6
+    },
+    {
+      "scene_id": "s1",
+      "beat_id": "s1_b2",
+      "asset_id": "file_ba24e2486e7d49c199593db856d2bccf",
+      "seconds": 15.6333
+    },
+    {
+      "scene_id": "s1",
+      "beat_id": "s1_b3",
+      "asset_id": "file_a283237db4bf4642a498e5a21a70fbed",
+      "seconds": 29.3333
+    },
+    {
+      "scene_id": "s2",
+      "beat_id": "b1",
+      "asset_id": "file_69575ede58a04556bc069e6ae3376fb9",
+      "seconds": 42.0333
+    },
+    {
+      "scene_id": "s2",
+      "beat_id": "b2",
+      "asset_id": "file_53b62af690164923927a8fd79e6a6bcb",
+      "seconds": 53.6667
+    },
+    {
+      "scene_id": "s2",
+      "beat_id": "b3",
+      "asset_id": "file_ced3571cc3524d5097084be3f86b1998",
+      "seconds": 64.6333
+    },
+    {
+      "scene_id": "s2",
+      "beat_id": "b4",
+      "asset_id": "file_8c4c3c213dae473a9aadfff03eb32420",
+      "seconds": 77.5333
+    },
+    {
+      "scene_id": "s3",
+      "beat_id": "s3b1",
+      "asset_id": "file_c76dde1ffdeb4099a9d57a33077a9062",
+      "seconds": 94.2333
+    },
+    {
+      "scene_id": "s3",
+      "beat_id": "s3b2",
+      "asset_id": "file_8e5fd8c6e02d4bd8a65f984700e3ce6e",
+      "seconds": 105.7667
+    },
+    {
+      "scene_id": "s3",
+      "beat_id": "s3b3",
+      "asset_id": "file_f4e038852d4b45d2ab92ef2eaa304952",
+      "seconds": 118.5667
+    },
+    {
+      "scene_id": "s4",
+      "beat_id": "s4_b1",
+      "asset_id": "file_bc7974e1fd2243dda692fd26532a268c",
+      "seconds": 132.5333
+    },
+    {
+      "scene_id": "s4",
+      "beat_id": "s4_b2",
+      "asset_id": "file_0fca129c4e8d470492f36fceceda1406",
+      "seconds": 146.1
+    },
+    {
+      "scene_id": "s4",
+      "beat_id": "s4_b3",
+      "asset_id": "file_9fed2af8b7c349849bcfa950fbc5334a",
+      "seconds": 158.9
+    },
+    {
+      "scene_id": "s4",
+      "beat_id": "s4_b4",
+      "asset_id": "file_98c5cd9129ef49c7bb3c4508015e8f08",
+      "seconds": 172.3
+    },
+    {
+      "scene_id": "s5",
+      "beat_id": "s5_b1",
+      "asset_id": "file_b08dc6f40b7941bd8e04cc4782b930fd",
+      "seconds": 184.1667
+    },
+    {
+      "scene_id": "s5",
+      "beat_id": "s5_b2",
+      "asset_id": "file_463a4a8dd2af478f93b41ae1446975a7",
+      "seconds": 198.8667
+    },
+    {
+      "scene_id": "s5",
+      "beat_id": "s5_b3",
+      "asset_id": "file_bba7181f64cb45a6827390f5bc2f6409",
+      "seconds": 208.7333
+    },
+    {
+      "scene_id": "s5",
+      "beat_id": "s5_b4",
+      "asset_id": "file_33064c9274dd4a379ad1557697541487",
+      "seconds": 219.7
+    },
+    {
+      "scene_id": "s6",
+      "beat_id": "s6_b1",
+      "asset_id": "file_3fb61d078ea243619996eab22b48b183",
+      "seconds": 229.5333
+    },
+    {
+      "scene_id": "s6",
+      "beat_id": "s6_b2",
+      "asset_id": "file_e865ed9f2437468d9f3ebaa388a3cbb4",
+      "seconds": 240.6667
+    },
+    {
+      "scene_id": "s6",
+      "beat_id": "s6_b3",
+      "asset_id": "file_f8d9df1f51944c8aa23ce7e18a6d113d",
+      "seconds": 253.4
+    },
+    {
+      "scene_id": "s6",
+      "beat_id": "s6_b4",
+      "asset_id": "file_4eeb258b373c4513a90e083261973c3c",
+      "seconds": 263.3333
+    },
+    {
+      "scene_id": "s6",
+      "beat_id": "s6_b5",
+      "asset_id": "file_297935875c8e4c988a6622826d6182f5",
+      "seconds": 274.8
+    },
+    {
+      "scene_id": "s6",
+      "beat_id": "s6_b6",
+      "asset_id": "file_84e586f7f64143f285e0ccad2996c02b",
+      "seconds": 284.9333
+    }
+  ],
+  "created_at": "2026-11-05T15:58:15.999332+00:00"
+}

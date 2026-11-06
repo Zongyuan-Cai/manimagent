@@ -12,6 +12,8 @@ from manimagent.content_store import ContentStore
 from manimagent.errors import ContentError
 from manimagent.llm.client import ChatProvider, ProviderError
 from manimagent.materials.service import MaterialService
+from manimagent.memory.service import prepare_memory
+from manimagent.memory.store import MemoryStore
 from manimagent.schemas import (
     Answer,
     AnswerRequest,
@@ -88,7 +90,7 @@ class JobExecution:
         self.job.message = {
             "material": "正在解析材料",
             "answer": "正在生成并检查文字回答",
-            "video": "正在生成无声动画",
+            "video": "正在生成教学动画",
         }[name]
         self.save()
         if self.generation:
@@ -103,7 +105,7 @@ class JobExecution:
         self.job.message = message
         self.save()
 
-    def video(self, answer_id, resume_job_id=None):
+    def video(self, answer_id, resume_job_id=None, video_profile_id="auto"):
         self.stage("video")
         issues = self.renderer.preflight()
         if issues:
@@ -129,7 +131,9 @@ class JobExecution:
         return VideoService(
             self.store, self.provider_for(snapshot), self.renderer, snapshot
         ).generate(
-            VideoRequest(answer_id=answer_id, resume_job_id=resume_job_id),
+            VideoRequest(
+                answer_id=answer_id, resume_job_id=resume_job_id, video_profile_id=video_profile_id
+            ),
             self.budget,
             self.record,
             self.progress,
@@ -150,6 +154,9 @@ class JobExecution:
                 generation.material_ids = source.material_ids
             generation.stages["material"].status = "completed"
             self.stage("answer")
+            self.prepare_memory(
+                source.instruction, request.memory or getattr(source, "memory", None)
+            )
             answer = self.answers.generate(
                 AnswerRequest(
                     material_ids=generation.material_ids,
@@ -171,10 +178,30 @@ class JobExecution:
             self.save_generation()
         return Ref(type="generation", id=generation.generation_id)
 
+    def prepare_memory(self, instruction, options):
+        if options is None:
+            return
+        self.progress("正在整理本次用户记忆并固定个性化上下文")
+        snapshot, warnings = prepare_memory(
+            MemoryStore(self.store.root / "memory.sqlite3"),
+            self.provider_for(self.settings),
+            self.budget,
+            instruction,
+            options,
+            self.job.job_id,
+        )
+        self.record["memory_snapshot"] = snapshot
+        self.record["memory_warnings"] = warnings
+        self.store.save("records", self.job.job_id, self.record)
+
     def dispatch(self):
         request = self.record["request"]
         if self.job.kind == "video":
-            result = self.video(request["answer_id"], request.get("resume_job_id"))
+            result = self.video(
+                request["answer_id"],
+                request.get("resume_job_id"),
+                request.get("video_profile_id", "auto"),
+            )
             reference = Ref(type="video", id=result.video_id)
             self.job.resource_ref = reference
             return reference
@@ -186,9 +213,9 @@ class JobExecution:
             return Ref(type="material", id=result.material_id)
         if self.job.kind == "answer":
             self.stage("answer")
-            result = self.answers.generate(
-                AnswerRequest.model_validate(request), self.budget, self.record
-            )
+            parsed = AnswerRequest.model_validate(request)
+            self.prepare_memory(parsed.instruction, parsed.memory)
+            result = self.answers.generate(parsed, self.budget, self.record)
             return Ref(type="answer", id=result.answer_id)
         return self.generate_outputs()
 
@@ -207,7 +234,7 @@ class JobExecution:
             self.job.status, self.job.stage, self.job.message, self.job.result = (
                 "completed",
                 "completed",
-                "文字与无声动画已完成" if self.animation_job else "文字处理已完成",
+                "文字与教学动画已完成" if self.animation_job else "文字处理已完成",
                 result,
             )
         except ContentError as exc:
@@ -229,7 +256,7 @@ class JobExecution:
             log.exception("任务失败 %s", self.job.job_id)
             self.job.status, self.job.error = (
                 "failed",
-                Error(code="internal_error", message="文字任务执行失败，请查看服务日志"),
+                Error(code="internal_error", message="任务执行失败，请查看服务日志"),
             )
         finally:
             self.finish()

@@ -94,7 +94,11 @@ def build_plan(answer, outline, units, scenes):
         narration_hash=digest(
             json.dumps([b.spoken_text for s in scenes for b in s.beats], ensure_ascii=False)
         ),
-        outline=outline,
+        outline=outline.model_copy(
+            update={
+                "duration_reason": f"根据各节拍阅读、动作与旁白估时计算，总计{duration:.2f}秒；采用程序时间线。"
+            }
+        ),
         teaching_units=units,
         scenes=scenes,
         duration_seconds=duration,

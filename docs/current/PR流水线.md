@@ -11,11 +11,10 @@
 | Current (ubuntu-latest) | Python 3.12，依赖锁一致性，Ruff、格式、JavaScript 语法、页面异步回归和全部当前版基础自动化测试 |
 | Current (windows-latest) | Python 3.12，依赖锁一致性和全部当前版自动化测试，覆盖 Windows 凭据存储路径 |
 | Native animation | 安装 animation 依赖和中文字体，真实渲染矩阵／几何／公式，检查精度与间距，合成 2 分钟以上视频并完整解码 |
-| Legacy MVP | 在 `legacy_mvp/` 使用自有锁文件、依赖环境和回归测试，排除需要 Docker 的集成测试 |
 | Installable package | 当前回归通过后构建 wheel、sdist；检查历史／私有目录未混入、页面资源齐全；分别在临时环境安装并实际启动 CLI、HTTP 服务和页面静态资源 |
 | PR checks | 汇总以上检查；任一失败、取消或跳过均不通过，适合作为固定的合并门槛 |
 
-当前和历史 JUnit XML 分别存为 Actions artifacts；通过验证的当前版安装包也可下载，均保留 7 天。测试失败时查看对应 step 日志和 XML。所有任务设有超时，第三方 Action 固定到完整提交 SHA，工作流令牌仅有 `contents: read`。
+当前 JUnit XML 存为 Actions artifacts；通过验证的当前版安装包也可下载，均保留 7 天。测试失败时查看对应 step 日志和 XML。所有任务设有超时，第三方 Action 固定到完整提交 SHA，工作流令牌仅有 `contents: read`。
 
 CI 不需要任何 LLM 密钥，不读取本机私有配置，不运行 `evals/` 中的真实模型评测，不会产生真实模型调用费用。真实模型质量和完整人工视觉验收不属于本流水线的通过承诺。Native animation 使用本地可信模板，不依赖 Docker。
 
@@ -46,7 +45,7 @@ uv run --no-sync python scripts/check_distribution.py dist/current
 
 打包检查要求 `dist/current/` 中恰好包含当前版本的 wheel 与 sdist，避免混用旧包。脚本会为每个包创建并关闭临时服务；绑定随机本机端口，不占用开发服务的 8000 端口。只安装生产依赖，页面与接口不依赖源码目录或开发依赖。
 
-历史测试需在 `legacy_mvp/` 中单独执行 `uv sync --locked --extra dev` 与 `uv run --no-sync python -m pytest -q -m "not docker"`。
+旧 MVP 已从当前维护树与 CI 移除；如需复现，使用文档导航中的固定历史版本。
 
 原生渲染本地复现：先 `uv sync --locked --extra dev --extra animation`，然后在 PowerShell 中设置 `$env:RUN_NATIVE_TESTS="1"` 并运行 `uv run --no-sync python -m pytest -q tests/native`。基础测试环境显式跳过这些测试；单独的 Native animation CI 必须通过。
 

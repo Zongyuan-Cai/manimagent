@@ -21,17 +21,17 @@ def main(argv: list[str] | None = None) -> int:
         for stream in (sys.stdout, sys.stderr):
             if hasattr(stream, "reconfigure"):
                 stream.reconfigure(encoding="utf-8")
-    parser = argparse.ArgumentParser(description="问题与文件到完整解答与无声教学动画")
+    parser = argparse.ArgumentParser(description="问题与文件到完整解答与教学动画")
     parser.add_argument("--config", type=Path)
     commands = parser.add_subparsers(dest="command", required=True)
-    serve = commands.add_parser("serve", help="启动文字与无声动画服务")
+    serve = commands.add_parser("serve", help="启动文字与教学动画服务")
     serve.add_argument("--host", default="127.0.0.1")
     serve.add_argument("--port", type=int, default=8000)
     doctor = commands.add_parser("doctor", help="检查模型配置，不调用模型")
     doctor.add_argument("--animation", action="store_true", help="同时检查本地渲染依赖")
     for name, help_text in [
         ("answer", "生成完整 Markdown"),
-        ("lesson", "生成完整文字与无声教学视频"),
+        ("lesson", "生成完整文字与教学视频"),
     ]:
         command = commands.add_parser(name, help=help_text)
         command.add_argument("--question", required=True)

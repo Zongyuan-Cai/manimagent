@@ -1,0 +1,27 @@
+{
+  "passed": false,
+  "source_hash_before": "cd5683cb59adb698ae6e3a633f0ee5f05572772c3a8f6024986eb481292b1719",
+  "model": "deepseek-flash",
+  "tts_model": "mimo-v2.5-tts",
+  "tts_voice": "mimo_default",
+  "uploaded_files": [],
+  "job_id": "job_6919978603324bebb9d8a6dfa4ed0fcf",
+  "answer_id": "answer_8b7c8a49dc1740989a229a84af1e461e",
+  "status": "partial",
+  "usage": {
+    "model_calls": 11,
+    "input_tokens": 86214,
+    "output_tokens": 52791,
+    "tokens_reported": true,
+    "elapsed_seconds": 326.125
+  },
+  "error": {
+    "code": "output_truncated",
+    "message": "模型输出被截断，请增加输出预算后重试",
+    "retryable": false,
+    "details": {}
+  },
+  "elapsed_seconds": 326.718,
+  "source_hash_after": "cd5683cb59adb698ae6e3a633f0ee5f05572772c3a8f6024986eb481292b1719",
+  "fixed_source": true
+}

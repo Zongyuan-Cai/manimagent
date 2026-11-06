@@ -26,6 +26,7 @@ REQUIRED_ASSETS = {
     "manimagent/web/workspace.js",
     "manimagent/web/results.js",
     "manimagent/web/settings.js",
+    "manimagent/web/memory.js",
     "manimagent/web/package.json",
     "manimagent/web/app.css",
     "manimagent/web/vendor/tex-svg.js",

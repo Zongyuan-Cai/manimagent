@@ -31,6 +31,8 @@ def renderer_fingerprint() -> str:
             "config.py",
             "errors.py",
             "schemas.py",
+            "memory/__init__.py",
+            "memory/models.py",
             "video/__init__.py",
             "video/models.py",
             "video/notation.py",
@@ -118,6 +120,9 @@ class NativeRenderer:
                     if Path(name).name != name:
                         raise ContentError("invalid_render", "合成场景文件名无效")
                     shutil.copyfile(directory / name, workspace / name)
+            if action == "mux":
+                for name in ("complete.mp4", "narration.wav"):
+                    shutil.copyfile(directory / name, workspace / name)
             try:
                 return self._run(action, workspace, payload, budget, cap)
             finally:
@@ -131,6 +136,7 @@ class NativeRenderer:
                             "error.txt",
                             "scene.mp4",
                             "complete.mp4",
+                            "narrated.mp4",
                         }
                         or path.name.startswith("frame_")
                         and path.suffix == ".png"
@@ -250,9 +256,7 @@ class NativeRenderer:
             budget.settings.video_render_timeout,
         )
         media = result["media"]
-        if abs(media["duration_seconds"] - scene.duration_seconds) > max(
-            2, scene.duration_seconds * 0.05
-        ):
+        if abs(media["duration_seconds"] - scene.duration_seconds) > 1 / 30 + 0.001:
             raise ContentError("render_timing", "场景实测时长与计划不符", state="needs_review")
         if [e["beat_id"] for e in result["events"]] != [b.beat_id for b in scene.beats]:
             raise ContentError("render_coverage", "渲染缺少教学节拍", state="needs_review")
@@ -280,10 +284,12 @@ class NativeRenderer:
             names.append(name)
         result = self.run("assemble", directory, {"videos": names}, budget, 60)
         duration = result["media"]["duration_seconds"]
-        if not 120 <= duration <= 360 or abs(duration - plan.duration_seconds) > max(
-            3, plan.duration_seconds * 0.05
-        ):
+        if not 120 <= duration <= 360 or abs(duration - plan.duration_seconds) > 0.05:
             raise ContentError(
                 "render_timing", "成片时长不符合 120～360 秒及计划偏差限制", state="needs_review"
             )
         return result
+
+    def mux_audio(self, directory: Path, audio: Path, plan, budget: Budget) -> dict:
+        shutil.copyfile(audio, directory / "narration.wav")
+        return self.run("mux", directory, {"duration_seconds": plan.duration_seconds}, budget, 60)

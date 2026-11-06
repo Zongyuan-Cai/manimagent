@@ -14,6 +14,8 @@ from pydantic import (
     model_validator,
 )
 
+from manimagent.memory.models import MemoryOptions
+
 NonEmpty = Annotated[str, StringConstraints(strict=True, min_length=1, max_length=200000)]
 ResourceID = Annotated[str, StringConstraints(pattern=r"^[a-z]+_[a-f0-9]{32}$")]
 
@@ -159,6 +161,7 @@ class Answer(Contract):
     markdown: NonEmpty
     steps: list[AnswerStep] = Field(min_length=1)
     warnings: list[AnswerNotice] = Field(default_factory=list)
+    memory_snapshot: dict | None = None
     created_at: str = Field(default_factory=now)
 
 
@@ -166,6 +169,7 @@ class AnswerRequest(Contract):
     material_ids: list[ResourceID] = Field(min_length=1, max_length=20)
     instruction: NonEmpty
     answer_profile_id: Literal["answer_default"] | None = None
+    memory: MemoryOptions | None = None
 
     @field_validator("material_ids")
     @classmethod
@@ -199,6 +203,15 @@ class AnswerSource(Contract):
 class TextGenerationRequest(Contract):
     output_mode: Literal["text", "both"] = "text"
     source: Annotated[InputsSource | MaterialsSource | AnswerSource, Field(discriminator="type")]
+    memory: MemoryOptions | None = None
+
+    @model_validator(mode="after")
+    def memory_binding(self):
+        if self.source.type == "answer" and self.memory is not None:
+            raise ValueError("已有回答沿用原记忆快照；需要新偏好时请重新生成回答")
+        if self.memory is not None and getattr(self.source, "memory", None) is not None:
+            raise ValueError("生成任务只能指定一份记忆选项")
+        return self
 
 
 class StageState(Contract):

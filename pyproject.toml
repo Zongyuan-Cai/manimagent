@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "manimagent"
 version = "0.3.1"
-description = "Traceable answers and chunked silent teaching animations"
+description = "Traceable answers and narrated teaching animations with optional user memory"
 readme = "README.md"
 requires-python = ">=3.12,<3.13"
 dependencies = [

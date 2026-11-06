@@ -1,0 +1,6 @@
+{
+  "passed": false,
+  "status": "aborted_for_regression_fix",
+  "reason": "Full regression found that new memory model dependencies were missing from the renderer fingerprint. This acceptance attempt was stopped before completion, and will not be counted as a completed full-chain test.",
+  "fixed_source": false
+}
