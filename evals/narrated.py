@@ -24,15 +24,18 @@ from evals.support import save, source_hash
 from manimagent.api import create_app
 from manimagent.config import load_settings
 from manimagent.llm.settings import LLMSettingsStore
+from manimagent.memory.projection import model_memory
 from manimagent.video.renderer.media import probe
+from manimagent.video.settings import TTSSettingsStore
 
 
 @contextmanager
 def isolated_settings(config: Path | None, root: Path):
     """Reuse saved UI profiles without copying or persisting their credentials."""
     initial = load_settings(config)
-    source = LLMSettingsStore(initial, initial.private_dir or initial.runs_dir / "private")
-    settings = source.effective(initial)
+    private = initial.private_dir or initial.runs_dir / "private"
+    source = LLMSettingsStore(initial, private)
+    settings = TTSSettingsStore(private, source.credentials).effective(source.effective(initial))
     names = []
     try:
         profiles = [*settings.models.values(), settings.tts]
@@ -57,6 +60,24 @@ def isolated_settings(config: Path | None, root: Path):
 def checked(response, expected: int):
     assert response.status_code == expected, f"API returned HTTP {response.status_code}"
     return response
+
+
+def memory_context_roles(record: dict, snapshot: dict) -> list[str]:
+    """Validate projections without interpreting multimodal reader traces as JSON text."""
+    roles = []
+    for call in record.get("calls", []):
+        if call.get("event") != "request":
+            continue
+        content = call["request"]["messages"][1]["content"]
+        if not isinstance(content, str):
+            continue
+        payload = json.loads(content)
+        if "user_memory" in payload:
+            projection = model_memory(snapshot, call["role"])
+            assert payload["user_memory"] == {"deep": projection["deep"]}
+            assert payload["recent_user_memory"] == projection["recent"]
+            roles.append(call["role"])
+    return roles
 
 
 def collect_video(client, root, answer, video_id):
@@ -111,6 +132,19 @@ def collect_video(client, root, answer, video_id):
         "range_verified": True,
         "cue_time_source": "estimated",
     }
+
+
+def wait_learning(client, identifier: str, root: Path) -> dict:
+    """Observe one background attempt, without spending another call on retry."""
+    deadline = time.monotonic() + 30
+    while True:
+        task = checked(client.get(f"/api/v2/memory/learning/{identifier}"), 200).json()
+        save(root / "memory-learning.json", task)
+        if task["state"] not in {"waiting", "queued", "running"}:
+            return {**task, "wait_timed_out": False}
+        if time.monotonic() >= deadline:
+            return {**task, "wait_timed_out": True}
+        time.sleep(min(0.2, max(0, deadline - time.monotonic())))
 
 
 def run(client, settings, args, root, result):
@@ -192,6 +226,10 @@ def run(client, settings, args, root, result):
         time.sleep(0.5)
     result.update(status=job["status"], usage=job["usage"], error=job["error"])
     if memory_options:
+        learning = wait_learning(client, job_id, root)
+        save(root / "memory-learning.json", learning)
+        result["memory_learning"] = learning
+        result["memory_learning_usage"] = learning.get("usage")
         memory_state = checked(client.get("/api/v2/memory"), 200).json()
         save(root / "memory-after.json", memory_state)
         if answer:
@@ -200,15 +238,7 @@ def run(client, settings, args, root, result):
             assert snapshot and snapshot["entries"], "Answer did not bind memory"
             assert not any(w["code"].startswith("memory_") for w in answer["warnings"])
             record = client.app.state.job_manager.store.load_record(job_id)
-            memory_payloads, roles = [], []
-            for call in record.get("calls", []):
-                if call.get("event") != "request":
-                    continue
-                payload = json.loads(call["request"]["messages"][1]["content"])
-                if "user_memory" in payload:
-                    memory_payloads.append(payload["user_memory"])
-                    roles.append(call["role"])
-            assert memory_payloads and all(item == snapshot for item in memory_payloads)
+            roles = memory_context_roles(record, snapshot)
             assert "answer_writer" in roles
             if job["status"] == "completed":
                 assert "video_planner" in roles and "scene_generator" in roles
@@ -216,11 +246,13 @@ def run(client, settings, args, root, result):
                 "entry_count": len(snapshot["entries"]),
                 "consistent_snapshot": True,
                 "roles_using_snapshot": sorted(set(roles)),
-                "learning_calls": sum(
-                    call.get("role") == "memory_extractor" and call.get("event") == "request"
-                    for call in record.get("calls", [])
-                ),
+                "learning_calls": (learning.get("usage") or {}).get("model_calls"),
+                "learning_state": learning["state"],
+                "learning_usage_is_separate": True,
             }
+        result["memory_learning_passed"] = (
+            learning["state"] == "completed" and not learning["wait_timed_out"]
+        )
     if job["status"] != "completed":
         return
     assert generation and answer and generation["video_id"], (
@@ -228,7 +260,7 @@ def run(client, settings, args, root, result):
     )
     result["video_id"] = generation["video_id"]
     result.update(collect_video(client, root, answer, generation["video_id"]))
-    result["passed"] = True
+    result["passed"] = result.get("memory_learning_passed", True)
 
 
 def main():

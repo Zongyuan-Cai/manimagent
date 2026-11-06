@@ -8,9 +8,10 @@ from dataclasses import dataclass
 from manimagent.answers.context import ContextAssembler
 from manimagent.answers.prompts import CHECK_INSTRUCTION
 from manimagent.answers.service import checker_profile_hash
-from manimagent.content_store import read_json_bytes
 from manimagent.errors import ContentError
+from manimagent.memory.projection import user_context
 from manimagent.schemas import AnswerCheck
+from manimagent.storage import read_json_bytes
 from manimagent.video.models import PlanCheck, digest
 from manimagent.video.prompts import PLAN_PROMPT
 
@@ -49,15 +50,18 @@ class VideoReviewer:
             ):
                 record["video_content_check"] = {"reused": True, **receipt}
                 return
-        bundle = ContextAssembler(self.store, self.settings).build(
-            answer.material_ids, answer.instruction
+        bundle = ContextAssembler(self.store, self.settings).build(answer.material_ids)
+        payload = user_context(
+            bundle,
+            role="answer_checker",
+            snapshot=answer.memory_snapshot,
+            instruction=answer.instruction,
+            candidate_markdown=answer.markdown,
         )
-        if answer.memory_snapshot is not None:
-            bundle["user_memory"] = answer.memory_snapshot
         check = self.call(
             "answer_checker",
             CHECK_INSTRUCTION,
-            {**bundle, "candidate_markdown": answer.markdown},
+            payload,
             AnswerCheck,
             budget,
         )
@@ -81,7 +85,13 @@ class VideoReviewer:
         report = self.call(
             "plan_checker",
             PLAN_PROMPT,
-            {"answer": answer.model_dump(), "plan": plan.model_dump()},
+            user_context(
+                {"answer": answer.model_dump(include={"title", "markdown", "steps", "warnings"})},
+                role="plan_checker",
+                snapshot=answer.memory_snapshot,
+                instruction=answer.instruction,
+                plan=plan.model_dump(exclude={"plan_id", "answer_id", "answer_hash"}),
+            ),
             PlanCheck,
             budget,
         )

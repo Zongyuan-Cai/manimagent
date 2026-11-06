@@ -1,0 +1,8 @@
+{
+  "real_network_calls": 0,
+  "double_decoding_reproduced": true,
+  "corrected_response_parses": true,
+  "as_executed_script_sha256": "024be5d32e5b9cf1cb3cef8aee21377464da5f9ee35feb7571e3ffd4498d5f91",
+  "corrected_script_sha256": "c14b2279f4665b636a3bcfcf39596192e98729711e7323d43051ac3a06b8498a",
+  "corrected_script_not_executed_against_provider": true
+}

@@ -3,7 +3,6 @@ export function createDOM(document) {
     el: id => document.getElementById(id),
     create: tag => document.createElement(tag),
     text: value => document.createTextNode(value),
-    all: selector => Array.from(document.querySelectorAll(selector)),
   };
 }
 

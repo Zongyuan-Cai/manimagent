@@ -6,8 +6,8 @@ from io import BytesIO
 import pytest
 
 from manimagent.config import Settings
-from manimagent.content_store import write_json
 from manimagent.errors import ContentError
+from manimagent.storage import write_json
 from tests.support import store_for
 
 

@@ -1,7 +1,6 @@
 import json
 import sqlite3
 from concurrent.futures import ThreadPoolExecutor
-from datetime import UTC, datetime, timedelta
 
 import pytest
 from pydantic import ValidationError
@@ -9,17 +8,7 @@ from pydantic import ValidationError
 from manimagent.errors import ContentError
 from manimagent.memory.models import MemoryCandidate, MemoryOptions, MemoryPolicy
 from manimagent.memory.store import MemoryStore
-
-
-class Clock:
-    def __init__(self):
-        self.at = datetime(2026, 11, 6, tzinfo=UTC)
-
-    def __call__(self):
-        return self.at
-
-    def advance(self, days=1):
-        self.at += timedelta(days=days)
+from tests.support.memory import Clock, observe
 
 
 @pytest.fixture
@@ -30,25 +19,6 @@ def clock():
 @pytest.fixture
 def store(tmp_path, clock):
     return MemoryStore(tmp_path / "memory.sqlite3", clock=clock)
-
-
-def observe(
-    store,
-    session="s1",
-    source="r1",
-    value="先画图",
-    field="视觉偏好",
-    scope="global",
-    temporary=False,
-):
-    text = f"我希望{value}。"
-    return store.observe(
-        [MemoryCandidate(field=field, value=value, evidence=text, temporary=temporary)],
-        session_id=session,
-        source_id=source,
-        source_text=text,
-        scope=scope,
-    )[0]
 
 
 def values(snapshot):
@@ -64,7 +34,7 @@ def test_independent_sessions_promote_and_replay_is_idempotent(store):
         current = observe(store, source=f"same-session-{i}")
     assert current.layer == "short_term"
     assert current.independent_sessions == 1
-    assert not store.snapshot("other")["entries"]
+    assert values(store.snapshot("other")) == {"视觉偏好": "先画图"}
     second = observe(store, session="s2", source="second")
     assert second.layer == "short_term"
     third = observe(store, session="s3", source="third")
@@ -88,10 +58,10 @@ def test_evidence_and_source_fingerprint_validation_is_atomic(store):
     assert len(store.list_entries()) == 1
 
 
-def test_short_term_is_session_and_scope_bound(store):
+def test_recent_short_term_crosses_sessions_but_remains_scope_bound(store):
     observe(store, scope="geometry")
     assert not store.snapshot("s1", "algebra")["entries"]
-    assert not store.snapshot("s2", "geometry")["entries"]
+    assert values(store.snapshot("s2", "geometry")) == {"视觉偏好": "先画图"}
     assert values(store.snapshot("s1", "geometry")) == {"视觉偏好": "先画图"}
     observe(store, source="global", field="语气", value="简洁")
     assert values(store.snapshot("s1", "geometry")) == {"视觉偏好": "先画图", "语气": "简洁"}
@@ -317,9 +287,114 @@ def test_current_session_uses_observation_order_when_timestamps_tie(store):
 
 def test_old_session_support_does_not_get_renewed_by_another_session(tmp_path, clock):
     store = MemoryStore(tmp_path / "memory.sqlite3", MemoryPolicy(promotion_sessions=10), clock)
+    stable = observe(store, session="default", source="stable", value="先公式")
+    store.confirm(stable.memory_id)
     observe(store)
     clock.advance(10)
     observe(store, session="s2", source="r2")
     clock.advance(5)
-    assert not store.snapshot("s1")["entries"]
-    assert store.snapshot("s2")["entries"]
+    assert values(store.snapshot("s1")) == {"视觉偏好": "先公式"}
+    assert values(store.snapshot("s2")) == {"视觉偏好": "先画图"}
+
+
+def test_temporary_never_leaks_when_recent_non_temporary_crosses_sessions(store):
+    observe(store, field="背景", value="本科生")
+    observe(store, source="temporary", field="节奏", value="今天快一点", temporary=True)
+    assert values(store.snapshot("s2")) == {"背景": "本科生"}
+    assert values(store.snapshot("s1")) == {"背景": "本科生", "节奏": "今天快一点"}
+
+
+def test_current_global_request_overrides_scoped_deep_even_in_same_session(store):
+    scoped = observe(store, scope="geometry")
+    store.confirm(scoped.memory_id)
+    observe(store, source="current", value="这次先公式", temporary=True)
+    assert values(store.snapshot("s1", "geometry")) == {"视觉偏好": "这次先公式"}
+    assert values(store.snapshot("other", "geometry")) == {"视觉偏好": "先画图"}
+
+
+@pytest.mark.parametrize("temporary", [False, True])
+def test_ordinary_correction_preserves_short_layer_lifetime_and_scope(store, clock, temporary):
+    original = observe(store, scope="geometry", temporary=temporary)
+    clock.advance(3)
+    corrected = store.correct(original.memory_id, "先给图例再画图")
+    assert corrected.layer == "short_term" and corrected.temporary is temporary
+    assert corrected.expires_at == original.expires_at and corrected.confirmed_at is None
+    assert corrected.scope == "geometry" and corrected.independent_sessions == 1
+    assert values(store.snapshot("s1", "geometry")) == {"视觉偏好": "先给图例再画图"}
+    assert bool(store.snapshot("other", "geometry")["entries"]) is not temporary
+    clock.advance(11)
+    assert not store.snapshot("s1", "geometry")["entries"]
+
+
+def test_corrected_current_exception_does_not_replace_deep_default(store):
+    stable = observe(store, session="default")
+    store.confirm(stable.memory_id)
+    exception = observe(store, session="s2", source="exception", value="先公式", temporary=True)
+    corrected = store.correct(exception.memory_id, "只看公式")
+    assert values(store.snapshot("s2")) == {"视觉偏好": "只看公式"}
+    assert values(store.snapshot("other")) == {"视觉偏好": "先画图"}
+    assert stable.memory_id in {entry.memory_id for entry in store.list_entries()}
+    # Later user statements still supersede an edit even when timestamps tie.
+    observe(store, session="s2", source="reaffirm")
+    assert values(store.snapshot("s2")) == {"视觉偏好": "先画图"}
+    assert corrected.layer == "short_term"
+
+
+def test_new_observation_wins_after_more_than_one_hundred_corrections(store):
+    stable = observe(store, session="default")
+    store.confirm(stable.memory_id)
+    corrected = observe(store, session="s2", source="exception", value="先公式", temporary=True)
+    # Reproduce the former mixed sequencing bug: source_count * 100 + index
+    # would place the next observation before 105 MAX(last_order) + 1 edits.
+    for index in range(105):
+        corrected = store.correct(corrected.memory_id, f"公式版本{index}")
+    with sqlite3.connect(store.path) as db:
+        previous_order = db.execute("SELECT MAX(last_order) FROM sessions").fetchone()[0]
+    observe(store, session="s2", source="new-user-statement")
+    with sqlite3.connect(store.path) as db:
+        assert db.execute("SELECT MAX(last_order) FROM sessions").fetchone()[0] > previous_order
+    assert values(store.snapshot("s2")) == {"视觉偏好": "先画图"}
+
+
+def test_explicit_long_term_correction_promotes_and_clears_temporary_expiry(store):
+    original = observe(store, temporary=True)
+    corrected = store.correct(original.memory_id, "以后先画图", confirm_long_term=True)
+    assert corrected.layer == "deep" and not corrected.temporary
+    assert corrected.confirmed_at and corrected.expires_at is None
+    assert values(store.snapshot("other")) == {"视觉偏好": "以后先画图"}
+
+
+@pytest.mark.parametrize("confirm_long_term", [False, True])
+@pytest.mark.parametrize("state", ["expired", "superseded"])
+def test_cannot_correct_inactive_memory(store, clock, state, confirm_long_term):
+    original = observe(store)
+    if state == "expired":
+        clock.advance(14)
+    else:
+        with store.database.transaction() as db:
+            original.state = "superseded"
+            store._save(db, original)
+    with pytest.raises(ContentError, match="过期或已替代"):
+        store.correct(original.memory_id, "新值", confirm_long_term=confirm_long_term)
+
+
+def test_capacity_prefers_current_temporary_requirement_over_unrelated_deep_default(
+    tmp_path, clock
+):
+    store = MemoryStore(tmp_path / "memory.sqlite3", MemoryPolicy(max_snapshot_entries=1), clock)
+    stable = observe(store, field="a", session="old")
+    store.confirm(stable.memory_id)
+    observe(store, source="current", field="z", value="这次快一点", session="now", temporary=True)
+    assert values(store.snapshot("now")) == {"z": "这次快一点"}
+    assert values(store.snapshot("other")) == {"a": "先画图"}
+
+
+def test_oversized_field_winner_cannot_revive_shorter_conflicting_default(tmp_path, clock):
+    store = MemoryStore(tmp_path / "memory.sqlite3", MemoryPolicy(max_snapshot_chars=500), clock)
+    stable = observe(store, field="style", value="旧默认", session="old")
+    store.confirm(stable.memory_id)
+    observe(store, source="current", field="style", value="新" * 300, session="now", temporary=True)
+    observe(store, source="background", field="background", value="本科生", session="old")
+    snapshot = store.snapshot("now")
+    assert values(snapshot) == {"background": "本科生"}
+    assert len(json.dumps(snapshot, ensure_ascii=False)) <= 500

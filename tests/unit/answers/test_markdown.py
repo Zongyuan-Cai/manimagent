@@ -1,5 +1,8 @@
+import pytest
+
 from manimagent.answers.markdown import render_markdown
 from manimagent.answers.service import derive_answer
+from manimagent.errors import ContentError
 
 
 def test_markdown_title_ignores_hash_characters_inside_fenced_code():
@@ -15,6 +18,28 @@ def test_markdown_title_ignores_hash_characters_inside_fenced_code():
         {"allowed_source_refs": [{"material_id": material, "block_id": block}]},
     )
     assert answer.title == "Actual title" and answer.markdown == markdown
+
+
+@pytest.mark.parametrize(
+    "reference",
+    [
+        "material_id:{material}:{block}",
+        "material_id:{material}:block_id:{block}",
+        "{material}:block_id:{block}",
+        " {material}:{block}",
+    ],
+)
+def test_field_labels_are_not_silently_removed_from_invalid_source_references(reference):
+    material, block = "material_" + "a" * 32, "block_" + "b" * 32
+    marker = reference.format(material=material, block=block)
+    with pytest.raises(ContentError) as error:
+        derive_answer(
+            f"结果为2 [[{marker}]]",
+            [material],
+            "question",
+            {"allowed_source_refs": [{"material_id": material, "block_id": block}]},
+        )
+    assert error.value.error.code == "invalid_reference" and error.value.state == "needs_review"
 
 
 def test_real_model_display_math_without_blank_lines_keeps_latex_delimiters():

@@ -1,0 +1,46 @@
+{
+  "protocol": "real MiMo API; no mocks",
+  "model": "mimo-v2.6-flash",
+  "upload_status": 201,
+  "admission_status": 202,
+  "generation": {
+    "status": "completed",
+    "error": null,
+    "usage": {
+      "model_calls": 3,
+      "input_tokens": 2544,
+      "output_tokens": 226,
+      "tokens_reported": true,
+      "elapsed_seconds": 26.063
+    },
+    "elapsed_seconds": 26.188,
+    "warnings": [
+      {
+        "code": "visual_reading",
+        "message": "question.png 图片使用视觉模型读取，请核对原件中的公式、数字和图形条件。",
+        "step_ids": [],
+        "source_refs": [
+          {
+            "material_id": "material_55744fa4618d4cbeabc981f1a940779e",
+            "block_id": "block_4527b24de5ec46518bb273c19330470e"
+          }
+        ]
+      }
+    ]
+  },
+  "tts": {
+    "http_status": 200,
+    "ok": true,
+    "message": "语音合成成功，请播放试听；本次测试未保存配置",
+    "elapsed_seconds": 2.703,
+    "calls": 1,
+    "duration_seconds": 5.12,
+    "media_type": "audio/wav",
+    "usage": {
+      "prompt_tokens": 161,
+      "completion_tokens": 34,
+      "total_tokens": 195
+    },
+    "saved_revision_unchanged": true
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "entry_ids": [],
+  "promoted_ids": [],
+  "counts": {
+    "created": 0,
+    "reinforced": 0,
+    "promoted": 0
+  },
+  "counts_known": false,
+  "usage": {},
+  "usage_unknown": false,
+  "attempt_history": [],
+  "error": {
+    "code": "memory_learning_cancelled",
+    "message": "后台记忆任务已取消",
+    "retryable": false
+  },
+  "job_id": "job_3e98acf6194e4d88bb71d3949e407fe4",
+  "state": "cancelled",
+  "attempts": 0,
+  "created_at": "2026-11-06T08:15:51.282161+00:00",
+  "updated_at": "2026-11-06T08:16:09.559450+00:00",
+  "max_attempts": 3,
+  "can_retry": false,
+  "can_cancel": false
+}

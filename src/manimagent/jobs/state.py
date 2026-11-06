@@ -1,6 +1,10 @@
 """Persistence and restart transitions shared by manager and executor."""
 
+import logging
+
 from manimagent.content_store import ContentStore
+from manimagent.errors import ContentError
+from manimagent.memory.audit import publish_memory_context
 from manimagent.schemas import Answer, Error, Generation, Job, now
 
 
@@ -38,3 +42,11 @@ def interrupt(store: ContentStore, job: Job, message: str) -> None:
         generation.updated_at = now()
         store.save("generations", generation.generation_id, generation)
     save_job(store, job)
+    try:
+        record = store.load_record(job.job_id)
+        previous_error = record.get("memory_context_export_error")
+        publish_memory_context(store.root, record, status=job.status)
+        if previous_error != record.get("memory_context_export_error"):
+            store.save("records", job.job_id, record)
+    except (OSError, ContentError):
+        logging.getLogger(__name__).warning("中断任务的记忆审计文件暂未更新", exc_info=True)

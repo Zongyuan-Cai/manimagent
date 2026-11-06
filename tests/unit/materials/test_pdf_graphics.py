@@ -31,4 +31,12 @@ def test_pdf_content_stream_without_dictionary_entries_still_detects_vector_grap
             json={"inputs": [{"type": "file", "file_id": asset["file_id"]}]},
         )
         job = wait_job(client, request.json()["job_id"])
-        assert job["status"] == "needs_review" and job["usage"]["model_calls"] == 0
+        assert job["status"] == "needs_input" and job["usage"]["model_calls"] == 0
+        assert job["error"]["code"] == "vision_not_configured"
+        assert job["error"]["details"]["file_id"] == asset["file_id"]
+        assert job["result"] is None
+        record = client.app.state.job_manager.store.load_record(job["job_id"])
+        visuals = record["parse"]["candidates"][0]["visual_inputs"]
+        assert len(visuals) == 1 and visuals[0]["locator"] == {"page": 1}
+        assert visuals[0]["media_type"] == "image/jpeg" and visuals[0]["width"] > 0
+        assert "data" not in visuals[0]

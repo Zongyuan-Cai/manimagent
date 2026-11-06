@@ -1,0 +1,24 @@
+{
+  "round": 1,
+  "session_id": "synthetic_independent_1",
+  "instruction": "请讲解 x=1 时 x+x 的值。我希望以后讲解时每一步都说明依据。",
+  "job_id": "job_650503806d38494c98ee54242ef0382f",
+  "submit_memory_entries": [],
+  "reuses_previous_entry": false,
+  "foreground_elapsed_seconds": 18.25,
+  "foreground_status": "failed",
+  "foreground_usage": {
+    "model_calls": 1,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "tokens_reported": false,
+    "elapsed_seconds": 18.0,
+    "cached_input_tokens": null,
+    "cache_reported_calls": 0,
+    "cache_accounted_input_tokens": 0
+  },
+  "learning_state": "cancelled",
+  "learning_usage": {},
+  "elapsed_seconds": 18.266,
+  "memory_entries_after": []
+}

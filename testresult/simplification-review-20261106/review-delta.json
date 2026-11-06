@@ -1,0 +1,149 @@
+{
+  "before_files": 92,
+  "after_files": 89,
+  "before_lines": 11772,
+  "after_lines": 11631,
+  "removed": [
+    "api/materials.py",
+    "llm/context.py",
+    "materials/text.py"
+  ],
+  "added": [],
+  "changed": [
+    {
+      "path": "answers/context.py",
+      "before": 73,
+      "after": 72
+    },
+    {
+      "path": "answers/service.py",
+      "before": 198,
+      "after": 197
+    },
+    {
+      "path": "api/app.py",
+      "before": 108,
+      "after": 108
+    },
+    {
+      "path": "api/materials.py",
+      "before": 16,
+      "after": 0
+    },
+    {
+      "path": "api/resources.py",
+      "before": 139,
+      "after": 144
+    },
+    {
+      "path": "jobs/execution.py",
+      "before": 293,
+      "after": 279
+    },
+    {
+      "path": "jobs/learning.py",
+      "before": 144,
+      "after": 144
+    },
+    {
+      "path": "llm/context.py",
+      "before": 22,
+      "after": 0
+    },
+    {
+      "path": "materials/docx.py",
+      "before": 190,
+      "after": 190
+    },
+    {
+      "path": "materials/parsers.py",
+      "before": 68,
+      "after": 73
+    },
+    {
+      "path": "materials/pdf.py",
+      "before": 71,
+      "after": 71
+    },
+    {
+      "path": "materials/service.py",
+      "before": 221,
+      "after": 178
+    },
+    {
+      "path": "materials/text.py",
+      "before": 19,
+      "after": 0
+    },
+    {
+      "path": "memory/files.py",
+      "before": 313,
+      "after": 308
+    },
+    {
+      "path": "memory/learning.py",
+      "before": 439,
+      "after": 427
+    },
+    {
+      "path": "memory/projection.py",
+      "before": 30,
+      "after": 47
+    },
+    {
+      "path": "video/planning.py",
+      "before": 229,
+      "after": 225
+    },
+    {
+      "path": "video/review.py",
+      "before": 119,
+      "after": 117
+    },
+    {
+      "path": "web/app.css",
+      "before": 239,
+      "after": 223
+    },
+    {
+      "path": "web/dom.js",
+      "before": 13,
+      "after": 12
+    },
+    {
+      "path": "web/main.js",
+      "before": 60,
+      "after": 60
+    },
+    {
+      "path": "web/memory-files.js",
+      "before": 109,
+      "after": 109
+    },
+    {
+      "path": "web/memory.js",
+      "before": 215,
+      "after": 212
+    },
+    {
+      "path": "web/panels.js",
+      "before": 39,
+      "after": 39
+    },
+    {
+      "path": "web/settings.js",
+      "before": 233,
+      "after": 228
+    },
+    {
+      "path": "web/tts-settings.js",
+      "before": 74,
+      "after": 73
+    },
+    {
+      "path": "web/workspace.js",
+      "before": 322,
+      "after": 319
+    }
+  ]
+}

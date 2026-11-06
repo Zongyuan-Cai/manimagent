@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 from fastapi import APIRouter
+from fastapi.responses import Response
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from manimagent.budget import Budget, BudgetExceeded
 from manimagent.errors import ContentError
 from manimagent.llm.client import ChatProvider, ProviderError
+from manimagent.memory.files import MAX_DOCUMENT_BYTES
 from manimagent.memory.models import MemoryCandidate, MemoryOptions
 from manimagent.memory.service import extract_and_observe
 from manimagent.schemas import Usage
@@ -35,11 +37,17 @@ class ObservationRequest(BaseModel):
 class CorrectionRequest(BaseModel):
     model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
     value: str = Field(min_length=1, max_length=300)
+    confirm_long_term: bool = False
 
     @field_validator("value")
     @classmethod
     def valid_value(cls, value):
         return MemoryCandidate(field="validation", value=value, evidence=value).value
+
+
+class DocumentImportRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    content: str | None = Field(default=None, min_length=1, max_length=MAX_DOCUMENT_BYTES)
 
 
 def router(manager):
@@ -50,7 +58,53 @@ def router(manager):
         return {
             "entries": manager.memory.list_entries(),
             "policy": manager.memory.policy.model_dump(),
+            "learning": manager.learning.list(),
         }
+
+    @routes.get("/documents")
+    def list_documents():
+        return manager.memory.sync_documents()
+
+    @routes.post("/documents/sync")
+    def sync_documents():
+        return manager.memory.sync_documents()
+
+    @routes.get("/documents/{memory_id}")
+    def read_document(memory_id: str, download: bool = False):
+        content = manager.memory.read_document(memory_id)
+        if download:
+            return Response(
+                content,
+                media_type="text/markdown; charset=utf-8",
+                headers={
+                    "Content-Disposition": f'attachment; filename="{memory_id}.md"',
+                    "X-Content-Type-Options": "nosniff",
+                    "Cache-Control": "no-store",
+                },
+            )
+        return {"memory_id": memory_id, "content": content}
+
+    @routes.post("/documents/{memory_id}/import")
+    def import_document(memory_id: str, request: DocumentImportRequest):
+        if manager.stopping.is_set():
+            raise ContentError("interrupted", "服务已停止", 503)
+        return manager.memory.import_document(memory_id, request.content)
+
+    @routes.get("/learning/{job_id}")
+    def learning_status(job_id: str):
+        return manager.learning.get(job_id)
+
+    @routes.post("/learning/{job_id}/retry")
+    def retry_learning(job_id: str):
+        if manager.stopping.is_set():
+            raise ContentError("interrupted", "服务已停止", 503)
+        task = manager.learning.retry(job_id, manager.memory.revision())
+        manager.learning_worker.wake.set()
+        return task
+
+    @routes.post("/learning/{job_id}/cancel")
+    def cancel_learning(job_id: str):
+        return manager.learning.cancel(job_id, "已取消本次记忆沉淀")
 
     @routes.post("/observations")
     def observe(request: ObservationRequest):
@@ -66,6 +120,8 @@ def router(manager):
                 raise ContentError("model_unavailable", "；".join(errors), 503)
             settings.task_timeout = min(25, settings.task_timeout)
             settings.max_model_calls = 1
+            settings.max_total_tokens = settings.memory_learning_max_tokens
+            revision = manager.memory.revision()
             usage = Usage()
             budget = Budget(settings, usage, manager.stopping)
             provider = ChatProvider(
@@ -80,6 +136,7 @@ def router(manager):
                 request.text,
                 MemoryOptions(session_id=request.session_id, scope=request.scope),
                 request.source_id,
+                expected_revision=revision,
             )
             return {"entries": entries, "warnings": [], "usage": usage.model_dump()}
         except ProviderError as exc:
@@ -101,7 +158,9 @@ def router(manager):
 
     @routes.patch("/{memory_id}")
     def correct(memory_id: str, request: CorrectionRequest):
-        return manager.memory.correct(memory_id, request.value)
+        return manager.memory.correct(
+            memory_id, request.value, confirm_long_term=request.confirm_long_term
+        )
 
     @routes.delete("/{memory_id}")
     def delete(memory_id: str):

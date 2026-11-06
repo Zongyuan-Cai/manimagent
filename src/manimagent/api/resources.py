@@ -10,6 +10,7 @@ from manimagent.answers.service import AnswerService
 from manimagent.errors import ContentError
 from manimagent.jobs.manager import JobManager
 from manimagent.llm.client import ChatProvider
+from manimagent.materials.capabilities import input_capabilities
 from manimagent.schemas import (
     Answer,
     AnswerRevisionRequest,
@@ -23,6 +24,10 @@ from manimagent.video.models import VideoPlan, VideoResult
 def router(manager: JobManager) -> APIRouter:
     router = APIRouter(prefix="/api/v2")
     store = manager.store
+
+    @router.get("/input-capabilities")
+    def capabilities():
+        return input_capabilities(manager.settings)
 
     @router.post(
         "/files",
@@ -49,7 +54,7 @@ def router(manager: JobManager) -> APIRouter:
             if len(form) != 1 or not isinstance(file, UploadFile):
                 raise ContentError("invalid_request", "请以 multipart/form-data 提交单个 file 字段")
             return await run_in_threadpool(
-                store.put_file, file.file, file.filename or "material.txt", file.content_type or ""
+                store.put_file, file.file, file.filename or "material.txt"
             )
 
     @router.get("/files/{file_id}", response_model=FileAsset)

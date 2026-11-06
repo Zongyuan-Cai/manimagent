@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "job_id": "job_650503806d38494c98ee54242ef0382f",
+  "kind": "generation",
+  "answer_id": null,
+  "status": "failed",
+  "stage": "answer",
+  "message": "answer_writer 接口连接失败或超时",
+  "resource_ref": {
+    "type": "generation",
+    "id": "generation_b2247b3c52004196ae469a8a695396f9"
+  },
+  "result": null,
+  "error": {
+    "code": "provider_timeout",
+    "message": "answer_writer 接口连接失败或超时",
+    "retryable": true,
+    "details": {}
+  },
+  "diagnostic_asset_ids": [
+    "file_b23ee62c13444a93b6452af296bcf66f"
+  ],
+  "usage": {
+    "model_calls": 1,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "tokens_reported": false,
+    "elapsed_seconds": 18.0,
+    "cached_input_tokens": null,
+    "cache_reported_calls": 0,
+    "cache_accounted_input_tokens": 0
+  },
+  "created_at": "2026-11-06T08:12:45.737577+00:00",
+  "updated_at": "2026-11-06T08:13:03.780306+00:00"
+}

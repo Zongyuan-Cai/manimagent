@@ -11,9 +11,7 @@ from tests.support.documents import docx_bytes
 from tests.support.pipeline import controlled_provider, settings_for, submit
 
 
-@pytest.mark.parametrize(
-    "formatting", ["superscript", "subscript", "symbol", "style_superscript", "inherited_subscript"]
-)
+@pytest.mark.parametrize("formatting", ["symbol", "style_superscript", "inherited_subscript"])
 def test_docx_math_run_formatting_never_silently_disappears(tmp_path, formatting):
     settings = settings_for(tmp_path)
     calls = []

@@ -15,7 +15,7 @@ class ContextAssembler:
         self.store = store
         self.settings = settings
 
-    def build(self, material_ids: list[str], instruction: str) -> dict:
+    def build(self, material_ids: list[str]) -> dict:
         materials = [
             self.store.load("materials", identifier, MaterialIR) for identifier in material_ids
         ]
@@ -27,12 +27,13 @@ class ContextAssembler:
                     state="needs_review",
                 )
         return {
-            "instruction": instruction,
             "materials": [
                 {
-                    **m.model_dump(),
+                    **m.model_dump(include={"material_id", "blocks", "warnings"}),
                     "source_files": [
-                        self.store.load("files", identifier, FileAsset).model_dump()
+                        self.store.load("files", identifier, FileAsset).model_dump(
+                            include={"file_id", "filename", "media_type"}
+                        )
                         for identifier in m.source_file_ids
                     ],
                 }

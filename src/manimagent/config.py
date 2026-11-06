@@ -11,6 +11,8 @@ import yaml
 from dotenv import load_dotenv
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
+from manimagent.memory.models import MemoryPolicy
+
 
 class ModelConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
@@ -25,6 +27,7 @@ class ModelConfig(BaseModel):
     generate_url: str = ""
     context_window: int = Field(default=32000, ge=1024)
     thinking: Literal["default", "disabled", "enabled"] = "default"
+    supports_vision: bool = False
 
     @field_validator("base_url", "generate_url")
     @classmethod
@@ -33,6 +36,8 @@ class ModelConfig(BaseModel):
             raise ValueError("base_url 必须是 HTTP(S) 地址")
         if value:
             parsed = urlsplit(value)
+            if parsed.port is not None and not 1 <= parsed.port <= 65535:
+                raise ValueError("API 端口必须位于 1 到 65535 之间")
             if (
                 not parsed.hostname
                 or parsed.username
@@ -58,7 +63,7 @@ class TTSConfig(BaseModel):
     enabled: bool = False
     base_url: str = "https://api.xiaomimimo.com/v1"
     model: str = Field(default="mimo-v2.5-tts", min_length=1, max_length=100)
-    api_key_env: str = Field(default="MIMO_API_KEY", pattern=r"^[A-Za-z_][A-Za-z0-9_]*$")
+    api_key_env: str = Field(default="MIMO_API_KEY", pattern=r"^$|^[A-Za-z_][A-Za-z0-9_]*$")
     voice: str = Field(default="mimo_default", min_length=1, max_length=100)
     style: str = Field(
         default="请用清晰、自然的普通话进行教学讲解，语速适中，准确朗读原文，不增删内容。",
@@ -71,10 +76,20 @@ class TTSConfig(BaseModel):
     max_response_bytes: int = Field(default=16 * 1024 * 1024, ge=1024, le=64 * 1024 * 1024)
     max_audio_seconds: float = Field(default=60, gt=0, le=120, allow_inf_nan=False)
 
+    @field_validator("model", "voice", "style")
+    @classmethod
+    def meaningful_text(cls, value: str) -> str:
+        value = value.strip()
+        if not value or any(ord(char) < 32 and char not in "\n\t" for char in value):
+            raise ValueError("语音模型、音色与说明不能为空或包含控制字符")
+        return value
+
     @field_validator("base_url")
     @classmethod
     def clean_url(cls, value: str) -> str:
         parsed = urlsplit(value)
+        if parsed.port is not None and not 1 <= parsed.port <= 65535:
+            raise ValueError("语音 API 端口必须位于 1 到 65535 之间")
         if (
             parsed.scheme != "https"
             or not parsed.hostname
@@ -93,6 +108,7 @@ class Settings(BaseModel):
     private_dir: Path | None = None
     max_upload_bytes: int = Field(default=20 * 1024 * 1024, ge=1)
     max_parse_pages: int = Field(default=100, ge=1)
+    max_visual_pages: int = Field(default=12, ge=1, le=64)
     max_parse_chars: int = Field(default=200000, ge=1)
     max_archive_bytes: int = Field(default=50 * 1024 * 1024, ge=1)
     max_archive_entries: int = Field(default=2000, ge=1)
@@ -104,6 +120,9 @@ class Settings(BaseModel):
     max_model_calls: int = Field(default=60, ge=1)
     max_total_tokens: int = Field(default=200000, ge=1000)
     max_waiting: int = Field(default=3, ge=0, le=20)
+    memory_policy: MemoryPolicy = Field(default_factory=MemoryPolicy)
+    memory_learning_timeout: float = Field(default=20, gt=0, le=20)
+    memory_learning_max_tokens: int = Field(default=16000, ge=1000, le=64000)
     video_timeout: float = Field(default=600, gt=0, le=600)
     video_render_timeout: float = Field(default=90, gt=0, le=90)
     video_queue_timeout: float = Field(default=120, gt=0, le=120)
@@ -147,9 +166,11 @@ class Settings(BaseModel):
                 or not (cfg.base_url or cfg.generate_url)
                 or (cfg.auth_mode != "none" and not credential_resolver(cfg.api_key_env))
             ):
-                label = {"answer_writer": "回答模型", "answer_checker": "内容检查模型"}.get(
-                    role, role
-                )
+                label = {
+                    "answer_writer": "回答模型",
+                    "answer_checker": "内容检查模型",
+                    "material_reader": "材料读取模型",
+                }.get(role, role)
                 errors.append(f"{label} 的模型名称、接口地址或 API Key 未配置")
         return errors
 

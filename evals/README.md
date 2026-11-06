@@ -12,7 +12,8 @@
 | `evals.cli` | CLI 子进程退出码、持久化任务、正文及错误状态 | 官方 DeepSeek；必填 `--secret-file` | 自建小型 TXT/PDF；逐例结果与汇总 |
 | `evals.video` | 单题静音动画，以及指定既有正文或失败任务的续跑 | 官方 DeepSeek；`MANIMAGENT_ANIMATION_TEST_KEY` 或可选 `--secret-file` | 默认向量投影，可传题目；正文、计划、成片、关键帧和 `result.json` |
 | `evals.video_benchmark` | 固定源码、多题重复的静音动画验收 | 同 `evals.video`；复用该单题入口 | `cases/video.py` 的十题，默认各三次；完整尝试和源码摘要 |
-| `evals.narrated` | 已配置 LLM → MiMo TTS → 原生渲染 → API 媒体下载；可选用户记忆 | 当前本地配置与网页保存的角色配置，MiMo 凭据 | 正文、计划、MP4、WAV、关键帧、报告及源码摘要 |
+| `evals.narrated` | 已配置 LLM → MiMo TTS → 原生渲染 → API 媒体下载；可选用户记忆 | 当前本地配置与网页保存的核心、TTS 配置及各自凭据 | 正文、计划、MP4、WAV、关键帧、报告及源码摘要 |
+| `evals.prompt_cache` | 固定合成材料上旧载荷与稳定投影载荷的 6 次交错对照 | `--config` 读取保存的回答模型；或 `--mimo-env` 从指定 dotenv 只读 MiMo 凭据 | 全部调用、原始用量、缓存覆盖、耗时与输入摘要；无视频或 TTS |
 
 `--secret-file` 是由当前 Windows 用户 DPAPI 保护的密钥文件，不是明文 `.env` 或配置 JSON；`cli` 和 `text_supplemental` 当前保留这一 Windows 验收入口。`text_review`、`video` 和 `video_benchmark` 可通过对应环境变量运行。`narrated` 通过当前配置解析凭据，并为评测建立隔离运行目录；`--memory-note` 只在该目录中生成、确认并使用测试记忆。
 
@@ -41,9 +42,16 @@ python -m evals.video_benchmark --output testresult/video-benchmark-new-run --to
 # 使用当前配置中的模型角色与 MiMo；可重复 --file 添加材料。
 python -m evals.narrated --output testresult/narrated-new-run --file testmaterial/tts-二次方程.txt --question "依据材料完整讲解二次方程的因式分解、求根公式与代回核验。"
 python -m evals.narrated --output testresult/memory-new-run --memory-note "我喜欢分步骤讲解，每一步都先说明依据。"
+
+# 当前回答模型；6 次调用，无重试，最多 384 输出 token/次。
+python -m evals.prompt_cache --config config.yaml --output testresult/cache-new-run
 ```
 
 静音 `video` 的 `--answer-id` / `--resume-job-id` 需要同一输出目录下已持久化的资源；显式续跑应单独记录成本，不能覆盖为首次成功。`video_benchmark` 与 `narrated` 会拒绝非空输出目录。
+
+`prompt_cache` 拒绝已存在的输出目录。它使用 50 道程序生成的方程及正确解，不读取真人材料；每方案 3 次，单次最多 40 秒，总计最多 240 秒。缓存未报告是未知，不能记作零；首轮和复用轮也不能预先等同于冷、热缓存。当前样本见[缓存对照报告](../testresult/memory-cache-20261106/cache-run/报告.md)。
+
+`narrated --memory-note` 在主任务结束后另行等待后台沉淀最多 30 秒，只查询状态、不重试模型。后台状态与用量保存为 `memory-learning.json`；沉淀失败或等待超时会使完整联合验收失败，但继续保存已有视频证据。主任务用量与后台用量分开记录。本轮后台实现与真实文字联测的失败边界见[沉淀验收报告](../testresult/memory-consolidation-20261106/报告.md)。
 
 ## 如何解释证据
 

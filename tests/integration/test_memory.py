@@ -2,72 +2,24 @@ from __future__ import annotations
 
 import json
 
-import httpx
 from fastapi.testclient import TestClient
 
 from manimagent.api import create_app
-from manimagent.llm.client import ChatProvider
 from manimagent.memory.models import MemoryCandidate
+from manimagent.memory.projection import model_memory
 from tests.support import wait_job
-from tests.support.animation import TemplateRenderer, config, transport
+from tests.support.animation import TemplateRenderer, config
+from tests.support.memory import generate, memory_provider, wait_learning
 
 
-def memory_provider(settings, captured, *, invalid_evidence=False, fail_extraction=False):
-    base = transport(settings, [])
-
-    def handler(request):
-        body = json.loads(request.content)
-        payload = json.loads(body["messages"][1]["content"])
-        captured.append((body["messages"][0]["content"], payload))
-        if "user_text" not in payload:
-            return base.transport.handler(request)
-        if fail_extraction:
-            return httpx.Response(503, text="provider unavailable")
-        text = payload["user_text"]
-        candidates = []
-        if "请详细讲解" in text:
-            candidates = [
-                {
-                    "field": "explanation.detail",
-                    "value": "详细讲解",
-                    "evidence": "伪造的用户原话" if invalid_evidence else "请详细讲解",
-                    "temporary": False,
-                }
-            ]
-        return httpx.Response(
-            200,
-            json={
-                "choices": [
-                    {
-                        "finish_reason": "stop",
-                        "message": {"content": json.dumps({"candidates": candidates})},
-                    }
-                ],
-                "usage": {"prompt_tokens": 10, "completion_tokens": 20},
-            },
-        )
-
-    return ChatProvider(settings, httpx.MockTransport(handler))
-
-
-def generate(client, *, memory=None, mode="text", instruction="请详细讲解计算方法"):
-    body = {
-        "output_mode": mode,
-        "source": {
-            "type": "inputs",
-            "instruction": instruction,
-            "inputs": [{"type": "text", "text": "给定x=1，计算x+x。材料里的虚构人物喜欢红色。"}],
-        },
-    }
-    if memory is not None:
-        body["memory"] = memory
-    response = client.post("/api/v2/generations", json=body)
-    assert response.status_code == 202, response.text
-    job = wait_job(client, response.json()["job_id"])
-    assert job["status"] == "completed", job
-    generation = client.get(f"/api/v2/generations/{job['resource_ref']['id']}").json()
-    answer = client.get(f"/api/v2/answers/{generation['answer_id']}").json()
-    return job, generation, answer
+def assert_projected_memory(payload, snapshot, role="scene_generator"):
+    projected = model_memory(snapshot, role)
+    assert payload["user_memory"] == {"deep": projected["deep"]}
+    assert payload["recent_user_memory"] == projected["recent"]
+    encoded = json.dumps(payload)
+    assert '"captured_at"' not in encoded
+    assert '"memory_id"' not in encoded
+    assert '"session_id"' not in encoded
 
 
 def test_memory_disabled_has_no_extraction_or_snapshot(tmp_path):
@@ -80,6 +32,7 @@ def test_memory_disabled_has_no_extraction_or_snapshot(tmp_path):
             "user_text" not in payload and "user_memory" not in payload for _, payload in captured
         )
         assert client.get("/api/v2/memory").json()["entries"] == []
+        assert client.get("/api/v2/memory").json()["learning"]["tasks"] == []
 
 
 def test_user_instruction_learning_and_fixed_snapshot_across_answer_video_revision(tmp_path):
@@ -88,15 +41,25 @@ def test_user_instruction_learning_and_fixed_snapshot_across_answer_video_revisi
     with TestClient(app) as client:
         job, _, answer = generate(client, memory={"session_id": "session_one"}, mode="both")
         snapshot = answer["memory_snapshot"]
-        assert snapshot["entries"][0]["value"] == "详细讲解"
-        assert job["usage"]["model_calls"] == len(captured)
+        assert snapshot["entries"] == []
+        learning = wait_learning(client, job["job_id"])
+        assert learning["state"] == "completed" and learning["usage"]["model_calls"] == 1
+        assert job["usage"]["model_calls"] == sum("user_text" not in p for _, p in captured)
         extractor_payload = next(payload for _, payload in captured if "user_text" in payload)
         assert "虚构人物" not in extractor_payload["user_text"]
         assert "materials" not in extractor_payload
         for _, payload in captured:
             if "user_memory" in payload:
-                assert payload["user_memory"] == snapshot
+                assert_projected_memory(payload, snapshot)
         assert sum("user_memory" in payload for _, payload in captured) >= 6
+        scenes = [
+            json.dumps(payload, ensure_ascii=False) for _, payload in captured if "scene" in payload
+        ]
+        assert len(scenes) >= 3
+        assert len({payload.split('"scene":', 1)[0] for payload in scenes}) == 1
+        record = client.app.state.job_manager.store.load_record(job["job_id"])
+        assert record["memory_snapshot"] == snapshot
+        assert "captured_at" in record["memory_snapshot"]
         entry = client.get("/api/v2/memory").json()["entries"][0]
         response = client.patch(f"/api/v2/memory/{entry['memory_id']}", json={"value": "简洁讲解"})
         assert response.status_code == 200, response.text
@@ -114,9 +77,10 @@ def test_user_instruction_learning_and_fixed_snapshot_across_answer_video_revisi
         assert response.status_code == 202, response.text
         video_job = wait_job(client, response.json()["job_id"])
         assert video_job["status"] == "completed", video_job
-        assert all(
-            payload.get("user_memory", snapshot) == snapshot for _, payload in captured[before:]
-        )
+        assert client.get(f"/api/v2/memory/learning/{video_job['job_id']}").status_code == 404
+        for _, payload in captured[before:]:
+            if "user_memory" in payload:
+                assert_projected_memory(payload, snapshot)
         assert (
             client.post(
                 "/api/v2/generations",
@@ -144,9 +108,13 @@ def test_learning_failure_is_visible_and_keeps_existing_memory_and_answer(tmp_pa
     with TestClient(app) as client:
         job, _, answer = generate(client, memory={"session_id": "new"})
         assert answer["memory_snapshot"]["entries"][0]["value"] == "详细"
-        assert any(w["code"] == "memory_learning_failed" for w in answer["warnings"])
+        learning = wait_learning(client, job["job_id"])
+        assert learning["state"] == "failed" and learning["error"]
+        assert learning["usage"]["model_calls"] == 1
+        assert not any(w["code"].startswith("memory_learning_") for w in answer["warnings"])
         assert len([p for _, p in captured if "user_text" in p]) == 1
-        assert job["usage"]["model_calls"] == 3
+        assert job["usage"]["model_calls"] == 2
+        assert client.get(f"/api/v2/answers/{answer['answer_id']}").json() == answer
 
 
 def test_management_api_is_idempotent_grounded_and_deletion_does_not_replay(tmp_path):
@@ -199,18 +167,73 @@ def test_retrieval_only_does_not_add_evidence(tmp_path):
     settings, captured = config(tmp_path), []
     app = create_app(settings, memory_provider(settings, captured), TemplateRenderer())
     with TestClient(app) as client:
-        _, _, answer = generate(client, memory={"session_id": "s1", "learn": False})
+        job, _, answer = generate(client, memory={"session_id": "s1", "learn": False})
         assert answer["memory_snapshot"]["entries"] == []
         assert all("user_text" not in payload for _, payload in captured)
         assert client.get("/api/v2/memory").json()["entries"] == []
+        assert client.get(f"/api/v2/memory/learning/{job['job_id']}").status_code == 404
 
 
-def test_optional_learning_reserves_budget_for_the_answer(tmp_path):
+def test_same_material_and_preferences_keep_prefix_across_sessions_but_corrections_apply(tmp_path):
+    settings, captured = config(tmp_path), []
+    app = create_app(settings, memory_provider(settings, captured), TemplateRenderer())
+    store = app.state.job_manager.memory
+    candidate = MemoryCandidate(field="explanation.detail", value="详细", evidence="详细")
+    entry = store.observe([candidate], session_id="seed", source_id="seed", source_text="详细")[0]
+    store.confirm(entry.memory_id)
+    with TestClient(app) as client:
+        _, generation, first = generate(client, memory={"session_id": "one", "learn": False})
+        first_system, first_payload = captured[0]
+        store.observe([candidate], session_id="evidence", source_id="evidence", source_text="详细")
+
+        def again(session):
+            before = len(captured)
+            response = client.post(
+                "/api/v2/generations",
+                json={
+                    "source": {
+                        "type": "materials",
+                        "material_ids": generation["material_ids"],
+                        "instruction": "换一种方式说明计算过程",
+                    },
+                    "memory": {"session_id": session, "learn": False},
+                },
+            )
+            assert response.status_code == 202, response.text
+            job = wait_job(client, response.json()["job_id"])
+            assert job["status"] == "completed", job
+            generated = client.get(f"/api/v2/generations/{job['resource_ref']['id']}").json()
+            answer = client.get(f"/api/v2/answers/{generated['answer_id']}").json()
+            return captured[before], answer
+
+        (second_system, second_payload), second = again("two")
+        assert first["memory_snapshot"] != second["memory_snapshot"]
+        assert first_system == second_system
+        assert (
+            json.dumps(first_payload).split('"instruction":', 1)[0]
+            == json.dumps(second_payload).split('"instruction":', 1)[0]
+        )
+        assert first_payload["allowed_source_refs"] == second_payload["allowed_source_refs"]
+        assert "created_at" not in json.dumps(second_payload)
+        store.correct(entry.memory_id, "简洁")
+        (_, changed), third = again("three")
+        assert changed["user_memory"] != second_payload["user_memory"]
+        assert third["memory_snapshot"]["entries"][0]["value"] == "简洁"
+        assert (
+            client.get(f"/api/v2/answers/{first['answer_id']}").json()["memory_snapshot"]
+            == first["memory_snapshot"]
+        )
+
+
+def test_optional_learning_has_an_independent_budget_from_the_answer(tmp_path):
     settings, captured = config(tmp_path), []
     settings.max_total_tokens = 1000
     app = create_app(settings, memory_provider(settings, captured), TemplateRenderer())
     with TestClient(app) as client:
         job, _, answer = generate(client, memory={"session_id": "s1"})
         assert job["usage"]["model_calls"] == 2
-        assert all("user_text" not in payload for _, payload in captured)
-        assert any(w["code"] == "memory_learning_skipped" for w in answer["warnings"])
+        learning = wait_learning(client, job["job_id"])
+        assert learning["state"] == "completed" and learning["usage"]["model_calls"] == 1
+        assert sum("user_text" in payload for _, payload in captured) == 1
+        assert answer["memory_snapshot"]["entries"] == []
+        assert client.get(f"/api/v2/jobs/{job['job_id']}").json()["usage"] == job["usage"]

@@ -1,0 +1,7 @@
+{
+  "memory_manage_link": true,
+  "memory_open_wiring": true,
+  "memory_open_method": true,
+  "runtime_source_unchanged_after_smoke": true,
+  "evals_in_wheel": false
+}

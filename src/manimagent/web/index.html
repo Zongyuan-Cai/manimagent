@@ -15,76 +15,147 @@
   <header class="app-header">
     <a class="brand" href="#input-section" aria-label="ManimAgent 学习工作台"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 17V7l8 10 8-10v10M4 7h4m8 10h4"/></svg></span>Manim<span>Agent</span></a>
     <span class="workspace-label">学习工作台</span>
-    <a class="settings-link" id="configuration-link" href="#llm-settings"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 5h14M3 10h14M3 15h14M7 3v4m6 1v4m-7 1v4"/></svg>模型设置</a>
+    <nav class="header-actions" aria-label="工作台管理">
+      <a class="settings-link" id="memory-nav-link" href="#user-memory">我的偏好</a>
+      <a class="settings-link" id="configuration-link" href="#llm-settings"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 5h14M3 10h14M3 15h14M7 3v4m6 1v4m-7 1v4"/></svg>设置</a>
+    </nav>
   </header>
   <main class="app-main">
-    <section class="workspace-intro" aria-labelledby="workspace-heading"><div><p class="eyebrow">从理解，到看见</p><h1 id="workspace-heading">把每一步，讲清楚。</h1><p class="intro">从一道题、一段讲义开始，让思路成为完整解答与教学动画。</p></div><div class="workflow-caption" aria-label="工作流程"><span>输入材料</span><span aria-hidden="true">→</span><span>完整解答</span><span aria-hidden="true">→</span><span>教学动画</span></div></section>
+    <h1 class="visually-hidden" id="workspace-heading">数学学习工作台</h1>
     <div id="health" role="status"></div>
     <div class="workspace-grid">
       <section class="panel input-panel" id="input-section" aria-labelledby="input-heading">
-        <div class="section-heading"><h2 id="input-heading">问题与材料</h2><span class="section-number" aria-hidden="true">01</span></div>
+        <h2 class="visually-hidden" id="input-heading">问题与材料</h2>
         <form id="form">
           <div class="label-row"><label for="text">你想弄懂什么？</label><button type="button" class="text-button" id="example">试试示例 ↗</button></div>
-          <textarea id="text" required placeholder="输入问题，或描述你希望讲解的知识点。&#10;&#10;例如：向量的投影系数与投影向量有什么区别？"></textarea>
-          <details class="material-disclosure" id="extra-material"><summary>补充题设或讲义 <span>可选</span></summary><label class="visually-hidden" for="material">补充材料</label><textarea id="material" placeholder="粘贴相关题设、定义或参考材料。"></textarea></details>
-          <div class="attachment-section"><label for="files">添加附件 <span class="optional">可多选</span></label><input id="files" type="file" accept=".txt,.md,.markdown,.pdf,.docx" multiple aria-describedby="file-help"><p class="hint" id="file-help">TXT、Markdown、文本型 PDF、DOCX。PDF 可指定页码；扫描件和题图请补充可读文本。</p><div id="file-list"></div></div>
-          <div class="generation-options"><label for="output-mode">输出内容</label><select id="output-mode"><option value="both">完整解答 + 教学动画</option><option value="text">仅完整解答</option></select><p class="hint">视频时长 2–6 分钟。生成过程中，可先阅读完整文字。</p></div>
-          <div class="memory-option"><label class="check-label"><input type="checkbox" id="memory-enabled">使用并更新我的记忆</label><p class="hint">根据你的偏好调整讲解，并从本次表达中提取用户记忆。<a href="#user-memory">查看与管理</a></p></div>
+          <textarea id="text" placeholder="输入问题，或描述你想理解的知识点…" aria-describedby="question-help"></textarea><p class="visually-hidden" id="question-help">输入问题或添加材料，至少提供一项。</p>
+          <details class="material-disclosure" id="extra-material"><summary>粘贴补充材料 <span>可选</span></summary><label class="visually-hidden" for="material">补充材料</label><textarea id="material" placeholder="粘贴相关题设、定义或参考材料。"></textarea></details>
+          <div class="attachment-section"><label for="files">添加附件 <span class="optional">可多选</span></label><input id="files" type="file" accept=".txt,.md,.markdown,.pdf,.docx,.xlsx,.pptx,.csv,.tsv,.json,.jsonl,.ipynb,.png,.jpg,.jpeg,.webp,.gif,.bmp,.tif,.tiff,.py,.js,.ts,.tex" multiple aria-describedby="file-help upload-error"><p class="hint" id="file-help">文档、图片、表格或代码</p><details class="input-support" id="input-support"><summary>支持的格式与限制</summary><p class="hint" id="upload-limits"></p><ul id="upload-support"><li>文字、Markdown、代码和结构化数据：保留正文与来源。</li><li>PDF / Word：文字、常见公式与表格；图像内容通过视觉模型读取。</li><li>Excel / PowerPoint：工作表、幻灯片文字与表格；复杂图表和特殊对象需要核对。</li><li>截图与扫描页：在核心 API 中配置支持图片的模型。</li></ul></details><p id="upload-summary" class="hint" role="status" aria-live="polite"></p><p id="upload-error" class="error-text" role="alert"></p><div id="file-list"></div></div>
+          <button type="button" class="text-button" id="upload-reload" hidden>重新读取上传支持</button>
+          <div class="generation-options"><div><label for="output-mode">输出内容</label><select id="output-mode"><option value="both">解答 + 动画</option><option value="text">仅完整解答</option></select></div><div id="video-options"><label for="video-profile">动画旁白</label><select id="video-profile"><option value="auto">跟随设置</option><option value="standard_narrated">本次配音</option><option value="standard_silent">本次不配音</option></select><p class="hint" id="narration-help">正在读取语音设置…</p></div></div>
+          <div class="memory-option"><label class="check-label"><input type="checkbox" id="memory-enabled">使用已有记忆</label><label class="check-label"><input type="checkbox" id="memory-learn" disabled>记住新的偏好</label><a id="memory-manage-link" href="#user-memory">管理</a><p class="visually-hidden" id="memory-mode" role="status"></p></div>
           <button type="submit" id="generate">开始生成 <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h12m-5-5 5 5-5 5"/></svg></button><p id="error" role="alert"></p>
         </form>
       </section>
       <div class="results-column">
         <section class="panel output" id="answer-section" aria-labelledby="answer-heading">
-          <div class="output-heading"><div><p class="eyebrow">阅读与校对</p><h2 id="answer-heading">解答工作区</h2><p id="answer-meta">生成后可阅读、编辑和导出</p></div><span class="state-badge" id="workspace-state" data-state="idle">等待输入</span></div>
+          <div class="output-heading"><div><h2 id="answer-heading">解答</h2><p id="answer-meta">在这里阅读、编辑和导出</p></div><span class="state-badge" id="workspace-state" data-state="idle">等待输入</span></div>
           <div class="task-summary"><div id="status" role="status" aria-live="polite"></div><p id="message"></p></div>
           <div id="actions" class="toolbar" hidden><a id="download">下载 Markdown</a><button id="copy" class="secondary">复制</button><button id="edit" class="secondary">编辑</button><button id="reuse" class="secondary">复用材料</button><a id="video-jump" href="#video-panel" hidden>查看动画 ↓</a><button id="animate" class="secondary">生成动画 ↗</button></div>
           <div id="warnings" role="status"></div>
           <article id="result"><div class="empty-state">
             <svg class="empty-illustration" viewBox="0 0 240 170" aria-hidden="true"><rect class="illustration-back" x="56" y="20" width="132" height="136" rx="10" transform="rotate(7 122 88)"/><rect class="illustration-paper" x="44" y="10" width="132" height="142" rx="10"/><path class="illustration-axis" d="M70 122V41m0 81h81"/><path class="illustration-guide" d="M70 122 142 70v52M70 122h72"/><path class="illustration-vector" d="m70 122 72-52m-13 2 13-2-3 13"/><path class="illustration-note" d="M82 29h24m-24 7h39"/><circle class="illustration-point" cx="142" cy="122" r="4"/><circle class="illustration-orbit" cx="182" cy="37" r="19"/><path class="illustration-check" d="m174 37 5 5 10-11"/></svg>
-            <h3>完整推导，从这里展开</h3><p>输入问题或上传材料，<br>查看推导、核对依据，继续编辑你的解答。</p><div class="empty-features"><span>题设与依据</span><span>分步推导</span><span>结论核对</span></div>
+            <h3>解答将在这里展开</h3><p>添加问题或材料，即可开始。</p>
           </div></article>
           <div id="editor" hidden><label for="revision">完整 Markdown 正文（保留来源标记）</label><textarea id="revision"></textarea><div class="button-row"><button id="save">保存为新版本</button><button id="cancel" class="secondary">取消</button></div></div>
+          <details id="result-details" class="result-details" hidden><summary>来源与详情</summary><div class="result-details-body">
+          <details class="task-summary" id="answer-memory" hidden><summary>本次使用的记忆</summary><p class="hint" id="answer-memory-summary"></p><div id="answer-memory-list"></div></details>
+
           <details id="sources" hidden><summary>材料与来源</summary><div id="source-list"></div></details>
-          <details id="diagnostics" hidden><summary>运行与检查记录</summary><div class="stage" id="job"></div><div id="artifacts"></div></details>
+          <details id="diagnostics" hidden><summary>高级 · 运行与检查记录</summary><div class="stage" id="job"></div><p class="hint" id="cache-usage">提示词缓存：未知，尚无任务用量报告。</p><p class="hint" id="memory-context-links" hidden><a id="memory-context-view" target="_blank" rel="noopener">查看记忆注入记录</a> · <a id="memory-context-download">下载注入记录 Markdown</a></p><div id="artifacts"></div></details>
+          </div></details>
         </section>
         <section id="video-panel" class="panel video-panel" aria-labelledby="video-heading" hidden>
-          <div class="section-heading"><div><p class="eyebrow">把推导变成画面</p><h2 id="video-heading">教学动画</h2></div><span class="format-badge">MP4</span></div>
+          <div class="section-heading"><div><h2 id="video-heading">教学动画</h2></div><span class="format-badge">MP4</span></div>
           <p id="video-message" role="status"></p><video id="video-player" controls preload="metadata" aria-label="教学动画预览" hidden></video>
-          <div id="video-actions" class="video-actions" hidden><a id="video-download">下载 MP4</a><a id="video-plan">教学计划与时间线 ↗</a></div><p class="hint">启用语音配置后，视频自动包含 MiMo 旁白。</p>
+          <div id="video-actions" class="video-actions" hidden><a id="video-download">下载 MP4</a></div><details class="video-details"><summary>动画详情</summary><p class="hint" id="video-technical"></p><a id="video-plan">教学计划与时间线 ↗</a></details>
         </section>
       </div>
     </div>
-    <details class="panel llm-panel memory-panel" id="user-memory">
-      <summary><span class="settings-summary"><strong>用户记忆</strong><span>近期表达，逐步沉淀</span></span><span id="memory-state">正在读取…</span></summary>
-      <div class="settings-content">
-        <p class="hint">记忆保存在本机。从多次独立会话中获得支持，或经你确认后，短期记忆可沉淀为深层记忆。本次要求优先。</p>
-        <form id="memory-form">
-          <label for="memory-text">希望系统记住什么？</label><textarea id="memory-text" maxlength="4000" required placeholder="例如：讲解几何题时，我更喜欢先看图，再看公式。"></textarea>
-          <p class="hint">提取会使用当前回答模型。请核对生成的记忆；临时要求只用于本次会话。</p>
-          <div class="button-row"><button type="submit" id="memory-add">生成记忆</button><button type="button" class="secondary" id="memory-new-session">开始新会话</button></div>
-        </form>
-        <div class="button-row memory-tools"><button type="button" class="secondary" id="memory-reload">刷新记忆</button><button type="button" class="secondary" id="memory-cleanup">清理失效记忆</button></div>
-        <p id="memory-message" role="status" aria-live="polite"></p><div id="memory-list"></div>
-        <p class="hint">关闭任务中的记忆选项后，新任务不再使用或更新记忆。纠正与删除影响后续任务，已生成的回答、视频和运行记录保留原样。</p>
-      </div>
-    </details>
-    <details class="panel llm-panel" id="llm-settings">
-      <summary><span class="settings-summary"><strong>模型与连接</strong><span>管理服务、密钥和任务角色</span></span><span id="llm-state">正在读取…</span></summary>
-      <div class="settings-content"><p class="hint">支持 Chat Completions 兼容接口。保存后应用于新的文字与动画任务。</p>
+  </main>
+  <dialog class="workspace-dialog" id="settings-dialog" aria-labelledby="settings-title">
+    <header class="dialog-header"><h2 id="settings-title">设置</h2><button type="button" class="dialog-close secondary" id="settings-close" aria-label="关闭设置">关闭 <span aria-hidden="true">×</span></button></header>
+    <nav class="settings-tabs" aria-label="设置分类"><button type="button" class="secondary" id="settings-model-tab" aria-pressed="true" aria-controls="llm-settings">核心模型</button><button type="button" class="secondary" id="tts-configuration-link" aria-pressed="false" aria-controls="tts-settings">语音配音</button></nav>
+    <div class="dialog-content">
+<section class="settings-panel" id="llm-settings">
+<div class="settings-panel-heading"><h3>核心模型</h3><span id="llm-state">正在读取…</span></div>
+      <div class="settings-content"><p class="settings-intro">填写连接信息，选择“使用此模型”，保存即可开始。</p>
         <form id="llm-form" autocomplete="off">
           <div id="llm-models"></div><button type="button" class="secondary" id="llm-add">＋ 新增模型</button>
-          <div class="role-settings"><h3>分配任务角色</h3><p class="hint">可以共用一个模型，也可以为不同任务选择模型。</p><div class="llm-grid">
+          <details class="role-settings" id="model-roles"><summary>高级 · 为不同任务分配模型</summary><p class="hint">默认可共用一个模型。回答与内容检查负责文字质量，规划、分块和计划检查负责动画；记忆提取也使用回答模型。</p><div class="llm-grid">
             <div><label for="llm-writer">回答模型</label><select id="llm-writer" required></select></div>
             <div><label for="llm-checker">内容检查模型</label><select id="llm-checker" required></select></div>
             <div><label for="llm-planner">动画规划模型</label><select id="llm-planner" required></select></div>
             <div><label for="llm-scene">分块生成模型</label><select id="llm-scene" required></select></div>
             <div><label for="llm-plan-checker">动画计划检查模型</label><select id="llm-plan-checker" required></select></div>
+            <div><label for="llm-material-reader">截图与扫描页读取模型</label><select id="llm-material-reader"></select><p class="hint">可单独选支持视觉的模型，其他任务继续使用原模型；普通文字文件不需要视觉模型。</p></div>
             <div><label for="llm-context">回答上下文预算（含输出预留）</label><input id="llm-context" type="number" min="1024" max="2000000" required></div>
-          </div><label class="check-label"><input type="checkbox" id="llm-check-enabled">生成后执行内容检查</label></div>
-          <p class="hint">API Key 留空保留原密钥。测试会向填写的接口发送简短请求，可能产生少量用量；结果只证明所测能力。</p><div class="button-row"><button type="submit" id="llm-save">保存并应用</button><button type="button" class="secondary" id="llm-reload">重新载入</button></div><p id="llm-message" role="status" aria-live="polite"></p>
+          </div><label class="check-label"><input type="checkbox" id="llm-check-enabled">生成后执行内容检查</label></details>
+          <p class="hint">密钥留空则保留。测试会产生少量用量，但不会保存；保存后用于新任务。</p><div class="button-row"><button type="submit" id="llm-save">保存核心配置</button><button type="button" class="secondary" id="llm-reload">重新载入</button></div><p id="llm-message" role="status" aria-live="polite"></p>
         </form>
       </div>
-    </details>
-  </main>
+    </section>
+<section class="settings-panel" id="tts-settings" hidden>
+<div class="settings-panel-heading"><h3>语音配音</h3><span id="tts-state">正在读取…</span></div>
+      <div class="settings-content">
+        <p class="settings-intro">使用 MiMo 生成旁白，需单独保存语音密钥。无声动画无需配置。</p>
+        <form id="tts-form" autocomplete="off">
+          <label class="check-label"><input type="checkbox" id="tts-enabled">默认给新动画配音</label>
+
+          <div class="llm-grid">
+            <div><label for="tts-api-key">MiMo API Key <span id="tts-key-state"></span></label><input id="tts-api-key" type="password" autocomplete="new-password" placeholder="填写 MiMo 语音可用的密钥"><p class="hint">留空保留已保存密钥；不会从核心 API 自动复制。</p></div>
+            <div><label for="tts-voice">音色 ID</label><input id="tts-voice" required maxlength="100" placeholder="mimo_default"><p class="hint">使用服务商支持的音色 ID。</p></div>
+          </div>
+          <label for="tts-style">朗读要求</label><textarea id="tts-style" required maxlength="1000" placeholder="清晰自然的普通话，语速适中，准确朗读原文。"></textarea>
+          <details class="tts-advanced"><summary>高级 · MiMo 接口地址与模型</summary><p class="hint">默认使用 MiMo 官方服务。只有符合 MiMo TTS 请求和音频响应协议的地址可替换；通用 /audio/speech 接口不能直接使用。<a href="https://mimo.mi.com/docs/" target="_blank" rel="noopener noreferrer">MiMo 文档 ↗</a></p><div class="llm-grid">
+            <div><label for="tts-base-url">API 根地址</label><input id="tts-base-url" type="url" required placeholder="https://api.xiaomimimo.com/v1"></div>
+            <div><label for="tts-model">语音模型 ID</label><input id="tts-model" required maxlength="100" placeholder="mimo-v2.5-tts"></div>
+          </div><label class="check-label"><input type="checkbox" id="tts-clear-key">清除已保存的语音密钥关联</label></details>
+          <label for="tts-test-text">试听文本</label><textarea id="tts-test-text" maxlength="200" placeholder="你好，我们一起把每一步讲清楚。">你好，我们一起把每一步讲清楚。</textarea>
+          <div class="button-row"><button type="button" class="secondary" id="tts-test">试听当前配置</button><button type="submit" id="tts-save">保存语音配置</button><button type="button" class="secondary" id="tts-reload">重新载入</button></div>
+          <p class="hint">试听会发送文本并产生少量用量，不会保存配置。试听后请保存。</p>
+          <audio id="tts-audio" controls preload="none" aria-label="语音配置试听" hidden></audio><p id="tts-message" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+
+      <details class="advanced-disclosure connection-details"><summary>连接状态</summary>
+    <section class="setup-overview" aria-label="生成服务状态">
+      <a class="setup-card" id="core-configuration-link" href="#llm-settings"><span class="setup-heading">核心模型 <span class="setup-tag">必需</span></span><strong id="core-readiness">正在读取配置…</strong><span class="hint">负责理解材料、解题和规划动画。配置 API ↗</span></a>
+      <a class="setup-card" id="vision-configuration-link" href="#llm-settings"><span class="setup-heading">图片与扫描件 <span class="setup-tag">按需</span></span><strong id="vision-readiness">正在读取配置…</strong><span class="hint">选择能看图的材料读取模型。配置视觉 API ↗</span></a>
+      <a class="setup-card" id="tts-setup-link" href="#tts-settings"><span class="setup-heading">语音配音 <span class="setup-tag">可选</span></span><strong id="tts-readiness">正在读取配置…</strong><span class="hint">单独配置 MiMo、试听，再选择是否配音。配置 TTS ↗</span></a>
+    </section>
+
+      </details>
+    </div>
+  </dialog>
+  <dialog class="workspace-dialog memory-dialog" id="memory-dialog" aria-labelledby="memory-title">
+    <header class="dialog-header"><h2 id="memory-title">我的偏好</h2><button type="button" class="dialog-close secondary" id="memory-close" aria-label="关闭我的偏好">关闭 <span aria-hidden="true">×</span></button></header>
+    <div class="dialog-content">
+    <section id="user-memory" class="memory-panel">
+      <div class="memory-overview"><p class="hint">管理讲解习惯与视觉偏好，本次要求始终优先。</p><span id="memory-state">正在读取…</span></div>
+      <p id="memory-message" role="status" aria-live="polite"></p><p class="hint" id="memory-sync" role="status"></p>
+      <div id="memory-list"></div>
+      <details class="add-memory"><summary>＋ 添加偏好</summary>
+        <form id="memory-form">
+          <label for="memory-text">希望系统记住什么？</label><textarea id="memory-text" maxlength="4000" required placeholder="例如：讲解几何题时，我更喜欢先看图，再看公式。"></textarea>
+          <p class="hint">会使用回答模型提取，请核对结果。</p>
+          <div class="button-row"><button type="submit" id="memory-add">生成记忆</button></div>
+        </form>
+      </details>
+      <details class="memory-activity"><summary>偏好更新记录</summary>
+        <section class="memory-learning" aria-labelledby="memory-learning-heading"><div class="section-heading"><h3 id="memory-learning-heading">偏好沉淀进度</h3><button type="button" class="text-button" id="memory-learning-reload">刷新沉淀状态</button></div><p class="hint" id="memory-learning-summary" role="status" aria-live="polite">正在读取沉淀任务…</p><p class="hint" id="memory-learning-sync" role="status"></p><details><summary>最近的沉淀任务</summary><div id="memory-learning-list"></div></details><p class="hint">后台任务不改写已有回答与视频。可取消尚未完成的任务；已写入的记忆可在下方纠正或删除。</p></section>
+      </details>
+      <details class="advanced-disclosure" id="memory-advanced"><summary>高级管理</summary>
+        <p class="hint">短期记忆获得多次独立会话支持，或经你确认后进入深层。纠正、删除仅影响后续任务。</p>
+        <div class="button-row memory-tools"><button type="button" class="secondary" id="memory-new-session">开始新会话</button><button type="button" class="secondary" id="memory-reload">刷新记忆</button><button type="button" class="secondary" id="memory-cleanup">清理失效记忆</button></div>
+        <p class="hint">“记住新的偏好”在输出结束后处理；关闭它仍可使用已有记忆。已排队任务可在更新记录中取消。</p>
+        <details class="memory-files" id="memory-files"><summary>记忆文件 · 查看与调试</summary>
+          <p class="hint">每条记忆对应一个 Markdown 文件，索引与文件由系统维护。修改后需要显式导入，才会用于后续任务；已检测到的本地修改会保留。</p>
+          <p class="memory-file-path" id="memory-files-root"></p>
+          <button type="button" class="secondary" id="memory-files-reload">刷新文件状态</button>
+          <p id="memory-files-message" role="status" aria-live="polite"></p>
+          <details><summary>查看 MEMORY.md 索引</summary><pre id="memory-files-index"></pre></details>
+          <div id="memory-files-list"></div>
+          <form id="memory-file-editor" hidden><h3 id="memory-file-title"></h3><label for="memory-file-content">Markdown 原文</label><textarea id="memory-file-content" maxlength="524288" spellcheck="false" required></textarea>
+            <p class="hint">只修改“## 记忆内容”的正文。字段、层级、版本和证据不能在这里修改；沉淀为深层仍使用上方“确认沉淀”。旧版本导入会被拒绝，请核对当前内容，不要改写版本号。</p>
+            <div class="button-row"><button type="submit" id="memory-file-save">保存并导入</button><button type="button" class="secondary" id="memory-file-close">关闭编辑，放弃页面修改</button></div>
+          </form>
+        </details>
+      </details>
+    </section>
+
+    </div>
+  </dialog>
 </body>
 </html>

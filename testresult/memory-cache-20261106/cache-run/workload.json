@@ -1,0 +1,614 @@
+{
+  "synthetic": true,
+  "system": "你是一位初中数学教师。输入 JSON 包含教学材料、用户偏好和本次 instruction。遵循当前问题，参考材料解题；只回答被要求的练习，不复述整份材料。用中文简述等式变形，写出 x = 整数，并给出代回验算；不超过120个汉字。",
+  "shared": {
+    "materials": [
+      {
+        "material_id": "material_synthetic_linear_50",
+        "blocks": [
+          {
+            "block_id": "exercise_01",
+            "text": "练习01：2x + 3 = -5。解法：两边同时减3，得2x=-8；再同时除以2，得x=-4。验算：左边=2×(-4)+3=-5，右边=-5。两边相等。",
+            "equation": "2x + 3 = -5",
+            "expected_solution": -4
+          },
+          {
+            "block_id": "exercise_02",
+            "text": "练习02：3x + 4 = -5。解法：两边同时减4，得3x=-9；再同时除以3，得x=-3。验算：左边=3×(-3)+4=-5，右边=-5。两边相等。",
+            "equation": "3x + 4 = -5",
+            "expected_solution": -3
+          },
+          {
+            "block_id": "exercise_03",
+            "text": "练习03：4x + 5 = -3。解法：两边同时减5，得4x=-8；再同时除以4，得x=-2。验算：左边=4×(-2)+5=-3，右边=-3。两边相等。",
+            "equation": "4x + 5 = -3",
+            "expected_solution": -2
+          },
+          {
+            "block_id": "exercise_04",
+            "text": "练习04：5x + 6 = 1。解法：两边同时减6，得5x=-5；再同时除以5，得x=-1。验算：左边=5×(-1)+6=1，右边=1。两边相等。",
+            "equation": "5x + 6 = 1",
+            "expected_solution": -1
+          },
+          {
+            "block_id": "exercise_05",
+            "text": "练习05：6x + 7 = 7。解法：两边同时减7，得6x=0；再同时除以6，得x=0。验算：左边=6×(0)+7=7，右边=7。两边相等。",
+            "equation": "6x + 7 = 7",
+            "expected_solution": 0
+          },
+          {
+            "block_id": "exercise_06",
+            "text": "练习06：7x + 8 = 15。解法：两边同时减8，得7x=7；再同时除以7，得x=1。验算：左边=7×(1)+8=15，右边=15。两边相等。",
+            "equation": "7x + 8 = 15",
+            "expected_solution": 1
+          },
+          {
+            "block_id": "exercise_07",
+            "text": "练习07：8x + 9 = 25。解法：两边同时减9，得8x=16；再同时除以8，得x=2。验算：左边=8×(2)+9=25，右边=25。两边相等。",
+            "equation": "8x + 9 = 25",
+            "expected_solution": 2
+          },
+          {
+            "block_id": "exercise_08",
+            "text": "练习08：9x + 10 = 37。解法：两边同时减10，得9x=27；再同时除以9，得x=3。验算：左边=9×(3)+10=37，右边=37。两边相等。",
+            "equation": "9x + 10 = 37",
+            "expected_solution": 3
+          },
+          {
+            "block_id": "exercise_09",
+            "text": "练习09：10x + 11 = 51。解法：两边同时减11，得10x=40；再同时除以10，得x=4。验算：左边=10×(4)+11=51，右边=51。两边相等。",
+            "equation": "10x + 11 = 51",
+            "expected_solution": 4
+          },
+          {
+            "block_id": "exercise_10",
+            "text": "练习10：11x + 12 = 67。解法：两边同时减12，得11x=55；再同时除以11，得x=5。验算：左边=11×(5)+12=67，右边=67。两边相等。",
+            "equation": "11x + 12 = 67",
+            "expected_solution": 5
+          },
+          {
+            "block_id": "exercise_11",
+            "text": "练习11：2(x + 3) = -2。解法：先同时除以2，得x+3=-1；再同时减3，得x=-4。验算：左边=2×(-4+3)=-2，右边=-2。两边相等。",
+            "equation": "2(x + 3) = -2",
+            "expected_solution": -4
+          },
+          {
+            "block_id": "exercise_12",
+            "text": "练习12：3(x + 4) = 3。解法：先同时除以3，得x+4=1；再同时减4，得x=-3。验算：左边=3×(-3+4)=3，右边=3。两边相等。",
+            "equation": "3(x + 4) = 3",
+            "expected_solution": -3
+          },
+          {
+            "block_id": "exercise_13",
+            "text": "练习13：4(x + 5) = 12。解法：先同时除以4，得x+5=3；再同时减5，得x=-2。验算：左边=4×(-2+5)=12，右边=12。两边相等。",
+            "equation": "4(x + 5) = 12",
+            "expected_solution": -2
+          },
+          {
+            "block_id": "exercise_14",
+            "text": "练习14：5(x + 6) = 25。解法：先同时除以5，得x+6=5；再同时减6，得x=-1。验算：左边=5×(-1+6)=25，右边=25。两边相等。",
+            "equation": "5(x + 6) = 25",
+            "expected_solution": -1
+          },
+          {
+            "block_id": "exercise_15",
+            "text": "练习15：6(x + 7) = 42。解法：先同时除以6，得x+7=7；再同时减7，得x=0。验算：左边=6×(0+7)=42，右边=42。两边相等。",
+            "equation": "6(x + 7) = 42",
+            "expected_solution": 0
+          },
+          {
+            "block_id": "exercise_16",
+            "text": "练习16：7(x + 8) = 63。解法：先同时除以7，得x+8=9；再同时减8，得x=1。验算：左边=7×(1+8)=63，右边=63。两边相等。",
+            "equation": "7(x + 8) = 63",
+            "expected_solution": 1
+          },
+          {
+            "block_id": "exercise_17",
+            "text": "练习17：8(x + 9) = 88。解法：先同时除以8，得x+9=11；再同时减9，得x=2。验算：左边=8×(2+9)=88，右边=88。两边相等。",
+            "equation": "8(x + 9) = 88",
+            "expected_solution": 2
+          },
+          {
+            "block_id": "exercise_18",
+            "text": "练习18：9(x + 10) = 117。解法：先同时除以9，得x+10=13；再同时减10，得x=3。验算：左边=9×(3+10)=117，右边=117。两边相等。",
+            "equation": "9(x + 10) = 117",
+            "expected_solution": 3
+          },
+          {
+            "block_id": "exercise_19",
+            "text": "练习19：10(x + 11) = 150。解法：先同时除以10，得x+11=15；再同时减11，得x=4。验算：左边=10×(4+11)=150，右边=150。两边相等。",
+            "equation": "10(x + 11) = 150",
+            "expected_solution": 4
+          },
+          {
+            "block_id": "exercise_20",
+            "text": "练习20：11(x + 12) = 187。解法：先同时除以11，得x+12=17；再同时减12，得x=5。验算：左边=11×(5+12)=187，右边=187。两边相等。",
+            "equation": "11(x + 12) = 187",
+            "expected_solution": 5
+          },
+          {
+            "block_id": "exercise_21",
+            "text": "练习21：2x + 3 = 3x + (7)。解法：同时减2x与(7)，得3-(7)=x，因此x=-4。验算：左边=2×(-4)+3=-5，右边=3×(-4)+(7)=-5。两边相等。",
+            "equation": "2x + 3 = 3x + (7)",
+            "expected_solution": -4
+          },
+          {
+            "block_id": "exercise_22",
+            "text": "练习22：3x + 4 = 4x + (7)。解法：同时减3x与(7)，得4-(7)=x，因此x=-3。验算：左边=3×(-3)+4=-5，右边=4×(-3)+(7)=-5。两边相等。",
+            "equation": "3x + 4 = 4x + (7)",
+            "expected_solution": -3
+          },
+          {
+            "block_id": "exercise_23",
+            "text": "练习23：4x + 5 = 5x + (7)。解法：同时减4x与(7)，得5-(7)=x，因此x=-2。验算：左边=4×(-2)+5=-3，右边=5×(-2)+(7)=-3。两边相等。",
+            "equation": "4x + 5 = 5x + (7)",
+            "expected_solution": -2
+          },
+          {
+            "block_id": "exercise_24",
+            "text": "练习24：5x + 6 = 6x + (7)。解法：同时减5x与(7)，得6-(7)=x，因此x=-1。验算：左边=5×(-1)+6=1，右边=6×(-1)+(7)=1。两边相等。",
+            "equation": "5x + 6 = 6x + (7)",
+            "expected_solution": -1
+          },
+          {
+            "block_id": "exercise_25",
+            "text": "练习25：6x + 7 = 7x + (7)。解法：同时减6x与(7)，得7-(7)=x，因此x=0。验算：左边=6×(0)+7=7，右边=7×(0)+(7)=7。两边相等。",
+            "equation": "6x + 7 = 7x + (7)",
+            "expected_solution": 0
+          },
+          {
+            "block_id": "exercise_26",
+            "text": "练习26：7x + 8 = 8x + (7)。解法：同时减7x与(7)，得8-(7)=x，因此x=1。验算：左边=7×(1)+8=15，右边=8×(1)+(7)=15。两边相等。",
+            "equation": "7x + 8 = 8x + (7)",
+            "expected_solution": 1
+          },
+          {
+            "block_id": "exercise_27",
+            "text": "练习27：8x + 9 = 9x + (7)。解法：同时减8x与(7)，得9-(7)=x，因此x=2。验算：左边=8×(2)+9=25，右边=9×(2)+(7)=25。两边相等。",
+            "equation": "8x + 9 = 9x + (7)",
+            "expected_solution": 2
+          },
+          {
+            "block_id": "exercise_28",
+            "text": "练习28：9x + 10 = 10x + (7)。解法：同时减9x与(7)，得10-(7)=x，因此x=3。验算：左边=9×(3)+10=37，右边=10×(3)+(7)=37。两边相等。",
+            "equation": "9x + 10 = 10x + (7)",
+            "expected_solution": 3
+          },
+          {
+            "block_id": "exercise_29",
+            "text": "练习29：10x + 11 = 11x + (7)。解法：同时减10x与(7)，得11-(7)=x，因此x=4。验算：左边=10×(4)+11=51，右边=11×(4)+(7)=51。两边相等。",
+            "equation": "10x + 11 = 11x + (7)",
+            "expected_solution": 4
+          },
+          {
+            "block_id": "exercise_30",
+            "text": "练习30：11x + 12 = 12x + (7)。解法：同时减11x与(7)，得12-(7)=x，因此x=5。验算：左边=11×(5)+12=67，右边=12×(5)+(7)=67。两边相等。",
+            "equation": "11x + 12 = 12x + (7)",
+            "expected_solution": 5
+          },
+          {
+            "block_id": "exercise_31",
+            "text": "练习31：(x + 3) / 2 = -3。解法：两边同时乘2，得x+3=-6；再同时减3，得x=-9。验算：左边=(-9+3)/2=-3，右边=-3。两边相等。",
+            "equation": "(x + 3) / 2 = -3",
+            "expected_solution": -9
+          },
+          {
+            "block_id": "exercise_32",
+            "text": "练习32：(x + 4) / 3 = -2。解法：两边同时乘3，得x+4=-6；再同时减4，得x=-10。验算：左边=(-10+4)/3=-2，右边=-2。两边相等。",
+            "equation": "(x + 4) / 3 = -2",
+            "expected_solution": -10
+          },
+          {
+            "block_id": "exercise_33",
+            "text": "练习33：(x + 5) / 4 = -1。解法：两边同时乘4，得x+5=-4；再同时减5，得x=-9。验算：左边=(-9+5)/4=-1，右边=-1。两边相等。",
+            "equation": "(x + 5) / 4 = -1",
+            "expected_solution": -9
+          },
+          {
+            "block_id": "exercise_34",
+            "text": "练习34：(x + 6) / 5 = 0。解法：两边同时乘5，得x+6=0；再同时减6，得x=-6。验算：左边=(-6+6)/5=0，右边=0。两边相等。",
+            "equation": "(x + 6) / 5 = 0",
+            "expected_solution": -6
+          },
+          {
+            "block_id": "exercise_35",
+            "text": "练习35：(x + 7) / 6 = 1。解法：两边同时乘6，得x+7=6；再同时减7，得x=-1。验算：左边=(-1+7)/6=1，右边=1。两边相等。",
+            "equation": "(x + 7) / 6 = 1",
+            "expected_solution": -1
+          },
+          {
+            "block_id": "exercise_36",
+            "text": "练习36：(x + 8) / 7 = 2。解法：两边同时乘7，得x+8=14；再同时减8，得x=6。验算：左边=(6+8)/7=2，右边=2。两边相等。",
+            "equation": "(x + 8) / 7 = 2",
+            "expected_solution": 6
+          },
+          {
+            "block_id": "exercise_37",
+            "text": "练习37：(x + 9) / 8 = 3。解法：两边同时乘8，得x+9=24；再同时减9，得x=15。验算：左边=(15+9)/8=3，右边=3。两边相等。",
+            "equation": "(x + 9) / 8 = 3",
+            "expected_solution": 15
+          },
+          {
+            "block_id": "exercise_38",
+            "text": "练习38：(x + 10) / 9 = 4。解法：两边同时乘9，得x+10=36；再同时减10，得x=26。验算：左边=(26+10)/9=4，右边=4。两边相等。",
+            "equation": "(x + 10) / 9 = 4",
+            "expected_solution": 26
+          },
+          {
+            "block_id": "exercise_39",
+            "text": "练习39：(x + 11) / 10 = 5。解法：两边同时乘10，得x+11=50；再同时减11，得x=39。验算：左边=(39+11)/10=5，右边=5。两边相等。",
+            "equation": "(x + 11) / 10 = 5",
+            "expected_solution": 39
+          },
+          {
+            "block_id": "exercise_40",
+            "text": "练习40：(x + 12) / 11 = 6。解法：两边同时乘11，得x+12=66；再同时减12，得x=54。验算：左边=(54+12)/11=6，右边=6。两边相等。",
+            "equation": "(x + 12) / 11 = 6",
+            "expected_solution": 54
+          },
+          {
+            "block_id": "exercise_41",
+            "text": "练习41：2x - 3 = -11。解法：两边同时加3，得2x=-8；再同时除以2，得x=-4。验算：左边=2×(-4)-3=-11，右边=-11。两边相等。",
+            "equation": "2x - 3 = -11",
+            "expected_solution": -4
+          },
+          {
+            "block_id": "exercise_42",
+            "text": "练习42：3x - 4 = -13。解法：两边同时加4，得3x=-9；再同时除以3，得x=-3。验算：左边=3×(-3)-4=-13，右边=-13。两边相等。",
+            "equation": "3x - 4 = -13",
+            "expected_solution": -3
+          },
+          {
+            "block_id": "exercise_43",
+            "text": "练习43：4x - 5 = -13。解法：两边同时加5，得4x=-8；再同时除以4，得x=-2。验算：左边=4×(-2)-5=-13，右边=-13。两边相等。",
+            "equation": "4x - 5 = -13",
+            "expected_solution": -2
+          },
+          {
+            "block_id": "exercise_44",
+            "text": "练习44：5x - 6 = -11。解法：两边同时加6，得5x=-5；再同时除以5，得x=-1。验算：左边=5×(-1)-6=-11，右边=-11。两边相等。",
+            "equation": "5x - 6 = -11",
+            "expected_solution": -1
+          },
+          {
+            "block_id": "exercise_45",
+            "text": "练习45：6x - 7 = -7。解法：两边同时加7，得6x=0；再同时除以6，得x=0。验算：左边=6×(0)-7=-7，右边=-7。两边相等。",
+            "equation": "6x - 7 = -7",
+            "expected_solution": 0
+          },
+          {
+            "block_id": "exercise_46",
+            "text": "练习46：7x - 8 = -1。解法：两边同时加8，得7x=7；再同时除以7，得x=1。验算：左边=7×(1)-8=-1，右边=-1。两边相等。",
+            "equation": "7x - 8 = -1",
+            "expected_solution": 1
+          },
+          {
+            "block_id": "exercise_47",
+            "text": "练习47：8x - 9 = 7。解法：两边同时加9，得8x=16；再同时除以8，得x=2。验算：左边=8×(2)-9=7，右边=7。两边相等。",
+            "equation": "8x - 9 = 7",
+            "expected_solution": 2
+          },
+          {
+            "block_id": "exercise_48",
+            "text": "练习48：9x - 10 = 17。解法：两边同时加10，得9x=27；再同时除以9，得x=3。验算：左边=9×(3)-10=17，右边=17。两边相等。",
+            "equation": "9x - 10 = 17",
+            "expected_solution": 3
+          },
+          {
+            "block_id": "exercise_49",
+            "text": "练习49：10x - 11 = 29。解法：两边同时加11，得10x=40；再同时除以10，得x=4。验算：左边=10×(4)-11=29，右边=29。两边相等。",
+            "equation": "10x - 11 = 29",
+            "expected_solution": 4
+          },
+          {
+            "block_id": "exercise_50",
+            "text": "练习50：11x - 12 = 43。解法：两边同时加12，得11x=55；再同时除以11，得x=5。验算：左边=11×(5)-12=43，右边=43。两边相等。",
+            "equation": "11x - 12 = 43",
+            "expected_solution": 5
+          }
+        ],
+        "warnings": []
+      }
+    ],
+    "allowed_source_refs": [
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_01"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_02"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_03"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_04"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_05"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_06"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_07"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_08"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_09"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_10"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_11"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_12"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_13"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_14"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_15"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_16"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_17"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_18"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_19"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_20"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_21"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_22"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_23"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_24"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_25"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_26"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_27"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_28"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_29"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_30"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_31"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_32"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_33"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_34"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_35"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_36"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_37"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_38"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_39"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_40"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_41"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_42"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_43"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_44"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_45"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_46"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_47"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_48"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_49"
+      },
+      {
+        "material_id": "material_synthetic_linear_50",
+        "block_id": "exercise_50"
+      }
+    ]
+  },
+  "rounds": [
+    {
+      "round": 1,
+      "instruction": "请讲解练习03，给出解与代回原方程的验算。",
+      "block_id": "exercise_03",
+      "expected_solution": -2,
+      "snapshot": {
+        "policy_version": 1,
+        "captured_at": "2026-11-06T00:00:00+00:00",
+        "scope": "algebra",
+        "session_id": "synthetic_cache_session",
+        "entries": [
+          {
+            "memory_id": "memory_synthetic_language",
+            "field": "profile.language",
+            "value": "使用简体中文解释数学步骤",
+            "scope": "global",
+            "layer": "deep",
+            "temporary": false,
+            "updated_at": "2026-11-05T00:00:00+00:00"
+          },
+          {
+            "memory_id": "memory_synthetic_method",
+            "field": "teaching.method",
+            "value": "每次等式变形说明两边做相同运算，并代回原式验算",
+            "scope": "algebra",
+            "layer": "deep",
+            "temporary": false,
+            "updated_at": "2026-11-05T00:00:00+00:00"
+          }
+        ]
+      }
+    },
+    {
+      "round": 2,
+      "instruction": "请讲解练习24，给出解与代回原方程的验算。",
+      "block_id": "exercise_24",
+      "expected_solution": -1,
+      "snapshot": {
+        "policy_version": 1,
+        "captured_at": "2026-11-06T00:00:00+00:00",
+        "scope": "algebra",
+        "session_id": "synthetic_cache_session",
+        "entries": [
+          {
+            "memory_id": "memory_synthetic_language",
+            "field": "profile.language",
+            "value": "使用简体中文解释数学步骤",
+            "scope": "global",
+            "layer": "deep",
+            "temporary": false,
+            "updated_at": "2026-11-05T00:00:00+00:00"
+          },
+          {
+            "memory_id": "memory_synthetic_method",
+            "field": "teaching.method",
+            "value": "每次等式变形说明两边做相同运算，并代回原式验算",
+            "scope": "algebra",
+            "layer": "deep",
+            "temporary": false,
+            "updated_at": "2026-11-05T00:00:00+00:00"
+          }
+        ]
+      }
+    },
+    {
+      "round": 3,
+      "instruction": "请讲解练习47，给出解与代回原方程的验算。",
+      "block_id": "exercise_47",
+      "expected_solution": 2,
+      "snapshot": {
+        "policy_version": 1,
+        "captured_at": "2026-11-06T00:00:00+00:00",
+        "scope": "algebra",
+        "session_id": "synthetic_cache_session",
+        "entries": [
+          {
+            "memory_id": "memory_synthetic_language",
+            "field": "profile.language",
+            "value": "使用简体中文解释数学步骤",
+            "scope": "global",
+            "layer": "deep",
+            "temporary": false,
+            "updated_at": "2026-11-05T00:00:00+00:00"
+          },
+          {
+            "memory_id": "memory_synthetic_method",
+            "field": "teaching.method",
+            "value": "每次等式变形说明两边做相同运算，并代回原式验算",
+            "scope": "algebra",
+            "layer": "deep",
+            "temporary": false,
+            "updated_at": "2026-11-05T00:00:00+00:00"
+          }
+        ]
+      }
+    }
+  ]
+}

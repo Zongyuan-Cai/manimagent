@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import asyncio
+import hashlib
 import json
 import os
+import time
 from collections.abc import Callable
 from typing import TypeVar
 
@@ -11,6 +13,7 @@ from pydantic import BaseModel, ValidationError
 
 from manimagent.budget import Budget, BudgetExceeded
 from manimagent.config import Settings
+from manimagent.llm.usage import accumulate_usage, normalize_usage
 
 T = TypeVar("T", bound=BaseModel)
 
@@ -79,8 +82,14 @@ class ChatProvider:
         schema: type[T] | None,
         budget: Budget,
         deadline: float | None = None,
+        images: list[dict] | None = None,
     ) -> T | str:
         cfg = self.settings.model_for(role)
+        if images and not cfg.supports_vision:
+            raise ProviderError(
+                "材料读取模型未启用图片输入，请在核心模型设置中配置视觉模型",
+                "vision_not_configured",
+            )
         key = self.credential_resolver(cfg.api_key_env)
         if (
             not (cfg.base_url or cfg.generate_url)
@@ -105,7 +114,23 @@ class ChatProvider:
                     else ""
                 ),
             },
-            {"role": "user", "content": content},
+            {
+                "role": "user",
+                "content": (
+                    [{"type": "text", "text": content}]
+                    + [
+                        {
+                            "type": "image_url",
+                            "image_url": {
+                                "url": f"data:{item['media_type']};base64,{item['data']}"
+                            },
+                        }
+                        for item in images
+                    ]
+                )
+                if images
+                else content,
+            },
         ]
         last_error: ProviderError = InvalidResponse("模型结果无效")
 
@@ -121,14 +146,21 @@ class ChatProvider:
             candidates = ([{"role": "assistant", "content": raw}] if raw else []) + [
                 {"role": "user", "content": feedback}
             ]
-            size = sum(len(m["content"].encode("utf-8")) for m in messages + candidates) + 512
+
+            def message_size(message):
+                value = message["content"]
+                return (
+                    len(value.encode("utf-8"))
+                    if isinstance(value, str)
+                    else len(content.encode("utf-8")) + 8192 * len(images or [])
+                )
+
+            size = sum(message_size(m) for m in messages + candidates) + 512
             if size + cfg.max_output_tokens <= limit:
                 messages.extend(candidates)
             else:
                 instruction = {"role": "user", "content": feedback}
-                size = (
-                    sum(len(m["content"].encode("utf-8")) for m in messages + [instruction]) + 512
-                )
+                size = sum(message_size(m) for m in messages + [instruction]) + 512
                 if size + cfg.max_output_tokens <= limit:
                     messages.append(instruction)
 
@@ -146,9 +178,25 @@ class ChatProvider:
             if cfg.thinking != "default":
                 body["thinking"] = {"type": cfg.thinking}
             if self.trace:
+                traced = json.loads(json.dumps(body))
+                if images:
+                    for message in traced["messages"]:
+                        if isinstance(message["content"], list):
+                            for part in message["content"]:
+                                if part.get("type") == "image_url":
+                                    url = part["image_url"]["url"]
+                                    part["image_url"] = {
+                                        "redacted": True,
+                                        "sha256": hashlib.sha256(url.encode()).hexdigest(),
+                                        "encoded_chars": len(url),
+                                    }
                 self.trace(
-                    {"role": role, "attempt": attempt + 1, "event": "request", "request": body}
+                    {"role": role, "attempt": attempt + 1, "event": "request", "request": traced}
                 )
+            started = time.monotonic()
+            elapsed = None
+            http_status = None
+            normalized = normalize_usage(None)
             try:
                 response = asyncio.run(
                     self._post(
@@ -158,6 +206,8 @@ class ChatProvider:
                         timeout,
                     )
                 )
+                elapsed = round(time.monotonic() - started, 3)
+                http_status = response.status_code
                 if self.trace:
                     self.trace(
                         {
@@ -196,14 +246,8 @@ class ChatProvider:
                 usage = data.get("usage") or {}
                 if not isinstance(usage, dict):
                     raise InvalidResponse("模型用量字段格式无效")
-                for remote, local in (
-                    ("prompt_tokens", "input_tokens"),
-                    ("completion_tokens", "output_tokens"),
-                ):
-                    count = usage.get(remote)
-                    if isinstance(count, int) and not isinstance(count, bool) and count >= 0:
-                        setattr(budget.usage, local, getattr(budget.usage, local) + count)
-                        budget.usage.tokens_reported = True
+                normalized = normalize_usage(usage)
+                accumulate_usage(budget.usage, normalized)
                 if (
                     budget.usage.input_tokens + budget.usage.output_tokens
                     > self.settings.max_total_tokens
@@ -256,6 +300,9 @@ class ChatProvider:
                 last_error.__cause__ = exc
             except InvalidResponse as exc:
                 last_error = exc
+            except httpx.DecodingError as exc:
+                last_error = InvalidResponse(f"{role} 响应内容无法解码")
+                last_error.__cause__ = exc
             except (httpx.HTTPError, TimeoutError):
                 last_error = ProviderError(f"{role} 接口连接失败或超时", "provider_timeout", True)
                 if self.trace:
@@ -265,6 +312,20 @@ class ChatProvider:
                             "attempt": attempt + 1,
                             "event": "error",
                             "code": last_error.code,
+                        }
+                    )
+            finally:
+                if self.trace:
+                    self.trace(
+                        {
+                            "role": role,
+                            "attempt": attempt + 1,
+                            "event": "call_summary",
+                            "http_status": http_status,
+                            "elapsed_seconds": elapsed
+                            if elapsed is not None
+                            else round(time.monotonic() - started, 3),
+                            "normalized_usage": normalized,
                         }
                     )
             if attempt == 0 and schema and len(messages) == 2:

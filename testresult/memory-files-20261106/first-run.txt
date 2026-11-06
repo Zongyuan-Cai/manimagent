@@ -1,0 +1,68 @@
+........................................................................ [ 14%]
+.........ssss........................................................... [ 28%]
+........................................................................ [ 42%]
+........................................................................ [ 56%]
+........................................................................ [ 71%]
+........................................................................ [ 85%]
+................F....................................................... [ 99%]
+...                                                                      [100%]
+================================== FAILURES ===================================
+____ test_video_execution_passes_overridden_snapshot_to_service_and_budget ____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000227D3F4FBC0>
+
+    def test_video_execution_passes_overridden_snapshot_to_service_and_budget(monkeypatch):
+        settings = Settings(
+            models={
+                "text": ModelConfig(
+                    base_url="https://controlled.invalid/v1",
+                    model="controlled",
+                    auth_mode="none",
+                    max_output_tokens=6000,
+                    context_window=128000,
+                )
+            },
+            video_max_output_tokens=10000,
+            max_model_calls=30,
+            model_timeout=90,
+        )
+        # Isolate the stage wiring from persistence and network behavior, covered elsewhere.
+        task = object.__new__(execution.JobExecution)
+        task.settings, task.usage = settings, Usage(model_calls=2)
+        task.budget = Budget(settings, task.usage)
+        task.overall_deadline = time.monotonic() + 900
+        task.record, task.store = {}, object()
+        task.transport = task.credentials = None
+        task.renderer = SimpleNamespace(preflight=lambda: [])
+        task.stage = lambda name: None
+        captured = {}
+
+        def service(store, provider, renderer, snapshot):
+            captured.update(store=store, provider=provider, renderer=renderer, snapshot=snapshot)
+
+            def generate(request, budget, record, progress):
+                captured.update(request=request, budget=budget, record=record)
+                return "controlled-result"
+
+            return SimpleNamespace(generate=generate)
+
+        monkeypatch.setattr(execution, "VideoService", service)
+>       assert task.video("answer_" + "a" * 32) == "controlled-result"
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\unit\video\test_execution_settings.py:48:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <manimagent.jobs.execution.JobExecution object at 0x00000227D3F4E240>
+answer_id = 'answer_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', resume_job_id = None
+video_profile_id = 'auto'
+
+    def video(self, answer_id, resume_job_id=None, video_profile_id="auto"):
+>       answer = self.store.load("answers", answer_id, Answer)
+                 ^^^^^^^^^^^^^^^
+E       AttributeError: 'object' object has no attribute 'load'
+
+src\manimagent\jobs\execution.py:111: AttributeError
+=========================== short test summary info ===========================
+FAILED tests/unit/video/test_execution_settings.py::test_video_execution_passes_overridden_snapshot_to_service_and_budget
+1 failed, 502 passed, 4 skipped in 131.36s (0:02:11)

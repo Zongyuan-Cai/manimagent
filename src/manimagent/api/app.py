@@ -71,8 +71,8 @@ def create_app(
     @app.exception_handler(RequestValidationError)
     async def invalid_input(request, exc):
         message = (
-            "LLM 配置格式无效，请检查地址、模型、密钥和数值范围"
-            if request.url.path.startswith("/api/v2/llm-settings")
+            "模型配置格式无效，请检查地址、模型、密钥和数值范围"
+            if request.url.path.startswith(("/api/v2/llm-settings", "/api/v2/tts-settings"))
             else "输入格式无效，请检查必填字段、文本、范围和资源 ID"
         )
         return JSONResponse(

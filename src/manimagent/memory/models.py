@@ -21,6 +21,13 @@ class MemoryOptions(MemoryContract):
     learn: bool = True
 
 
+class LearningInput(MemoryContract):
+    job_id: MemoryIdentifier
+    text: str = Field(min_length=1, max_length=12000)
+    options: MemoryOptions
+    revision: int = Field(ge=0, strict=True)
+
+
 class MemoryCandidate(MemoryContract):
     field: str = Field(min_length=1, max_length=80)
     value: str = Field(min_length=1, max_length=300)

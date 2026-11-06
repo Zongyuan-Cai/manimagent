@@ -1,0 +1,163 @@
+{
+  "started_at": "2026-11-06T16:16:43.562356+08:00",
+  "python": "E:\\manimagent\\.venv\\Scripts\\python.exe",
+  "source_files": 82,
+  "manifest_before": {
+    "manimagent/__init__.py": "8783e4f59a2f6cdb00634805b8a3fb48d67fc280bcc0a07aa3d5214d0c660211",
+    "manimagent/__main__.py": "2cbece14fa4b3597d490620b0d0d9ab65a7bae2df80a5a971f9fe3d320ea9e66",
+    "manimagent/answers/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "manimagent/answers/context.py": "68bc70c2b550d5eb6b7a1e31f7fb226816b57063a6180619d1e22d2cf7996d64",
+    "manimagent/answers/markdown.py": "b4374b56c11b74ecbc59e2c2b3903236ee3c7cc88a1fe039b046728410f1eea4",
+    "manimagent/answers/prompts.py": "5b7edf7aeba2e9e30e3fa6c71cc7e391d5d44a304a2c063d8459366298f430f8",
+    "manimagent/answers/service.py": "5d8e2ac6995151fe44a19d720589b43e786d82c19a94583faaedda4c68c2338a",
+    "manimagent/api/__init__.py": "ffe40cea00245fb9b650c20b945a173672d8635d44f8d6516be69299167b5599",
+    "manimagent/api/app.py": "083381aff5511368adb1417ffc9b3f3059d59836c8de7f0fe8250a10b0e8eb78",
+    "manimagent/api/jobs.py": "97a71215e8dd0fd365c91d0a7fcc2b0db823490713cda5b9da405f835b797939",
+    "manimagent/api/materials.py": "016a8ae697851967145f6b1da285636ea92cb5d7053e1150effb932a3572b64e",
+    "manimagent/api/memory.py": "2c35c9a861a385241669ebbda9a0c257431aecda5913d4c1bb482b981eb391de",
+    "manimagent/api/middleware.py": "72bf882e0c852852233bce93983f2fdb254cfffdcb67bf61c146ebacc84365b9",
+    "manimagent/api/resources.py": "b09cf96d2d2b1513bb94a2402496bb53aa89898d20d6cd328782c8c9666c9166",
+    "manimagent/api/settings.py": "09b360a0e2b7f274d47f5087609f7ee601064e28baeb567a5920349dd850a6a1",
+    "manimagent/budget.py": "a8844b234d2a464fb12e68feb0992d3a9474f3e98c291e6b79440b9a8ff634ce",
+    "manimagent/cli.py": "363c98ebb13ad07fb0bd0686490fb4ab08e065861b327a456f920e30d4ff81be",
+    "manimagent/config.py": "4c3af32ce36370f77a130611c0c313f2468777bb7221a6b71b5b9885c1019715",
+    "manimagent/content_store.py": "3fe510aa275c2718d9f487b0c5a0d70ccf9bb82314979b9a39ea81e99c3b20c3",
+    "manimagent/errors.py": "902db7bffeb6faec6bc3e631c927990bb9750541ab256d73eb6006d7374a69b8",
+    "manimagent/instance.py": "a1acc4242b9da0e2c256cf99b892c2658a8d7c56ebc81dd173a0e3004294eb1a",
+    "manimagent/jobs/__init__.py": "bfb5b61e6db3d09c2bdb274e42ee7a1d6049260dd4521982a1ff6719d2c090a5",
+    "manimagent/jobs/execution.py": "1d8138559c3faabd7363c4bdf9fe6456850df487ed5c264e2bd09054f5addb4d",
+    "manimagent/jobs/learning.py": "435d1097f3dd493f680999feb4a1a9cc63ae4f6258dbe778d467ee4c064cbae1",
+    "manimagent/jobs/manager.py": "a9a3ebad9159d90dee084fdb3a5ce6d427ef5cd15c0678bf80b40eb657494270",
+    "manimagent/jobs/state.py": "e48e4a7f531be7fc8dcf435ea219edf016d814f00d61df0ae247880f8e15921f",
+    "manimagent/llm/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "manimagent/llm/client.py": "375dad6958222391e3e5f9ef4193ea7fd7e817476b44dd81cf5ca826c61228f2",
+    "manimagent/llm/context.py": "d72165c648df0de3bd68aafa1bf92f73a4be600d0da409800d951d9a590aa63e",
+    "manimagent/llm/credentials.py": "11535922393b16aa553f39385d68adb30303026a4f3a499acf8afa05b6f6d94e",
+    "manimagent/llm/settings.py": "81db5c1ea759167bf308988c362bc540a16ded208fd07bc4fa46fa6454fa2de2",
+    "manimagent/llm/usage.py": "8c55345e44e7357fa2af2b1a18f6f13c1772eb1cb39b8db89dbde1661a08537e",
+    "manimagent/materials/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "manimagent/materials/capabilities.py": "192abb2bde2480dece940cb357d7da2728320b56c6a2ce440b9a8cc0b6f12d0d",
+    "manimagent/materials/docx_math.py": "58bfdb6d7a1dde5303fd4247b603d8ae67e1e825c974f3b0ff987ba53dcec935",
+    "manimagent/materials/office.py": "c0454681a737c2a39fd2670ffc1ef0bfe983b54a60eddee2559a39aae896d95f",
+    "manimagent/materials/parsers.py": "fbee28d9458b53f2040877c3efdbfce520a3890a8e67b9ba03e57ffe10d0154c",
+    "manimagent/materials/process.py": "0898d327d3b6816d50a349aea5dc3d4863c8c10b996c23a06224c943c07aaded",
+    "manimagent/materials/service.py": "7560734f149a4a1562c911dcdb552397573d5012605d53e6b7479d31eb7df2d6",
+    "manimagent/materials/structured.py": "8cc4737b1517bcbe1c399c47bee8a57b3f4462e10399ee10e1c1aee427c4e10d",
+    "manimagent/materials/vision.py": "1d13cbb0d9faa19a685714dc089122c09757641b1dd597eef58d3545bfc2a6b1",
+    "manimagent/materials/visual_assets.py": "9756b3a35f745410fd4bbc24f735c92bd9148027005a4b74dc706fa8e4f8a688",
+    "manimagent/materials/worker.py": "830c367119945b1ed65c57a60fff764ae13d21958ffb8fda8fdda65d652ba7c3",
+    "manimagent/memory/__init__.py": "bb4da6144eb8f8191c84fa69af14f329b32731a26cab18398ac9a58456ed31fc",
+    "manimagent/memory/learning.py": "4567659c25f3879abe6dcbbdb163488a192e20ab33a6e7668bdee21a43e67799",
+    "manimagent/memory/models.py": "153f76d2e65b1f01ccd5627c53463e75765096aaf524d6ff6d7b07e43385ee1b",
+    "manimagent/memory/projection.py": "9d6f8c62649046f78b9d76aa9a4e72c88a9799fadf441cfdd86047a96e9c5f74",
+    "manimagent/memory/service.py": "6012d329f72a959da76254beb8761525d41406cffb50f741b8b9dd62a99fed82",
+    "manimagent/memory/store.py": "7db563c23234ec7ec8b4a70273fd20be74b3e76d3cbe2c2b9936918d8aa92fc1",
+    "manimagent/schemas.py": "803484cc7b7f16f08881c4e73b1695933ecdbb5142ef44937e978f7a3912c6c1",
+    "manimagent/video/__init__.py": "1f1825a24991ae74b5a82978699dbafc27dbf436699b18369adf0157c10bda2e",
+    "manimagent/video/models.py": "14c29f759e7b7f8e6c5ca531fa766e5389aa6ff570f0b2e673e5af51d8e861be",
+    "manimagent/video/narration.py": "ce79a9897d6f09e8eae1c5d0cd11ab2db782ace624ac8b729ab246da34e6a288",
+    "manimagent/video/notation.py": "40234f214a549031cb5eec676d7816fdf84961b2905b71d8edd79a89eddea0dd",
+    "manimagent/video/planning.py": "45b291bbae131f6e3df73b562169351a5666901fa007e888d9b4d34a3e49c8d1",
+    "manimagent/video/prompts.py": "f9a6bdaa90fd8b5c39809e5d5feaec252cfab69d290c087208f6d6195129c600",
+    "manimagent/video/renderer/__init__.py": "7a76d2371f764ffb88b4bf75c5e80993253c6594a787aff7375b65e1af1e0fab",
+    "manimagent/video/renderer/layout.py": "1efa67b88e255ebd21b022140c04cb0512fe8dfde5aec52e2d3ebe1d0a8ecf79",
+    "manimagent/video/renderer/media.py": "bbb10fe4b7631109d9c560ba95ea9df7396339949654a363797c56943b9ee798",
+    "manimagent/video/renderer/process.py": "95ee89e5c4f8988c088ec8c47db43e2ed27e4420d5097fe916b571f2cbc1376b",
+    "manimagent/video/renderer/scene.py": "0796083456c36707f079772b02a53694630913d1f4ab6a2265268df441ac100a",
+    "manimagent/video/renderer/worker.py": "748f2d04518b6b06b6896468a475b9b5966845100376d4f50924b65a5a5ed6ae",
+    "manimagent/video/review.py": "b1546c681891ad8727b25a4fc01c7c8cafe2c4a0baf44ef87b2e43dc5db40052",
+    "manimagent/video/service.py": "6d0678187b476b99998478c706dca159383043b5d69c83fb4a284798af140662",
+    "manimagent/video/settings.py": "76b8124984c86810f754837feceb64af33f1e03e2b5d768ca59b65d11e3f8b21",
+    "manimagent/video/timeline.py": "d4e901630b91cabaf62a735e237fda68d171a81c87c79444f0ccc8e79415e44f",
+    "manimagent/video/tts.py": "f435b8cf94d35b8986cfd06d87e11cc64d31dae863dadca1c2a85cfd9ba6d7a3",
+    "manimagent/web/api.js": "dfb32abf4f9f167b84957465400f97179b88ea0d8f673b13ba1cdfd4ade554f5",
+    "manimagent/web/app.css": "270d07a6aaf99154effb5ec341fafae6fe861f62516dcefb05134e438d89bdd0",
+    "manimagent/web/dom.js": "8ead7e3c8a709fcc5ace2940c16f8cadd4a2afd56d21263ced6fa43f7d147188",
+    "manimagent/web/index.html": "89ccbfb46041969c4f99f410e0c133cc3d6a6f417f1ad3e90064bd2ca8c50346",
+    "manimagent/web/main.js": "f5d9a20185cdb83b3dafa7d33f7b7b838b5bbe52a0f7d53e36af051e9030a027",
+    "manimagent/web/memory.js": "333559d804d3ff88a7ce339725bdd8ae54a2e0a169953ddfd7d727ed71ba216e",
+    "manimagent/web/onboarding.js": "9c2e75ab409693757ce511dc1eb7f0e56d04ce208df1a93b717e824d806f2ed5",
+    "manimagent/web/package.json": "1239d4d885dcad42201a27ed9324f8f0f760b78700d8db9ced39a511cffe7eae",
+    "manimagent/web/results.js": "a09236133aeb0441c149dbdef4f0e0b4996884eece68ff969d0d7205fe3bc68e",
+    "manimagent/web/settings.js": "ffc543ec37549aa85ac595c3a77909647b8ca569c118b830796f4699f5ca6530",
+    "manimagent/web/tts-settings.js": "d502ea4759ae4704df9155ac7ab14202933b0f6269311ebcf23ffc381d2de8a5",
+    "manimagent/web/vendor/MathJax-LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "manimagent/web/vendor/README.md": "8fa3bb075a72364153aad4ec772315fef4ff2cc5222a180d2b82a65ee5a8c42d",
+    "manimagent/web/vendor/tex-svg.js": "d4295dc33744836935c1399feece5159577b34c5c8ffb9f1c6324cd82e03a882",
+    "manimagent/web/workspace.js": "1c80f3d7dbcfe3614a44867c460c8f101d31b90fa8825fbf30fc5adb9671a3c4"
+  },
+  "commands": [
+    {
+      "name": "build",
+      "command": [
+        "C:\\Users\\20557\\.codex\\worktrees\\docs-av-alignment\\manimagent\\.venv\\Scripts\\uv.exe",
+        "build",
+        "--python",
+        "E:\\manimagent\\.venv\\Scripts\\python.exe",
+        "--out-dir",
+        "E:\\manimagent\\dist\\memory-consolidation-20261106-final"
+      ],
+      "exit_code": 0,
+      "log": "E:\\manimagent\\testresult\\memory-consolidation-20261106\\package-final-20261106-161643-511094-build.log"
+    },
+    {
+      "name": "check",
+      "command": [
+        "E:\\manimagent\\.venv\\Scripts\\python.exe",
+        "E:\\manimagent\\scripts\\check_distribution.py",
+        "E:\\manimagent\\dist\\memory-consolidation-20261106-final",
+        "--uv",
+        "C:\\Users\\20557\\.codex\\worktrees\\docs-av-alignment\\manimagent\\.venv\\Scripts\\uv.exe"
+      ],
+      "exit_code": 0,
+      "log": "E:\\manimagent\\testresult\\memory-consolidation-20261106\\package-final-20261106-161643-511094-check.log"
+    }
+  ],
+  "passed": true,
+  "supersedes": "E:\\manimagent\\testresult\\memory-consolidation-20261106\\package-20261106-160839-229863-summary.json",
+  "previous_packages": [
+    {
+      "path": "E:\\manimagent\\dist\\memory-consolidation-20261106\\manimagent-0.3.1-py3-none-any.whl",
+      "sha256": "db3759e14074c457688961cc058f6ce80a47f423002f56d31e4c9a444afe06cd",
+      "matches_current_source": false,
+      "changed_source_files": [
+        "manimagent/jobs/learning.py",
+        "manimagent/jobs/manager.py",
+        "manimagent/memory/learning.py"
+      ]
+    },
+    {
+      "path": "E:\\manimagent\\dist\\memory-consolidation-20261106\\manimagent-0.3.1.tar.gz",
+      "sha256": "431978dcd94116d5cb24f0a38846b76be6be69a245e54bddffe41c13f7d0a145",
+      "matches_current_source": false,
+      "changed_source_files": [
+        "manimagent/jobs/learning.py",
+        "manimagent/jobs/manager.py",
+        "manimagent/memory/learning.py"
+      ]
+    }
+  ],
+  "packages": [
+    {
+      "path": "E:\\manimagent\\dist\\memory-consolidation-20261106-final\\manimagent-0.3.1-py3-none-any.whl",
+      "sha256": "ed96d53960cdc377ef3c50f7930d5722b1008023c73e7cd68fe417eb4725eb26",
+      "source_bytes_match": true,
+      "background_modules_present": [
+        "manimagent/jobs/learning.py",
+        "manimagent/memory/learning.py"
+      ]
+    },
+    {
+      "path": "E:\\manimagent\\dist\\memory-consolidation-20261106-final\\manimagent-0.3.1.tar.gz",
+      "sha256": "e85656e3d61b384595ec14bdcfc9d34e9eef6a042709fe6f537ff030874b34f1",
+      "source_bytes_match": true,
+      "background_modules_present": [
+        "manimagent/jobs/learning.py",
+        "manimagent/memory/learning.py"
+      ]
+    }
+  ],
+  "source_unchanged": true,
+  "changed_source_files": [],
+  "finished_at": "2026-11-06T16:16:53.309110+08:00"
+}

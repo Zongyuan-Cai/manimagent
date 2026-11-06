@@ -1,0 +1,212 @@
+{
+  "started_at": "2026-11-06T07:37:04.610451+00:00",
+  "model": "mimo-v2.6-flash",
+  "synthetic": true,
+  "limits": {
+    "model_calls": 6,
+    "output_tokens_per_call": 384,
+    "deadline_seconds": 240,
+    "call_timeout_seconds": 40,
+    "retries": 0,
+    "thinking": "disabled"
+  },
+  "calls": [
+    {
+      "sequence": 1,
+      "variant": "legacy",
+      "round": 1,
+      "exposure": "first_attempt",
+      "block_id": "exercise_03",
+      "expected_solution": -2,
+      "answered": true,
+      "parsed_solution_matches": true,
+      "answer": "练习03：4x+5=-3。两边同时减5，得4x=-8；两边同时除以4，得x=-2。代回原方程：左边=4×(-2)+5=-3，右边=-3，两边相等，解正确。",
+      "error_code": null,
+      "http_status": 200,
+      "elapsed_seconds": 3.516,
+      "normalized_usage": {
+        "input_tokens": 6804,
+        "output_tokens": 62,
+        "cached_input_tokens": null,
+        "cache_reported": false,
+        "cache_accounted_input_tokens": null
+      },
+      "attempts": 1,
+      "payload_bytes": 17034,
+      "payload_sha256": "252ec1f4062984730de32da5032296a848ff82f6c347e5ad32669dff72fba39f"
+    },
+    {
+      "sequence": 2,
+      "variant": "stable_prefix",
+      "round": 1,
+      "exposure": "first_attempt",
+      "block_id": "exercise_03",
+      "expected_solution": -2,
+      "answered": true,
+      "parsed_solution_matches": true,
+      "answer": "**练习03：4x + 5 = -3**\n\n**解法：** 两边同时减5，得 4x = -8；再两边同时除以4，得 **x = -2**。\n\n**验算：** 左边 = 4×(-2) + 5 = -8 + 5 = -3，右边 = -3，两边相等，解正确。",
+      "error_code": null,
+      "http_status": 200,
+      "elapsed_seconds": 6.89,
+      "normalized_usage": {
+        "input_tokens": 6649,
+        "output_tokens": 89,
+        "cached_input_tokens": null,
+        "cache_reported": false,
+        "cache_accounted_input_tokens": null
+      },
+      "attempts": 1,
+      "payload_bytes": 16689,
+      "payload_sha256": "2be4e5023036048445f58c8a65ab2727ae8aa5bd3c822103348486b55245441a"
+    },
+    {
+      "sequence": 3,
+      "variant": "legacy",
+      "round": 2,
+      "exposure": "reuse_attempt",
+      "block_id": "exercise_24",
+      "expected_solution": -1,
+      "answered": true,
+      "parsed_solution_matches": true,
+      "answer": "练习24：5x+6=6x+7。两边同时减5x，得6=x+7；再同时减7，得x=-1。验算：左边=5×(-1)+6=1，右边=6×(-1)+7=1，两边相等。",
+      "error_code": null,
+      "http_status": 200,
+      "elapsed_seconds": 3.969,
+      "normalized_usage": {
+        "input_tokens": 6804,
+        "output_tokens": 66,
+        "cached_input_tokens": null,
+        "cache_reported": false,
+        "cache_accounted_input_tokens": null
+      },
+      "attempts": 1,
+      "payload_bytes": 17034,
+      "payload_sha256": "dc5834bbd933be195206cc8f87c3ee409475e3098e0521ed018ff1467a4d2f00"
+    },
+    {
+      "sequence": 4,
+      "variant": "stable_prefix",
+      "round": 2,
+      "exposure": "reuse_attempt",
+      "block_id": "exercise_24",
+      "expected_solution": -1,
+      "answered": true,
+      "parsed_solution_matches": true,
+      "answer": "练习24：5x + 6 = 6x + 7。\n\n两边同时减5x，得6 = x + 7；再同时减7，得x = -1。\n\n验算：左边=5×(-1)+6=1，右边=6×(-1)+7=1，两边相等。",
+      "error_code": null,
+      "http_status": 200,
+      "elapsed_seconds": 3.641,
+      "normalized_usage": {
+        "input_tokens": 6649,
+        "output_tokens": 72,
+        "cached_input_tokens": null,
+        "cache_reported": false,
+        "cache_accounted_input_tokens": null
+      },
+      "attempts": 1,
+      "payload_bytes": 16689,
+      "payload_sha256": "ec5745b628fbcf9d0933d0fbbf586eec9310482eac7d3e91c113b40e33da6732"
+    },
+    {
+      "sequence": 5,
+      "variant": "legacy",
+      "round": 3,
+      "exposure": "reuse_attempt",
+      "block_id": "exercise_47",
+      "expected_solution": 2,
+      "answered": true,
+      "parsed_solution_matches": true,
+      "answer": "练习47：8x - 9 = 7。两边同时加9，得8x=16；再同时除以8，得x=2。代回：左边=8×2-9=7=右边，两边相等。",
+      "error_code": null,
+      "http_status": 200,
+      "elapsed_seconds": 3.203,
+      "normalized_usage": {
+        "input_tokens": 6804,
+        "output_tokens": 56,
+        "cached_input_tokens": null,
+        "cache_reported": false,
+        "cache_accounted_input_tokens": null
+      },
+      "attempts": 1,
+      "payload_bytes": 17034,
+      "payload_sha256": "c6fe7f9286f2a5f647c7734e7643946b81f335febafe83c391aa02cca765c0fe"
+    },
+    {
+      "sequence": 6,
+      "variant": "stable_prefix",
+      "round": 3,
+      "exposure": "reuse_attempt",
+      "block_id": "exercise_47",
+      "expected_solution": 2,
+      "answered": true,
+      "parsed_solution_matches": true,
+      "answer": "练习47：8x - 9 = 7。两边同时加9，得8x=16；再同时除以8，得x=2。验算：左边=8×2-9=7，右边=7，两边相等。",
+      "error_code": null,
+      "http_status": 200,
+      "elapsed_seconds": 10.125,
+      "normalized_usage": {
+        "input_tokens": 6649,
+        "output_tokens": 58,
+        "cached_input_tokens": 6592,
+        "cache_reported": true,
+        "cache_accounted_input_tokens": 6649
+      },
+      "attempts": 1,
+      "payload_bytes": 16689,
+      "payload_sha256": "ea79b841277c9b0195c0a8e5baac77188eedc99513f46d27f1877e594bdbff3c"
+    }
+  ],
+  "elapsed_seconds": 31.344,
+  "usage": {
+    "model_calls": 6,
+    "input_tokens": 40359,
+    "output_tokens": 403,
+    "tokens_reported": true,
+    "elapsed_seconds": 31.344,
+    "cached_input_tokens": 6592,
+    "cache_reported_calls": 1,
+    "cache_accounted_input_tokens": 6649
+  },
+  "groups": {
+    "legacy": {
+      "cache_reported_calls": 0,
+      "cached_input_tokens": null,
+      "cache_accounted_input_tokens": 0,
+      "first_attempt_sequence": 1,
+      "reuse_attempt_sequences": [
+        3,
+        5
+      ]
+    },
+    "stable_prefix": {
+      "cache_reported_calls": 1,
+      "cached_input_tokens": 6592,
+      "cache_accounted_input_tokens": 6649,
+      "first_attempt_sequence": 2,
+      "reuse_attempt_sequences": [
+        4,
+        6
+      ]
+    }
+  },
+  "source_sha256": {
+    "evals/prompt_cache.py": "9fbb2412f3c2f00d494b633c79e3d10fdfc49c53fd376ad1f7799a28169909cc",
+    "src/manimagent/llm/client.py": "375dad6958222391e3e5f9ef4193ea7fd7e817476b44dd81cf5ca826c61228f2",
+    "src/manimagent/llm/context.py": "d72165c648df0de3bd68aafa1bf92f73a4be600d0da409800d951d9a590aa63e",
+    "src/manimagent/llm/usage.py": "8c55345e44e7357fa2af2b1a18f6f13c1772eb1cb39b8db89dbde1661a08537e",
+    "src/manimagent/memory/projection.py": "9d6f8c62649046f78b9d76aa9a4e72c88a9799fadf441cfdd86047a96e9c5f74"
+  },
+  "offline_postprocessing": {
+    "reason": "Corrected solution regex to exclude coefficient terms such as 4x = -8.",
+    "additional_model_calls": 0,
+    "original_executed_script": "executed_script.py",
+    "updated_script_sha256": "7e1448a8a6a6f1411e27bc791990639ec4d3f390faa6fcc4d84f3cdd9487fce8",
+    "unchanged_fields": [
+      "answer",
+      "normalized_usage",
+      "elapsed_seconds",
+      "http_status",
+      "payload_sha256"
+    ]
+  }
+}

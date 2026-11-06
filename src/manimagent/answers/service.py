@@ -15,6 +15,7 @@ from manimagent.config import Settings
 from manimagent.content_store import ContentStore, new_id
 from manimagent.errors import ContentError
 from manimagent.llm.client import ChatProvider
+from manimagent.memory.projection import user_context
 from manimagent.memory.service import MEMORY_CONTEXT_INSTRUCTION
 from manimagent.schemas import (
     Answer,
@@ -94,26 +95,45 @@ class AnswerService:
         self.context = ContextAssembler(store, settings)
 
     def generate(self, request: AnswerRequest, budget: Budget, record: dict) -> Answer:
-        bundle = self.context.build(request.material_ids, request.instruction)
+        bundle = self.context.build(request.material_ids)
         memory_snapshot = record.get("memory_snapshot")
-        if memory_snapshot is not None:
-            bundle["user_memory"] = memory_snapshot
-        writer_instruction = WRITER_INSTRUCTION + (
-            "\n" + MEMORY_CONTEXT_INSTRUCTION if memory_snapshot is not None else ""
+        writer_payload = user_context(
+            bundle, role="answer_writer", snapshot=memory_snapshot, instruction=request.instruction
         )
-        record["context"] = bundle
-        self.context.check_budget("answer_writer", writer_instruction, bundle, record)
+        writer_instruction = WRITER_INSTRUCTION + "\n" + MEMORY_CONTEXT_INSTRUCTION
+        record["context"] = writer_payload
+        self.context.check_budget("answer_writer", writer_instruction, writer_payload, record)
         # Persist the exact context before the first model call, including failed attempts.
         self.store.save("records", record["job_id"], record)
-        markdown = self.provider.complete_text("answer_writer", writer_instruction, bundle, budget)
+        markdown = self.provider.complete_text(
+            "answer_writer", writer_instruction, writer_payload, budget
+        )
         answer = derive_answer(markdown, request.material_ids, request.instruction, bundle)
+        answer.warnings.extend(
+            AnswerNotice(
+                code=warning["code"],
+                message=warning["message"],
+                source_refs=[
+                    SourceRef(material_id=material["material_id"], block_id=block_id)
+                    for block_id in warning["block_ids"]
+                ],
+            )
+            for material in bundle["materials"]
+            for warning in material["warnings"]
+        )
         answer.memory_snapshot = memory_snapshot
         answer.warnings.extend(
             AnswerNotice(code=warning["code"], message=warning["message"])
             for warning in record.get("memory_warnings", [])
         )
         if self.settings.answer_check:
-            check_payload = {**bundle, "candidate_markdown": markdown}
+            check_payload = user_context(
+                bundle,
+                role="answer_checker",
+                snapshot=memory_snapshot,
+                instruction=request.instruction,
+                candidate_markdown=markdown,
+            )
             check_prompt = CHECK_INSTRUCTION + json.dumps(
                 AnswerCheck.model_json_schema(), ensure_ascii=False
             )
@@ -153,7 +173,7 @@ class AnswerService:
 
     def revise(self, request: AnswerRevisionRequest) -> Answer:
         base = self.store.load("answers", request.base_answer_id, Answer)
-        bundle = self.context.build(base.material_ids, base.instruction)
+        bundle = self.context.build(base.material_ids)
         warnings = [
             *base.warnings,
             *request.warnings,

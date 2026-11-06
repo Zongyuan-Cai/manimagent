@@ -51,6 +51,10 @@ class Usage(BaseModel):
     output_tokens: int = 0
     tokens_reported: bool = False
     elapsed_seconds: float = 0
+    # Only supplier-reported cache hits; None distinguishes unknown from a known zero.
+    cached_input_tokens: int | None = Field(default=None, ge=0, strict=True)
+    cache_reported_calls: int = Field(default=0, ge=0, strict=True)
+    cache_accounted_input_tokens: int = Field(default=0, ge=0, strict=True)
 
 
 class Ref(Contract):
@@ -202,6 +206,7 @@ class AnswerSource(Contract):
 
 class TextGenerationRequest(Contract):
     output_mode: Literal["text", "both"] = "text"
+    video_profile_id: Literal["auto", "standard_silent", "standard_narrated"] = "auto"
     source: Annotated[InputsSource | MaterialsSource | AnswerSource, Field(discriminator="type")]
     memory: MemoryOptions | None = None
 
@@ -233,6 +238,7 @@ class Generation(Contract):
     schema_version: Literal["1.0"] = "1.0"
     generation_id: ResourceID
     output_mode: Literal["text", "both"] = "text"
+    video_profile_id: Literal["auto", "standard_silent", "standard_narrated"] = "auto"
     source: dict
     material_ids: list[ResourceID] = Field(default_factory=list)
     answer_id: ResourceID | None = None

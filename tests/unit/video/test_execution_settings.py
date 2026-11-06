@@ -29,7 +29,12 @@ def test_video_execution_passes_overridden_snapshot_to_service_and_budget(monkey
     task.settings, task.usage = settings, Usage(model_calls=2)
     task.budget = Budget(settings, task.usage)
     task.overall_deadline = time.monotonic() + 900
-    task.record, task.store = {}, object()
+    task.record = {}
+    task.store = SimpleNamespace(
+        load=lambda *args: SimpleNamespace(
+            memory_snapshot=None, model_fields_set={"memory_snapshot"}
+        )
+    )
     task.transport = task.credentials = None
     task.renderer = SimpleNamespace(preflight=lambda: [])
     task.stage = lambda name: None

@@ -2,6 +2,7 @@ runs_dir: runs/current
 private_dir: runs/current/private
 max_upload_bytes: 20971520
 max_parse_pages: 100
+max_visual_pages: 12  # Total images/scanned pages per task; requires a visual material_reader.
 max_parse_chars: 200000
 max_archive_bytes: 52428800
 max_archive_entries: 2000
@@ -13,6 +14,16 @@ model_timeout: 90
 max_model_calls: 30
 max_total_tokens: 300000
 max_waiting: 3
+memory_learning_timeout: 20  # Background learning only; at most one call per attempt.
+memory_learning_max_tokens: 16000  # Separate from foreground max_total_tokens.
+memory_policy:
+  promotion_sessions: 3
+  short_term_days: 14
+  max_entries: 200
+  max_snapshot_entries: 12
+  max_snapshot_chars: 6000
+  max_evidence_per_entry: 20
+  max_sources: 10000
 video_timeout: 600
 video_render_timeout: 90
 video_queue_timeout: 120
@@ -40,9 +51,11 @@ models:
     max_output_tokens: 6000
     context_window: 128000
     thinking: default  # DeepSeek supports disabled; enable this only after verifying the service.
+    supports_vision: false  # Enable only for a model supporting Chat Completions image_url.
 roles:
   answer_writer: text
   answer_checker: text
   video_planner: text
   scene_generator: text
   plan_checker: text
+  # material_reader: vision  # Optional model ID; omitted means follow answer_writer.

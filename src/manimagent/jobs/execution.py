@@ -12,8 +12,7 @@ from manimagent.content_store import ContentStore
 from manimagent.errors import ContentError
 from manimagent.llm.client import ChatProvider, ProviderError
 from manimagent.materials.service import MaterialService
-from manimagent.memory.service import prepare_memory
-from manimagent.memory.store import MemoryStore
+from manimagent.memory.audit import publish_memory_context
 from manimagent.schemas import (
     Answer,
     AnswerRequest,
@@ -66,7 +65,9 @@ class JobExecution:
         self.record["worker_started_at"] = now()
         if self.animation_job:
             self.budget.deadline = min(self.budget.deadline, self.overall_deadline)
-        self.materials = MaterialService(self.store, self.settings)
+        self.materials = MaterialService(
+            self.store, self.settings, self.provider_for(self.settings)
+        )
         self.answers = AnswerService(self.store, self.provider_for(self.settings), self.settings)
 
     def save(self):
@@ -106,6 +107,10 @@ class JobExecution:
         self.save()
 
     def video(self, answer_id, resume_job_id=None, video_profile_id="auto"):
+        answer = self.store.load("answers", answer_id, Answer)
+        self.record["memory_snapshot"] = answer.memory_snapshot
+        self.record["memory_snapshot_known"] = "memory_snapshot" in answer.model_fields_set
+        self.record.setdefault("memory_snapshot_source", {"answer_id": answer_id})
         self.stage("video")
         issues = self.renderer.preflight()
         if issues:
@@ -154,9 +159,6 @@ class JobExecution:
                 generation.material_ids = source.material_ids
             generation.stages["material"].status = "completed"
             self.stage("answer")
-            self.prepare_memory(
-                source.instruction, request.memory or getattr(source, "memory", None)
-            )
             answer = self.answers.generate(
                 AnswerRequest(
                     material_ids=generation.material_ids,
@@ -172,27 +174,11 @@ class JobExecution:
         self.save_generation()
         self.record["answer_ready_at"] = now()
         if request.output_mode == "both":
-            rendered = self.video(answer.answer_id)
+            rendered = self.video(answer.answer_id, video_profile_id=request.video_profile_id)
             generation.video_id = rendered.video_id
             generation.stages["video"].status = "completed"
             self.save_generation()
         return Ref(type="generation", id=generation.generation_id)
-
-    def prepare_memory(self, instruction, options):
-        if options is None:
-            return
-        self.progress("正在整理本次用户记忆并固定个性化上下文")
-        snapshot, warnings = prepare_memory(
-            MemoryStore(self.store.root / "memory.sqlite3"),
-            self.provider_for(self.settings),
-            self.budget,
-            instruction,
-            options,
-            self.job.job_id,
-        )
-        self.record["memory_snapshot"] = snapshot
-        self.record["memory_warnings"] = warnings
-        self.store.save("records", self.job.job_id, self.record)
 
     def dispatch(self):
         request = self.record["request"]
@@ -214,7 +200,6 @@ class JobExecution:
         if self.job.kind == "answer":
             self.stage("answer")
             parsed = AnswerRequest.model_validate(request)
-            self.prepare_memory(parsed.instruction, parsed.memory)
             result = self.answers.generate(parsed, self.budget, self.record)
             return Ref(type="answer", id=result.answer_id)
         return self.generate_outputs()
@@ -282,6 +267,7 @@ class JobExecution:
                 self.save_generation()
         self.record["usage"] = self.job.usage
         self.record["terminal_at"] = now()
+        publish_memory_context(self.store.root, self.record, status=self.job.status)
         self.store.save("records", self.job.job_id, self.record)
         diagnostic = {key: value for key, value in self.record.items() if key != "settings"}
         self.job.diagnostic_asset_ids.append(self.store.diagnostic(diagnostic))

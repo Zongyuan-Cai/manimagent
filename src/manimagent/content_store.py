@@ -5,42 +5,16 @@ import io
 import json
 import os
 import re
-import threading
 import uuid
-import zipfile
 from pathlib import Path
 from typing import BinaryIO
 
 from pydantic import BaseModel
 
 from manimagent.errors import ContentError
+from manimagent.materials.detection import detect_upload
 from manimagent.schemas import FileAsset
-
-# All stores in one service process share the same atomic JSON publication lock.
-# Windows readers can otherwise race os.replace and fail with sharing violations.
-_JSON_IO_LOCK = threading.RLock()
-
-
-def read_json_bytes(path: Path) -> bytes:
-    with _JSON_IO_LOCK:
-        return path.read_bytes()
-
-
-def write_json(path: Path, value: BaseModel | dict) -> None:
-    """Publish private JSON atomically, sharing the Windows reader lock."""
-    path.parent.mkdir(parents=True, exist_ok=True)
-    temporary = path.with_suffix("." + uuid.uuid4().hex + ".tmp")
-    try:
-        descriptor = os.open(temporary, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
-        with os.fdopen(descriptor, "w", encoding="utf-8", newline="") as stream:
-            data = value.model_dump(mode="json") if isinstance(value, BaseModel) else value
-            json.dump(data, stream, ensure_ascii=False, indent=2)
-            stream.flush()
-            os.fsync(stream.fileno())
-        with _JSON_IO_LOCK:
-            os.replace(temporary, path)
-    finally:
-        temporary.unlink(missing_ok=True)
+from manimagent.storage import read_json_bytes, write_json
 
 
 def new_id(prefix: str) -> str:
@@ -91,11 +65,18 @@ class ContentStore:
     def file_path(self, identifier: str) -> Path:
         return self.path("files", identifier, ".content")
 
-    def put_file(self, stream: BinaryIO, filename: str, media_type: str = "") -> FileAsset:
+    def put_file(self, stream: BinaryIO, filename: str) -> FileAsset:
         # Never trust the submitted MIME type or a client-supplied path.
         name = re.split(r"[/\\]", filename)[-1]
         name = "".join(c for c in name if c.isprintable()).strip()[:180] or "material.txt"
-        return self._write_file(stream, name, max_bytes=self.max_upload_bytes)
+        try:
+            return self._write_file(stream, name, max_bytes=self.max_upload_bytes)
+        except ContentError as exc:
+            error = ContentError(
+                exc.error.code, f"{name}：{exc.error.message}", exc.http_status, exc.state
+            )
+            error.error.details = {**exc.error.details, "filename": name}
+            raise error from exc
 
     def _write_file(
         self,
@@ -128,7 +109,7 @@ class ContentStore:
             asset = FileAsset(
                 file_id=identifier,
                 filename=filename,
-                media_type=media_type or self.detect(temporary, filename),
+                media_type=media_type or detect_upload(temporary, filename),
                 size_bytes=size,
                 sha256=digest.hexdigest(),
             )
@@ -139,36 +120,6 @@ class ContentStore:
             temporary.unlink(missing_ok=True)
             path.unlink(missing_ok=True)
             raise
-
-    def detect(self, path: Path, filename: str) -> str:
-        with path.open("rb") as stream:
-            prefix = stream.read(1024)
-        if prefix.startswith(b"%PDF-"):
-            return "application/pdf"
-        if prefix.startswith(b"PK"):
-            try:
-                with zipfile.ZipFile(path) as archive:
-                    names = set(archive.namelist())
-                    if {"[Content_Types].xml", "word/document.xml"} <= names:
-                        return "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-            except zipfile.BadZipFile:
-                pass
-            raise ContentError(
-                "unsupported_file_input", "只接受 TXT、Markdown、PDF、DOCX 文件", 415
-            )
-        if Path(filename).suffix.lower() not in {".txt", ".md", ".markdown", ".pdf", ".docx"}:
-            raise ContentError(
-                "unsupported_file_input", "只接受 TXT、Markdown、PDF、DOCX 文件", 415
-            )
-        if Path(filename).suffix.lower() in {".pdf", ".docx"}:
-            raise ContentError("invalid_file", "文件特征与 PDF/DOCX 格式不匹配", 415)
-        try:
-            text = path.read_bytes().decode("utf-8-sig")
-            if "\x00" in text or any(ord(c) < 32 and c not in "\n\r\t\f" for c in text):
-                raise UnicodeError()
-        except UnicodeError as exc:
-            raise ContentError("unsupported_encoding", "文本文件必须使用 UTF-8 编码", 415) from exc
-        return "text/markdown" if filename.lower().endswith((".md", ".markdown")) else "text/plain"
 
     def diagnostic(self, value: dict | str) -> str:
         # Internal assets are registered separately from the upload whitelist.

@@ -1,0 +1,85 @@
+{
+  "python": {
+    "tests": 401,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 4,
+    "passed": 397,
+    "evidence": "current.xml"
+  },
+  "javascript": {
+    "passed": 60,
+    "failed": 0,
+    "command": "node --test tests/web/*.test.mjs"
+  },
+  "ruff": {
+    "check": "passed",
+    "format": "passed",
+    "files": 154
+  },
+  "git_diff_check": "passed",
+  "local_markdown_links": {
+    "checked": 133,
+    "missing": []
+  },
+  "credential_pattern_scan": {
+    "matches": [],
+    "pattern": "sk- with at least 24 alphanumeric characters"
+  },
+  "ui": {
+    "isolated_fixture": true,
+    "read_only_generation": "passed",
+    "correction_preserves_short_layer": "passed",
+    "historical_snapshot_unchanged": "passed",
+    "manage_link_opens_panel": "passed",
+    "mobile_viewport_requested": [
+      390,
+      844
+    ],
+    "mobile_document_width": 375,
+    "mobile_scroll_width": 375,
+    "console_errors_or_warnings_observed": [],
+    "mock_cache_ratio_is_not_live_provider_evidence": true
+  },
+  "live_cache": {
+    "actual_model_calls": 6,
+    "retries": 0,
+    "complete_answers": 6,
+    "final_solution_matches": 6,
+    "credential_absent_from_artifacts": true,
+    "original_executed_script_hash_matches": true,
+    "elapsed_seconds": 31.344,
+    "input_tokens": 40359,
+    "output_tokens": 403,
+    "cached_input_tokens": 6592,
+    "cache_reported_calls": 1,
+    "cache_accounted_input_tokens": 6649
+  },
+  "packages": [
+    {
+      "filename": "manimagent-0.3.1-py3-none-any.whl",
+      "bytes": 851979,
+      "sha256": "dcef683bc61edf0b3529128e521f9e9c6f9877223affeaba5666707291ca0fb1",
+      "runtime_files_compared": 80,
+      "new_modules": [
+        "llm/context.py",
+        "llm/usage.py",
+        "memory/projection.py"
+      ],
+      "status": "runtime_bytes_match"
+    },
+    {
+      "filename": "manimagent-0.3.1.tar.gz",
+      "bytes": 1040885,
+      "sha256": "530b3e6336f9e8dd90989a299046670b446d9536996d727fa297f4b0d9438154",
+      "runtime_files_compared": 80,
+      "new_modules": [
+        "llm/context.py",
+        "llm/usage.py",
+        "memory/projection.py"
+      ],
+      "status": "runtime_bytes_match"
+    }
+  ],
+  "source_files_fingerprinted": 201
+}

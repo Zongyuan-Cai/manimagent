@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+import pytest
+
 from manimagent.video.models import (
     digest,
 )
-from manimagent.video.planning import teaching_units
+from manimagent.video.units import teaching_units
 
 
 def test_source_ranges_preserve_unicode_code_fences_and_display_math():
@@ -27,3 +29,20 @@ def test_equation_paragraphs_do_not_artificially_exceed_unit_limit():
     assert all(
         c.isspace() or any(u.start <= i < u.end for u in units) for i, c in enumerate(markdown)
     )
+
+
+@pytest.mark.parametrize(
+    "opening, inner, closing",
+    [
+        ("````markdown", "```python", "````"),
+        ("~~~~markdown", "~~~", "~~~~~"),
+        ("```python", "``` not a closing fence", "```"),
+    ],
+)
+def test_fence_closes_only_at_its_own_character_length_and_empty_suffix(opening, inner, closing):
+    code = f"{opening}\nfirst\n{inner}\n\nsecond\n{closing}\n"
+    markdown = f"说明。\n\n{code}\n结论。"
+    units = teaching_units(markdown)
+    assert len(units) == 3
+    assert units[1].text == code
+    assert all(markdown[unit.start : unit.end] == unit.text for unit in units)

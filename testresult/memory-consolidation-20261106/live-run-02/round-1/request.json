@@ -1,0 +1,18 @@
+{
+  "output_mode": "text",
+  "memory": {
+    "session_id": "synthetic_independent_1",
+    "scope": "global",
+    "learn": true
+  },
+  "source": {
+    "type": "inputs",
+    "instruction": "请讲解 x=1 时 x+x 的值。我希望以后讲解时每一步都说明依据。",
+    "inputs": [
+      {
+        "type": "text",
+        "text": "已知 x=1，求 x+x 的值。"
+      }
+    ]
+  }
+}

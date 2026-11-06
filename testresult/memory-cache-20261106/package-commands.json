@@ -1,0 +1,44 @@
+[
+  {
+    "command": [
+      "C:\\Users\\20557\\.codex\\worktrees\\docs-av-alignment\\manimagent\\.venv\\Scripts\\uv.exe",
+      "--version"
+    ],
+    "exit_code": 0,
+    "seconds": 0.031,
+    "log": "package-uv-version.log"
+  },
+  {
+    "command": [
+      "C:\\Users\\20557\\.codex\\worktrees\\docs-av-alignment\\manimagent\\.venv\\Scripts\\uv.exe",
+      "lock",
+      "--check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.078,
+    "log": "package-lock.log"
+  },
+  {
+    "command": [
+      "C:\\Users\\20557\\.codex\\worktrees\\docs-av-alignment\\manimagent\\.venv\\Scripts\\uv.exe",
+      "build",
+      "--out-dir",
+      "E:\\manimagent\\dist\\memory-cache-20261106"
+    ],
+    "exit_code": 0,
+    "seconds": 3.188,
+    "log": "package-build.log"
+  },
+  {
+    "command": [
+      "E:\\manimagent\\.venv\\Scripts\\python.exe",
+      "scripts/check_distribution.py",
+      "E:\\manimagent\\dist\\memory-cache-20261106",
+      "--uv",
+      "C:\\Users\\20557\\.codex\\worktrees\\docs-av-alignment\\manimagent\\.venv\\Scripts\\uv.exe"
+    ],
+    "exit_code": 0,
+    "seconds": 10.454,
+    "log": "package-install-smoke.log"
+  }
+]

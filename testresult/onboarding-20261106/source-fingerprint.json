@@ -1,0 +1,5 @@
+{
+  "files": 81,
+  "sha256": "5c7972130163d0804c0f5f574d77e61628bb37c0d248a1ecbe31b9f193a709ea",
+  "basis": "src/manimagent files excluding __pycache__, pyproject.toml, uv.lock, config.example.yaml, .env.example; sorted path NUL content NUL"
+}

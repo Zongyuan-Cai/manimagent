@@ -1,0 +1,10 @@
+{
+  "checked_files": 48,
+  "no_secret_in_saved_artifacts": true,
+  "no_credentials_file_written": true,
+  "total_actual_http_calls": 2,
+  "reported_provider_input_tokens": 1372,
+  "reported_provider_output_tokens": 1177,
+  "background_model_calls": 0,
+  "no_additional_real_run": true
+}

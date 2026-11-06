@@ -9,9 +9,51 @@ import os
 import threading
 import uuid
 from pathlib import Path
+from urllib.parse import urlsplit
 
-from manimagent.content_store import read_json_bytes, write_json
+from pydantic import BaseModel, ConfigDict, SecretStr, model_validator
+
 from manimagent.errors import ContentError
+from manimagent.storage import read_json_bytes, write_json
+
+
+class CredentialDraft(BaseModel):
+    """Shared key update contract for model and speech configuration drafts."""
+
+    model_config = ConfigDict(extra="forbid")
+    api_key: SecretStr | None = None
+    clear_api_key: bool = False
+
+    @model_validator(mode="after")
+    def validate_secret(self):
+        if self.api_key is not None:
+            secret = self.api_key.get_secret_value()
+            if (
+                not secret.strip()
+                or len(secret) > 8192
+                or any(ord(char) < 32 or ord(char) > 126 for char in secret)
+            ):
+                raise ValueError("API Key 必须是非空的可打印 ASCII 字符串")
+            if self.clear_api_key:
+                raise ValueError("不能同时更新和停用密钥")
+        return self
+
+
+def same_endpoint_origin(first: str, second: str) -> bool:
+    """Treat default ports consistently when deciding whether a saved key may be reused."""
+
+    def origin(value):
+        parsed = urlsplit(value)
+        return (
+            parsed.scheme,
+            parsed.hostname,
+            parsed.port if parsed.port is not None else (443 if parsed.scheme == "https" else 80),
+        )
+
+    try:
+        return origin(first) == origin(second)
+    except ValueError:
+        return False
 
 
 def dpapi(data: bytes, decrypt: bool = False) -> bytes:

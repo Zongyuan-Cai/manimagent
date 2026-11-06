@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0",
+  "generation_id": "generation_f453afb0ce934ce69912cc6c24c893ca",
+  "output_mode": "text",
+  "video_profile_id": "auto",
+  "source": {
+    "inputs": [
+      {
+        "type": "text",
+        "text": "已知 x=1，求 x+x 的值。"
+      }
+    ],
+    "parser_profile_id": null,
+    "input_mode": "auto",
+    "type": "inputs",
+    "instruction": "请讲解 x=1 时 x+x 的值。我希望以后讲解时每一步都说明依据。",
+    "answer_profile_id": null
+  },
+  "material_ids": [
+    "material_c03a39228b344b84bfa83dfdd548d4ba"
+  ],
+  "answer_id": null,
+  "video_id": null,
+  "stages": {
+    "material": {
+      "status": "completed",
+      "error": null,
+      "diagnostic_asset_ids": []
+    },
+    "answer": {
+      "status": "needs_review",
+      "error": {
+        "code": "invalid_reference",
+        "message": "答案包含不存在或格式无效的来源标记，请核对正文",
+        "retryable": false,
+        "details": {}
+      },
+      "diagnostic_asset_ids": [
+        "file_c60ef33c2df7474cae941a34846995fa",
+        "file_b29649f866274ff4a7a1c316c4cdf7af"
+      ]
+    }
+  },
+  "active_job_id": "job_3e98acf6194e4d88bb71d3949e407fe4",
+  "job_ids": [
+    "job_3e98acf6194e4d88bb71d3949e407fe4"
+  ],
+  "created_at": "2026-11-06T08:15:51.278163+00:00",
+  "updated_at": "2026-11-06T08:16:09.539639+00:00"
+}

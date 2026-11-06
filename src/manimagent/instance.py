@@ -6,7 +6,8 @@ import os
 import uuid
 from pathlib import Path
 
-from manimagent.content_store import ContentError, write_json
+from manimagent.errors import ContentError
+from manimagent.storage import write_json
 
 
 class InstanceLease:

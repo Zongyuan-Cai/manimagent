@@ -9,38 +9,21 @@ from pathlib import Path
 from typing import Annotated, Literal
 
 import httpx
-from pydantic import BaseModel, ConfigDict, Field, SecretStr, StringConstraints, model_validator
+from pydantic import BaseModel, ConfigDict, Field, StringConstraints, model_validator
 
 from manimagent.budget import Budget
 from manimagent.config import ModelConfig, Settings
-from manimagent.content_store import read_json_bytes, write_json
 from manimagent.errors import ContentError
 from manimagent.llm.client import ChatProvider
-from manimagent.llm.credentials import CredentialStore
+from manimagent.llm.credentials import CredentialDraft, CredentialStore, same_endpoint_origin
 from manimagent.schemas import Usage
+from manimagent.storage import read_json_bytes, write_json
 
 ModelID = Annotated[str, StringConstraints(pattern=r"^[A-Za-z][A-Za-z0-9_-]{0,63}$")]
 
 
-class ModelDraft(BaseModel):
-    model_config = ConfigDict(extra="forbid")
+class ModelDraft(CredentialDraft):
     config: ModelConfig
-    api_key: SecretStr | None = None
-    clear_api_key: bool = False
-
-    @model_validator(mode="after")
-    def validate_secret(self):
-        if self.api_key is not None:
-            secret = self.api_key.get_secret_value()
-            if (
-                not secret.strip()
-                or len(secret) > 8192
-                or any(ord(c) < 32 or ord(c) > 126 for c in secret)
-            ):
-                raise ValueError("API Key 必须是非空的可打印 ASCII 字符串")
-            if self.clear_api_key:
-                raise ValueError("不能同时更新和停用密钥")
-        return self
 
 
 class RoleSelection(BaseModel):
@@ -50,6 +33,7 @@ class RoleSelection(BaseModel):
     video_planner: ModelID | None = None
     scene_generator: ModelID | None = None
     plan_checker: ModelID | None = None
+    material_reader: ModelID | None = None
 
 
 class LLMSettingsUpdate(BaseModel):
@@ -138,13 +122,16 @@ class LLMSettingsStore:
                 "revision": saved["revision"],
                 "models": models,
                 "roles": {
-                    role: settings.model_id_for(role)
+                    role: settings.roles.get(role)
+                    if role == "material_reader"
+                    else settings.model_id_for(role)
                     for role in (
                         "answer_writer",
                         "answer_checker",
                         "video_planner",
                         "scene_generator",
                         "plan_checker",
+                        "material_reader",
                     )
                 },
                 "answer_check": settings.answer_check,
@@ -159,6 +146,18 @@ class LLMSettingsStore:
         cfg.api_key_env = previous.api_key_env if previous else ""
         if draft.clear_api_key:
             cfg.api_key_env = ""
+        elif previous and draft.api_key is None:
+            old_url = previous.generate_url or previous.base_url
+            new_url = cfg.generate_url or cfg.base_url
+            if (
+                old_url
+                and not same_endpoint_origin(old_url, new_url)
+                and self.credentials.resolve(previous.api_key_env)
+            ):
+                raise ContentError(
+                    "credential_origin_changed",
+                    "接口服务地址已变更，请重新输入该服务的 API Key，或先停用原密钥关联",
+                )
         return cfg
 
     def update(self, request: LLMSettingsUpdate, settings: Settings) -> Settings:
@@ -174,6 +173,11 @@ class LLMSettingsStore:
                     new_keys[identifier] = draft.api_key.get_secret_value()
                 updated.models[identifier] = cfg
             updated.roles.update(request.roles.model_dump(exclude_none=True))
+            if (
+                "material_reader" in request.roles.model_fields_set
+                and request.roles.material_reader is None
+            ):
+                updated.roles.pop("material_reader", None)
             updated.answer_check = request.answer_check
             updated.answer_context_tokens = request.answer_context_tokens
             # Write new credentials first, then commit their references. Old references remain

@@ -1,0 +1,26 @@
+[
+  {
+    "filename": "manimagent-0.3.1-py3-none-any.whl",
+    "bytes": 851979,
+    "sha256": "dcef683bc61edf0b3529128e521f9e9c6f9877223affeaba5666707291ca0fb1",
+    "runtime_files_compared": 80,
+    "new_modules": [
+      "llm/context.py",
+      "llm/usage.py",
+      "memory/projection.py"
+    ],
+    "status": "runtime_bytes_match"
+  },
+  {
+    "filename": "manimagent-0.3.1.tar.gz",
+    "bytes": 1040885,
+    "sha256": "530b3e6336f9e8dd90989a299046670b446d9536996d727fa297f4b0d9438154",
+    "runtime_files_compared": 80,
+    "new_modules": [
+      "llm/context.py",
+      "llm/usage.py",
+      "memory/projection.py"
+    ],
+    "status": "runtime_bytes_match"
+  }
+]

@@ -69,6 +69,22 @@ def test_http_failure_classification_and_bounded_attempts(status, code, calls):
     assert "private upstream" not in str(exc.value)
 
 
+def test_corrupt_compressed_response_is_not_reported_as_a_network_timeout():
+    client, budget = provider(
+        lambda _: httpx.Response(
+            200, headers={"Content-Encoding": "gzip"}, content=b"private upstream details"
+        )
+    )
+    trace = []
+    client.trace = trace.append
+    with pytest.raises(ProviderError) as exc:
+        client.complete_text("answer_writer", "answer", {}, budget)
+    assert exc.value.code == "invalid_provider_response"
+    assert "private upstream" not in str(exc.value)
+    assert budget.usage.model_calls == 2
+    assert len([event for event in trace if event.get("event") == "call_summary"]) == 2
+
+
 @pytest.mark.parametrize(
     "finish,code",
     [

@@ -11,7 +11,7 @@ from pydantic import Field, StringConstraints, field_validator, model_validator
 from manimagent.schemas import Contract, ResourceID, now
 from manimagent.video.notation import normalize_formula
 
-PROMPT_VERSION = "memory-narrated-templates-11"
+PROMPT_VERSION = "memory-projected-templates-13"
 TEMPLATE_VERSION = "native-manim-6"
 SmallText = Annotated[str, StringConstraints(min_length=1, max_length=120)]
 LocalID = Annotated[str, StringConstraints(pattern=r"^[A-Za-z][A-Za-z0-9_]{0,39}$")]

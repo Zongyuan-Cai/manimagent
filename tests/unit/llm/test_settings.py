@@ -20,6 +20,30 @@ def configured_model(**kwargs):
     return ModelConfig(base_url="https://gateway.example/team/v1", model="answer-model", **kwargs)
 
 
+def test_saved_key_cannot_follow_a_changed_generate_host(tmp_path):
+    settings = Settings(runs_dir=tmp_path)
+    calls = []
+    provider = ChatProvider(settings, httpx.MockTransport(lambda request: calls.append(request)))
+    with TestClient(create_app(settings, text_provider=provider)) as client:
+        assert client.put("/api/v2/llm-settings", json=update_request(client)).status_code == 200
+        changed = update_request(client, key=None)
+        changed["models"]["answer_model"]["config"]["generate_url"] = (
+            "https://other.example/completions"
+        )
+        response = client.put("/api/v2/llm-settings", json=changed)
+        assert (
+            response.status_code == 422
+            and response.json()["error"]["code"] == "credential_origin_changed"
+        )
+        response = client.post(
+            "/api/v2/llm-settings/test",
+            json={"model_id": "answer_model", "draft": changed["models"]["answer_model"]},
+        )
+        assert response.status_code == 422 and not calls
+        changed["models"]["answer_model"]["api_key"] = "new-host-key"
+        assert client.put("/api/v2/llm-settings", json=changed).status_code == 200
+
+
 def update_request(client, key="test-only-secret", **overrides):
     current = client.get("/api/v2/llm-settings").json()
     return {
@@ -276,3 +300,40 @@ def test_environment_key_is_detected_but_never_returned(tmp_path, monkeypatch):
         response = client.get("/api/v2/llm-settings")
         assert response.json()["models"]["text"]["key_configured"]
         assert "environment-secret" not in response.text
+
+
+def test_optional_vision_reader_preserves_old_configs_and_independent_readiness(tmp_path):
+    settings = Settings(runs_dir=tmp_path)
+    with TestClient(create_app(settings)) as client:
+        saved = client.put("/api/v2/llm-settings", json=update_request(client)).json()
+        assert saved["roles"]["material_reader"] is None
+        health = client.get("/api/v2/health").json()
+        assert health["ready"] and not health["vision"]["ready"]
+        payload = update_request(client, key=None)
+        payload["models"]["reader"] = {
+            "config": {
+                "base_url": "http://localhost:8001/v1",
+                "model": "vision-model",
+                "supports_vision": True,
+                "auth_mode": "none",
+            }
+        }
+        payload["roles"]["material_reader"] = "reader"
+        saved = client.put("/api/v2/llm-settings", json=payload).json()
+        assert saved["roles"]["answer_writer"] == "answer_model"
+        assert saved["roles"]["material_reader"] == "reader"
+        assert client.get("/api/v2/health").json()["vision"]["ready"]
+    with TestClient(create_app(settings)) as client:
+        assert client.get("/api/v2/health").json()["vision"]["ready"]
+        # A legacy five-role request must not erase an explicitly configured reader.
+        legacy = update_request(client, key=None)
+        assert (
+            client.put("/api/v2/llm-settings", json=legacy).json()["roles"]["material_reader"]
+            == "reader"
+        )
+        # Explicit null returns just this role to the answer-writer fallback.
+        reset = update_request(client, key=None)
+        reset["roles"]["material_reader"] = None
+        saved = client.put("/api/v2/llm-settings", json=reset).json()
+        assert saved["roles"]["material_reader"] is None
+        assert not client.get("/api/v2/health").json()["vision"]["ready"]

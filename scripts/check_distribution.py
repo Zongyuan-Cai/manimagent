@@ -27,6 +27,11 @@ REQUIRED_ASSETS = {
     "manimagent/web/results.js",
     "manimagent/web/settings.js",
     "manimagent/web/memory.js",
+    "manimagent/web/memory-learning.js",
+    "manimagent/web/memory-files.js",
+    "manimagent/web/tts-settings.js",
+    "manimagent/web/onboarding.js",
+    "manimagent/web/panels.js",
     "manimagent/web/package.json",
     "manimagent/web/app.css",
     "manimagent/web/vendor/tex-svg.js",
@@ -60,6 +65,28 @@ def check_members(names: list[str], *, sdist: bool) -> None:
     required = {f"src/{path}" if sdist else path for path in REQUIRED_ASSETS}
     if missing := required - normalized:
         raise ValueError(f"Missing packaged web assets: {sorted(missing)}")
+
+
+def check_source_contents(contents: dict[str, bytes], source: Path, *, sdist: bool) -> int:
+    """Reject missing, stale or retired runtime files, including newly split modules."""
+    prefix = "src/manimagent/" if sdist else "manimagent/"
+    expected = {
+        prefix + path.relative_to(source).as_posix(): path.read_bytes()
+        for path in source.rglob("*")
+        if path.is_file() and "__pycache__" not in path.parts and path.suffix != ".pyc"
+    }
+    normalized = {
+        str(PurePosixPath(*PurePosixPath(name).parts[1:])) if sdist else name: data
+        for name, data in contents.items()
+    }
+    actual = {name: data for name, data in normalized.items() if name.startswith(prefix)}
+    if missing := expected.keys() - actual.keys():
+        raise ValueError(f"Missing runtime files: {sorted(missing)}")
+    if extra := actual.keys() - expected.keys():
+        raise ValueError(f"Unexpected runtime files: {sorted(extra)}")
+    if changed := [name for name, data in expected.items() if actual[name] != data]:
+        raise ValueError(f"Packaged runtime differs from current source: {sorted(changed)}")
+    return len(expected)
 
 
 def smoke_install(package: Path, uv: str, version: str) -> None:
@@ -195,9 +222,17 @@ def main() -> None:
                 if any(member.issym() or member.islnk() for member in archive.getmembers()):
                     raise ValueError("Distribution must not contain symbolic or hard links")
                 check_members(archive.getnames(), sdist=True)
+                contents = {
+                    member.name: archive.extractfile(member).read()
+                    for member in archive.getmembers()
+                    if member.isfile()
+                }
         else:
             with zipfile.ZipFile(package) as archive:
                 check_members(archive.namelist(), sdist=False)
+                contents = {name: archive.read(name) for name in archive.namelist()}
+        count = check_source_contents(contents, root / "src/manimagent", sdist=sdist)
+        print(f"PASS: {package.name} - {count} runtime files match current source")
         smoke_install(package, uv, version)
 
 

@@ -82,3 +82,60 @@ def test_explicit_silent_profile_overrides_enabled_tts(tmp_path, monkeypatch):
         assert job["status"] == "completed", job
         video = client.get(f"/api/v2/videos/{job['result']['id']}").json()
         assert video["audio_asset_id"] is None and video["time_source"] == "estimated"
+
+
+@pytest.mark.parametrize(
+    "default_enabled,profile", [(True, "standard_silent"), (False, "standard_narrated")]
+)
+def test_generation_profile_overrides_speech_default_through_final_publication(
+    tmp_path, monkeypatch, default_enabled, profile
+):
+    from manimagent.video.tts import MiMoTTS
+
+    settings = config(tmp_path)
+    settings.tts.enabled = default_enabled
+    monkeypatch.delenv("MIMO_API_KEY", raising=False)
+    spoken = []
+
+    def synthesize(self, text, path, budget):
+        spoken.append(text)
+        with wave.open(str(path), "wb") as audio:
+            audio.setparams((1, 2, 8000, 0, "NONE", "not compressed"))
+            audio.writeframes(b"\x10\x00" * (18 * 8000))
+        return {"duration_seconds": 18.0, "sample_rate": 8000, "frames": 144000}
+
+    monkeypatch.setattr(MiMoTTS, "synthesize", synthesize)
+    with TestClient(create_app(settings, transport(settings, []), NarratedRenderer())) as client:
+        if profile == "standard_narrated":
+            speech = client.get("/api/v2/tts-settings").json()
+            assert (
+                client.put(
+                    "/api/v2/tts-settings",
+                    json={
+                        "expected_revision": speech["revision"],
+                        "draft": {"config": speech["config"], "api_key": "narration-test-only"},
+                    },
+                ).status_code
+                == 200
+            )
+        response = client.post(
+            "/api/v2/generations",
+            json={
+                "output_mode": "both",
+                "video_profile_id": profile,
+                "source": {
+                    "type": "inputs",
+                    "instruction": "完整讲解计算方法",
+                    "inputs": [{"type": "text", "text": "给定 x=1，计算 x+x 并解释。"}],
+                },
+            },
+        )
+        assert response.status_code == 202, response.text
+        job = wait_job(client, response.json()["job_id"])
+        assert job["status"] == "completed", job
+        generation = client.get(f"/api/v2/generations/{job['resource_ref']['id']}").json()
+        assert generation["video_profile_id"] == profile
+        video = client.get(f"/api/v2/videos/{generation['video_id']}").json()
+        plan = client.get(f"/api/v2/videos/{generation['video_id']}/plan").json()
+        assert plan["profile_id"] == profile
+        assert bool(video["audio_asset_id"]) == bool(spoken) == (profile == "standard_narrated")
