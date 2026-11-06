@@ -1,0 +1,52 @@
+{
+  "passed": false,
+  "source_hash_before": "b610061c1f74faa811c07460f3c40b44149b10a397b84ffdb66aa897cb98f986",
+  "model": "deepseek-flash",
+  "tts_model": "mimo-v2.5-tts",
+  "tts_voice": "mimo_default",
+  "video_max_output_tokens": 16000,
+  "roles": {
+    "answer_writer": {
+      "model": "deepseek-flash",
+      "thinking": "default"
+    },
+    "answer_checker": {
+      "model": "deepseek-flash",
+      "thinking": "default"
+    },
+    "video_planner": {
+      "model": "deepseek-flash",
+      "thinking": "default"
+    },
+    "scene_generator": {
+      "model": "deepseek-flash",
+      "thinking": "default"
+    },
+    "plan_checker": {
+      "model": "deepseek-flash",
+      "thinking": "disabled"
+    }
+  },
+  "uploaded_files": [
+    "tts-二次方程.txt"
+  ],
+  "job_id": "job_b1a0dceee3a44f139714095aec75d238",
+  "answer_id": "answer_55ccefa943ab4254af001af277d90fe9",
+  "status": "partial",
+  "usage": {
+    "model_calls": 9,
+    "input_tokens": 54884,
+    "output_tokens": 19904,
+    "tokens_reported": true,
+    "elapsed_seconds": 336.266
+  },
+  "error": {
+    "code": "render_failed",
+    "message": "音频编码、起点或时长与视频不匹配",
+    "retryable": false,
+    "details": {}
+  },
+  "elapsed_seconds": 336.906,
+  "source_hash_after": "b610061c1f74faa811c07460f3c40b44149b10a397b84ffdb66aa897cb98f986",
+  "fixed_source": true
+}

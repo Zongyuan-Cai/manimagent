@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0",
+  "job_id": "job_6919978603324bebb9d8a6dfa4ed0fcf",
+  "kind": "generation",
+  "answer_id": null,
+  "status": "partial",
+  "stage": "video",
+  "message": "文字已保存；动画未完成：模型输出被截断，请增加输出预算后重试",
+  "resource_ref": {
+    "type": "generation",
+    "id": "generation_e02abb483ab64a7294bad4cbbfa5cce1"
+  },
+  "result": {
+    "type": "generation",
+    "id": "generation_e02abb483ab64a7294bad4cbbfa5cce1"
+  },
+  "error": {
+    "code": "output_truncated",
+    "message": "模型输出被截断，请增加输出预算后重试",
+    "retryable": false,
+    "details": {}
+  },
+  "diagnostic_asset_ids": [
+    "file_b2a10c2381884154bf37349a411aa5c1",
+    "file_638c3972a6634a1496d74359f8fcd839",
+    "file_42ff1004f25b4ca3bef10d8490a9ba26",
+    "file_bb78b8ea9e324b77856d9a1b34b8f361",
+    "file_867d802c3f064eaa997bfebfcf70329a",
+    "file_859baa4821cb460499690e2a54110ebe",
+    "file_12092dd50101472fb887e11bdf62e7d2",
+    "file_4875cb0e3b0243b9a3a384c7eebb1906",
+    "file_8ba007cb3c064b57982940b217c18529",
+    "file_dc4c7222f5e7489a968337642c84a0b3",
+    "file_c28214fd92f7475e8f64ad37de089c99",
+    "file_4a2ba58341d54c69b03db5c2cacb070a"
+  ],
+  "usage": {
+    "model_calls": 11,
+    "input_tokens": 86214,
+    "output_tokens": 52791,
+    "tokens_reported": true,
+    "elapsed_seconds": 326.125
+  },
+  "created_at": "2026-11-05T15:26:00.917033+00:00",
+  "updated_at": "2026-11-05T15:31:27.102030+00:00"
+}

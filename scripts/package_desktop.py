@@ -72,7 +72,7 @@ def main():
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(source, target)
         copied.append(relative.as_posix())
-    examples = delivery_path(destination, "examples/vector-projection")
+    examples = delivery_path(destination, "examples/generated-lesson")
     examples.mkdir(parents=True, exist_ok=True)
     for name in EXAMPLE_FILES:
         target = delivery_path(destination, examples / name)
@@ -100,7 +100,7 @@ def main():
     with zipfile.ZipFile(archive, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=6) as bundle:
         for name in copied:
             bundle.write(destination / name, arcname=destination.name + "/" + name)
-    sample = destination.parent / "ManimAgent-示例-向量投影.mp4"
+    sample = destination.parent / "ManimAgent-示例.mp4"
     shutil.copyfile(examples / "example.mp4", sample)
     print(
         json.dumps(

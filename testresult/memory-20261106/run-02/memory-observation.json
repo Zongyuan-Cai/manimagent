@@ -1,0 +1,36 @@
+{
+  "entries": [
+    {
+      "memory_id": "memory_9cf52d5c6c164959b236b8cf5fd3b2f8",
+      "field": "explanation.stepwise",
+      "value": "喜欢分步骤讲解,每一步都先说明依据",
+      "scope": "global",
+      "layer": "short_term",
+      "state": "active",
+      "temporary": false,
+      "session_id": "acceptance_history",
+      "independent_sessions": 1,
+      "evidence": [
+        {
+          "source_id": "acceptance_memory_note",
+          "session_id": "acceptance_history",
+          "quote": "我喜欢分步骤讲解，每一步都先说明依据。",
+          "date": "2026-11-06T04:29:58.877167+00:00",
+          "kind": "observation"
+        }
+      ],
+      "created_at": "2026-11-06T04:29:58.877167+00:00",
+      "updated_at": "2026-11-06T04:29:58.877167+00:00",
+      "expires_at": "2026-11-20T04:29:58.877167+00:00",
+      "confirmed_at": null
+    }
+  ],
+  "warnings": [],
+  "usage": {
+    "model_calls": 1,
+    "input_tokens": 531,
+    "output_tokens": 46,
+    "tokens_reported": true,
+    "elapsed_seconds": 1.25
+  }
+}

@@ -16,7 +16,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 def test_capabilities_do_not_depend_on_application_entrypoints():
     source = ROOT / "src/manimagent"
-    for capability in ("llm", "materials", "answers", "video"):
+    for capability in ("llm", "materials", "memory", "answers", "video"):
         forbidden = ("manimagent.api", "manimagent.jobs", "manimagent.cli")
         if capability == "llm":
             forbidden += ("manimagent.materials", "manimagent.answers", "manimagent.video")
@@ -52,26 +52,7 @@ def test_current_application_does_not_import_or_expose_historical_mvp(tmp_path):
     assert "generate" not in help_text and "smoke" not in help_text
 
 
-def test_legacy_project_has_its_own_source_dependencies_and_tests():
-    legacy = ROOT / "legacy_mvp"
-    if not legacy.exists():
-        pytest.skip(
-            "Repository-level archive check; the current sdist deliberately excludes legacy"
-        )
-    assert all(
-        (legacy / name).exists()
-        for name in [
-            "pyproject.toml",
-            "uv.lock",
-            "src/manimagent/workflow.py",
-            "tests/test_workflow.py",
-        ]
-    )
-    assert not (ROOT / "src/manimagent/workflow.py").exists()
-    assert "langgraph" not in (ROOT / "pyproject.toml").read_text(encoding="utf-8")
-
-
-def test_current_config_rejects_animation_fields_and_resolves_its_own_data_root(
+def test_current_config_rejects_legacy_renderer_field_and_resolves_its_own_data_root(
     tmp_path, monkeypatch
 ):
     with pytest.raises(ValidationError):

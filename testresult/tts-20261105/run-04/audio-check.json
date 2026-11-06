@@ -1,0 +1,9 @@
+{
+  "tts_calls": 24,
+  "tts_segments": 24,
+  "spoken_duration_seconds": 235.84,
+  "tts_total_tokens": 5759,
+  "audio_peak": 0.845458984375,
+  "audio_rms": 0.07579303796853898,
+  "nonzero_audio": true
+}

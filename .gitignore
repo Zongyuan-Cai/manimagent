@@ -41,3 +41,21 @@ data/private/
 .idea/
 .DS_Store
 Thumbs.db
+
+# Retired checkout leftovers and research scratch space
+/legacy_mvp/
+/tmp/
+
+# Evaluation reports are versioned; private runtime and full media stay local.
+/testresult/**/runtime/
+/testresult/**/ui-runtime/
+/testresult/cleanup-*/native/
+/testresult/**/*.mp4
+/testresult/**/*.wav
+/testresult/**/frame_*.png
+!/testresult/tts-20261105/run-04/frame_000.png
+!/testresult/tts-20261105/run-04/frame_013.png
+!/testresult/tts-20261105/run-04/frame_023.png
+!/testresult/memory-20261106/run-03/frame_000.png
+!/testresult/memory-20261106/run-03/frame_011.png
+!/testresult/memory-20261106/run-03/frame_022.png

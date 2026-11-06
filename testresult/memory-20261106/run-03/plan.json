@@ -1,0 +1,1075 @@
+{
+  "schema_version": "1.0",
+  "plan_id": "plan_9c6a82ed4a9c4c1eafa7fc9d1065837f",
+  "answer_id": "answer_b133b57c255a46dcb15a35755b665d46",
+  "answer_hash": "19fcea395a5d875d215a3eda3b81f737828d759ce3e57daa8720c1021f942885",
+  "narration_hash": "bb77498921f0a55cbd4746593ac74311d68282aec60e68e8080768022c28c7a2",
+  "timing_revision": 2,
+  "prompt_version": "memory-narrated-templates-11",
+  "template_version": "native-manim-6",
+  "profile_id": "standard_narrated",
+  "time_source": "audio_measured",
+  "outline": {
+    "status": "ready",
+    "message": "按认清标准形式、因式分解、零乘积原理、求根公式核验、代回检查和结论组织7个场景。",
+    "title": "解一元二次方程 x²-5x+6=0",
+    "audience": "初次学习一元二次方程的初中或高中初学者",
+    "difficulty": "basic",
+    "difficulty_reason": "只需标准形式、因式分解、零乘积原理与求根公式，计算简单且步骤清晰。",
+    "duration_reason": "根据实测旁白与已检查的阅读窗口排程，总计292.23秒。",
+    "scenes": [
+      {
+        "scene_id": "s1",
+        "title": "题目与解题路线",
+        "objective": "明确方程、目标以及因式分解与公式核验两条路线。",
+        "unit_ids": [
+          "u001"
+        ],
+        "beat_count": 3
+      },
+      {
+        "scene_id": "s2",
+        "title": "认清标准形式",
+        "objective": "识别标准形式并正确读出本题的a、b、c。",
+        "unit_ids": [
+          "u002"
+        ],
+        "beat_count": 3
+      },
+      {
+        "scene_id": "s3",
+        "title": "因式分解的依据",
+        "objective": "由两个一次因式展开规律找到2和3，并展开检查分解正确。",
+        "unit_ids": [
+          "u003",
+          "u004"
+        ],
+        "beat_count": 4
+      },
+      {
+        "scene_id": "s4",
+        "title": "零乘积原理求根",
+        "objective": "把乘积为零转化为两个一次方程，得到两个候选根。",
+        "unit_ids": [
+          "u005"
+        ],
+        "beat_count": 3
+      },
+      {
+        "scene_id": "s5",
+        "title": "求根公式交叉核验",
+        "objective": "计算判别式并代入公式，核对所得根与因式分解一致。",
+        "unit_ids": [
+          "u006",
+          "u007"
+        ],
+        "beat_count": 4
+      },
+      {
+        "scene_id": "s6",
+        "title": "代回原式检查",
+        "objective": "分别把x=2和x=3代入原方程，验证两边都等于零。",
+        "unit_ids": [
+          "u008",
+          "u009",
+          "u010"
+        ],
+        "beat_count": 3
+      },
+      {
+        "scene_id": "s7",
+        "title": "结论与一致性",
+        "objective": "汇总两个根和解集，并说明判别式与两种方法结果一致。",
+        "unit_ids": [
+          "u011"
+        ],
+        "beat_count": 3
+      }
+    ]
+  },
+  "teaching_units": [
+    {
+      "unit_id": "u001",
+      "start": 0,
+      "end": 180,
+      "text": "# 解一元二次方程 \\(x^2-5x+6=0\\)\n\n题目要求解方程 \\(x^2-5x+6=0\\)，分别用因式分解和求根公式求解，并把两个根代回原式核验；材料还说明只需公式演示，无需画函数图[[material_d79cb7c542fd46369b0801c73fa002d6:block_c87a3ecc4b6543238a9ea67bf69c5695]]。\n",
+      "sha256": "77bf17b42b0ac89945e3223540aa12663e8f0a3de6f8042ad747ce4b88b42145"
+    },
+    {
+      "unit_id": "u002",
+      "start": 181,
+      "end": 329,
+      "text": "## 1. 先认清标准形式\n\n一元二次方程的标准形式是\n\n\\[\nax^2+bx+c=0,\\qquad a\\ne 0.\n\\]\n\n本题中\n\n\\[\na=1,\\qquad b=-5,\\qquad c=6.\n\\]\n\n**依据：** 写清 \\(a,b,c\\) 后，才能正确使用因式分解和求根公式。\n\n---\n",
+      "sha256": "1e306042cacd48873e38fd38a3d9bf749478c7e32583c30027eaf1dbe42b8743"
+    },
+    {
+      "unit_id": "u003",
+      "start": 330,
+      "end": 597,
+      "text": "## 2. 方法一：因式分解\n\n### 2.1 因式分解的依据\n\n因式分解可以看作多项式乘法的逆过程。对于两个一次因式，有\n\n\\[\n(x-p)(x-q)=x^2-(p+q)x+pq.\n\\]\n\n我们希望把它变成\n\n\\[\nx^2-5x+6.\n\\]\n\n因此需要找到两个数 \\(p,q\\)，使得\n\n\\[\np+q=5,\\qquad pq=6.\n\\]\n\n容易看出 \\(2\\) 和 \\(3\\) 满足：\n\n\\[\n2+3=5,\\qquad 2\\cdot 3=6.\n\\]\n\n所以\n\n\\[\nx^2-5x+6=(x-2)(x-3).\n\\]\n\n可以展开检查：\n",
+      "sha256": "522a803a15bd42a94e119e498514c72657f377870d13ea03275fad20bd83546c"
+    },
+    {
+      "unit_id": "u004",
+      "start": 598,
+      "end": 658,
+      "text": "\\[\n(x-2)(x-3)=x^2-3x-2x+6=x^2-5x+6.\n\\]\n\n展开后确实等于原式，说明因式分解正确。\n",
+      "sha256": "7c45e064527a46fb83d8c56c86e5ee997be4a1f97069393fcce3f91ad6106f2e"
+    },
+    {
+      "unit_id": "u005",
+      "start": 659,
+      "end": 929,
+      "text": "### 2.2 使用零乘积原理\n\n零乘积原理是：\n\n> 如果两个数的乘积为 \\(0\\)，那么至少其中一个数为 \\(0\\)。\n\n原方程变为\n\n\\[\n(x-2)(x-3)=0.\n\\]\n\n根据零乘积原理，必须有\n\n\\[\nx-2=0 \\quad \\text{或} \\quad x-3=0.\n\\]\n\n分别解得\n\n\\[\nx=2 \\quad \\text{或} \\quad x=3.\n\\]\n\n所以因式分解法得到的根是\n\n\\[\nx=2,\\qquad x=3.\n\\]\n\n注意这里是“或”，表示两个根都是候选解，而不是要求两个因式同时为 \\(0\\)。\n\n---\n",
+      "sha256": "0157722b042c646df9f6af5b93b869d82dd72ca423886818277cc6de95d4a2e9"
+    },
+    {
+      "unit_id": "u006",
+      "start": 930,
+      "end": 1212,
+      "text": "## 3. 方法二：用求根公式交叉核验\n\n求根公式为\n\n\\[\nx=\\frac{-b\\pm\\sqrt{b^2-4ac}}{2a}.\n\\]\n\n本题中\n\n\\[\na=1,\\qquad b=-5,\\qquad c=6.\n\\]\n\n先计算判别式：\n\n\\[\n\\Delta=b^2-4ac=(-5)^2-4\\cdot 1\\cdot 6=25-24=1.\n\\]\n\n因为\n\n\\[\n\\Delta=1>0,\n\\]\n\n所以方程有两个不同的实根。代入求根公式：\n\n\\[\nx=\\frac{-(-5)\\pm\\sqrt{1}}{2\\cdot 1}\n=\\frac{5\\pm 1}{2}.\n\\]\n\n于是\n",
+      "sha256": "9b8693024fd319b65b2936f1e1b6d238fb2fced4fa2c5f669f5f42a48cd66f23"
+    },
+    {
+      "unit_id": "u007",
+      "start": 1213,
+      "end": 1354,
+      "text": "\\[\nx=\\frac{5+1}{2}=3,\n\\]\n\n或\n\n\\[\nx=\\frac{5-1}{2}=2.\n\\]\n\n因此求根公式得到\n\n\\[\nx=3 \\quad \\text{或} \\quad x=2.\n\\]\n\n这与因式分解法得到的 \\(x=2,3\\) 完全一致，交叉核验通过。\n\n---\n",
+      "sha256": "b820e21e313bb9824b8325839e824f793a4f5f5e7e645e62a07d1ac43ac83170"
+    },
+    {
+      "unit_id": "u008",
+      "start": 1355,
+      "end": 1397,
+      "text": "## 4. 把两个根代回原式检查\n\n原方程是\n\n\\[\nx^2-5x+6=0.\n\\]\n",
+      "sha256": "596d217a6b0a9a1eb956f2dad1a35cbd776978fce3a2e9ee459f7bf434ef702f"
+    },
+    {
+      "unit_id": "u009",
+      "start": 1398,
+      "end": 1450,
+      "text": "### 检查 \\(x=2\\)\n\n\\[\n2^2-5\\cdot 2+6=4-10+6=0.\n\\]\n\n成立。\n",
+      "sha256": "a5b15248f791d0cc17a526ea3a4e05986d97aeefe3ad7df7f9c1b9334c0f5965"
+    },
+    {
+      "unit_id": "u010",
+      "start": 1451,
+      "end": 1528,
+      "text": "### 检查 \\(x=3\\)\n\n\\[\n3^2-5\\cdot 3+6=9-15+6=0.\n\\]\n\n也成立。\n\n两个根都满足原方程，说明答案正确。\n\n---\n",
+      "sha256": "a1b386541d826fdc899f7da7e8f5d9cdfc53b0c4956ab614566e09a9c9a516a6"
+    },
+    {
+      "unit_id": "u011",
+      "start": 1529,
+      "end": 1699,
+      "text": "## 5. 结论\n\n方程\n\n\\[\nx^2-5x+6=0\n\\]\n\n的解为\n\n\\[\n\\boxed{x=2 \\quad \\text{或} \\quad x=3}\n\\]\n\n解集可以写成\n\n\\[\n\\boxed{\\{2,3\\}}.\n\\]\n\n判别式 \\(\\Delta=1>0\\)，说明方程有两个不同的实根；这与因式分解得到的两个根以及代回检验的结果都一致。",
+      "sha256": "fb7276f7971006376b2b1a2fc3bb78fb1f8bcc98fa58ca68e757ec42f7780278"
+    }
+  ],
+  "scenes": [
+    {
+      "scene_id": "s1",
+      "title": "题目与解题路线",
+      "objective": "明确方程、目标以及因式分解与公式核验两条路线。",
+      "unit_ids": [
+        "u001"
+      ],
+      "beat_count": 3,
+      "beats": [
+        {
+          "beat_id": "b1",
+          "unit_ids": [
+            "u001"
+          ],
+          "headline": "先认清方程与目标",
+          "screen_text": "题给方程 x^2-5x+6=0，解方程就是求出所有使等式成立的x值。",
+          "formulas": [
+            "x^2-5x+6=0"
+          ],
+          "spoken_text": "题目要求解一元二次方程，x的平方减五乘以x加六等于零，目标是求出所有使等式成立的x值。",
+          "cue_text": "题目要求解一元二次方程",
+          "cue_objects": [],
+          "reading_reason": "先点明方程和解方程的目标，让初学者明确任务。",
+          "diagram": {
+            "kind": "none",
+            "x_range": [
+              -1.0,
+              5.0
+            ],
+            "y_range": [
+              -1.0,
+              4.0
+            ],
+            "objects": [],
+            "matrix": []
+          },
+          "start_seconds": 0.0,
+          "stable_seconds": 1.0,
+          "end_seconds": 14.166666666666666,
+          "narration_end_seconds": 13.16,
+          "cue_seconds": 1.0,
+          "time_source": "audio_measured",
+          "cue_time_source": "estimated"
+        },
+        {
+          "beat_id": "b2",
+          "unit_ids": [
+            "u001"
+          ],
+          "headline": "两条解题路线",
+          "screen_text": "本题只需代数演示，不必画函数图；先用因式分解，再用求根公式核验。",
+          "formulas": [
+            "x^2-5x+6=0"
+          ],
+          "spoken_text": "本题只需代数演示，不必画函数图；先走因式分解路线，再用求根公式交叉核验。",
+          "cue_text": "本题只需代数演示",
+          "cue_objects": [],
+          "reading_reason": "说明无需画图，并给出先因式分解再公式核验的顺序。",
+          "diagram": {
+            "kind": "none",
+            "x_range": [
+              -1.0,
+              5.0
+            ],
+            "y_range": [
+              -1.0,
+              4.0
+            ],
+            "objects": [],
+            "matrix": []
+          },
+          "start_seconds": 14.166666666666666,
+          "stable_seconds": 15.166666666666666,
+          "end_seconds": 25.133333333333333,
+          "narration_end_seconds": 24.126666666666665,
+          "cue_seconds": 15.166666666666666,
+          "time_source": "audio_measured",
+          "cue_time_source": "estimated"
+        },
+        {
+          "beat_id": "b3",
+          "unit_ids": [
+            "u001"
+          ],
+          "headline": "代回检查的意义",
+          "screen_text": "求出根后代回原式检查，代入后两边都等于0，才能确认答案正确。",
+          "formulas": [
+            "x^2-5x+6=0"
+          ],
+          "spoken_text": "最后把求出的根分别代回原方程，等式两边都等于零，答案才算可靠。",
+          "cue_text": "最后把求出的根",
+          "cue_objects": [],
+          "reading_reason": "强调代回检验的作用，为后续核验作铺垫。",
+          "diagram": {
+            "kind": "none",
+            "x_range": [
+              -1.0,
+              5.0
+            ],
+            "y_range": [
+              -1.0,
+              4.0
+            ],
+            "objects": [],
+            "matrix": []
+          },
+          "start_seconds": 25.133333333333333,
+          "stable_seconds": 26.133333333333333,
+          "end_seconds": 35.86666666666667,
+          "narration_end_seconds": 34.77333333333333,
+          "cue_seconds": 26.133333333333333,
+          "time_source": "audio_measured",
+          "cue_time_source": "estimated"
+        }
+      ],
+      "duration_seconds": 35.866667
+    },
+    {
+      "scene_id": "s2",
+      "title": "认清标准形式",
+      "objective": "识别标准形式并正确读出本题的a、b、c。",
+      "unit_ids": [
+        "u002"
+      ],
+      "beat_count": 3,
+      "beats": [
+        {
+          "beat_id": "b1",
+          "unit_ids": [
+            "u002"
+          ],
+          "headline": "标准形式",
+          "screen_text": "形如a x²+b x+c=0的方程叫标准形式，且二次项系数a不能为零。",
+          "formulas": [
+            "ax^2+bx+c=0",
+            "a\\neq0"
+          ],
+          "spoken_text": "一元二次方程的标准形式是 a x 平方加 b x 加 c 等于零，并且 a 不能等于零。",
+          "cue_text": "标准形式",
+          "cue_objects": [],
+          "reading_reason": "先给出标准形式和二次项系数限制，为对照系数建立依据。",
+          "diagram": {
+            "kind": "none",
+            "x_range": [
+              -1.0,
+              5.0
+            ],
+            "y_range": [
+              -1.0,
+              4.0
+            ],
+            "objects": [],
+            "matrix": []
+          },
+          "start_seconds": 0.0,
+          "stable_seconds": 1.0,
+          "end_seconds": 12.566666666666666,
+          "narration_end_seconds": 11.56,
+          "cue_seconds": 3.098165938864629,
+          "time_source": "audio_measured",
+          "cue_time_source": "estimated"
+        },
+        {
+          "beat_id": "b2",
+          "unit_ids": [
+            "u002"
+          ],
+          "headline": "对照读出系数",
+          "screen_text": "把本题与标准形式逐项对照，得到二次项系数1、一次项系数负5、常数项6。",
+          "formulas": [
+            "a=1,\\quad b=-5,\\quad c=6"
+          ],
+          "spoken_text": "把本题的 x 平方减五 x 加六等于零，与标准形式逐项对照，得到 a 等于一，b 等于负五，c 等于六。",
+          "cue_text": "逐项对照",
+          "cue_objects": [],
+          "reading_reason": "通过逐项对应明确本题三个系数，避免符号读错。",
+          "diagram": {
+            "kind": "none",
+            "x_range": [
+              -1.0,
+              5.0
+            ],
+            "y_range": [
+              -1.0,
+              4.0
+            ],
+            "objects": [],
+            "matrix": []
+          },
+          "start_seconds": 12.566666666666666,
+          "stable_seconds": 13.566666666666666,
+          "end_seconds": 26.433333333333334,
+          "narration_end_seconds": 25.406666666666666,
+          "cue_seconds": 19.55220172201722,
+          "time_source": "audio_measured",
+          "cue_time_source": "estimated"
+        },
+        {
+          "beat_id": "b3",
+          "unit_ids": [
+            "u002"
+          ],
+          "headline": "系数的用处",
+          "screen_text": "先写清a、b、c，才能检查因式分解中的和与积，并正确代入求根公式。",
+          "formulas": [
+            "a=1,\\quad b=-5,\\quad c=6"
+          ],
+          "spoken_text": "先写清 a、b、c 三个系数，后续才能检查因式分解里的和与积，也才能正确代入求根公式。",
+          "cue_text": "先写清",
+          "cue_objects": [],
+          "reading_reason": "说明写清系数的必要性，连接后续因式分解与公式核验。",
+          "diagram": {
+            "kind": "none",
+            "x_range": [
+              -1.0,
+              5.0
+            ],
+            "y_range": [
+              -1.0,
+              4.0
+            ],
+            "objects": [],
+            "matrix": []
+          },
+          "start_seconds": 26.433333333333334,
+          "stable_seconds": 27.433333333333334,
+          "end_seconds": 38.36666666666667,
+          "narration_end_seconds": 37.35333333333333,
+          "cue_seconds": 27.433333333333334,
+          "time_source": "audio_measured",
+          "cue_time_source": "estimated"
+        }
+      ],
+      "duration_seconds": 38.366667
+    },
+    {
+      "scene_id": "s3",
+      "title": "因式分解的依据",
+      "objective": "由两个一次因式展开规律找到2和3，并展开检查分解正确。",
+      "unit_ids": [
+        "u003",
+        "u004"
+      ],
+      "beat_count": 4,
+      "beats": [
+        {
+          "beat_id": "s3_b1",
+          "unit_ids": [
+            "u003"
+          ],
+          "headline": "因式分解的依据",
+          "screen_text": "因式分解是乘法展开的逆过程；先看两个一次因式相乘的展开规律。",
+          "formulas": [
+            "(x-p)(x-q)=x^2-(p+q)x+pq"
+          ],
+          "spoken_text": "因式分解可以看成乘法展开的逆过程，先看两个一次因式相乘的规律。",
+          "cue_text": "因式分解可以看成",
+          "cue_objects": [],
+          "reading_reason": "先建立因式分解与展开的互逆关系，为后面找数提供依据。",
+          "diagram": {
+            "kind": "none",
+            "x_range": [
+              -1.0,
+              5.0
+            ],
+            "y_range": [
+              -1.0,
+              4.0
+            ],
+            "objects": [],
+            "matrix": []
+          },
+          "start_seconds": 0.0,
+          "stable_seconds": 1.0,
+          "end_seconds": 10.733333333333333,
+          "narration_end_seconds": 9.16,
+          "cue_seconds": 1.0,
+          "time_source": "audio_measured",
+          "cue_time_source": "estimated"
+        },
+        {
+          "beat_id": "s3_b2",
+          "unit_ids": [
+            "u003"
+          ],
+          "headline": "对照系数找条件",
+          "screen_text": "把原式与展开式对照，一次项系数是负五，常数项是六，所以两数和为五、积为六。",
+          "formulas": [
+            "p+q=5,\\quad pq=6"
+          ],
+          "spoken_text": "把原式和展开式对照，得到两个条件：p加q等于五，p乘q等于六。",
+          "cue_text": "把原式和展开式对照",
+          "cue_objects": [],
+          "reading_reason": "由展开式对应系数，明确找两个数的条件。",
+          "diagram": {
+            "kind": "none",
+            "x_range": [
+              -1.0,
+              5.0
+            ],
+            "y_range": [
+              -1.0,
+              4.0
+            ],
+            "objects": [],
+            "matrix": []
+          },
+          "start_seconds": 10.733333333333333,
+          "stable_seconds": 11.733333333333333,
+          "end_seconds": 22.9,
+          "narration_end_seconds": 19.57333333333333,
+          "cue_seconds": 11.733333333333333,
+          "time_source": "audio_measured",
+          "cue_time_source": "estimated"
+        },
+        {
+          "beat_id": "s3_b3",
+          "unit_ids": [
+            "u003"
+          ],
+          "headline": "找到2和3",
+          "screen_text": "二与三相加得五，相乘得六，正好满足条件，因此两个因式分别减二和减三。",
+          "formulas": [
+            "2+3=5,\\quad 2\\cdot 3=6",
+            "x^2-5x+6=(x-2)(x-3)"
+          ],
+          "spoken_text": "二加三等于五，二乘三等于六，所以原式等于括号x减二乘以括号x减三。",
+          "cue_text": "二加三等于五",
+          "cue_objects": [],
+          "reading_reason": "用验证过的两个数完成因式分解，形成明确等式。",
+          "diagram": {
+            "kind": "none",
+            "x_range": [
+              -1.0,
+              5.0
+            ],
+            "y_range": [
+              -1.0,
+              4.0
+            ],
+            "objects": [],
+            "matrix": []
+          },
+          "start_seconds": 22.9,
+          "stable_seconds": 23.9,
+          "end_seconds": 35.8,
+          "narration_end_seconds": 34.78,
+          "cue_seconds": 23.9,
+          "time_source": "audio_measured",
+          "cue_time_source": "estimated"
+        },
+        {
+          "beat_id": "s3_b4",
+          "unit_ids": [
+            "u004"
+          ],
+          "headline": "展开检查分解",
+          "screen_text": "把两个因式逐项相乘，交叉项合并后正好得到原式，说明分解没有改变原多项式。",
+          "formulas": [
+            "(x-2)(x-3)=x^2-3x-2x+6=x^2-5x+6"
+          ],
+          "spoken_text": "把括号x减二和括号x减三逐项相乘，再合并负三x和负二x，结果正好是原式。",
+          "cue_text": "把括号x减二和括号x减三逐项相乘",
+          "cue_objects": [],
+          "reading_reason": "通过展开验证分解恒等，满足材料中的检查要求。",
+          "diagram": {
+            "kind": "none",
+            "x_range": [
+              -1.0,
+              5.0
+            ],
+            "y_range": [
+              -1.0,
+              4.0
+            ],
+            "objects": [],
+            "matrix": []
+          },
+          "start_seconds": 35.8,
+          "stable_seconds": 36.8,
+          "end_seconds": 49.0,
+          "narration_end_seconds": 48.0,
+          "cue_seconds": 36.8,
+          "time_source": "audio_measured",
+          "cue_time_source": "estimated"
+        }
+      ],
+      "duration_seconds": 49.0
+    },
+    {
+      "scene_id": "s4",
+      "title": "零乘积原理求根",
+      "objective": "把乘积为零转化为两个一次方程，得到两个候选根。",
+      "unit_ids": [
+        "u005"
+      ],
+      "beat_count": 3,
+      "beats": [
+        {
+          "beat_id": "b1",
+          "unit_ids": [
+            "u005"
+          ],
+          "headline": "零乘积原理",
+          "screen_text": "若两个数的乘积为0，则至少一个数为0；这是拆方程的依据。",
+          "formulas": [
+            "AB=0\\Rightarrow A=0\\quad\\mathrm{or}\\quad B=0"
+          ],
+          "spoken_text": "如果两个数的乘积等于零，那么至少其中一个数为零，这就是零乘积原理。",
+          "cue_text": "如果两个数的乘积等于零",
+          "cue_objects": [],
+          "reading_reason": "先说明零乘积原理，为下一步拆因式提供依据。",
+          "diagram": {
+            "kind": "none",
+            "x_range": [
+              -1.0,
+              5.0
+            ],
+            "y_range": [
+              -1.0,
+              4.0
+            ],
+            "objects": [],
+            "matrix": []
+          },
+          "start_seconds": 0.0,
+          "stable_seconds": 1.0,
+          "end_seconds": 10.333333333333334,
+          "narration_end_seconds": 9.32,
+          "cue_seconds": 1.0,
+          "time_source": "audio_measured",
+          "cue_time_source": "estimated"
+        },
+        {
+          "beat_id": "b2",
+          "unit_ids": [
+            "u005"
+          ],
+          "headline": "拆成两个一次方程",
+          "screen_text": "已分解为两个因式相乘等于0，所以至少一个因式等于0。",
+          "formulas": [
+            "(x-2)(x-3)=0",
+            "x-2=0\\quad\\mathrm{or}\\quad x-3=0"
+          ],
+          "spoken_text": "原方程左边是两个因式的乘积，等于零。根据零乘积原理，至少一个因式为零。",
+          "cue_text": "两个因式的乘积",
+          "cue_objects": [],
+          "reading_reason": "把一般原理落到本题的两个一次因式上。",
+          "diagram": {
+            "kind": "none",
+            "x_range": [
+              -1.0,
+              5.0
+            ],
+            "y_range": [
+              -1.0,
+              4.0
+            ],
+            "objects": [],
+            "matrix": []
+          },
+          "start_seconds": 10.333333333333334,
+          "stable_seconds": 11.333333333333334,
+          "end_seconds": 21.8,
+          "narration_end_seconds": 20.773333333333333,
+          "cue_seconds": 13.160430107526881,
+          "time_source": "audio_measured",
+          "cue_time_source": "estimated"
+        },
+        {
+          "beat_id": "b3",
+          "unit_ids": [
+            "u005"
+          ],
+          "headline": "得到两个候选根",
+          "screen_text": "分别解两个一次方程得x=2或x=3；根不必同时成立。",
+          "formulas": [
+            "x-2=0\\Rightarrow x=2",
+            "x-3=0\\Rightarrow x=3",
+            "x=2\\quad\\mathrm{or}\\quad x=3"
+          ],
+          "spoken_text": "分别解得x等于2，或x等于3。这个或表示两个根都是候选，不要求同时成立。",
+          "cue_text": "分别解得",
+          "cue_objects": [],
+          "reading_reason": "分别求解并强调两个根是候选关系，避免误解同时成立。",
+          "diagram": {
+            "kind": "none",
+            "x_range": [
+              -1.0,
+              5.0
+            ],
+            "y_range": [
+              -1.0,
+              4.0
+            ],
+            "objects": [],
+            "matrix": []
+          },
+          "start_seconds": 21.8,
+          "stable_seconds": 22.8,
+          "end_seconds": 34.3,
+          "narration_end_seconds": 33.2,
+          "cue_seconds": 22.8,
+          "time_source": "audio_measured",
+          "cue_time_source": "estimated"
+        }
+      ],
+      "duration_seconds": 34.3
+    },
+    {
+      "scene_id": "s5",
+      "title": "求根公式交叉核验",
+      "objective": "计算判别式并代入公式，核对所得根与因式分解一致。",
+      "unit_ids": [
+        "u006",
+        "u007"
+      ],
+      "beat_count": 4,
+      "beats": [
+        {
+          "beat_id": "b1",
+          "unit_ids": [
+            "u006"
+          ],
+          "headline": "求根公式登场",
+          "screen_text": "求根公式由配方法推出；本题 a=1，b=-5，c=6，代入时注意 b 的负号。",
+          "formulas": [
+            "x=\\frac{-b\\pm\\sqrt{b^2-4ac}}{2a}",
+            "a=1,\\quad b=-5,\\quad c=6"
+          ],
+          "spoken_text": "先用求根公式交叉核验。公式是 x 等于二 a 分之负 b 加减根号下 b 平方减四 a c。本题 a 是一，b 是负五，c 是六。",
+          "cue_text": "先用求根公式交叉核验",
+          "cue_objects": [],
+          "reading_reason": "先呈现公式的结构，再标出本题系数，为下一步代入做好依据准备。",
+          "diagram": {
+            "kind": "none",
+            "x_range": [
+              -1.0,
+              5.0
+            ],
+            "y_range": [
+              -1.0,
+              4.0
+            ],
+            "objects": [],
+            "matrix": []
+          },
+          "start_seconds": 0.0,
+          "stable_seconds": 1.0,
+          "end_seconds": 17.066666666666666,
+          "narration_end_seconds": 16.04,
+          "cue_seconds": 1.0,
+          "time_source": "audio_measured",
+          "cue_time_source": "estimated"
+        },
+        {
+          "beat_id": "b2",
+          "unit_ids": [
+            "u006"
+          ],
+          "headline": "先算判别式",
+          "screen_text": "判别式 b²-4ac 决定实根个数；代入得 25-24=1，大于零，所以有两个不同实根。",
+          "formulas": [
+            "\\Delta=b^2-4ac=(-5)^2-4\\cdot1\\cdot6",
+            "\\Delta=25-24=1>0"
+          ],
+          "spoken_text": "先算判别式。判别式是 b 平方减四 a c，代入得负五的平方减四乘一乘六，等于二十五减二十四，等于一。判别式大于零，所以有两个不同的实根。",
+          "cue_text": "先算判别式",
+          "cue_objects": [],
+          "reading_reason": "先计算判别式并判断符号，说明两个实根存在，为公式代入提供依据。",
+          "diagram": {
+            "kind": "none",
+            "x_range": [
+              -1.0,
+              5.0
+            ],
+            "y_range": [
+              -1.0,
+              4.0
+            ],
+            "objects": [],
+            "matrix": []
+          },
+          "start_seconds": 17.066666666666666,
+          "stable_seconds": 18.066666666666666,
+          "end_seconds": 36.03333333333333,
+          "narration_end_seconds": 35.02666666666667,
+          "cue_seconds": 18.066666666666666,
+          "time_source": "audio_measured",
+          "cue_time_source": "estimated"
+        },
+        {
+          "beat_id": "b3",
+          "unit_ids": [
+            "u006",
+            "u007"
+          ],
+          "headline": "代入公式得两根",
+          "screen_text": "把 a、b、c 和判别式代入公式，分子是 5 加减 1，分母是 2，分别得到 3 和 2。",
+          "formulas": [
+            "x=\\frac{-(-5)\\pm\\sqrt{1}}{2\\cdot1}=\\frac{5\\pm1}{2}",
+            "x=\\frac{5+1}{2}=3,\\quad x=\\frac{5-1}{2}=2"
+          ],
+          "spoken_text": "把数值代入公式。注意分子是五加减一，分母是二。取加号得三，取减号得二。",
+          "cue_text": "把数值代入公式",
+          "cue_objects": [],
+          "reading_reason": "明确分子是整体五加减一、分母是二，分别计算加号和减号，得到两个根。",
+          "diagram": {
+            "kind": "none",
+            "x_range": [
+              -1.0,
+              5.0
+            ],
+            "y_range": [
+              -1.0,
+              4.0
+            ],
+            "objects": [],
+            "matrix": []
+          },
+          "start_seconds": 36.03333333333333,
+          "stable_seconds": 37.03333333333333,
+          "end_seconds": 51.03333333333333,
+          "narration_end_seconds": 46.47333333333333,
+          "cue_seconds": 37.03333333333333,
+          "time_source": "audio_measured",
+          "cue_time_source": "estimated"
+        },
+        {
+          "beat_id": "b4",
+          "unit_ids": [
+            "u007"
+          ],
+          "headline": "与因式分解一致",
+          "screen_text": "求根公式得到 3 和 2，因式分解得到 2 和 3；两个根相同，交叉核验通过。",
+          "formulas": [
+            "x=3\\quad\\mathrm{or}\\quad x=2",
+            "x=2\\quad\\mathrm{or}\\quad x=3"
+          ],
+          "spoken_text": "求根公式得到三或二，因式分解得到二或三。两个根完全相同，交叉核验通过。",
+          "cue_text": "求根公式得到三或二",
+          "cue_objects": [],
+          "reading_reason": "对比两种方法所得的两个根，顺序无关，说明结果一致并完成核验。",
+          "diagram": {
+            "kind": "none",
+            "x_range": [
+              -1.0,
+              5.0
+            ],
+            "y_range": [
+              -1.0,
+              4.0
+            ],
+            "objects": [],
+            "matrix": []
+          },
+          "start_seconds": 51.03333333333333,
+          "stable_seconds": 52.03333333333333,
+          "end_seconds": 64.86666666666666,
+          "narration_end_seconds": 61.15333333333333,
+          "cue_seconds": 52.03333333333333,
+          "time_source": "audio_measured",
+          "cue_time_source": "estimated"
+        }
+      ],
+      "duration_seconds": 64.866667
+    },
+    {
+      "scene_id": "s6",
+      "title": "代回原式检查",
+      "objective": "分别把x=2和x=3代入原方程，验证两边都等于零。",
+      "unit_ids": [
+        "u008",
+        "u009",
+        "u010"
+      ],
+      "beat_count": 3,
+      "beats": [
+        {
+          "beat_id": "b1",
+          "unit_ids": [
+            "u008"
+          ],
+          "headline": "代回原式",
+          "screen_text": "把根代回原方程，就是分别计算左边，看结果是否为0。",
+          "formulas": [
+            "x^2-5x+6=0"
+          ],
+          "spoken_text": "先写出原方程x平方减五x加六等于零，代回检查就是算左边是否等于零。",
+          "cue_text": "先写出原方程",
+          "cue_objects": [],
+          "reading_reason": "先明确代回检查的对象和方法，为下面两次代入作准备。",
+          "diagram": {
+            "kind": "none",
+            "x_range": [
+              -1.0,
+              5.0
+            ],
+            "y_range": [
+              -1.0,
+              4.0
+            ],
+            "objects": [],
+            "matrix": []
+          },
+          "start_seconds": 0.0,
+          "stable_seconds": 1.0,
+          "end_seconds": 10.966666666666667,
+          "narration_end_seconds": 9.96,
+          "cue_seconds": 1.0,
+          "time_source": "audio_measured",
+          "cue_time_source": "estimated"
+        },
+        {
+          "beat_id": "b2",
+          "unit_ids": [
+            "u009"
+          ],
+          "headline": "检查x=2",
+          "screen_text": "取x=2，左边为4减10加6，计算得0，所以x=2满足方程。",
+          "formulas": [
+            "2^2-5\\cdot 2+6=4-10+6=0"
+          ],
+          "spoken_text": "取x等于二，代入左边得二的平方减五乘二加六，等于四减十加六，结果是零，所以x等于二成立。",
+          "cue_text": "取x等于二",
+          "cue_objects": [],
+          "reading_reason": "具体展示x=2代入后的算术过程，并说明等于零即满足原方程。",
+          "diagram": {
+            "kind": "none",
+            "x_range": [
+              -1.0,
+              5.0
+            ],
+            "y_range": [
+              -1.0,
+              4.0
+            ],
+            "objects": [],
+            "matrix": []
+          },
+          "start_seconds": 10.966666666666667,
+          "stable_seconds": 11.966666666666667,
+          "end_seconds": 26.266666666666666,
+          "narration_end_seconds": 25.246666666666666,
+          "cue_seconds": 11.966666666666667,
+          "time_source": "audio_measured",
+          "cue_time_source": "estimated"
+        },
+        {
+          "beat_id": "b3",
+          "unit_ids": [
+            "u010"
+          ],
+          "headline": "检查x=3",
+          "screen_text": "取x=3，左边为9减15加6，计算得0；两个根都满足原方程。",
+          "formulas": [
+            "3^2-5\\cdot 3+6=9-15+6=0"
+          ],
+          "spoken_text": "取x等于三，代入左边得三的平方减五乘三加六，等于九减十五加六，结果为零，因此两个根都满足原方程。",
+          "cue_text": "取x等于三",
+          "cue_objects": [],
+          "reading_reason": "完成第二个根的代入检查，并收束到两个根都满足原方程的结论。",
+          "diagram": {
+            "kind": "none",
+            "x_range": [
+              -1.0,
+              5.0
+            ],
+            "y_range": [
+              -1.0,
+              4.0
+            ],
+            "objects": [],
+            "matrix": []
+          },
+          "start_seconds": 26.266666666666666,
+          "stable_seconds": 27.266666666666666,
+          "end_seconds": 41.56666666666666,
+          "narration_end_seconds": 40.54666666666667,
+          "cue_seconds": 27.266666666666666,
+          "time_source": "audio_measured",
+          "cue_time_source": "estimated"
+        }
+      ],
+      "duration_seconds": 41.566667
+    },
+    {
+      "scene_id": "s7",
+      "title": "结论与一致性",
+      "objective": "汇总两个根和解集，并说明判别式与两种方法结果一致。",
+      "unit_ids": [
+        "u011"
+      ],
+      "beat_count": 3,
+      "beats": [
+        {
+          "beat_id": "s7_b1",
+          "unit_ids": [
+            "u011"
+          ],
+          "headline": "两个根相同",
+          "screen_text": "因式分解和求根公式得到同一结果：两个根为二和三。",
+          "formulas": [
+            "x=2\\quad\\mathrm{or}\\quad x=3"
+          ],
+          "spoken_text": "综合两种方法，方程的两个根是x等于2或x等于3，两个都是解。",
+          "cue_text": "综合两种方法",
+          "cue_objects": [],
+          "reading_reason": "先汇总结论，明确两种方法得到相同两个根。",
+          "diagram": {
+            "kind": "none",
+            "x_range": [
+              -1.0,
+              5.0
+            ],
+            "y_range": [
+              -1.0,
+              4.0
+            ],
+            "objects": [],
+            "matrix": []
+          },
+          "start_seconds": 0.0,
+          "stable_seconds": 1.0,
+          "end_seconds": 10.0,
+          "narration_end_seconds": 9.0,
+          "cue_seconds": 1.0,
+          "time_source": "audio_measured",
+          "cue_time_source": "estimated"
+        },
+        {
+          "beat_id": "s7_b2",
+          "unit_ids": [
+            "u011"
+          ],
+          "headline": "写成解集",
+          "screen_text": "解集用花括号收集全部解：二和三都在其中。",
+          "formulas": [
+            "\\{2,3\\}"
+          ],
+          "spoken_text": "把两个根写成解集，就是花括号二、三，表示所有解。",
+          "cue_text": "把两个根写成解集",
+          "cue_objects": [],
+          "reading_reason": "把两个根改写成集合形式，完成结论表述。",
+          "diagram": {
+            "kind": "none",
+            "x_range": [
+              -1.0,
+              5.0
+            ],
+            "y_range": [
+              -1.0,
+              4.0
+            ],
+            "objects": [],
+            "matrix": []
+          },
+          "start_seconds": 10.0,
+          "stable_seconds": 11.0,
+          "end_seconds": 18.566666666666666,
+          "narration_end_seconds": 17.56,
+          "cue_seconds": 11.0,
+          "time_source": "audio_measured",
+          "cue_time_source": "estimated"
+        },
+        {
+          "beat_id": "s7_b3",
+          "unit_ids": [
+            "u011"
+          ],
+          "headline": "判别式一致",
+          "screen_text": "判别式为一且大于零，故有两个不同实根，与已得结果一致。",
+          "formulas": [
+            "\\Delta=1>0"
+          ],
+          "spoken_text": "判别式Δ等于一，大于零，说明有两个不同实根，与前面一致。",
+          "cue_text": "判别式Δ等于一",
+          "cue_objects": [],
+          "reading_reason": "用判别式说明有两个不同实根，呼应两种解法结果。",
+          "diagram": {
+            "kind": "none",
+            "x_range": [
+              -1.0,
+              5.0
+            ],
+            "y_range": [
+              -1.0,
+              4.0
+            ],
+            "objects": [],
+            "matrix": []
+          },
+          "start_seconds": 18.566666666666666,
+          "stable_seconds": 19.566666666666666,
+          "end_seconds": 28.266666666666666,
+          "narration_end_seconds": 26.606666666666666,
+          "cue_seconds": 19.566666666666666,
+          "time_source": "audio_measured",
+          "cue_time_source": "estimated"
+        }
+      ],
+      "duration_seconds": 28.266667
+    }
+  ],
+  "duration_seconds": 292.233335
+}

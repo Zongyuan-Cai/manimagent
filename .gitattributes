@@ -10,3 +10,6 @@
 *.docx binary
 *.png binary
 testmaterial/错误编码.txt binary
+
+# Preserve generated answer evidence, including Markdown hard line breaks.
+testresult/**/answer.md whitespace=-blank-at-eol

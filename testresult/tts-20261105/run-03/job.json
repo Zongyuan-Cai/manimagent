@@ -1,0 +1,44 @@
+{
+  "schema_version": "1.0",
+  "job_id": "job_b1a0dceee3a44f139714095aec75d238",
+  "kind": "generation",
+  "answer_id": null,
+  "status": "partial",
+  "stage": "video",
+  "message": "文字已保存；动画未完成：音频编码、起点或时长与视频不匹配",
+  "resource_ref": {
+    "type": "generation",
+    "id": "generation_4478763d28a14ab2a3e46134124cd669"
+  },
+  "result": {
+    "type": "generation",
+    "id": "generation_4478763d28a14ab2a3e46134124cd669"
+  },
+  "error": {
+    "code": "render_failed",
+    "message": "音频编码、起点或时长与视频不匹配",
+    "retryable": false,
+    "details": {}
+  },
+  "diagnostic_asset_ids": [
+    "file_9fd1fb52f07940cfa808bb4cc8318253",
+    "file_57d4c6f99db64d7490dacf7cffd1d8f1",
+    "file_0d601ecbb2604c57879cbc02826ce359",
+    "file_29cb5482154f49dda785a5d3e9e69a11",
+    "file_3d9df86b59c946e6824d77dfadc9356d",
+    "file_8f82045927d340cf96633121fcfab8a3",
+    "file_92967652fd3c4c1b88d4cb394c3f4a02",
+    "file_5494b71385534f36be94454c5c00a99a",
+    "file_2059cec8f4ae47578b2645ba4af69f98",
+    "file_2b822662fc0d404bae74bf5ab3e02602"
+  ],
+  "usage": {
+    "model_calls": 9,
+    "input_tokens": 54884,
+    "output_tokens": 19904,
+    "tokens_reported": true,
+    "elapsed_seconds": 336.266
+  },
+  "created_at": "2026-11-05T15:41:24.102083+00:00",
+  "updated_at": "2026-11-05T15:47:00.408935+00:00"
+}

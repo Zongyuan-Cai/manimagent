@@ -32,7 +32,7 @@ export function createResults({state, dom, api, storage, window, crypto}) {
     el('video-player').src = `/api/v2/videos/${id}/content`;
     el('video-download').href = `/api/v2/videos/${id}/content?download=true`;
     el('video-plan').href = `/api/v2/videos/${id}/plan`;
-    el('video-message').textContent = `${Math.round(video.duration_seconds)} 秒 · 720p / 30 fps · 无声 · ${video.frame_mapping.length} 个关键节拍`;
+    el('video-message').textContent = `${Math.round(video.duration_seconds)} 秒 · 720p / 30 fps · ${video.audio_asset_id ? 'MiMo 旁白' : '无声'} · ${video.frame_mapping.length} 个关键节拍`;
     state.videoId = id;
     storage.setItem('manimagent.video', id);
   }

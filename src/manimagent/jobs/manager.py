@@ -14,6 +14,7 @@ from manimagent.instance import InstanceLease
 from manimagent.llm.client import ChatProvider
 from manimagent.llm.settings import LLMSettingsStore
 from manimagent.materials.service import MaterialService
+from manimagent.memory.store import MemoryStore
 from manimagent.schemas import (
     Answer,
     AnswerRequest,
@@ -46,6 +47,8 @@ class JobManager:
         self.llm_settings = LLMSettingsStore(settings, self.store.root)
         self.settings = self.llm_settings.effective(settings)
         self.provider = provider
+        self.memory = MemoryStore(self.store.root / "memory.sqlite3")
+        self.memory_slots = threading.BoundedSemaphore(1)
         self.renderer = renderer or NativeRenderer()
         self.queue: queue.Queue[str] = queue.Queue()
         self.slots = threading.BoundedSemaphore(settings.max_waiting + 1)
@@ -110,7 +113,7 @@ class JobManager:
             snapshot = self.settings.model_copy(deep=True)
             self.validate(kind, request, snapshot)
             if self.stopping.is_set() or not self.slots.acquire(blocking=False):
-                raise ContentError("queue_full", "文字任务队列已满，请稍后重试", 429)
+                raise ContentError("queue_full", "任务队列已满，请稍后重试", 429)
             job = Job(
                 job_id=new_id("job"),
                 kind=kind,
@@ -167,7 +170,7 @@ class JobManager:
             try:
                 self.execute(identifier)
             except Exception:
-                log.exception("文字 Worker 无法保存任务 %s", identifier)
+                log.exception("任务 Worker 无法保存任务 %s", identifier)
                 # If a one-off write failed, still try to publish a terminal failure.
                 # A persistent disk failure remains visible in the server log and is
                 # reconciled as interrupted when storage becomes available on restart.

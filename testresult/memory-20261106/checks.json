@@ -1,0 +1,15 @@
+{
+  "pytest": {"passed": 264, "skipped": 4, "failed": 0, "seconds": 85.13},
+  "node_tests": {"passed": 27, "failed": 0},
+  "ruff_check": "passed",
+  "ruff_format_check": "passed",
+  "git_diff_check": "passed",
+  "credential_pattern_scan": {"text_files": 553, "matches": 0},
+  "browser": {
+    "environment": "isolated local fixture at 127.0.0.1:8766",
+    "observed": ["page initialized", "memory disabled by default", "short-term entry visible", "confirmation changed count from short_term=1/deep=0 to short_term=0/deep=1"],
+    "screenshot": "memory-ui.jpg",
+    "test_server_stopped": true
+  },
+  "real_e2e_result": "run-03/result.json"
+}

@@ -4,11 +4,12 @@ from scripts.check_distribution import REQUIRED_ASSETS, check_members
 
 
 @pytest.mark.parametrize("sdist", [False, True])
-def test_current_web_assets_are_required_in_both_distribution_formats(sdist):
-    prefix = "manimagent-0.2.0/src/" if sdist else ""
+@pytest.mark.parametrize("asset", ["vendor/tex-svg.js", "memory.js"])
+def test_current_web_assets_are_required_in_both_distribution_formats(sdist, asset):
+    prefix = "manimagent-0.3.1/src/" if sdist else ""
     members = [prefix + name for name in REQUIRED_ASSETS]
     check_members(members, sdist=sdist)
-    members.remove(prefix + "manimagent/web/vendor/tex-svg.js")
+    members.remove(prefix + "manimagent/web/" + asset)
     with pytest.raises(ValueError, match="Missing packaged web assets"):
         check_members(members, sdist=sdist)
 

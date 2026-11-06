@@ -1,0 +1,64 @@
+{
+  "schema_version": "1.0",
+  "generation_id": "generation_e02abb483ab64a7294bad4cbbfa5cce1",
+  "output_mode": "both",
+  "source": {
+    "inputs": [
+      {
+        "type": "text",
+        "text": "给定 a=(3,2)、b=(2,0)，面向具备向量基础、首次学习正交投影的学生，完整解释并求出 a 在 b 方向上的投影。\n正文需包含：b≠0 的前提；几何上投影和垂足的意义；设 p=c b，由 a-p 与 b 正交推导系数公式；\n逐项算 a·b、b·b、c、p；区分标量系数、标量投影长度和投影向量；最后用残差 a-p 与 b 的点积验证。\n所有推导与结论完整写出，引用材料，不假设历史知识画像。"
+      }
+    ],
+    "parser_profile_id": null,
+    "input_mode": "auto",
+    "type": "inputs",
+    "instruction": "给定 a=(3,2)、b=(2,0)，面向具备向量基础、首次学习正交投影的学生，完整解释并求出 a 在 b 方向上的投影。\n正文需包含：b≠0 的前提；几何上投影和垂足的意义；设 p=c b，由 a-p 与 b 正交推导系数公式；\n逐项算 a·b、b·b、c、p；区分标量系数、标量投影长度和投影向量；最后用残差 a-p 与 b 的点积验证。\n所有推导与结论完整写出，引用材料，不假设历史知识画像。",
+    "answer_profile_id": null
+  },
+  "material_ids": [
+    "material_2e36bc7325b7466d98d26235ff18b9db"
+  ],
+  "answer_id": "answer_8b7c8a49dc1740989a229a84af1e461e",
+  "video_id": null,
+  "stages": {
+    "material": {
+      "status": "completed",
+      "error": null,
+      "diagnostic_asset_ids": []
+    },
+    "answer": {
+      "status": "completed",
+      "error": null,
+      "diagnostic_asset_ids": []
+    },
+    "video": {
+      "status": "needs_review",
+      "error": {
+        "code": "output_truncated",
+        "message": "模型输出被截断，请增加输出预算后重试",
+        "retryable": false,
+        "details": {}
+      },
+      "diagnostic_asset_ids": [
+        "file_b2a10c2381884154bf37349a411aa5c1",
+        "file_638c3972a6634a1496d74359f8fcd839",
+        "file_42ff1004f25b4ca3bef10d8490a9ba26",
+        "file_bb78b8ea9e324b77856d9a1b34b8f361",
+        "file_867d802c3f064eaa997bfebfcf70329a",
+        "file_859baa4821cb460499690e2a54110ebe",
+        "file_12092dd50101472fb887e11bdf62e7d2",
+        "file_4875cb0e3b0243b9a3a384c7eebb1906",
+        "file_8ba007cb3c064b57982940b217c18529",
+        "file_dc4c7222f5e7489a968337642c84a0b3",
+        "file_c28214fd92f7475e8f64ad37de089c99",
+        "file_4a2ba58341d54c69b03db5c2cacb070a"
+      ]
+    }
+  },
+  "active_job_id": "job_6919978603324bebb9d8a6dfa4ed0fcf",
+  "job_ids": [
+    "job_6919978603324bebb9d8a6dfa4ed0fcf"
+  ],
+  "created_at": "2026-11-05T15:26:00.917033+00:00",
+  "updated_at": "2026-11-05T15:31:27.064029+00:00"
+}

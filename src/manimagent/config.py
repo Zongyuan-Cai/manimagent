@@ -51,6 +51,42 @@ class ModelConfig(BaseModel):
         return value
 
 
+class TTSConfig(BaseModel):
+    """Separate speech credentials and limits; no secret is serialized in settings."""
+
+    model_config = ConfigDict(extra="forbid")
+    enabled: bool = False
+    base_url: str = "https://api.xiaomimimo.com/v1"
+    model: str = Field(default="mimo-v2.5-tts", min_length=1, max_length=100)
+    api_key_env: str = Field(default="MIMO_API_KEY", pattern=r"^[A-Za-z_][A-Za-z0-9_]*$")
+    voice: str = Field(default="mimo_default", min_length=1, max_length=100)
+    style: str = Field(
+        default="请用清晰、自然的普通话进行教学讲解，语速适中，准确朗读原文，不增删内容。",
+        min_length=1,
+        max_length=1000,
+    )
+    timeout: float = Field(default=60, gt=0, le=120, allow_inf_nan=False)
+    max_calls: int = Field(default=64, ge=1, le=128)
+    max_retries: int = Field(default=1, ge=0, le=2)
+    max_response_bytes: int = Field(default=16 * 1024 * 1024, ge=1024, le=64 * 1024 * 1024)
+    max_audio_seconds: float = Field(default=60, gt=0, le=120, allow_inf_nan=False)
+
+    @field_validator("base_url")
+    @classmethod
+    def clean_url(cls, value: str) -> str:
+        parsed = urlsplit(value)
+        if (
+            parsed.scheme != "https"
+            or not parsed.hostname
+            or parsed.username
+            or parsed.password
+            or parsed.query
+            or parsed.fragment
+        ):
+            raise ValueError("TTS base_url 必须为不含凭据、查询参数或片段的 HTTPS 地址")
+        return value.rstrip("/")
+
+
 class Settings(BaseModel):
     model_config = ConfigDict(extra="forbid")
     runs_dir: Path = Path("runs/current")
@@ -76,6 +112,7 @@ class Settings(BaseModel):
     video_context_tokens: int = Field(default=96000, ge=8000)
     video_font: str = "auto"
     video_memory_mb: int = Field(default=2048, ge=512, le=4096)
+    tts: TTSConfig = Field(default_factory=TTSConfig)
     models: dict[str, ModelConfig] = Field(default_factory=dict)
     roles: dict[str, str] = Field(default_factory=dict)
 
@@ -151,6 +188,11 @@ def load_settings(path: str | Path | None = None) -> Settings:
             }
             for name in ("text",)
         }
+    if "MANIMAGENT_TTS_ENABLED" in os.environ:
+        tts = data.setdefault("tts", {})
+        if not isinstance(tts, dict):
+            raise ValueError("tts 配置必须是 YAML 对象")
+        tts["enabled"] = os.environ["MANIMAGENT_TTS_ENABLED"]
     settings = Settings.model_validate(data)
     if not settings.runs_dir.is_absolute():
         settings.runs_dir = config_path.parent / settings.runs_dir

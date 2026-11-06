@@ -7,8 +7,18 @@ from manimagent.video.models import (
     BeatDraft,
     Diagram,
     GraphicObject,
+    PlanCheck,
     SceneDraft,
 )
+
+
+def test_revision_report_requires_an_actionable_scene():
+    with pytest.raises(ValidationError, match="problem_scene_ids"):
+        PlanCheck(decision="revise", message="请修复s4的旁白读法", units=[])
+    report = PlanCheck(
+        decision="revise", message="请修复s4的旁白读法", units=[], problem_scene_ids=["s4"]
+    )
+    assert report.problem_scene_ids == ["s4"]
 
 
 @pytest.mark.parametrize("points", [[[0, 0], [0, 0]], [[float("nan"), 0], [1, 1]], [[0, 0]]])

@@ -4,7 +4,7 @@ import {createResults} from './results.js';
 const terminal = new Set(['completed', 'partial', 'needs_input', 'needs_review', 'failed', 'interrupted']);
 const labels = {queued: '排队中', running: '处理中', completed: '已完成', partial: '文字已保存，动画未完成', needs_input: '需要补充材料', needs_review: '需要核对', failed: '失败', interrupted: '已中断'};
 
-export function createWorkspace({dom, api, window, storage, crypto, scheduler = globalThis}) {
+export function createWorkspace({dom, api, window, storage, crypto, scheduler = globalThis, memoryOptions = () => null, onCompleted = () => {}}) {
   const {el} = dom;
   const state = {epoch: 0, jobId: null, answer: null, videoId: null, resumeJobId: null, timer: null, busy: false, status: 'idle', reusedMaterialIds: null, fileRows: []};
   const {clearVideo, setStatus, showAnswer, showVideo} = createResults({state, dom, api, storage, window, crypto});
@@ -78,6 +78,8 @@ export function createWorkspace({dom, api, window, storage, crypto, scheduler = 
           el('answer-meta').textContent = '等待补充或核对材料';
         }
         release();
+        // Memory refresh errors must not change the outcome of a completed generation.
+        Promise.resolve().then(() => onCompleted(job)).catch(() => {});
       } else { state.timer = scheduler.setTimeout(() => poll(epoch, jobId), 1000); }
     } catch (error) {
       if (epoch !== state.epoch || jobId !== state.jobId) return;
@@ -99,6 +101,8 @@ export function createWorkspace({dom, api, window, storage, crypto, scheduler = 
     try {
       const instruction = el('text').value;
       const outputMode = el('output-mode').value;
+      const selectedMemory = memoryOptions();
+      const memory = selectedMemory ? {...selectedMemory} : null;
       let source;
       if (state.reusedMaterialIds) source = {type: 'materials', material_ids: state.reusedMaterialIds, instruction};
       else {
@@ -125,7 +129,7 @@ export function createWorkspace({dom, api, window, storage, crypto, scheduler = 
         }
         source = {type: 'inputs', inputs, instruction};
       }
-      const job = await api.post('/api/v2/generations', {output_mode: outputMode, source});
+      const job = await api.post('/api/v2/generations', {output_mode: outputMode, source, ...(memory ? {memory} : {})});
       await watchJob(job.job_id, epoch);
     } catch (error) { if (epoch === state.epoch) { el('error').textContent = error.message; el('message').textContent = ''; el('result').textContent = '生成未完成，请检查输入后重试。'; el('answer-meta').textContent = '等待重新提交'; setStatus('未完成', 'failed'); release(); } }
   }

@@ -1,0 +1,29 @@
+{
+  "passed": false,
+  "source_hash_before": "8a7eb9ef54cc438d8ce0ba06210a1b566c90a3d10c79972013d9697ae3ccf34a",
+  "model": "deepseek-flash",
+  "tts_model": "mimo-v2.5-tts",
+  "tts_voice": "mimo_default",
+  "uploaded_files": [
+    "tts-二次方程.txt"
+  ],
+  "job_id": "job_9f81ec6e7e8d4308baea772aef7da411",
+  "answer_id": "answer_e469ec36141744e5876e51bbf03f7f12",
+  "status": "partial",
+  "usage": {
+    "model_calls": 11,
+    "input_tokens": 56667,
+    "output_tokens": 36871,
+    "tokens_reported": true,
+    "elapsed_seconds": 284.5
+  },
+  "error": {
+    "code": "video_plan_check",
+    "message": "按各场景结束时间合计约4分44秒，与duration_reason“约三分半”不符；建议修正为约4分45秒或压缩节拍。其余单元与数学内容通过。",
+    "retryable": false,
+    "details": {}
+  },
+  "elapsed_seconds": 285.0,
+  "source_hash_after": "8a7eb9ef54cc438d8ce0ba06210a1b566c90a3d10c79972013d9697ae3ccf34a",
+  "fixed_source": true
+}

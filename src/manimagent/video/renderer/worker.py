@@ -11,7 +11,7 @@ from pathlib import Path
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("action", choices=["render", "assemble", "check", "layout"])
+    parser.add_argument("action", choices=["render", "assemble", "mux", "check", "layout"])
     parser.add_argument("--input", type=Path, required=True)
     args = parser.parse_args()
     directory = args.input.resolve().parent
@@ -40,6 +40,10 @@ def main():
             from manimagent.video.renderer.media import assemble
 
             result = assemble(data, directory)
+        elif args.action == "mux":
+            from manimagent.video.renderer.media import mux_audio
+
+            result = mux_audio(data, directory)
         else:
             from manimagent.video.renderer.scene import render
 

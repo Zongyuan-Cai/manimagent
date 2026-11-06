@@ -6,12 +6,12 @@ import subprocess
 from pathlib import Path
 
 
-def probe(path: Path, decode: bool = False) -> dict:
+def probe(path: Path, decode: bool = False, *, expect_audio: bool = False) -> dict:
     import av
 
     with av.open(str(path)) as container:
-        if len(container.streams.video) != 1 or container.streams.audio:
-            raise ValueError("必须恰有一条视频流且没有音频")
+        if len(container.streams.video) != 1 or len(container.streams.audio) != int(expect_audio):
+            raise ValueError("视频或音频流数量不符合预期")
         stream = container.streams.video[0]
         duration = (
             float(stream.duration * stream.time_base)
@@ -25,7 +25,7 @@ def probe(path: Path, decode: bool = False) -> dict:
             "codec": stream.codec_context.name,
             "pix_fmt": stream.codec_context.pix_fmt,
             "duration_seconds": duration,
-            "audio_streams": 0,
+            "audio_streams": len(container.streams.audio),
         }
         if (
             metadata["width"] != 1280
@@ -47,7 +47,73 @@ def probe(path: Path, decode: bool = False) -> dict:
             if abs(count / 30 - duration) > 0.15:
                 raise ValueError("完整解码帧数与时长不一致")
             metadata["decoded_frames"] = count
-        return metadata
+    if expect_audio:
+        with av.open(str(path)) as container:
+            audio = container.streams.audio[0]
+            audio_duration = float(audio.duration * audio.time_base)
+            audio_start = float((audio.start_time or 0) * audio.time_base)
+            if (
+                audio.codec_context.name != "aac"
+                or abs(audio_duration - duration) > 0.15
+                or abs(audio_start) > 0.1
+            ):
+                raise ValueError("音频编码、起点或时长与视频不匹配")
+            metadata.update(
+                audio_duration_seconds=audio_duration,
+                audio_codec=audio.codec_context.name,
+                audio_sample_rate=audio.codec_context.sample_rate,
+            )
+            if decode:
+                samples, last = 0, -1.0
+                for frame in container.decode(audio=0):
+                    timestamp = float(frame.pts * frame.time_base)
+                    if timestamp <= last:
+                        raise ValueError("音频解码时间戳不递增")
+                    samples += frame.samples
+                    last = timestamp
+                if abs(samples / audio.codec_context.sample_rate - duration) > 0.15:
+                    raise ValueError("音频完整解码长度与视频不符")
+                metadata["decoded_audio_samples"] = samples
+    return metadata
+
+
+def mux_audio(data: dict, directory: Path) -> dict:
+    import imageio_ffmpeg
+
+    result = subprocess.run(
+        [
+            imageio_ffmpeg.get_ffmpeg_exe(),
+            "-v",
+            "error",
+            "-i",
+            "complete.mp4",
+            "-i",
+            "narration.wav",
+            "-map",
+            "0:v:0",
+            "-map",
+            "1:a:0",
+            "-c:v",
+            "copy",
+            "-c:a",
+            "aac",
+            "-b:a",
+            "128k",
+            "-movflags",
+            "+faststart",
+            "-y",
+            "narrated.mp4",
+        ],
+        cwd=directory,
+        capture_output=True,
+        check=False,
+    )
+    if result.returncode:
+        raise ValueError("旁白封装失败")
+    media = probe(directory / "narrated.mp4", decode=True, expect_audio=True)
+    if abs(media["duration_seconds"] - data["duration_seconds"]) > 0.15:
+        raise ValueError("旁白封装后视频时间线发生变化")
+    return {"status": "success", "video_path": "narrated.mp4", "media": media}
 
 
 def extract(path: Path, times: list[float], directory: Path) -> list[dict]:

@@ -11,8 +11,8 @@ from pydantic import Field, StringConstraints, field_validator, model_validator
 from manimagent.schemas import Contract, ResourceID, now
 from manimagent.video.notation import normalize_formula
 
-PROMPT_VERSION = "silent-templates-8"
-TEMPLATE_VERSION = "native-manim-5"
+PROMPT_VERSION = "memory-narrated-templates-11"
+TEMPLATE_VERSION = "native-manim-6"
 SmallText = Annotated[str, StringConstraints(min_length=1, max_length=120)]
 LocalID = Annotated[str, StringConstraints(pattern=r"^[A-Za-z][A-Za-z0-9_]{0,39}$")]
 Coordinate = Annotated[float, Field(ge=-20, le=20, allow_inf_nan=False)]
@@ -218,7 +218,8 @@ class ResolvedBeat(BeatDraft):
     end_seconds: float
     narration_end_seconds: float
     cue_seconds: float
-    time_source: Literal["estimated"] = "estimated"
+    time_source: Literal["estimated", "audio_measured"] = "estimated"
+    cue_time_source: Literal["estimated"] = "estimated"
 
 
 class PlannedScene(SceneOutline):
@@ -235,8 +236,8 @@ class VideoPlan(Contract):
     timing_revision: int = 1
     prompt_version: str = PROMPT_VERSION
     template_version: str = TEMPLATE_VERSION
-    profile_id: Literal["standard_silent"] = "standard_silent"
-    time_source: Literal["estimated"] = "estimated"
+    profile_id: Literal["standard_silent", "standard_narrated"] = "standard_silent"
+    time_source: Literal["estimated", "audio_measured"] = "estimated"
     outline: VideoOutline
     teaching_units: list[TeachingUnit]
     scenes: list[PlannedScene]
@@ -256,10 +257,16 @@ class PlanCheck(Contract):
     units: list[UnitCheck]
     problem_scene_ids: list[LocalID] = Field(default_factory=list)
 
+    @model_validator(mode="after")
+    def actionable_revision(self):
+        if self.decision == "revise" and not self.problem_scene_ids:
+            raise ValueError("decision=revise 时 problem_scene_ids 必须列出实际需要修复的场景 ID")
+        return self
+
 
 class VideoRequest(Contract):
     answer_id: ResourceID
-    video_profile_id: Literal["standard_silent"] = "standard_silent"
+    video_profile_id: Literal["auto", "standard_silent", "standard_narrated"] = "auto"
     resume_job_id: ResourceID | None = None
 
 
@@ -271,9 +278,10 @@ class VideoResult(Contract):
     plan_id: ResourceID
     video_asset_id: ResourceID
     subtitle_asset_id: None = None
-    audio_asset_id: None = None
+    audio_asset_id: ResourceID | None = None
     duration_seconds: float
-    time_source: Literal["estimated"] = "estimated"
+    time_source: Literal["estimated", "audio_measured"] = "estimated"
+    cue_time_source: Literal["estimated"] = "estimated"
     review_mode: Literal["trusted_template_geometry_and_layout"] = (
         "trusted_template_geometry_and_layout"
     )

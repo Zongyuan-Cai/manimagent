@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "job_id": "job_672bb518c8354b1f86a288b4bfe64683",
+  "kind": "generation",
+  "answer_id": null,
+  "status": "running",
+  "stage": "video",
+  "message": "正在分析教学单元并规划整体场景",
+  "resource_ref": {
+    "type": "generation",
+    "id": "generation_6a7160a98f6b4f158498a6e6aeaac1dd"
+  },
+  "result": null,
+  "error": null,
+  "diagnostic_asset_ids": [
+    "file_5477a647d1514e53919f044125e8e0b3",
+    "file_f386560e174c4a5599f3912445228811",
+    "file_21c11c9e5a22434582ad447e069490f4"
+  ],
+  "usage": {},
+  "created_at": "2026-11-06T04:16:00.044428+00:00",
+  "updated_at": "2026-11-06T04:16:24.103298+00:00"
+}

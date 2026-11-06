@@ -1,0 +1,44 @@
+{
+  "entries": [
+    {
+      "memory_id": "memory_c0afaaf0f19a4040a73dc89d0dc6d497",
+      "field": "explanation.style",
+      "value": "喜欢分步骤讲解,每一步都先说明依据",
+      "scope": "global",
+      "layer": "deep",
+      "state": "active",
+      "temporary": false,
+      "session_id": "acceptance_history",
+      "independent_sessions": 1,
+      "evidence": [
+        {
+          "source_id": "acceptance_memory_note",
+          "session_id": "acceptance_history",
+          "quote": "我喜欢分步骤讲解，每一步都先说明依据。",
+          "date": "2026-11-06T04:15:59.768045+00:00",
+          "kind": "observation"
+        },
+        {
+          "source_id": "confirmation_9036141ecc0d4ff091ffc786151d6f5c",
+          "session_id": "acceptance_history",
+          "quote": "喜欢分步骤讲解,每一步都先说明依据",
+          "date": "2026-11-06T04:15:59.792505+00:00",
+          "kind": "confirmation"
+        }
+      ],
+      "created_at": "2026-11-06T04:15:59.768045+00:00",
+      "updated_at": "2026-11-06T04:15:59.792505+00:00",
+      "expires_at": null,
+      "confirmed_at": "2026-11-06T04:15:59.792505+00:00"
+    }
+  ],
+  "policy": {
+    "promotion_sessions": 3,
+    "short_term_days": 14,
+    "max_entries": 200,
+    "max_evidence_per_entry": 20,
+    "max_snapshot_entries": 12,
+    "max_snapshot_chars": 6000,
+    "max_sources": 10000
+  }
+}

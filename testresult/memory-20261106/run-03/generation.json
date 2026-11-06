@@ -1,0 +1,51 @@
+{
+  "schema_version": "1.0",
+  "generation_id": "generation_6c3d67abac054160846413c04c8f4dc4",
+  "output_mode": "both",
+  "source": {
+    "inputs": [
+      {
+        "type": "text",
+        "text": "面向初学者，完整讲解如何解一元二次方程 x^2-5x+6=0。说明因式分解依据和零乘积原理，用求根公式交叉核验，再把两个根代回原式检查。"
+      },
+      {
+        "type": "file",
+        "file_id": "file_f838c3fc480c4106aad70d73cdfbcbe4",
+        "selection": null
+      }
+    ],
+    "parser_profile_id": null,
+    "input_mode": "auto",
+    "type": "inputs",
+    "instruction": "面向初学者，完整讲解如何解一元二次方程 x^2-5x+6=0。说明因式分解依据和零乘积原理，用求根公式交叉核验，再把两个根代回原式检查。",
+    "answer_profile_id": null
+  },
+  "material_ids": [
+    "material_d79cb7c542fd46369b0801c73fa002d6"
+  ],
+  "answer_id": "answer_b133b57c255a46dcb15a35755b665d46",
+  "video_id": "video_e1ea005789a54a55a28e1d3eb2e6c9ef",
+  "stages": {
+    "material": {
+      "status": "completed",
+      "error": null,
+      "diagnostic_asset_ids": []
+    },
+    "answer": {
+      "status": "completed",
+      "error": null,
+      "diagnostic_asset_ids": []
+    },
+    "video": {
+      "status": "completed",
+      "error": null,
+      "diagnostic_asset_ids": []
+    }
+  },
+  "active_job_id": "job_6fa36a8bf190421395deb2a52bdf72fc",
+  "job_ids": [
+    "job_6fa36a8bf190421395deb2a52bdf72fc"
+  ],
+  "created_at": "2026-11-06T04:38:22.639618+00:00",
+  "updated_at": "2026-11-06T04:46:37.413106+00:00"
+}
