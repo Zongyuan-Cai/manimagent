@@ -105,6 +105,7 @@ export function createSettings({dom, api}) {
     };
     controls.append(use); card.use = use;
     const status = dom.create('p'); status.className = 'llm-test-status'; status.setAttribute('role', 'status'); card.status = status;
+    if (model.key_error) { status.textContent = model.key_error; status.classList.add('error-text'); }
     const advancedTests = dom.create('div'); advancedTests.className = 'llm-tests'; advanced.append(advancedTests);
     for (const [scope, title] of [['text', '测试连接'], ['structured', '测试结构化输出']]) {
       const button = dom.create('button'); button.type = 'button'; button.className = 'secondary'; button.textContent = title;

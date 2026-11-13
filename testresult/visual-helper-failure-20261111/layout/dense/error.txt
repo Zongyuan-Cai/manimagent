@@ -1,0 +1,17 @@
+Traceback (most recent call last):
+  File "E:\manimagent\src\manimagent\video\renderer\worker.py", line 52, in main
+    result = render(data, directory)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\manimagent\src\manimagent\video\renderer\scene.py", line 208, in render
+    scene.render()
+  File "E:\manimagent\.venv\Lib\site-packages\manim\scene\scene.py", line 259, in render
+    self.construct()
+  File "E:\manimagent\src\manimagent\video\renderer\scene.py", line 80, in construct
+    diagram, objects, arrows, matrix_cells = layout.graphic(beat.diagram)
+                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\manimagent\src\manimagent\video\renderer\layout.py", line 283, in graphic
+    self.fit(group, 5.8, 3.35).move_to(np.array([-3.45, 0, 0]))
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\manimagent\src\manimagent\video\renderer\layout.py", line 85, in fit
+    raise ValueError(
+ValueError: layout: 节拍 b0 的内容尺寸 20.59×2.58 超过区域 5.8×3.35，缩小后无法保证可读性，请缩短该节拍

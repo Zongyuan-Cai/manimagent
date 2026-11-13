@@ -5,6 +5,24 @@ import {fakeDOM} from './helpers.mjs';
 
 const data = revision => ({revision, models: {}, roles: {}, answer_context_tokens: 24000, answer_check: true});
 
+test('unreadable saved credentials show the server error while allowing replacement', async () => {
+  const {dom} = fakeDOM();
+  const keyError = '保存的密钥无法读取，请重新填写';
+  const settings = createSettings({dom, api: {
+    health: async () => ({ready: false}),
+    request: async () => ({...data(1), models: {text: {
+      config: {base_url: 'https://example.test/v1', model: 'text', auth_mode: 'bearer'},
+      key_configured: false, key_error: keyError,
+    }}}),
+  }});
+  await settings.load();
+  const card = settings.state.cards[0];
+  assert.equal(card.status.textContent, keyError);
+  assert.ok(card.status.classList.contains('error-text'));
+  assert.equal(card.fields.api_key.disabled, false);
+  assert.equal(card.fields.api_key.value, '');
+});
+
 test('configuration reload and save cannot overwrite each other in flight', async () => {
   const {dom, element} = fakeDOM(), pending = [], calls = [];
   const settings = createSettings({dom, api: {

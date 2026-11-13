@@ -27,7 +27,6 @@ REQUIRED_ASSETS = {
     "manimagent/web/results.js",
     "manimagent/web/settings.js",
     "manimagent/web/memory.js",
-    "manimagent/web/memory-learning.js",
     "manimagent/web/memory-files.js",
     "manimagent/web/tts-settings.js",
     "manimagent/web/onboarding.js",

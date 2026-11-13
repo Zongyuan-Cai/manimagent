@@ -18,9 +18,10 @@ def parse_isolated(task: dict, root: Path, timeout: float, budget: Budget) -> di
         task_path = Path(directory) / "input.json"
         output = Path(directory) / "output.json"
         task_path.write_text(json.dumps(task), encoding="utf-8")
-        with (Path(directory) / "stderr.log").open("wb") as stderr:
+        stderr_path = Path(directory) / "stderr.log"
+        with stderr_path.open("wb") as stderr:
             process = subprocess.Popen(
-                [sys.executable, "-m", "manimagent.materials.worker", str(task_path), str(output)],
+                [sys.executable, "-m", "manimagent.materials.parsers", str(task_path), str(output)],
                 stdout=subprocess.DEVNULL,
                 stderr=stderr,
                 creationflags=subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0,
@@ -33,11 +34,12 @@ def parse_isolated(task: dict, root: Path, timeout: float, budget: Budget) -> di
             finally:
                 if process.poll() is None:
                     process.kill()
-                process.wait()
+                returncode = process.wait()
+        if returncode != 0:
+            details = stderr_path.read_text(encoding="utf-8", errors="replace")
+            raise RuntimeError(f"Material parser exited with code {returncode}:\n{details}")
         if not output.exists():
-            raise ContentError(
-                "invalid_file", "文件解析失败，请检查原件是否损坏", state="needs_input"
-            )
+            raise RuntimeError("Material parser exited without writing a result")
         candidate = json.loads(output.read_text(encoding="utf-8"))
         if "error" in candidate:
             raise ContentError(**candidate["error"])

@@ -1,0 +1,487 @@
+{
+  "scene_id": "s5",
+  "title": "图形关系与总结",
+  "objective": "在抛物线上展示关键点、割线与切线，总结罗尔定理的几何含义。",
+  "unit_ids": [
+    "u022",
+    "u023",
+    "u024",
+    "u025",
+    "u026",
+    "u027"
+  ],
+  "beat_count": 5,
+  "beats": [
+    {
+      "beat_id": "b1",
+      "unit_ids": [
+        "u022"
+      ],
+      "headline": "抛物线开口向上",
+      "screen_text": "在区间0到2上考察抛物线y=(x-1)²，顶点在(1,0)，开口向上。",
+      "formulas": [
+        "y=(x-1)^2"
+      ],
+      "spoken_text": "先看图形关系。抛物线y等于x减一的平方，顶点在横坐标一，开口向上。",
+      "cue_text": "先看图形关系",
+      "cue_objects": [],
+      "reading_reason": "建立函数图像的基本形态，为后续关键点定位做铺垫。",
+      "diagram": {
+        "kind": "plane",
+        "x_range": [
+          -0.5,
+          2.5
+        ],
+        "y_range": [
+          -0.5,
+          2.0
+        ],
+        "objects": [
+          {
+            "object_id": "vertex_guess",
+            "kind": "point",
+            "points": [
+              [
+                1.0,
+                0.0
+              ]
+            ],
+            "label": "顶点(1,0)",
+            "color": "gold",
+            "radius": 0.2
+          }
+        ],
+        "matrix": []
+      },
+      "start_seconds": 0.0,
+      "stable_seconds": 1.0,
+      "end_seconds": 11.733333333333333,
+      "narration_end_seconds": 8.51923076923077,
+      "cue_seconds": 1.0,
+      "time_source": "estimated",
+      "cue_time_source": "estimated"
+    },
+    {
+      "beat_id": "b2",
+      "unit_ids": [
+        "u023"
+      ],
+      "headline": "三个关键点",
+      "screen_text": "顶点(1,0)，左端点(0,1)，右端点(2,1)，这三个点确定曲线位置。",
+      "formulas": [
+        "(1,0), (0,1), (2,1)"
+      ],
+      "spoken_text": "关键点有三个：顶点一零，左端点零一，右端点二一，它们确定曲线位置。",
+      "cue_text": "关键点有三个",
+      "cue_objects": [
+        "vertex_guess",
+        "left_end",
+        "right_end"
+      ],
+      "reading_reason": "在图上标出顶点和两个端点，使抽象坐标与图像位置对应。",
+      "diagram": {
+        "kind": "plane",
+        "x_range": [
+          -0.5,
+          2.5
+        ],
+        "y_range": [
+          -0.5,
+          2.0
+        ],
+        "objects": [
+          {
+            "object_id": "vertex_guess",
+            "kind": "point",
+            "points": [
+              [
+                1.0,
+                0.0
+              ]
+            ],
+            "label": "顶点(1,0)",
+            "color": "gold",
+            "radius": 0.2
+          },
+          {
+            "object_id": "left_end",
+            "kind": "point",
+            "points": [
+              [
+                0.0,
+                1.0
+              ]
+            ],
+            "label": "左端(0,1)",
+            "color": "blue",
+            "radius": 0.2
+          },
+          {
+            "object_id": "right_end",
+            "kind": "point",
+            "points": [
+              [
+                2.0,
+                1.0
+              ]
+            ],
+            "label": "右端(2,1)",
+            "color": "blue",
+            "radius": 0.2
+          }
+        ],
+        "matrix": []
+      },
+      "start_seconds": 11.733333333333333,
+      "stable_seconds": 12.733333333333333,
+      "end_seconds": 23.466666666666665,
+      "narration_end_seconds": 19.733333333333334,
+      "cue_seconds": 12.733333333333333,
+      "time_source": "estimated",
+      "cue_time_source": "estimated"
+    },
+    {
+      "beat_id": "b3",
+      "unit_ids": [
+        "u024"
+      ],
+      "headline": "割线与切线",
+      "screen_text": "端点等高，割线水平y=1；顶点处切线水平y=0，曲线先降后升。",
+      "formulas": [
+        "y=1",
+        "y=0"
+      ],
+      "spoken_text": "两个端点等高，所以连接它们的割线水平，方程y等于一；顶点处切线也水平，方程y等于零。",
+      "cue_text": "两个端点等高",
+      "cue_objects": [
+        "secant_line",
+        "tangent_line",
+        "left_end",
+        "right_end",
+        "vertex_guess"
+      ],
+      "reading_reason": "将割线和切线同时展示，直观对应定理结论。",
+      "diagram": {
+        "kind": "plane",
+        "x_range": [
+          -0.5,
+          2.5
+        ],
+        "y_range": [
+          -0.5,
+          2.0
+        ],
+        "objects": [
+          {
+            "object_id": "left_end",
+            "kind": "point",
+            "points": [
+              [
+                0.0,
+                1.0
+              ]
+            ],
+            "label": "左端(0,1)",
+            "color": "blue",
+            "radius": 0.2
+          },
+          {
+            "object_id": "right_end",
+            "kind": "point",
+            "points": [
+              [
+                2.0,
+                1.0
+              ]
+            ],
+            "label": "右端(2,1)",
+            "color": "blue",
+            "radius": 0.2
+          },
+          {
+            "object_id": "vertex_guess",
+            "kind": "point",
+            "points": [
+              [
+                1.0,
+                0.0
+              ]
+            ],
+            "label": "顶点(1,0)",
+            "color": "gold",
+            "radius": 0.2
+          },
+          {
+            "object_id": "secant_line",
+            "kind": "segment",
+            "points": [
+              [
+                0.0,
+                1.0
+              ],
+              [
+                2.0,
+                1.0
+              ]
+            ],
+            "label": "割线y=1",
+            "color": "teal",
+            "radius": 0.2
+          },
+          {
+            "object_id": "tangent_line",
+            "kind": "segment",
+            "points": [
+              [
+                0.5,
+                0.0
+              ],
+              [
+                1.5,
+                0.0
+              ]
+            ],
+            "label": "切线y=0",
+            "color": "red",
+            "radius": 0.2
+          }
+        ],
+        "matrix": []
+      },
+      "start_seconds": 23.466666666666665,
+      "stable_seconds": 24.466666666666665,
+      "end_seconds": 35.266666666666666,
+      "narration_end_seconds": 33.985897435897435,
+      "cue_seconds": 24.466666666666665,
+      "time_source": "estimated",
+      "cue_time_source": "estimated"
+    },
+    {
+      "beat_id": "b4",
+      "unit_ids": [
+        "u025",
+        "u026"
+      ],
+      "headline": "几何含义",
+      "screen_text": "端点割线水平，罗尔定理保证区间内部至少有一点的切线也水平。",
+      "formulas": [
+        "f'(c)=0"
+      ],
+      "spoken_text": "几何意义是：端点割线水平时，罗尔定理保证区间内部至少有一点的切线也水平。",
+      "cue_text": "几何意义是",
+      "cue_objects": [
+        "secant_line",
+        "tangent_line"
+      ],
+      "reading_reason": "把图形观察上升为定理结论，完成从特殊到一般的理解。",
+      "diagram": {
+        "kind": "plane",
+        "x_range": [
+          -0.5,
+          2.5
+        ],
+        "y_range": [
+          -0.5,
+          2.0
+        ],
+        "objects": [
+          {
+            "object_id": "left_end",
+            "kind": "point",
+            "points": [
+              [
+                0.0,
+                1.0
+              ]
+            ],
+            "label": "左端(0,1)",
+            "color": "blue",
+            "radius": 0.2
+          },
+          {
+            "object_id": "right_end",
+            "kind": "point",
+            "points": [
+              [
+                2.0,
+                1.0
+              ]
+            ],
+            "label": "右端(2,1)",
+            "color": "blue",
+            "radius": 0.2
+          },
+          {
+            "object_id": "vertex_guess",
+            "kind": "point",
+            "points": [
+              [
+                1.0,
+                0.0
+              ]
+            ],
+            "label": "顶点(1,0)",
+            "color": "gold",
+            "radius": 0.2
+          },
+          {
+            "object_id": "secant_line",
+            "kind": "segment",
+            "points": [
+              [
+                0.0,
+                1.0
+              ],
+              [
+                2.0,
+                1.0
+              ]
+            ],
+            "label": "割线y=1",
+            "color": "teal",
+            "radius": 0.2
+          },
+          {
+            "object_id": "tangent_line",
+            "kind": "segment",
+            "points": [
+              [
+                0.5,
+                0.0
+              ],
+              [
+                1.5,
+                0.0
+              ]
+            ],
+            "label": "切线y=0",
+            "color": "red",
+            "radius": 0.2
+          }
+        ],
+        "matrix": []
+      },
+      "start_seconds": 35.266666666666666,
+      "stable_seconds": 36.266666666666666,
+      "end_seconds": 45.53333333333333,
+      "narration_end_seconds": 44.516666666666666,
+      "cue_seconds": 36.266666666666666,
+      "time_source": "estimated",
+      "cue_time_source": "estimated"
+    },
+    {
+      "beat_id": "b5",
+      "unit_ids": [
+        "u027"
+      ],
+      "headline": "确定c和切线",
+      "screen_text": "本题内部点就是c=1，对应水平切线y=0。",
+      "formulas": [
+        "c=1",
+        "y=0"
+      ],
+      "spoken_text": "本题中这个内部点就是c等于一，对应的水平切线为y等于零。",
+      "cue_text": "本题中这个内部点",
+      "cue_objects": [
+        "vertex_guess",
+        "tangent_line"
+      ],
+      "reading_reason": "回扣计算结果，明确c的值和切线方程，完成总结。",
+      "diagram": {
+        "kind": "plane",
+        "x_range": [
+          -0.5,
+          2.5
+        ],
+        "y_range": [
+          -0.5,
+          2.0
+        ],
+        "objects": [
+          {
+            "object_id": "left_end",
+            "kind": "point",
+            "points": [
+              [
+                0.0,
+                1.0
+              ]
+            ],
+            "label": "左端(0,1)",
+            "color": "blue",
+            "radius": 0.2
+          },
+          {
+            "object_id": "right_end",
+            "kind": "point",
+            "points": [
+              [
+                2.0,
+                1.0
+              ]
+            ],
+            "label": "右端(2,1)",
+            "color": "blue",
+            "radius": 0.2
+          },
+          {
+            "object_id": "vertex_guess",
+            "kind": "point",
+            "points": [
+              [
+                1.0,
+                0.0
+              ]
+            ],
+            "label": "顶点(1,0)",
+            "color": "gold",
+            "radius": 0.2
+          },
+          {
+            "object_id": "secant_line",
+            "kind": "segment",
+            "points": [
+              [
+                0.0,
+                1.0
+              ],
+              [
+                2.0,
+                1.0
+              ]
+            ],
+            "label": "割线y=1",
+            "color": "teal",
+            "radius": 0.2
+          },
+          {
+            "object_id": "tangent_line",
+            "kind": "segment",
+            "points": [
+              [
+                0.5,
+                0.0
+              ],
+              [
+                1.5,
+                0.0
+              ]
+            ],
+            "label": "切线y=0",
+            "color": "red",
+            "radius": 0.2
+          }
+        ],
+        "matrix": []
+      },
+      "start_seconds": 45.53333333333333,
+      "stable_seconds": 46.53333333333333,
+      "end_seconds": 55.53333333333333,
+      "narration_end_seconds": 53.3025641025641,
+      "cue_seconds": 46.53333333333333,
+      "time_source": "estimated",
+      "cue_time_source": "estimated"
+    }
+  ],
+  "duration_seconds": 55.533333
+}

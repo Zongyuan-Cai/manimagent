@@ -31,6 +31,8 @@ uv run manimagent lesson --question "给定 a=(3,2)、b=(2,0)，解释正交投�
 
 **[文档导航](docs/README.md)** 汇总运行说明、当前能力、模块架构、设计规范、研究和验证证据。
 
+下一版目标见[固定教学流水线架构](docs/design/00-固定教学流水线架构.md)与[用户记忆设计](docs/design/05-长期记忆与个性化.md)：固定请求解释、阶段合同、类型化偏好及可信渲染参数。**设计尚未实施**；本页的运行说明仍描述当前代码，实施顺序见[开发计划](docs/current/开发计划.md)。
+
 生产代码位于 `src/manimagent/`，按 `api`、`jobs`、`materials`、`answers`、`memory`、`video`、`llm`、`web` 分工；显式真实评测位于 `evals/`，确定性测试与共享样例位于 `tests/`。`scripts/` 只保留启动、打包、安装验证和材料生成工具。
 
 ```powershell

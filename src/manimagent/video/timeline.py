@@ -38,7 +38,11 @@ def resolve_scene(outline, draft: SceneDraft) -> PlannedScene:
         duration = math.ceil((1 + max(narration, reading) + 1) * 30) / 30
         if duration > 24:
             raise ContentError(
-                "video_pacing", "单个节拍过密，请拆分或减少同屏文字", state="needs_review"
+                "video_pacing",
+                f"单个节拍过密：{beat.beat_id}预计{duration:.1f}秒，超过24秒上限"
+                f"（旁白{narration:.1f}秒，屏幕阅读{reading:.1f}秒）。"
+                "请缩短超时部分或分配到其他节拍，保留必要依据，不能只改标题。",
+                state="needs_review",
             )
         prefix = beat.spoken_text[: beat.spoken_text.index(beat.cue_text)]
         cue = clock + 1 + speech_seconds(prefix)

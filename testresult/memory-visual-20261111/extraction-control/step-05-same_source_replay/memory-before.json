@@ -1,0 +1,87 @@
+{
+  "entries": [
+    {
+      "memory_id": "memory_a5f88748cab74d98899d95674a8ee5de",
+      "field": "explanation.reasoning_style",
+      "value": "我偏好每一步推导先说明依据,再写计算",
+      "scope": "global",
+      "layer": "short_term",
+      "state": "active",
+      "temporary": false,
+      "session_id": "s3",
+      "independent_sessions": 2,
+      "evidence": [
+        {
+          "source_id": "source2",
+          "session_id": "s1",
+          "quote": "我偏好每一步推导先说明依据，再写计算。",
+          "date": "2026-11-11T00:00:00+00:00",
+          "kind": "observation"
+        },
+        {
+          "source_id": "source4",
+          "session_id": "s3",
+          "quote": "我偏好每一步推导先说明依据，再写计算。",
+          "date": "2026-11-11T00:00:00+00:00",
+          "kind": "observation"
+        }
+      ],
+      "created_at": "2026-11-11T00:00:00+00:00",
+      "updated_at": "2026-11-11T00:00:00+00:00",
+      "expires_at": "2026-11-25T00:00:00+00:00",
+      "confirmed_at": null
+    },
+    {
+      "memory_id": "memory_03d7babed2eb4b048a24b41a514f19db",
+      "field": "explanation.reasoning_style",
+      "value": "每一步推导先说明依据,再写计算",
+      "scope": "global",
+      "layer": "short_term",
+      "state": "active",
+      "temporary": false,
+      "session_id": "s2",
+      "independent_sessions": 2,
+      "evidence": [
+        {
+          "source_id": "source1",
+          "session_id": "s1",
+          "quote": "我偏好每一步推导先说明依据，再写计算。",
+          "date": "2026-11-11T00:00:00+00:00",
+          "kind": "observation"
+        },
+        {
+          "source_id": "source3",
+          "session_id": "s2",
+          "quote": "我偏好每一步推导先说明依据，再写计算。",
+          "date": "2026-11-11T00:00:00+00:00",
+          "kind": "observation"
+        }
+      ],
+      "created_at": "2026-11-11T00:00:00+00:00",
+      "updated_at": "2026-11-11T00:00:00+00:00",
+      "expires_at": "2026-11-25T00:00:00+00:00",
+      "confirmed_at": null
+    }
+  ],
+  "policy": {
+    "promotion_sessions": 3,
+    "short_term_days": 14,
+    "max_entries": 200,
+    "max_evidence_per_entry": 20,
+    "max_snapshot_entries": 12,
+    "max_snapshot_chars": 6000,
+    "max_sources": 10000
+  },
+  "learning": {
+    "tasks": [],
+    "counts": {
+      "waiting": 0,
+      "queued": 0,
+      "running": 0,
+      "completed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0
+    }
+  }
+}

@@ -207,6 +207,21 @@ def test_unreadable_matrix_is_rejected_before_movie_render(tmp_path):
     assert not (tmp_path / "scene.mp4").exists()
 
 
+def test_mathtext_spaces_preserve_visible_glyphs_and_spacing(tmp_path):
+    from manimagent.video.renderer.layout import SceneLayout, font_name
+
+    layout = SceneLayout(tmp_path, font_name("auto"))
+    spaced = layout.scalar_formula(r"x\text{ in radians}")
+    joined = layout.scalar_formula(r"x\text{inradians}")
+    # Both use exactly the same visible glyphs; two blank advances widen the
+    # first formula without adding drawable paths or dropping actual letters.
+    assert len(spaced.submobjects) == len(joined.submobjects) == 10
+    assert spaced.width > joined.width + 0.1
+    assert abs(spaced.height - joined.height) < 1e-8
+    with pytest.raises(ValueError, match="Unknown symbol"):
+        layout.scalar_formula(r"\notarealcommand{x}")
+
+
 def test_real_audio_mux_decodes_both_streams_and_rejects_missing_or_short_audio(tmp_path):
     """Synthetic PCM tone, not MiMo speech: exercise the real mux worker and AAC decoder."""
     import av

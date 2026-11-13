@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import base64
+import binascii
 import ctypes
 import json
 import os
@@ -104,14 +105,22 @@ class CredentialStore:
         with self.lock:
             entry = self._read().get(reference)
         if entry is None:
-            return None
+            raise ContentError("credential_unavailable", "本地密钥记录已丢失，请重新输入", 503)
         if entry["encoding"] == "windows_dpapi":
             if os.name != "nt":
                 raise ContentError(
                     "credential_unavailable", "此密钥绑定原 Windows 用户，请重新输入", 503
                 )
-            return dpapi(base64.b64decode(entry["value"]), decrypt=True).decode("utf-8")
-        return entry["value"]
+            try:
+                encrypted = base64.b64decode(entry["value"].encode("ascii"), validate=True)
+                return dpapi(encrypted, decrypt=True).decode("utf-8")
+            except (binascii.Error, UnicodeError) as exc:
+                raise ContentError(
+                    "credential_unavailable", "本地密钥数据已损坏，请重新输入", 503
+                ) from exc
+        if entry["encoding"] == "plain":
+            return entry["value"]
+        raise ContentError("credential_unavailable", "本地密钥编码无效，请重新输入", 503)
 
     def add(self, keys: dict[str, str]) -> dict[str, str]:
         """Store new secrets first; retain older references for accepted job snapshots."""

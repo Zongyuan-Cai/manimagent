@@ -1,0 +1,2089 @@
+{
+  "completed_round_artifacts": 13,
+  "checks": {
+    "fail": 14,
+    "pass": 131,
+    "unknown": 1
+  },
+  "rounds": [
+    {
+      "round": 1,
+      "case_id": "first_observation",
+      "checks": [
+        {
+          "check": "background_learning",
+          "status": "fail",
+          "failures": [
+            "cancelled"
+          ],
+          "evidence": {
+            "state": "cancelled",
+            "error": {
+              "code": "answer_not_published",
+              "message": "正文未成功发布，未进行后台记忆学习",
+              "retryable": false
+            }
+          }
+        },
+        {
+          "check": "no_learning_without_published_answer",
+          "status": "pass",
+          "failures": [],
+          "evidence": {
+            "answer_published": false,
+            "learning_state": "cancelled"
+          }
+        },
+        {
+          "check": "observation_quotes_from_student_instruction",
+          "status": "pass",
+          "failures": [],
+          "evidence": {
+            "unknown_source_ids": []
+          }
+        },
+        {
+          "check": "independent_session_support",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "task_command_not_learned_as_preference",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "promotion_and_temporary_layer_invariants",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "snapshot_scope_expiry_and_frozen_before_learning",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "actual_role_payload_matches_snapshot",
+          "status": "pass",
+          "failures": [],
+          "evidence": [
+            "answer_checker",
+            "answer_writer"
+          ]
+        },
+        {
+          "check": "stable_original_statement_support",
+          "status": "fail",
+          "failures": [
+            {
+              "expected_one_stable_fact": true,
+              "actual_fragments": 0
+            }
+          ],
+          "evidence": []
+        },
+        {
+          "check": "stable_reasoning_expected_layer",
+          "status": "fail",
+          "failures": [
+            "short_term"
+          ],
+          "evidence": null
+        },
+        {
+          "check": "initial_snapshot_empty",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        }
+      ],
+      "counts": {
+        "fail": 3,
+        "pass": 8
+      },
+      "before_entries": 0,
+      "after_entries": 0,
+      "snapshot_entries": 0,
+      "new_entry_ids": [],
+      "removed_entry_ids": [],
+      "roles_with_memory": [
+        "answer_checker",
+        "answer_writer"
+      ],
+      "behavior_evidence": {
+        "status": "requires_manual_review",
+        "current_instruction": "我是大一学生，正在学习数学分析。我偏好每一步推导先说明依据，再写计算。请帮我理解这道题并制作讲解视频。",
+        "answer_opening": "",
+        "scene_openings": [],
+        "caveat": "Injection is checked separately. Semantics and math/visual meaning need artifact review; no causal claim from coincident default behavior."
+      }
+    },
+    {
+      "round": 2,
+      "case_id": "same_session_repeat",
+      "checks": [
+        {
+          "check": "background_learning",
+          "status": "pass",
+          "failures": [],
+          "evidence": {
+            "state": "completed",
+            "error": null
+          }
+        },
+        {
+          "check": "no_learning_without_published_answer",
+          "status": "pass",
+          "failures": [],
+          "evidence": {
+            "answer_published": true,
+            "learning_state": "completed"
+          }
+        },
+        {
+          "check": "observation_quotes_from_student_instruction",
+          "status": "pass",
+          "failures": [],
+          "evidence": {
+            "unknown_source_ids": []
+          }
+        },
+        {
+          "check": "independent_session_support",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "task_command_not_learned_as_preference",
+          "status": "fail",
+          "failures": [
+            {
+              "memory_id": "memory_81657f241df14325bc32b55266242103",
+              "field": "task.video_delivery",
+              "value": "希望帮助理解题目并制作讲解视频",
+              "quote": "请帮我理解这道题并制作讲解视频。"
+            }
+          ],
+          "evidence": null
+        },
+        {
+          "check": "promotion_and_temporary_layer_invariants",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "snapshot_scope_expiry_and_frozen_before_learning",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "actual_role_payload_matches_snapshot",
+          "status": "pass",
+          "failures": [],
+          "evidence": [
+            "answer_checker",
+            "answer_writer",
+            "scene_generator",
+            "video_planner"
+          ]
+        },
+        {
+          "check": "stable_original_statement_support",
+          "status": "pass",
+          "failures": [],
+          "evidence": [
+            {
+              "memory_id": "memory_bae827415711490c9c7101a33c61e21b",
+              "field": "explanation.structure",
+              "value": "偏好每一步推导先说明依据,再写计算",
+              "independent_sessions": 1
+            }
+          ]
+        },
+        {
+          "check": "stable_reasoning_expected_layer",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "same_session_repetition_does_not_add_support",
+          "status": "unknown",
+          "failures": [],
+          "evidence": {
+            "prior_same_session_ids": [],
+            "note": "No prior successful observation means repetition was not exercised."
+          }
+        },
+        {
+          "check": "snapshot_contains",
+          "status": "fail",
+          "failures": [
+            {
+              "missing_expected_preference": "先说明依据，再写计算",
+              "known_ids": [
+                "memory_bae827415711490c9c7101a33c61e21b"
+              ]
+            }
+          ],
+          "evidence": {
+            "phrase": "先说明依据，再写计算",
+            "ids": []
+          }
+        }
+      ],
+      "counts": {
+        "pass": 9,
+        "fail": 2,
+        "unknown": 1
+      },
+      "before_entries": 0,
+      "after_entries": 2,
+      "snapshot_entries": 0,
+      "new_entry_ids": [
+        "memory_81657f241df14325bc32b55266242103",
+        "memory_bae827415711490c9c7101a33c61e21b"
+      ],
+      "removed_entry_ids": [],
+      "roles_with_memory": [
+        "answer_checker",
+        "answer_writer",
+        "scene_generator",
+        "video_planner"
+      ],
+      "behavior_evidence": {
+        "status": "requires_manual_review",
+        "current_instruction": "我偏好每一步推导先说明依据，再写计算。请帮我理解这道题并制作讲解视频。",
+        "answer_opening": "# 用 ε-δ 定义证明 \\(\\lim_{x\\to 1}(2x+1)=3\\)\n\n## 一、要证明的命题\n\n按函数极限的 ε-δ 定义：对任意给定的 \\(\\varepsilon>0\\)，要找到一个 \\(\\delta>0\\)，使得只要 \\(0<|x-1|<\\delta\\)，就有\n\n\\[\n|(2x+1)-3|<\\varepsilon .\n\\]\n\n题目要求证明当 \\(x\\) 趋近 1 时 \\(2x+1\\) 趋近 3，并解释 \\(\\delta=\\varepsilon/2\\) 为什么有效，最后用 \\(\\varepsilon=1\\) 检查[[material_4d821197ef474f849ec08c341517fac9:block_86092a2614854699bc7a5cc6f752f61b]]。\n\n## 二、先化简目标不等式\n\n**依据**：先把 \\(|(2x+1)-3|\\) 化成与 \\(|x-1|\\) 成正比的量，这样就能直接把 \\(\\delta\\) 和 \\(\\varepsilon\\) 挂钩。\n\n\\[\n(2x+1)-3=2x-2=2(x-1),\n\\]\n\n所以\n\n\\[\n|(2x+1)-3|=|2(x-1)|=2|x-1|.\n\\]\n\n于是“\\(|(2x+1)-3|<\\varepsilon\\)”等价于\n\n\\[\n2|x-1|<\\varepsilon \\quad\\Longleftrightarrow\\quad |x-1|<\\frac{\\varepsilon}{2}.\n\\]\n\n## 三、\\(\\delta=\\varepsilon/2\\) 为什么有效\n\n**依据**：定义要求“对任意 \\(\\varepsilon>0\\) 都能找到 \\(\\delta>0\\)”，所以取 \\(\\delta\\) 时既要保证它为正，又要保证它足够小。\n\n- 因为 \\(\\varepsilon>0\\)，所以 \\(\\delta=\\dfrac{\\varepsilon}{2}>0\\)，符合定义对 \\(\\delta\\) 的符号要求。\n- 若 \\(0<|x-1|<\\delta=\\dfrac{\\varepsilon}{2}\\)，在上面等式的两边同乘 2（正数，不等号方向不变），得\n  \\[\n  2|x-1|<\\varepsilon .\n  \\]\n  由第二步的化简，这正是\n  \\[\n  |(2x+1)-3|<\\varepsilon .\n  \\]\n\n因此对任意 \\(\\varepsilon>0\\)，取 \\(\\delta=\\varepsilon/2\\)，就满足定义的全部要求。证明完成。\n\n**完整写法**：任给 \\(\\varepsilon>0\\)，取 \\(\\delta=\\varepsilon/2\\)。当 \\(0<|x-1|<\\delta\\) 时，\n\\[\n|(2x+1)-3|=2|x-1|<2\\cdot\\frac{\\varepsilon}{2}=\\varepsilon,\n\\]\n故 \\(\\lim_{x\\to1}(2x+1)=3\\)。\n\n## 四、用 \\(\\varepsilon=1\\) 检查\n\n**依据**：把 \\(\\varepsilon=1\\) 代入上面的取法，得到一个具体的 \\(\\delta\\)，再代回定义中的不等式核对。\n\n取 \\(\\varepsilon=1\\)，则按 \\(\\delta=\\varepsilon/2\\) 得\n\n\\[\n\\delta=\\frac{1}{2}.\n\\]\n\n检查：当 \\(0<|x-1|<\\dfrac{1}{2}\\) 时，\n\n\\[\n|(2x+1)-3|=2|x-1|<2\\cdot\\frac{1}",
+        "scene_openings": [],
+        "caveat": "Injection is checked separately. Semantics and math/visual meaning need artifact review; no causal claim from coincident default behavior."
+      }
+    },
+    {
+      "round": 3,
+      "case_id": "second_independent_session",
+      "checks": [
+        {
+          "check": "background_learning",
+          "status": "pass",
+          "failures": [],
+          "evidence": {
+            "state": "completed",
+            "error": null
+          }
+        },
+        {
+          "check": "no_learning_without_published_answer",
+          "status": "pass",
+          "failures": [],
+          "evidence": {
+            "answer_published": true,
+            "learning_state": "completed"
+          }
+        },
+        {
+          "check": "observation_quotes_from_student_instruction",
+          "status": "pass",
+          "failures": [],
+          "evidence": {
+            "unknown_source_ids": []
+          }
+        },
+        {
+          "check": "independent_session_support",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "task_command_not_learned_as_preference",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "promotion_and_temporary_layer_invariants",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "snapshot_scope_expiry_and_frozen_before_learning",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "actual_role_payload_matches_snapshot",
+          "status": "pass",
+          "failures": [],
+          "evidence": [
+            "answer_checker",
+            "answer_writer",
+            "scene_generator",
+            "video_planner"
+          ]
+        },
+        {
+          "check": "stable_original_statement_support",
+          "status": "fail",
+          "failures": [
+            {
+              "expected_one_stable_fact": true,
+              "actual_fragments": 2
+            },
+            {
+              "expected_support": 2,
+              "observed_supports": [
+                1,
+                1
+              ]
+            }
+          ],
+          "evidence": [
+            {
+              "memory_id": "memory_bae827415711490c9c7101a33c61e21b",
+              "field": "explanation.structure",
+              "value": "偏好每一步推导先说明依据,再写计算",
+              "independent_sessions": 1
+            },
+            {
+              "memory_id": "memory_08cbf000d2084c18a5596c61472bcecd",
+              "field": "explanation.structure",
+              "value": "每一步推导先说明依据,再写计算",
+              "independent_sessions": 1
+            }
+          ]
+        },
+        {
+          "check": "stable_reasoning_expected_layer",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "snapshot_contains",
+          "status": "pass",
+          "failures": [],
+          "evidence": {
+            "phrase": "先说明依据，再写计算",
+            "ids": [
+              "memory_bae827415711490c9c7101a33c61e21b"
+            ]
+          }
+        }
+      ],
+      "counts": {
+        "pass": 10,
+        "fail": 1
+      },
+      "before_entries": 2,
+      "after_entries": 3,
+      "snapshot_entries": 1,
+      "new_entry_ids": [
+        "memory_08cbf000d2084c18a5596c61472bcecd"
+      ],
+      "removed_entry_ids": [],
+      "roles_with_memory": [
+        "answer_checker",
+        "answer_writer",
+        "scene_generator",
+        "video_planner"
+      ],
+      "behavior_evidence": {
+        "status": "requires_manual_review",
+        "current_instruction": "我偏好每一步推导先说明依据，再写计算。请帮我理解这道题并制作讲解视频。",
+        "answer_opening": "# 为什么在弧度制下 \\(\\lim_{x\\to 0}\\dfrac{\\sin x}{x}=1\\)\n\n## 一、问题的含义与关键点\n\n要求说明的是极限\n\n\\[\n\\lim_{x\\to 0}\\frac{\\sin x}{x}=1\n\\]\n\n这个结论有两个前提必须注意：\n\n1. **弧度制**：正弦的自变量以弧度为单位，否则极限值会含有一个常数因子（例如用角度制时极限为 \\(\\pi/180\\)）。\n2. **\\(x\\to 0\\) 但不等于 \\(0\\)**：极限考察的是 \\(x\\) 无限接近 \\(0\\) 时的变化趋势，而不是 \\(x=0\\) 这一点的函数值。\n\n题目要求用夹逼定理（也叫两边夹定理）来解释这个极限 [[material_b9ce2bf249c142ae92951e0982af1181:block_26150a6c36c7435bb8c8def81416076e]]。\n\n---\n\n## 二、为什么不能直接把 \\(x=0\\) 代入\n\n**依据**：代入只能用于在 \\(x=0\\) 处有定义的表达式。\n\n**计算**：把 \\(x=0\\) 代入原式，分子为\n\n\\[\n\\sin 0 = 0,\n\\]\n\n分母为\n\n\\[\nx = 0,\n\\]\n\n于是得到 \\(\\dfrac{0}{0}\\)。\n\n**结论**：\\(\\dfrac{0}{0}\\) 是未定式，不是一个数，因此不能通过直接代入得到极限值。原式在 \\(x=0\\) 处本身无定义（分母为零），所以我们只能研究 \\(x\\neq 0\\) 且 \\(x\\to 0\\) 时的趋势。夹逼定理正是用来确定这种趋势的工具。\n\n---\n\n## 三、几何准备：用面积建立不等式\n\n**依据**：在单位圆中比较三个图形的面积，且 \\(x\\) 取弧度，因为扇形面积公式 \\(S=\\tfrac12 r^2 x\\) 中的 \\(x\\) 必须是弧度。\n\n先考虑 \\(0<x<\\dfrac{\\pi}{2}\\) 的情形。\n\n在半径为 \\(1\\) 的单位圆中，设圆心为 \\(O\\)，取角 \\(\\angle AOB=x\\)（弧度），点 \\(A\\) 在圆上，点 \\(B\\) 也在圆上，过 \\(A\\) 作圆的切线，与射线 \\(OB\\) 的延长线交于点 \\(C\\)。从 \\(B\\) 向 \\(OA\\) 作垂线，垂足为 \\(D\\)。\n\n此时有：\n\n- 三角形 \\(OAB\\) 的底为 \\(OA=1\\)，高为 \\(BD=\\sin x\\)，所以\n\n\\[\nS_{\\triangle OAB}=\\frac{1}{2}\\cdot 1\\cdot \\sin x=\\frac{1}{2}\\sin x.\n\\]\n\n- 扇形 \\(OAB\\) 的半径为 \\(1\\)、圆心角为 \\(x\\)，所以\n\n\\[\nS_{\\text{扇形}}=\\frac{1}{2}\\cdot 1^2\\cdot x=\\frac{1}{2}x.\n\\]\n\n- 三角形 \\(OAC\\) 中，\\(OA=1\\)，\\(AC=\\tan x\\)（切线长），且 \\(OA\\perp AC\\)，所以\n\n\\[\nS_{\\triangle OAC}=\\frac{1}{2}\\cdot 1\\cdot \\tan x=\\frac{1}{2}\\tan x.\n\\]\n\n**依据**：三角形 \\(OAB\\) 含于扇形 \\(OAB\\)，扇形含于三角形 \\(OAC\\)，面积依次增大。\n\n**计算与不等式**：由面积包含关系得\n\n\\[\n\\frac{1}{2}\\sin x < \\frac{1}{2}x < \\frac{1}{2}\\tan x.\n\\]\n\n两边同乘 \\(2\\)：\n\n\\[\n\\sin x <",
+        "scene_openings": [],
+        "caveat": "Injection is checked separately. Semantics and math/visual meaning need artifact review; no causal claim from coincident default behavior."
+      }
+    },
+    {
+      "round": 4,
+      "case_id": "third_session_promotion",
+      "checks": [
+        {
+          "check": "background_learning",
+          "status": "fail",
+          "failures": [
+            "cancelled"
+          ],
+          "evidence": {
+            "state": "cancelled",
+            "error": {
+              "code": "answer_not_published",
+              "message": "正文未成功发布，未进行后台记忆学习",
+              "retryable": false
+            }
+          }
+        },
+        {
+          "check": "no_learning_without_published_answer",
+          "status": "pass",
+          "failures": [],
+          "evidence": {
+            "answer_published": false,
+            "learning_state": "cancelled"
+          }
+        },
+        {
+          "check": "observation_quotes_from_student_instruction",
+          "status": "pass",
+          "failures": [],
+          "evidence": {
+            "unknown_source_ids": []
+          }
+        },
+        {
+          "check": "independent_session_support",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "task_command_not_learned_as_preference",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "promotion_and_temporary_layer_invariants",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "snapshot_scope_expiry_and_frozen_before_learning",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "actual_role_payload_matches_snapshot",
+          "status": "pass",
+          "failures": [],
+          "evidence": [
+            "answer_checker",
+            "answer_writer"
+          ]
+        },
+        {
+          "check": "stable_original_statement_support",
+          "status": "fail",
+          "failures": [
+            {
+              "expected_one_stable_fact": true,
+              "actual_fragments": 2
+            },
+            {
+              "expected_support": 3,
+              "observed_supports": [
+                1,
+                1
+              ]
+            }
+          ],
+          "evidence": [
+            {
+              "memory_id": "memory_bae827415711490c9c7101a33c61e21b",
+              "field": "explanation.structure",
+              "value": "偏好每一步推导先说明依据,再写计算",
+              "independent_sessions": 1
+            },
+            {
+              "memory_id": "memory_08cbf000d2084c18a5596c61472bcecd",
+              "field": "explanation.structure",
+              "value": "每一步推导先说明依据,再写计算",
+              "independent_sessions": 1
+            }
+          ]
+        },
+        {
+          "check": "stable_reasoning_expected_layer",
+          "status": "fail",
+          "failures": [
+            "deep"
+          ],
+          "evidence": null
+        }
+      ],
+      "counts": {
+        "fail": 3,
+        "pass": 7
+      },
+      "before_entries": 3,
+      "after_entries": 3,
+      "snapshot_entries": 1,
+      "new_entry_ids": [],
+      "removed_entry_ids": [],
+      "roles_with_memory": [
+        "answer_checker",
+        "answer_writer"
+      ],
+      "behavior_evidence": {
+        "status": "requires_manual_review",
+        "current_instruction": "我偏好每一步推导先说明依据，再写计算。请帮我理解这道题并制作讲解视频。",
+        "answer_opening": "",
+        "scene_openings": [],
+        "caveat": "Injection is checked separately. Semantics and math/visual meaning need artifact review; no causal claim from coincident default behavior."
+      }
+    },
+    {
+      "round": 5,
+      "case_id": "pure_question_no_learning",
+      "checks": [
+        {
+          "check": "background_learning",
+          "status": "pass",
+          "failures": [],
+          "evidence": {
+            "state": "completed",
+            "error": null
+          }
+        },
+        {
+          "check": "no_learning_without_published_answer",
+          "status": "pass",
+          "failures": [],
+          "evidence": {
+            "answer_published": true,
+            "learning_state": "completed"
+          }
+        },
+        {
+          "check": "observation_quotes_from_student_instruction",
+          "status": "pass",
+          "failures": [],
+          "evidence": {
+            "unknown_source_ids": []
+          }
+        },
+        {
+          "check": "independent_session_support",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "task_command_not_learned_as_preference",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "promotion_and_temporary_layer_invariants",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "snapshot_scope_expiry_and_frozen_before_learning",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "actual_role_payload_matches_snapshot",
+          "status": "pass",
+          "failures": [],
+          "evidence": [
+            "answer_checker",
+            "answer_writer",
+            "scene_generator",
+            "video_planner"
+          ]
+        },
+        {
+          "check": "stable_reasoning_expected_layer",
+          "status": "fail",
+          "failures": [
+            "deep"
+          ],
+          "evidence": null
+        },
+        {
+          "check": "no_observation_effect_expected",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "snapshot_contains",
+          "status": "pass",
+          "failures": [],
+          "evidence": {
+            "phrase": "先说明依据，再写计算",
+            "ids": [
+              "memory_bae827415711490c9c7101a33c61e21b"
+            ]
+          }
+        }
+      ],
+      "counts": {
+        "pass": 10,
+        "fail": 1
+      },
+      "before_entries": 3,
+      "after_entries": 3,
+      "snapshot_entries": 1,
+      "new_entry_ids": [],
+      "removed_entry_ids": [],
+      "roles_with_memory": [
+        "answer_checker",
+        "answer_writer",
+        "scene_generator",
+        "video_planner"
+      ],
+      "behavior_evidence": {
+        "status": "requires_manual_review",
+        "current_instruction": "请帮我理解这道题并制作讲解视频。",
+        "answer_opening": "下面给出讲解正文。按通常约定，数列从 \\(n=1\\) 开始。\n\n## 题目\n\n证明数列\n\\[\na_n=(-1)^n\n\\]\n不收敛。题目要求先列出前六项，再用奇数项与偶数项两个子列说明矛盾[[material_497515ab60b34cd1b74c0b9b212eb140:block_5fcdfbee92214abea25c81e2d3832ff3]]。\n\n## 一、先列出前六项\n\n依据：把 \\(n=1,2,3,4,5,6\\) 分别代入 \\(a_n=(-1)^n\\)。\n\n计算得：\n\\[\n\\begin{aligned}\na_1&=(-1)^1=-1,\\\\\na_2&=(-1)^2=1,\\\\\na_3&=(-1)^3=-1,\\\\\na_4&=(-1)^4=1,\\\\\na_5&=(-1)^5=-1,\\\\\na_6&=(-1)^6=1.\n\\end{aligned}\n\\]\n\n所以前六项为\n\\[\n-1,\\ 1,\\ -1,\\ 1,\\ -1,\\ 1.\n\\]\n\n这已经显示出数列在 \\(-1\\) 和 \\(1\\) 之间反复跳动，但仅看有限项还不能完成严格证明。\n\n## 二、分别考察奇数项和偶数项\n\n依据：奇数可以写成 \\(2k-1\\)，偶数可以写成 \\(2k\\)，其中 \\(k=1,2,3,\\dots\\)。\n\n奇数项子列为\n\\[\na_{2k-1}=(-1)^{2k-1}=-1.\n\\]\n因为 \\(2k-1\\) 是奇数，所以\n\\[\na_1,a_3,a_5,\\dots=-1,-1,-1,\\dots\n\\]\n这是一个常数列，因此\n\\[\n\\lim_{k\\to\\infty} a_{2k-1}=-1.\n\\]\n\n偶数项子列为\n\\[\na_{2k}=(-1)^{2k}=1.\n\\]\n因为 \\(2k\\) 是偶数，所以\n\\[\na_2,a_4,a_6,\\dots=1,1,1,\\dots\n\\]\n这也是一个常数列，因此\n\\[\n\\lim_{k\\to\\infty} a_{2k}=1.\n\\]\n\n## 三、用子列极限说明矛盾\n\n依据：若原数列 \\(\\{a_n\\}\\) 收敛到某个数 \\(L\\)，那么它的任意子列也必须收敛，并且收敛到同一个极限 \\(L\\)。\n\n假设原数列 \\(a_n=(-1)^n\\) 收敛到 \\(L\\)。\n\n一方面，奇数项子列满足\n\\[\na_{2k-1}\\to -1,\n\\]\n所以必须有\n\\[\nL=-1.\n\\]\n\n另一方面，偶数项子列满足\n\\[\na_{2k}\\to 1,\n\\]\n所以又必须有\n\\[\nL=1.\n\\]\n\n于是得到\n\\[\n-1=L=1,\n\\]\n即\n\\[\n-1=1,\n\\]\n这是不可能的。\n\n因此假设“原数列收敛”不成立，故数列\n\\[\na_n=(-1)^n\n\\]\n不收敛。\n\n## 四、用极限定义再核对一遍\n\n依据：数列 \\(a_n\\) 收敛到 \\(L\\)，意味着当 \\(n\\) 足够大时，\\(a_n\\) 与 \\(L\\) 的距离可以任意小。\n\n反设 \\(a_n\\) 收敛到 \\(L\\)。取\n\\[\n\\varepsilon=\\frac12.\n\\]\n根据收敛定义，存在某个 \\(N\\)，使得当 \\(n>N\\) 时都有\n\\[\n|a_n-L|<\\frac12.\n\\]\n\n取一个大于 \\(N\\) 的奇数 \\(n_1=2k-1\\)，则\n\\[\na_{n_1}=-1,\n\\]\n所以\n\\[\n|-1-L|<\\frac12.\n\\]\n\n再取一个大于 \\(N\\) 的偶数 \\(n_2=2k\\)，则\n\\[\na_{n_2}=1,\n\\]\n所以\n\\[\n|1-L|<\\frac12.\n\\]\n\n由三角不等式，\n\\[\n2=|-1-1|\n\\le |-1-L|+|L",
+        "scene_openings": [],
+        "caveat": "Injection is checked separately. Semantics and math/visual meaning need artifact review; no causal claim from coincident default behavior."
+      }
+    },
+    {
+      "round": 6,
+      "case_id": "paraphrase_diagnostic",
+      "checks": [
+        {
+          "check": "background_learning",
+          "status": "pass",
+          "failures": [],
+          "evidence": {
+            "state": "completed",
+            "error": null
+          }
+        },
+        {
+          "check": "no_learning_without_published_answer",
+          "status": "pass",
+          "failures": [],
+          "evidence": {
+            "answer_published": true,
+            "learning_state": "completed"
+          }
+        },
+        {
+          "check": "observation_quotes_from_student_instruction",
+          "status": "pass",
+          "failures": [],
+          "evidence": {
+            "unknown_source_ids": []
+          }
+        },
+        {
+          "check": "independent_session_support",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "task_command_not_learned_as_preference",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "promotion_and_temporary_layer_invariants",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "snapshot_scope_expiry_and_frozen_before_learning",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "actual_role_payload_matches_snapshot",
+          "status": "pass",
+          "failures": [],
+          "evidence": [
+            "answer_checker",
+            "answer_writer",
+            "plan_checker",
+            "scene_generator",
+            "video_planner"
+          ]
+        },
+        {
+          "check": "stable_reasoning_expected_layer",
+          "status": "fail",
+          "failures": [
+            "deep"
+          ],
+          "evidence": null
+        },
+        {
+          "check": "semantic_paraphrase_reuses_existing_fact",
+          "status": "fail",
+          "failures": [
+            "memory_d3981cc0e5cb4325b5b35dc638c03646"
+          ],
+          "evidence": {
+            "new_fragments": [
+              {
+                "memory_id": "memory_d3981cc0e5cb4325b5b35dc638c03646",
+                "field": "explanation.structure",
+                "value": "一般讲数学时,我习惯先弄明白每一步为什么成立,然后再看代入和运算",
+                "scope": "global",
+                "layer": "short_term",
+                "state": "active",
+                "temporary": false,
+                "session_id": "student_s04",
+                "independent_sessions": 1,
+                "evidence": [
+                  {
+                    "source_id": "job_b3bd239877b849b5adff971158115f78",
+                    "session_id": "student_s04",
+                    "quote": "一般讲数学时，我习惯先弄明白每一步为什么成立，然后再看代入和运算",
+                    "date": "2026-11-11T00:00:00+00:00",
+                    "kind": "observation"
+                  }
+                ],
+                "created_at": "2026-11-11T00:00:00+00:00",
+                "updated_at": "2026-11-11T00:00:00+00:00",
+                "expires_at": "2026-11-25T00:00:00+00:00",
+                "confirmed_at": null
+              }
+            ],
+            "classification": "capability diagnostic; exact-match storage does not promise semantic merging"
+          }
+        }
+      ],
+      "counts": {
+        "pass": 8,
+        "fail": 2
+      },
+      "before_entries": 3,
+      "after_entries": 4,
+      "snapshot_entries": 1,
+      "new_entry_ids": [
+        "memory_d3981cc0e5cb4325b5b35dc638c03646"
+      ],
+      "removed_entry_ids": [],
+      "roles_with_memory": [
+        "answer_checker",
+        "answer_writer",
+        "plan_checker",
+        "scene_generator",
+        "video_planner"
+      ],
+      "behavior_evidence": {
+        "status": "requires_manual_review",
+        "current_instruction": "一般讲数学时，我习惯先弄明白每一步为什么成立，然后再看代入和运算。请帮我理解这道题并制作讲解视频。",
+        "answer_opening": "# 讲解正文：求级数 \\(\\displaystyle \\sum_{n=1}^{\\infty}\\frac{1}{n(n+1)}\\)\n\n题设要求先拆项，写出前 \\(N\\) 项和，最后用 \\(N=4\\) 核对 [[material_2aa9387016354341b712a3bb484e2d9f:block_fcf7155995bb4ae28f30dc7b00e16cc9]]。\n\n## 一、先拆项：为什么可以这样拆\n\n**依据：部分分式分解。** 我们希望把\n\\[\n\\frac{1}{n(n+1)}\n\\]\n写成两个简单分式之差。设\n\\[\n\\frac{1}{n(n+1)}=\\frac{A}{n}+\\frac{B}{n+1}.\n\\]\n**为什么这样设？** 因为右边通分后，分母正好是 \\(n(n+1)\\)，再通过比较分子即可确定 \\(A,B\\)。\n\n通分得\n\\[\n\\frac{A}{n}+\\frac{B}{n+1}\n=\n\\frac{A(n+1)+Bn}{n(n+1)}\n=\n\\frac{(A+B)n+A}{n(n+1)}.\n\\]\n要使它恒等于\n\\[\n\\frac{1}{n(n+1)},\n\\]\n需要分子恒等于 \\(1\\)，即\n\\[\n(A+B)n+A=1.\n\\]\n比较 \\(n\\) 的系数和常数项：\n\\[\nA+B=0,\\qquad A=1.\n\\]\n所以\n\\[\nA=1,\\qquad B=-1.\n\\]\n于是得到拆项公式\n\\[\n\\boxed{\\frac{1}{n(n+1)}=\\frac{1}{n}-\\frac{1}{n+1}}.\n\\]\n可以直接验算：\n\\[\n\\frac{1}{n}-\\frac{1}{n+1}\n=\n\\frac{n+1-n}{n(n+1)}\n=\n\\frac{1}{n(n+1)}.\n\\]\n\n## 二、写出前 \\(N\\) 项和\n\n**依据：把每一项都按拆项公式展开，再相加。** 由于相邻项的分数会相互抵消，所以这是“裂项相消”。\n\n设前 \\(N\\) 项和为\n\\[\nS_N=\\sum_{n=1}^{N}\\frac{1}{n(n+1)}.\n\\]\n代入拆项公式：\n\\[\nS_N=\\sum_{n=1}^{N}\\left(\\frac{1}{n}-\\frac{1}{n+1}\\right).\n\\]\n把和式展开：\n\\[\nS_N=\n\\left(1-\\frac12\\right)\n+\n\\left(\\frac12-\\frac13\\right)\n+\n\\left(\\frac13-\\frac14\\right)\n+\n\\cdots\n+\n\\left(\\frac1N-\\frac1{N+1}\\right).\n\\]\n**依据：中间的 \\(-\\frac12,+\\frac12\\)、\\(-\\frac13,+\\frac13\\) 等逐对抵消。** 因此\n\\[\nS_N\n=\n1-\\frac{1}{N+1}.\n\\]\n再通分：\n\\[\nS_N\n=\n\\frac{N+1-1}{N+1}\n=\n\\frac{N}{N+1}.\n\\]\n所以前 \\(N\\) 项和为\n\\[\n\\boxed{S_N=\\frac{N}{N+1}}.\n\\]\n\n## 三、取极限得到级数的和\n\n**依据：级数的和定义为前 \\(N\\) 项和当 \\(N\\to\\infty\\) 时的极限。** 由\n\\[\nS_N=\\frac{N}{N+1}\n=\n1-\\frac{1}{N+1},\n\\]\n当 \\(N\\to\\infty\\) 时，\n\\[\n\\frac{1}{N+1}\\to 0.\n\\]\n因此\n\\[\n\\sum_{n=1}^{\\infty}\\frac{1}{n(n+1)}\n=\n\\lim_{N\\to\\inf",
+        "scene_openings": [],
+        "caveat": "Injection is checked separately. Semantics and math/visual meaning need artifact review; no causal claim from coincident default behavior."
+      }
+    },
+    {
+      "round": 7,
+      "case_id": "temporary_override",
+      "checks": [
+        {
+          "check": "background_learning",
+          "status": "pass",
+          "failures": [],
+          "evidence": {
+            "state": "completed",
+            "error": null
+          }
+        },
+        {
+          "check": "no_learning_without_published_answer",
+          "status": "pass",
+          "failures": [],
+          "evidence": {
+            "answer_published": true,
+            "learning_state": "completed"
+          }
+        },
+        {
+          "check": "observation_quotes_from_student_instruction",
+          "status": "pass",
+          "failures": [],
+          "evidence": {
+            "unknown_source_ids": []
+          }
+        },
+        {
+          "check": "independent_session_support",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "task_command_not_learned_as_preference",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "promotion_and_temporary_layer_invariants",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "snapshot_scope_expiry_and_frozen_before_learning",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "actual_role_payload_matches_snapshot",
+          "status": "pass",
+          "failures": [],
+          "evidence": [
+            "answer_checker",
+            "answer_writer",
+            "plan_checker",
+            "scene_generator",
+            "video_planner"
+          ]
+        },
+        {
+          "check": "stable_reasoning_expected_layer",
+          "status": "fail",
+          "failures": [
+            "deep"
+          ],
+          "evidence": null
+        },
+        {
+          "check": "temporary_observation_created",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        }
+      ],
+      "counts": {
+        "pass": 9,
+        "fail": 1
+      },
+      "before_entries": 4,
+      "after_entries": 5,
+      "snapshot_entries": 1,
+      "new_entry_ids": [
+        "memory_59dcfb03d1de4fa29324ce81e1cdcaeb"
+      ],
+      "removed_entry_ids": [],
+      "roles_with_memory": [
+        "answer_checker",
+        "answer_writer",
+        "plan_checker",
+        "scene_generator",
+        "video_planner"
+      ],
+      "behavior_evidence": {
+        "status": "requires_manual_review",
+        "current_instruction": "今天这道题先给一句结论，再用最少的必要步骤核对；平时的习惯不变。请制作讲解视频。",
+        "answer_opening": "**结论：** \\(f'(2)=4\\)，曲线 \\(y=x^2\\) 在点 \\((2,4)\\) 处的切线方程为  \n\\[\ny=4x-4.\n\\]\n\n**最少必要核对**\n\n1. **按导数定义写出差商。**  \n   \\[\n   f'(2)=\\lim_{h\\to 0}\\frac{f(2+h)-f(2)}{h}.\n   \\]\n   这里 \\(f(2)=2^2=4\\)，且 \\(f(2+h)=(2+h)^2\\)。差商的极限就是 \\(x=2\\) 处的瞬时变化率，这正是导数的定义。\n\n2. **代入、展开并约分。**  \n   \\[\n   f'(2)=\\lim_{h\\to 0}\\frac{(2+h)^2-4}{h}\n   =\\lim_{h\\to 0}\\frac{4+4h+h^2-4}{h}\n   =\\lim_{h\\to 0}\\frac{4h+h^2}{h}.\n   \\]\n   因为取极限时 \\(h\\ne 0\\)，所以可以约去 \\(h\\)：\n   \\[\n   f'(2)=\\lim_{h\\to 0}(4+h).\n   \\]\n\n3. **取极限。**  \n   \\[\n   f'(2)=4.\n   \\]\n   当 \\(h\\to 0\\) 时，\\(4+h\\to 4\\)。\n\n4. **写切线方程。**  \n   切点为 \\((2,f(2))=(2,4)\\)，切线斜率为 \\(f'(2)=4\\)。由点斜式：\n   \\[\n   y-4=4(x-2),\n   \\]\n   即\n   \\[\n   y=4x-4.\n   \\]\n\n题目中的导数定义与切线要求见材料 [[material_e25c6b2006b84666bf8412202a24147c:block_a9d6d2271ec24f258b34d5c09177c672]]。",
+        "scene_openings": [
+          {
+            "scene_id": "s1",
+            "beats": [
+              {
+                "beat_id": "b1",
+                "screen_text": "目标：求 f'(2)，并写出 y=x^2 在 (2,4) 处的切线方程。答案先摆出：导数为4，切线是 y=4x-4。",
+                "formulas": [
+                  "f'(2)=4",
+                  "y=4x-4"
+                ],
+                "diagram": {
+                  "kind": "none",
+                  "x_range": [
+                    -1.0,
+                    5.0
+                  ],
+                  "y_range": [
+                    -1.0,
+                    4.0
+                  ],
+                  "objects": [],
+                  "matrix": []
+                }
+              },
+              {
+                "beat_id": "b2",
+                "screen_text": "下面只做最少必要核对：按定义求导数，再由切点与点斜式写切线，不展开多余内容。",
+                "formulas": [
+                  "f'(2)=4",
+                  "y-4=4(x-2)"
+                ],
+                "diagram": {
+                  "kind": "none",
+                  "x_range": [
+                    -1.0,
+                    5.0
+                  ],
+                  "y_range": [
+                    -1.0,
+                    4.0
+                  ],
+                  "objects": [],
+                  "matrix": []
+                }
+              }
+            ]
+          },
+          {
+            "scene_id": "s2",
+            "beats": [
+              {
+                "beat_id": "b1",
+                "screen_text": "在x=2处，先看平均变化率：函数改变量除以h；让h趋于0，极限就是导数。",
+                "formulas": [
+                  "f'(2)=\\lim_{h\\to 0}\\frac{f(2+h)-f(2)}{h}"
+                ],
+                "diagram": {
+                  "kind": "none",
+                  "x_range": [
+                    -1.0,
+                    5.0
+                  ],
+                  "y_range": [
+                    -1.0,
+                    4.0
+                  ],
+                  "objects": [],
+                  "matrix": []
+                }
+              },
+              {
+                "beat_id": "b2",
+                "screen_text": "本题f(x)=x^2。所以f(2)=2^2=4，f(2+h)就是把x换成2+h。",
+                "formulas": [
+                  "f(2)=2^2=4",
+                  "f(2+h)=(2+h)^2"
+                ],
+                "diagram": {
+                  "kind": "none",
+                  "x_range": [
+                    -1.0,
+                    5.0
+                  ],
+                  "y_range": [
+                    -1.0,
+                    4.0
+                  ],
+                  "objects": [],
+                  "matrix": []
+                }
+              }
+            ]
+          },
+          {
+            "scene_id": "s3",
+            "beats": [
+              {
+                "beat_id": "b1",
+                "screen_text": "把f(2+h)写成(2+h)平方，展开得4+4h+h平方；减去f(2)=4后，4与负4逐项抵消。",
+                "formulas": [
+                  "f'(2)=\\lim_{h\\to 0}\\frac{(2+h)^2-4}{h}",
+                  "=\\lim_{h\\to 0}\\frac{4+4h+h^2-4}{h}"
+                ],
+                "diagram": {
+                  "kind": "none",
+                  "x_range": [
+                    -1.0,
+                    5.0
+                  ],
+                  "y_range": [
+                    -1.0,
+                    4.0
+                  ],
+                  "objects": [],
+                  "matrix": []
+                }
+              },
+              {
+                "beat_id": "b2",
+                "screen_text": "分子中4与负4相加得0，剩下4h+h平方，分母仍是h，所以得到下一式。",
+                "formulas": [
+                  "f'(2)=\\lim_{h\\to 0}\\frac{4h+h^2}{h}"
+                ],
+                "diagram": {
+                  "kind": "none",
+                  "x_range": [
+                    -1.0,
+                    5.0
+                  ],
+                  "y_range": [
+                    -1.0,
+                    4.0
+                  ],
+                  "objects": [],
+                  "matrix": []
+                }
+              }
+            ]
+          },
+          {
+            "scene_id": "s4",
+            "beats": [
+              {
+                "beat_id": "b1",
+                "screen_text": "上一拍已把差商化为4加h；现在对h取极限，这一步只看h趋于0时4加h的去向。",
+                "formulas": [
+                  "f'(2)=\\lim_{h\\to 0}(4+h)"
+                ],
+                "diagram": {
+                  "kind": "none",
+                  "x_range": [
+                    -1.0,
+                    5.0
+                  ],
+                  "y_range": [
+                    -1.0,
+                    4.0
+                  ],
+                  "objects": [],
+                  "matrix": []
+                }
+              },
+              {
+                "beat_id": "b2",
+                "screen_text": "h趋于0表示h无限接近0但不等于0；此时4不变，h趋近0，所以4加h趋近4加0。",
+                "formulas": [
+                  "4+h\\to 4+0=4"
+                ],
+                "diagram": {
+                  "kind": "none",
+                  "x_range": [
+                    -1.0,
+                    5.0
+                  ],
+                  "y_range": [
+                    -1.0,
+                    4.0
+                  ],
+                  "objects": [],
+                  "matrix": []
+                }
+              }
+            ]
+          },
+          {
+            "scene_id": "s5",
+            "beats": [
+              {
+                "beat_id": "s5b1",
+                "screen_text": "先确定切点坐标：横坐标为2，纵坐标等于函数值f(2)=4，所以切点是(2,4)。",
+                "formulas": [
+                  "(2,f(2))=(2,4)",
+                  "f'(2)=4"
+                ],
+                "diagram": {
+                  "kind": "none",
+                  "x_range": [
+                    -1.0,
+                    5.0
+                  ],
+                  "y_range": [
+                    -1.0,
+                    4.0
+                  ],
+                  "objects": [],
+                  "matrix": []
+                }
+              },
+              {
+                "beat_id": "s5b2",
+                "screen_text": "点斜式适用于已知一点和斜率：将切点(2,4)与斜率4代入y减y0等于k乘x减x0。",
+                "formulas": [
+                  "y-y_0=k(x-x_0)",
+                  "y-4=4(x-2)"
+                ],
+                "diagram": {
+                  "kind": "none",
+                  "x_range": [
+                    -1.0,
+                    5.0
+                  ],
+                  "y_range": [
+                    -1.0,
+                    4.0
+                  ],
+                  "objects": [],
+                  "matrix": []
+                }
+              }
+            ]
+          }
+        ],
+        "caveat": "Injection is checked separately. Semantics and math/visual meaning need artifact review; no causal claim from coincident default behavior."
+      }
+    },
+    {
+      "round": 8,
+      "case_id": "temporary_session_boundary",
+      "checks": [
+        {
+          "check": "background_learning",
+          "status": "fail",
+          "failures": [
+            "cancelled"
+          ],
+          "evidence": {
+            "state": "cancelled",
+            "error": {
+              "code": "answer_not_published",
+              "message": "正文未成功发布，未进行后台记忆学习",
+              "retryable": false
+            }
+          }
+        },
+        {
+          "check": "no_learning_without_published_answer",
+          "status": "pass",
+          "failures": [],
+          "evidence": {
+            "answer_published": false,
+            "learning_state": "cancelled"
+          }
+        },
+        {
+          "check": "observation_quotes_from_student_instruction",
+          "status": "pass",
+          "failures": [],
+          "evidence": {
+            "unknown_source_ids": []
+          }
+        },
+        {
+          "check": "independent_session_support",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "task_command_not_learned_as_preference",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "promotion_and_temporary_layer_invariants",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "snapshot_scope_expiry_and_frozen_before_learning",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "actual_role_payload_matches_snapshot",
+          "status": "pass",
+          "failures": [],
+          "evidence": [
+            "answer_checker",
+            "answer_writer"
+          ]
+        },
+        {
+          "check": "no_observation_effect_expected",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "snapshot_contains",
+          "status": "pass",
+          "failures": [],
+          "evidence": {
+            "phrase": "先说明依据，再写计算",
+            "ids": [
+              "memory_d3981cc0e5cb4325b5b35dc638c03646"
+            ]
+          }
+        },
+        {
+          "check": "snapshot_excludes",
+          "status": "pass",
+          "failures": [],
+          "evidence": {
+            "phrase": "今天这道题先给一句结论",
+            "ids": []
+          }
+        }
+      ],
+      "counts": {
+        "fail": 1,
+        "pass": 10
+      },
+      "before_entries": 5,
+      "after_entries": 5,
+      "snapshot_entries": 1,
+      "new_entry_ids": [],
+      "removed_entry_ids": [],
+      "roles_with_memory": [
+        "answer_checker",
+        "answer_writer"
+      ],
+      "behavior_evidence": {
+        "status": "requires_manual_review",
+        "current_instruction": "请帮我理解这道题并制作讲解视频。请画出零点附近的函数图像，标明横纵坐标的含义。",
+        "answer_opening": "",
+        "scene_openings": [],
+        "caveat": "Injection is checked separately. Semantics and math/visual meaning need artifact review; no causal claim from coincident default behavior."
+      }
+    },
+    {
+      "round": 9,
+      "case_id": "fictional_preference_not_user",
+      "checks": [
+        {
+          "check": "background_learning",
+          "status": "pass",
+          "failures": [],
+          "evidence": {
+            "state": "completed",
+            "error": null
+          }
+        },
+        {
+          "check": "no_learning_without_published_answer",
+          "status": "pass",
+          "failures": [],
+          "evidence": {
+            "answer_published": true,
+            "learning_state": "completed"
+          }
+        },
+        {
+          "check": "observation_quotes_from_student_instruction",
+          "status": "pass",
+          "failures": [],
+          "evidence": {
+            "unknown_source_ids": []
+          }
+        },
+        {
+          "check": "independent_session_support",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "task_command_not_learned_as_preference",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "promotion_and_temporary_layer_invariants",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "snapshot_scope_expiry_and_frozen_before_learning",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "actual_role_payload_matches_snapshot",
+          "status": "pass",
+          "failures": [],
+          "evidence": [
+            "answer_checker",
+            "answer_writer",
+            "scene_generator",
+            "video_planner"
+          ]
+        },
+        {
+          "check": "no_observation_effect_expected",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "must_not_learn",
+          "status": "pass",
+          "failures": [],
+          "evidence": "喜欢红色"
+        },
+        {
+          "check": "must_not_learn",
+          "status": "pass",
+          "failures": [],
+          "evidence": "小王"
+        }
+      ],
+      "counts": {
+        "pass": 11
+      },
+      "before_entries": 5,
+      "after_entries": 5,
+      "snapshot_entries": 1,
+      "new_entry_ids": [],
+      "removed_entry_ids": [],
+      "roles_with_memory": [
+        "answer_checker",
+        "answer_writer",
+        "scene_generator",
+        "video_planner"
+      ],
+      "behavior_evidence": {
+        "status": "requires_manual_review",
+        "current_instruction": "题目里的小王说‘我喜欢红色’，这只是虚构人物的台词。请帮我理解这道题并制作讲解视频。",
+        "answer_opening": "# \\(f(x)=x\\sin\\frac1x\\) 在 \\(0\\) 连续但不可导\n\n你提到的“小王喜欢红色”只是虚构台词，不参与本题推理。当前题面实际为：  \n\\[\nf(x)=x\\sin\\frac1x\\quad(x\\ne0),\\qquad f(0)=0,\n\\]\n要求先用夹逼定理证明 \\(f\\) 在 \\(0\\) 处连续，再解释为什么在 \\(0\\) 处不可导[[material_288599876d6f4ac5af89bd3ee8a4d557:block_e11dc9eca9744f2e89b907f56d93a3c5]]。\n\n下面按“先弄明白每一步为什么成立，再代入计算”的顺序讲解。\n\n---\n\n## 一、先明确“在 \\(0\\) 连续”要证什么\n\n函数在 \\(0\\) 处连续，需要证明\n\\[\n\\lim_{x\\to0}f(x)=f(0).\n\\]\n题设已经给出\n\\[\nf(0)=0.\n\\]\n所以问题变成：证明当 \\(x\\to0\\) 时，\n\\[\nf(x)=x\\sin\\frac1x\\to0.\n\\]\n\n这里的困难是：当 \\(x\\to0\\) 时，\\(\\sin\\frac1x\\) 会不断振荡，没有极限。但它有一个关键特点——它始终有界：\n\\[\n\\left|\\sin\\frac1x\\right|\\le1.\n\\]\n因此虽然振荡，振荡的“幅度”会被前面的因子 \\(x\\) 压小。这正是夹逼定理适用的地方。\n\n---\n\n## 二、用夹逼定理证明连续\n\n当 \\(x\\ne0\\) 时，\n\\[\n|f(x)|=\\left|x\\sin\\frac1x\\right|\n=|x|\\left|\\sin\\frac1x\\right|.\n\\]\n因为\n\\[\n\\left|\\sin\\frac1x\\right|\\le1,\n\\]\n所以\n\\[\n|f(x)|\\le |x|.\n\\]\n等价地写成夹逼形式：\n\\[\n-|x|\\le f(x)\\le |x|.\n\\]\n当 \\(x\\to0\\) 时，\n\\[\n-|x|\\to0,\\qquad |x|\\to0.\n\\]\n由夹逼定理，\n\\[\n\\lim_{x\\to0}f(x)=0.\n\\]\n而 \\(f(0)=0\\)，因此\n\\[\n\\lim_{x\\to0}f(x)=f(0).\n\\]\n所以 \\(f\\) 在 \\(0\\) 处连续。\n\n**关键点：**连续性只要求函数值被压向 \\(f(0)\\)。这里虽然 \\(\\sin(1/x)\\) 剧烈振荡，但被 \\(x\\) 乘以后，整体函数值被夹在 \\(-|x|\\) 和 \\(|x|\\) 之间，最终趋于 \\(0\\)。\n\n---\n\n## 三、为什么在 \\(0\\) 处不可导\n\n函数在 \\(0\\) 处的导数定义为\n\\[\nf'(0)=\\lim_{h\\to0}\\frac{f(h)-f(0)}{h}.\n\\]\n因为 \\(f(0)=0\\)，当 \\(h\\ne0\\) 时，\n\\[\n\\frac{f(h)-f(0)}{h}\n=\\frac{h\\sin\\frac1h}{h}\n=\\sin\\frac1h.\n\\]\n所以判断是否可导，就是判断极限\n\\[\n\\lim_{h\\to0}\\sin\\frac1h\n\\]\n是否存在。\n\n这个极限不存在。用两个趋于 \\(0\\) 的数列来说明。\n\n取\n\\[\nh_n=\\frac1{2\\pi n},\\qquad n=1,2,3,\\dots\n\\]\n则 \\(h_n\\to0\\)，并且\n\\[\n\\sin\\frac1{h_n}\n=\\sin(2\\pi n)=0.\n\\]\n所以沿这列点，差商趋于 \\(0\\)。\n\n再取\n\\[\nk_n=\\frac1{2\\pi n+\\frac{\\pi}{2}},\\qquad n=1,2",
+        "scene_openings": [],
+        "caveat": "Injection is checked separately. Semantics and math/visual meaning need artifact review; no causal claim from coincident default behavior."
+      }
+    },
+    {
+      "round": 10,
+      "case_id": "visual_preference_observation",
+      "checks": [
+        {
+          "check": "background_learning",
+          "status": "pass",
+          "failures": [],
+          "evidence": {
+            "state": "completed",
+            "error": null
+          }
+        },
+        {
+          "check": "no_learning_without_published_answer",
+          "status": "pass",
+          "failures": [],
+          "evidence": {
+            "answer_published": true,
+            "learning_state": "completed"
+          }
+        },
+        {
+          "check": "observation_quotes_from_student_instruction",
+          "status": "pass",
+          "failures": [],
+          "evidence": {
+            "unknown_source_ids": []
+          }
+        },
+        {
+          "check": "independent_session_support",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "task_command_not_learned_as_preference",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "promotion_and_temporary_layer_invariants",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "snapshot_scope_expiry_and_frozen_before_learning",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "actual_role_payload_matches_snapshot",
+          "status": "pass",
+          "failures": [],
+          "evidence": [
+            "answer_checker",
+            "answer_writer",
+            "scene_generator",
+            "video_planner"
+          ]
+        },
+        {
+          "check": "new_visual_preference",
+          "status": "pass",
+          "failures": [],
+          "evidence": [
+            {
+              "memory_id": "memory_b5d28366af104660b9cb74fcdd33f15b",
+              "field": "visual.palette",
+              "value": "我的图形配色偏好是蓝色表示原对象、金色表示辅助对象。",
+              "scope": "global",
+              "layer": "short_term",
+              "state": "active",
+              "temporary": false,
+              "session_id": "student_s06",
+              "independent_sessions": 1,
+              "evidence": [
+                {
+                  "source_id": "job_61a030893c134acca73ad6e972a8eb02",
+                  "session_id": "student_s06",
+                  "quote": "我的图形配色偏好是蓝色表示原对象、金色表示辅助对象。",
+                  "date": "2026-11-11T00:00:00+00:00",
+                  "kind": "observation"
+                }
+              ],
+              "created_at": "2026-11-11T00:00:00+00:00",
+              "updated_at": "2026-11-11T00:00:00+00:00",
+              "expires_at": "2026-11-25T00:00:00+00:00",
+              "confirmed_at": null
+            }
+          ]
+        }
+      ],
+      "counts": {
+        "pass": 9
+      },
+      "before_entries": 5,
+      "after_entries": 7,
+      "snapshot_entries": 1,
+      "new_entry_ids": [
+        "memory_2118a587c85142edad578f5b89205704",
+        "memory_b5d28366af104660b9cb74fcdd33f15b"
+      ],
+      "removed_entry_ids": [],
+      "roles_with_memory": [
+        "answer_checker",
+        "answer_writer",
+        "scene_generator",
+        "video_planner"
+      ],
+      "behavior_evidence": {
+        "status": "requires_manual_review",
+        "current_instruction": "我偏好每一步推导先说明依据，再写计算。我的图形配色偏好是蓝色表示原对象、金色表示辅助对象。请帮我理解这道题并制作讲解视频。",
+        "answer_opening": "下面按“先说明依据，再代入计算”的顺序讲解。\n\n## 1. 定理条件\n\n题设函数为  \n\\[\nf(x)=x^2,\\qquad x\\in[0,2].\n\\]\n多项式函数在 \\([0,2]\\) 上连续，在 \\((0,2)\\) 内可导，因此满足拉格朗日中值定理的条件。定理保证：存在  \n\\[\nc\\in(0,2),\n\\]\n使得  \n\\[\nf'(c)=\\frac{f(2)-f(0)}{2-0}.\n\\]\n题目要求求割线斜率、中值点 \\(c\\) 和该点切线方程，并解释平行关系[[material_7bb15e5b2d0f4261891af709352d34f2:block_1011c0b83a3b45c2a66e084ee160e97e]]。\n\n## 2. 割线斜率\n\n**依据：** 过两点 \\((x_1,f(x_1))\\)、\\((x_2,f(x_2))\\) 的割线斜率为  \n\\[\nk_{\\text{割}}=\\frac{f(x_2)-f(x_1)}{x_2-x_1}.\n\\]\n\n**计算：** 区间端点为  \n\\[\nf(0)=0,\\qquad f(2)=2^2=4.\n\\]\n所以  \n\\[\nk_{\\text{割}}=\\frac{4-0}{2-0}=2.\n\\]\n因此割线斜率为  \n\\[\n\\boxed{2}.\n\\]\n\n割线过 \\((0,0)\\) 和 \\((2,4)\\)，其方程为  \n\\[\ny=2x.\n\\]\n\n## 3. 求中值点 \\(c\\)\n\n**依据：** 拉格朗日中值定理给出  \n\\[\nf'(c)=k_{\\text{割}}.\n\\]\n先求导：\n\\[\nf'(x)=2x.\n\\]\n\n**计算：** 令  \n\\[\n2c=2,\n\\]\n得到  \n\\[\nc=1.\n\\]\n又因为  \n\\[\n1\\in(0,2),\n\\]\n所以这个点符合定理要求。\n\n此时曲线上的点为  \n\\[\n(c,f(c))=(1,1).\n\\]\n因此中值点为  \n\\[\n\\boxed{c=1},\n\\]\n对应的点为  \n\\[\n\\boxed{(1,1)}.\n\\]\n\n## 4. 中值点处的切线方程\n\n**依据：** 曲线在 \\(x=c\\) 处的切线斜率为 \\(f'(c)\\)，再用点斜式方程  \n\\[\ny-f(c)=f'(c)(x-c).\n\\]\n\n**计算：** 在 \\(c=1\\) 处，\n\\[\nf(1)=1,\\qquad f'(1)=2.\n\\]\n所以切线方程为  \n\\[\ny-1=2(x-1).\n\\]\n整理得  \n\\[\ny=2x-1.\n\\]\n因此该点切线方程为  \n\\[\n\\boxed{y=2x-1}.\n\\]\n\n## 5. 平行关系\n\n割线方程是  \n\\[\ny=2x,\n\\]\n切线方程是  \n\\[\ny=2x-1.\n\\]\n两条直线的斜率都为 \\(2\\)，而截距分别为 \\(0\\) 和 \\(-1\\)，因此它们不重合，但互相平行。\n\n所以  \n\\[\n\\boxed{\\text{中值点 }(1,1)\\text{ 处的切线与端点连线平行。}}\n\\]\n\n这正是拉格朗日中值定理的几何含义：在区间内部可以找到一点 \\(c\\)，使得该点处的切线方向与连接区间两端点的割线方向相同。\n\n## 6. 图形关系说明\n\n在平面直角坐标系中，横轴表示 \\(x\\)，纵轴表示 \\(y\\)。\n\n- 蓝色表示原对象：抛物线  \n  \\[\n  y=x^2,\\qquad 0\\le x\\le 2,\n  \\]\n  以及端点 \\((0,0)\\)、\\((2,4)\\)。\n- 金色表示辅助对象：割线  \n  \\[\n  y=2x,\n  \\]\n  中值点 \\((1,1)\\)，以及切线  \n  \\[",
+        "scene_openings": [],
+        "caveat": "Injection is checked separately. Semantics and math/visual meaning need artifact review; no causal claim from coincident default behavior."
+      }
+    },
+    {
+      "round": 11,
+      "case_id": "manual_confirmation",
+      "checks": [
+        {
+          "check": "background_learning",
+          "status": "pass",
+          "failures": [],
+          "evidence": {
+            "state": "disabled",
+            "error": null
+          }
+        },
+        {
+          "check": "observation_quotes_from_student_instruction",
+          "status": "pass",
+          "failures": [],
+          "evidence": {
+            "unknown_source_ids": []
+          }
+        },
+        {
+          "check": "independent_session_support",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "task_command_not_learned_as_preference",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "promotion_and_temporary_layer_invariants",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "snapshot_scope_expiry_and_frozen_before_learning",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "actual_role_payload_matches_snapshot",
+          "status": "pass",
+          "failures": [],
+          "evidence": [
+            "answer_checker",
+            "answer_writer",
+            "plan_checker",
+            "scene_generator",
+            "video_planner"
+          ]
+        },
+        {
+          "check": "read_only_store_unchanged",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "management_actions_completed",
+          "status": "pass",
+          "failures": [],
+          "evidence": [
+            {
+              "action": {
+                "type": "confirm",
+                "source_round": 10,
+                "value_contains": "蓝色",
+                "target_alias": "palette",
+                "user_action": "学生在记忆管理中确认长期保留配色习惯",
+                "missing_target": "record_failure"
+              },
+              "status": "completed",
+              "original_memory_id": "memory_b5d28366af104660b9cb74fcdd33f15b",
+              "memory_id": "memory_b5d28366af104660b9cb74fcdd33f15b",
+              "http_status": 200,
+              "response": {
+                "memory_id": "memory_b5d28366af104660b9cb74fcdd33f15b",
+                "field": "visual.palette",
+                "value": "我的图形配色偏好是蓝色表示原对象、金色表示辅助对象。",
+                "scope": "global",
+                "layer": "deep",
+                "state": "active",
+                "temporary": false,
+                "session_id": "student_s06",
+                "independent_sessions": 1,
+                "evidence": [
+                  {
+                    "source_id": "job_61a030893c134acca73ad6e972a8eb02",
+                    "session_id": "student_s06",
+                    "quote": "我的图形配色偏好是蓝色表示原对象、金色表示辅助对象。",
+                    "date": "2026-11-11T00:00:00+00:00",
+                    "kind": "observation"
+                  },
+                  {
+                    "source_id": "confirmation_e794528d9222498a82fa65191ea7614a",
+                    "session_id": "student_s06",
+                    "quote": "我的图形配色偏好是蓝色表示原对象、金色表示辅助对象。",
+                    "date": "2026-11-11T00:00:00+00:00",
+                    "kind": "confirmation"
+                  }
+                ],
+                "created_at": "2026-11-11T00:00:00+00:00",
+                "updated_at": "2026-11-11T00:00:00+00:00",
+                "expires_at": null,
+                "confirmed_at": "2026-11-11T00:00:00+00:00"
+              }
+            }
+          ]
+        },
+        {
+          "check": "no_observation_effect_expected",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "snapshot_contains",
+          "status": "pass",
+          "failures": [],
+          "evidence": {
+            "phrase": "蓝色",
+            "ids": [
+              "memory_b5d28366af104660b9cb74fcdd33f15b"
+            ]
+          }
+        },
+        {
+          "check": "snapshot_contains",
+          "status": "pass",
+          "failures": [],
+          "evidence": {
+            "phrase": "金色",
+            "ids": [
+              "memory_b5d28366af104660b9cb74fcdd33f15b"
+            ]
+          }
+        },
+        {
+          "check": "confirmed_visual_preference_in_snapshot",
+          "status": "pass",
+          "failures": [],
+          "evidence": [
+            {
+              "memory_id": "memory_b5d28366af104660b9cb74fcdd33f15b",
+              "field": "visual.palette",
+              "value": "我的图形配色偏好是蓝色表示原对象、金色表示辅助对象。",
+              "scope": "global",
+              "layer": "deep",
+              "temporary": false,
+              "updated_at": "2026-11-11T00:00:00+00:00"
+            }
+          ]
+        },
+        {
+          "check": "management_effect_confirm",
+          "status": "pass",
+          "failures": [],
+          "evidence": {
+            "action": {
+              "type": "confirm",
+              "source_round": 10,
+              "value_contains": "蓝色",
+              "target_alias": "palette",
+              "user_action": "学生在记忆管理中确认长期保留配色习惯",
+              "missing_target": "record_failure"
+            },
+            "status": "completed",
+            "original_memory_id": "memory_b5d28366af104660b9cb74fcdd33f15b",
+            "memory_id": "memory_b5d28366af104660b9cb74fcdd33f15b",
+            "http_status": 200,
+            "response": {
+              "memory_id": "memory_b5d28366af104660b9cb74fcdd33f15b",
+              "field": "visual.palette",
+              "value": "我的图形配色偏好是蓝色表示原对象、金色表示辅助对象。",
+              "scope": "global",
+              "layer": "deep",
+              "state": "active",
+              "temporary": false,
+              "session_id": "student_s06",
+              "independent_sessions": 1,
+              "evidence": [
+                {
+                  "source_id": "job_61a030893c134acca73ad6e972a8eb02",
+                  "session_id": "student_s06",
+                  "quote": "我的图形配色偏好是蓝色表示原对象、金色表示辅助对象。",
+                  "date": "2026-11-11T00:00:00+00:00",
+                  "kind": "observation"
+                },
+                {
+                  "source_id": "confirmation_e794528d9222498a82fa65191ea7614a",
+                  "session_id": "student_s06",
+                  "quote": "我的图形配色偏好是蓝色表示原对象、金色表示辅助对象。",
+                  "date": "2026-11-11T00:00:00+00:00",
+                  "kind": "confirmation"
+                }
+              ],
+              "created_at": "2026-11-11T00:00:00+00:00",
+              "updated_at": "2026-11-11T00:00:00+00:00",
+              "expires_at": null,
+              "confirmed_at": "2026-11-11T00:00:00+00:00"
+            }
+          }
+        }
+      ],
+      "counts": {
+        "pass": 14
+      },
+      "before_entries": 7,
+      "after_entries": 7,
+      "snapshot_entries": 2,
+      "new_entry_ids": [],
+      "removed_entry_ids": [],
+      "roles_with_memory": [
+        "answer_checker",
+        "answer_writer",
+        "plan_checker",
+        "scene_generator",
+        "video_planner"
+      ],
+      "behavior_evidence": {
+        "status": "requires_manual_review",
+        "current_instruction": "请帮我理解这道题并制作讲解视频。",
+        "answer_opening": "下面直接讲解这道题。\n\n题目要求对  \n\\[\nf(x)=(x-1)^2\n\\]\n在区间 \\([0,2]\\) 上应用罗尔定理，检查条件、求 \\(c\\)，并解释水平割线与水平切线。[[material_56f106d21e3d4f45983cddd0906a088c:block_10c395b1027349b080c8ac82e4bcd9a4]]\n\n## 1. 先明确罗尔定理需要什么条件\n\n罗尔定理有三个条件：\n\n1. \\(f(x)\\) 在闭区间 \\([a,b]\\) 上连续；\n2. \\(f(x)\\) 在开区间 \\((a,b)\\) 内可导；\n3. \\(f(a)=f(b)\\)。\n\n三个条件都满足时，定理保证：存在至少一个点\n\\[\nc\\in(a,b)\n\\]\n使得\n\\[\nf'(c)=0.\n\\]\n\n几何上，\\(f'(c)=0\\) 表示曲线在 \\(x=c\\) 处的切线是水平的。\n\n## 2. 检查三个条件\n\n这里\n\\[\na=0,\\qquad b=2.\n\\]\n\n### 条件一：在 \\([0,2]\\) 上连续\n\n\\[\nf(x)=(x-1)^2\n\\]\n是多项式函数，而多项式函数在整个实数轴上连续，所以它在 \\([0,2]\\) 上当然连续。\n\n### 条件二：在 \\((0,2)\\) 内可导\n\n多项式函数在整个实数轴上可导：\n\\[\nf'(x)=2(x-1).\n\\]\n因此 \\(f(x)\\) 在 \\((0,2)\\) 内可导。\n\n### 条件三：端点函数值相等\n\n计算端点值：\n\\[\nf(0)=(0-1)^2=1,\n\\]\n\\[\nf(2)=(2-1)^2=1.\n\\]\n所以\n\\[\nf(0)=f(2).\n\\]\n\n三个条件全部满足，因此罗尔定理可以应用。\n\n于是存在\n\\[\nc\\in(0,2)\n\\]\n使得\n\\[\nf'(c)=0.\n\\]\n\n## 3. 求 \\(c\\)\n\n先求导：\n\\[\nf'(x)=2(x-1).\n\\]\n令\n\\[\nf'(c)=0,\n\\]\n得到\n\\[\n2(c-1)=0.\n\\]\n所以\n\\[\nc-1=0,\n\\]\n即\n\\[\nc=1.\n\\]\n\n检查是否在开区间内：\n\\[\n1\\in(0,2),\n\\]\n符合要求。\n\n因此罗尔定理中的点为\n\\[\n\\boxed{c=1}.\n\\]\n\n由于方程 \\(2(c-1)=0\\) 只有一个解，所以这个点是唯一的。\n\n## 4. 解释水平割线\n\n割线是连接区间两端点\n\\[\nA(0,f(0))=(0,1)\n\\]\n和\n\\[\nB(2,f(2))=(2,1)\n\\]\n的直线。\n\n它的斜率为\n\\[\nm_{\\text{割线}}\n=\\frac{f(2)-f(0)}{2-0}\n=\\frac{1-1}{2}\n=0.\n\\]\n斜率为 \\(0\\)，所以这条割线是水平的。其方程为\n\\[\n\\boxed{y=1}.\n\\]\n\n直观地说，割线水平的原因是两个端点高度相同。\n\n## 5. 解释水平切线\n\n在 \\(c=1\\) 处，\n\\[\nf(1)=(1-1)^2=0,\n\\]\n所以切点坐标为\n\\[\n(1,0).\n\\]\n又因为\n\\[\nf'(1)=2(1-1)=0,\n\\]\n所以曲线在 \\(x=1\\) 处的切线斜率为 \\(0\\)。\n\n因此切线是水平线，且经过点 \\((1,0)\\)，方程为\n\\[\n\\boxed{y=0}.\n\\]\n\n## 6. 图形关系\n\n若画出函数图像，应取横轴为 \\(x\\)、纵轴为 \\(y\\)，在区间 \\([0,2]\\) 上画抛物线\n\\[\ny=(x-1)^2.\n\\]\n它的关键点是：\n\n- 顶点：\n  \\[\n  (1,0);\n  \\]\n- 左端点：\n  \\[\n  (0,1);\n  \\]\n- 右端点",
+        "scene_openings": [],
+        "caveat": "Injection is checked separately. Semantics and math/visual meaning need artifact review; no causal claim from coincident default behavior."
+      }
+    },
+    {
+      "round": 12,
+      "case_id": "manual_correction",
+      "checks": [
+        {
+          "check": "background_learning",
+          "status": "pass",
+          "failures": [],
+          "evidence": {
+            "state": "disabled",
+            "error": null
+          }
+        },
+        {
+          "check": "observation_quotes_from_student_instruction",
+          "status": "pass",
+          "failures": [],
+          "evidence": {
+            "unknown_source_ids": []
+          }
+        },
+        {
+          "check": "independent_session_support",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "task_command_not_learned_as_preference",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "promotion_and_temporary_layer_invariants",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "snapshot_scope_expiry_and_frozen_before_learning",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "actual_role_payload_matches_snapshot",
+          "status": "pass",
+          "failures": [],
+          "evidence": [
+            "answer_checker",
+            "answer_writer",
+            "scene_generator",
+            "video_planner"
+          ]
+        },
+        {
+          "check": "read_only_store_unchanged",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "management_actions_completed",
+          "status": "pass",
+          "failures": [],
+          "evidence": [
+            {
+              "action": {
+                "type": "correct",
+                "source_round": 10,
+                "value_contains": "蓝色",
+                "target_alias": "palette",
+                "value": "原对象用蓝色，辅助对象用青色",
+                "confirm_long_term": true,
+                "user_action": "学生在记忆管理中把辅助对象由金色改为青色并确认",
+                "missing_target": "record_failure"
+              },
+              "status": "completed",
+              "original_memory_id": "memory_b5d28366af104660b9cb74fcdd33f15b",
+              "memory_id": "memory_0fa198f6dab94bbf8ac6d841b497217a",
+              "http_status": 200,
+              "response": {
+                "memory_id": "memory_0fa198f6dab94bbf8ac6d841b497217a",
+                "field": "visual.palette",
+                "value": "原对象用蓝色,辅助对象用青色",
+                "scope": "global",
+                "layer": "deep",
+                "state": "active",
+                "temporary": false,
+                "session_id": "student_s06",
+                "independent_sessions": 1,
+                "evidence": [
+                  {
+                    "source_id": "correction_27d524fcc20744f0a992db1484953dd5",
+                    "session_id": "student_s06",
+                    "quote": "原对象用蓝色，辅助对象用青色",
+                    "date": "2026-11-11T00:00:00+00:00",
+                    "kind": "correction"
+                  }
+                ],
+                "created_at": "2026-11-11T00:00:00+00:00",
+                "updated_at": "2026-11-11T00:00:00+00:00",
+                "expires_at": null,
+                "confirmed_at": "2026-11-11T00:00:00+00:00"
+              }
+            }
+          ]
+        },
+        {
+          "check": "no_observation_effect_expected",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "snapshot_contains",
+          "status": "pass",
+          "failures": [],
+          "evidence": {
+            "phrase": "辅助对象用青色",
+            "ids": [
+              "memory_0fa198f6dab94bbf8ac6d841b497217a"
+            ]
+          }
+        },
+        {
+          "check": "snapshot_excludes",
+          "status": "pass",
+          "failures": [],
+          "evidence": {
+            "phrase": "金色",
+            "ids": []
+          }
+        },
+        {
+          "check": "confirmed_visual_preference_in_snapshot",
+          "status": "pass",
+          "failures": [],
+          "evidence": [
+            {
+              "memory_id": "memory_0fa198f6dab94bbf8ac6d841b497217a",
+              "field": "visual.palette",
+              "value": "原对象用蓝色,辅助对象用青色",
+              "scope": "global",
+              "layer": "deep",
+              "temporary": false,
+              "updated_at": "2026-11-11T00:00:00+00:00"
+            }
+          ]
+        },
+        {
+          "check": "management_effect_correct",
+          "status": "pass",
+          "failures": [],
+          "evidence": {
+            "action": {
+              "type": "correct",
+              "source_round": 10,
+              "value_contains": "蓝色",
+              "target_alias": "palette",
+              "value": "原对象用蓝色，辅助对象用青色",
+              "confirm_long_term": true,
+              "user_action": "学生在记忆管理中把辅助对象由金色改为青色并确认",
+              "missing_target": "record_failure"
+            },
+            "status": "completed",
+            "original_memory_id": "memory_b5d28366af104660b9cb74fcdd33f15b",
+            "memory_id": "memory_0fa198f6dab94bbf8ac6d841b497217a",
+            "http_status": 200,
+            "response": {
+              "memory_id": "memory_0fa198f6dab94bbf8ac6d841b497217a",
+              "field": "visual.palette",
+              "value": "原对象用蓝色,辅助对象用青色",
+              "scope": "global",
+              "layer": "deep",
+              "state": "active",
+              "temporary": false,
+              "session_id": "student_s06",
+              "independent_sessions": 1,
+              "evidence": [
+                {
+                  "source_id": "correction_27d524fcc20744f0a992db1484953dd5",
+                  "session_id": "student_s06",
+                  "quote": "原对象用蓝色，辅助对象用青色",
+                  "date": "2026-11-11T00:00:00+00:00",
+                  "kind": "correction"
+                }
+              ],
+              "created_at": "2026-11-11T00:00:00+00:00",
+              "updated_at": "2026-11-11T00:00:00+00:00",
+              "expires_at": null,
+              "confirmed_at": "2026-11-11T00:00:00+00:00"
+            }
+          }
+        }
+      ],
+      "counts": {
+        "pass": 14
+      },
+      "before_entries": 7,
+      "after_entries": 7,
+      "snapshot_entries": 2,
+      "new_entry_ids": [],
+      "removed_entry_ids": [],
+      "roles_with_memory": [
+        "answer_checker",
+        "answer_writer",
+        "scene_generator",
+        "video_planner"
+      ],
+      "behavior_evidence": {
+        "status": "requires_manual_review",
+        "current_instruction": "请帮我理解这道题并制作讲解视频。",
+        "answer_opening": "# \\(f(x)=x^3-3x\\) 的单调区间与局部极值\n\n题目要求研究 \\(f(x)=x^3-3x\\) 的单调区间和局部极值，并强调先求导、做符号分析，再检查极值点坐标[[material_adac577bd2894437985430245a7db730:block_349d4f84e6dd453eb6d86f7de80ca7fb]]。\n\n## 1. 先弄清判断依据\n\n对可导函数 \\(f\\)，在一个区间内：\n\n- 若 \\(f'(x)>0\\)，则函数在该区间上严格递增；\n- 若 \\(f'(x)<0\\)，则函数在该区间上严格递减。\n\n原因是：任取 \\(a<b\\)，由拉格朗日中值定理，存在 \\(c\\in(a,b)\\)，使得\n\\[\nf(b)-f(a)=f'(c)(b-a).\n\\]\n因为 \\(b-a>0\\)，所以 \\(f(b)-f(a)\\) 的正负由 \\(f'(c)\\) 决定。这就是“导数符号控制单调性”的道理。\n\n对于局部极值，可导函数在内部点取得局部极值时，该点导数必须为 \\(0\\)。但导数为 \\(0\\) 只是候选点，还要看左右导数是否变号：\n\n- 左正右负：先增后减，取得局部极大值；\n- 左负右正：先减后增，取得局部极小值。\n\n## 2. 求导并找候选点\n\n对\n\\[\nf(x)=x^3-3x\n\\]\n逐项求导：\n\\[\nf'(x)=3x^2-3=3(x-1)(x+1).\n\\]\n令\n\\[\nf'(x)=0,\n\\]\n得到\n\\[\n3(x-1)(x+1)=0,\n\\]\n所以候选点为\n\\[\nx=-1,\\qquad x=1.\n\\]\n这两个点把定义域分成三个区间：\n\\[\n(-\\infty,-1),\\qquad (-1,1),\\qquad (1,\\infty).\n\\]\n\n## 3. 符号分析\n\n由\n\\[\nf'(x)=3(x-1)(x+1)\n\\]\n可以直接判断因式的正负：\n\n- 当 \\(x<-1\\) 时，\\(x+1<0,\\ x-1<0\\)，所以 \\(f'(x)>0\\)；\n- 当 \\(-1<x<1\\) 时，\\(x+1>0,\\ x-1<0\\)，所以 \\(f'(x)<0\\)；\n- 当 \\(x>1\\) 时，\\(x+1>0,\\ x-1>0\\)，所以 \\(f'(x)>0\\)。\n\n列成符号分析表：\n\n| 区间或点 | \\(f'(x)\\) 的符号 | \\(f(x)\\) 的单调性 | 极值情况 |\n|---|---|---|---|\n| \\((-\\infty,-1)\\) | \\(+\\) | 严格递增 | — |\n| \\(x=-1\\) | \\(0\\) | 由增转减 | 局部极大值 |\n| \\((-1,1)\\) | \\(-\\) | 严格递减 | — |\n| \\(x=1\\) | \\(0\\) | 由减转增 | 局部极小值 |\n| \\((1,\\infty)\\) | \\(+\\) | 严格递增 | — |\n\n因此，函数在 \\(x=-1\\) 左侧递增、右侧递减，所以 \\(x=-1\\) 是局部极大值点；在 \\(x=1\\) 左侧递减、右侧递增，所以 \\(x=1\\) 是局部极小值点。\n\n## 4. 检查极值点坐标\n\n求极值时要把候选点的横坐标代回原函数 \\(f(x)\\)，而不是代入导数。\n\n当 \\(x=-1\\) 时，\n\\[\nf(-1)=(-1)^3-3(-1)=-1+3=2.\n\\]\n所以局部极大值点为\n\\[\n(-1,2),\n\\]\n局部极大值为 \\(2\\)。\n\n当 \\(x=1\\) 时，\n\\[\nf(1)=1^3-3\\cdot 1=1-3=-2.\n\\]\n所以局部极小值点为\n\\[\n(1,-2),\n\\]\n局部极小值为 \\(-",
+        "scene_openings": [],
+        "caveat": "Injection is checked separately. Semantics and math/visual meaning need artifact review; no causal claim from coincident default behavior."
+      }
+    },
+    {
+      "round": 13,
+      "case_id": "scoped_preference",
+      "checks": [
+        {
+          "check": "background_learning",
+          "status": "pass",
+          "failures": [],
+          "evidence": {
+            "state": "completed",
+            "error": null
+          }
+        },
+        {
+          "check": "no_learning_without_published_answer",
+          "status": "pass",
+          "failures": [],
+          "evidence": {
+            "answer_published": true,
+            "learning_state": "completed"
+          }
+        },
+        {
+          "check": "observation_quotes_from_student_instruction",
+          "status": "pass",
+          "failures": [],
+          "evidence": {
+            "unknown_source_ids": []
+          }
+        },
+        {
+          "check": "independent_session_support",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "task_command_not_learned_as_preference",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "promotion_and_temporary_layer_invariants",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "snapshot_scope_expiry_and_frozen_before_learning",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "actual_role_payload_matches_snapshot",
+          "status": "pass",
+          "failures": [],
+          "evidence": [
+            "answer_checker",
+            "answer_writer",
+            "scene_generator",
+            "video_planner"
+          ]
+        },
+        {
+          "check": "snapshot_contains",
+          "status": "pass",
+          "failures": [],
+          "evidence": {
+            "phrase": "先说明依据，再写计算",
+            "ids": [
+              "memory_d3981cc0e5cb4325b5b35dc638c03646"
+            ]
+          }
+        },
+        {
+          "check": "snapshot_contains",
+          "status": "pass",
+          "failures": [],
+          "evidence": {
+            "phrase": "辅助对象用青色",
+            "ids": [
+              "memory_0fa198f6dab94bbf8ac6d841b497217a"
+            ]
+          }
+        },
+        {
+          "check": "new_memory_scope",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        },
+        {
+          "check": "new_memory_layer",
+          "status": "pass",
+          "failures": [],
+          "evidence": null
+        }
+      ],
+      "counts": {
+        "pass": 12
+      },
+      "before_entries": 7,
+      "after_entries": 8,
+      "snapshot_entries": 2,
+      "new_entry_ids": [
+        "memory_102892e07323491099f82567e6380942"
+      ],
+      "removed_entry_ids": [],
+      "roles_with_memory": [
+        "answer_checker",
+        "answer_writer",
+        "scene_generator",
+        "video_planner"
+      ],
+      "behavior_evidence": {
+        "status": "requires_manual_review",
+        "current_instruction": "在数列这一章，我喜欢先看三项数值，再看一般式。请帮我理解这道题并制作讲解视频。",
+        "answer_opening": "题目要求研究数列  \n\\[\na_n=\\frac{n+1}{n+2}\\quad(n=1,2,3,\\dots)\n\\]\n的单调性、有界性和极限。[[material_d9ce0473fe3942e39e8520ccf3e62cb4:block_cce7d5212e024f97a313bb62064fe89d]]\n\n## 一、先看前三项数值\n\n依次代入 \\(n=1,2,3\\)：\n\n\\[\na_1=\\frac{1+1}{1+2}=\\frac23\\approx 0.6667,\n\\]\n\n\\[\na_2=\\frac{2+1}{2+2}=\\frac34=0.75,\n\\]\n\n\\[\na_3=\\frac{3+1}{3+2}=\\frac45=0.8.\n\\]\n\n比较相邻两项：\n\n\\[\na_2-a_1=\\frac34-\\frac23=\\frac{9}{12}-\\frac{8}{12}=\\frac1{12}>0,\n\\]\n\n\\[\na_3-a_2=\\frac45-\\frac34=\\frac{16}{20}-\\frac{15}{20}=\\frac1{20}>0.\n\\]\n\n所以从这三项看，数列在增大，并且数值接近 \\(1\\)，但还小于 \\(1\\)。  \n不过三项数值只能提供线索，不能代替一般证明。\n\n## 二、证明单调性\n\n要判断一般项 \\(a_n\\) 与下一项 \\(a_{n+1}\\) 的大小，计算差值：\n\n\\[\na_{n+1}-a_n\n=\\frac{(n+1)+1}{(n+1)+2}-\\frac{n+1}{n+2}\n=\\frac{n+2}{n+3}-\\frac{n+1}{n+2}.\n\\]\n\n通分：\n\n\\[\na_{n+1}-a_n\n=\\frac{(n+2)^2-(n+1)(n+3)}{(n+3)(n+2)}.\n\\]\n\n展开分子：\n\n\\[\n(n+2)^2-(n+1)(n+3)\n=(n^2+4n+4)-(n^2+4n+3)=1.\n\\]\n\n因此\n\n\\[\na_{n+1}-a_n\n=\\frac{1}{(n+2)(n+3)}.\n\\]\n\n因为 \\(n\\ge 1\\)，所以\n\n\\[\n(n+2)(n+3)>0.\n\\]\n\n于是\n\n\\[\na_{n+1}-a_n>0,\n\\]\n\n即\n\n\\[\na_{n+1}>a_n.\n\\]\n\n所以数列 \\(\\{a_n\\}\\) 是**严格递增**的。\n\n## 三、判断有界性\n\n先把通项变形：\n\n\\[\na_n=\\frac{n+1}{n+2}\n=\\frac{(n+2)-1}{n+2}\n=1-\\frac{1}{n+2}.\n\\]\n\n由于 \\(n\\ge 1\\)，有\n\n\\[\nn+2\\ge 3,\n\\]\n\n所以\n\n\\[\n0<\\frac{1}{n+2}\\le \\frac13.\n\\]\n\n因此\n\n\\[\n1-\\frac13\\le 1-\\frac{1}{n+2}<1.\n\\]\n\n即\n\n\\[\n\\frac23\\le a_n<1.\n\\]\n\n所以数列有下界 \\(\\frac23\\)，有上界 \\(1\\)，因此是**有界数列**。\n\n其中：\n\n- 最小值在 \\(n=1\\) 时取得：\n  \\[\n  a_1=\\frac23;\n  \\]\n- 上界 \\(1\\) 不被取到，因为对任意有限的 \\(n\\)，都有\n  \\[\n  \\frac{1}{n+2}>0,\n  \\]\n  所以\n  \\[\n  a_n=1-\\frac{1}{n+2}<1.\n  \\]\n\n## 四、求极限\n\n利用上面的变形：\n\n\\[\na_n=1-\\frac{1}{n+2}.\n\\]\n\n当 \\(n\\to\\infty\\) 时，\n\n\\[\n\\frac{1}{n+2}\\to 0.\n\\]\n\n所以",
+        "scene_openings": [],
+        "caveat": "Injection is checked separately. Semantics and math/visual meaning need artifact review; no causal claim from coincident default behavior."
+      }
+    }
+  ],
+  "adaptive_control_chain": {
+    "planned_rounds": [
+      4,
+      10,
+      18
+    ],
+    "stages": [
+      {
+        "round": 4,
+        "expected_support": 1,
+        "expected_layer": "short_term",
+        "check": "adaptive_exact_repeat",
+        "status": "fail",
+        "failures": [
+          "No unique real entry retains every control observation"
+        ],
+        "evidence": []
+      },
+      {
+        "round": 10,
+        "expected_support": 2,
+        "expected_layer": "short_term",
+        "check": "adaptive_exact_repeat",
+        "status": "fail",
+        "failures": [
+          "No unique real entry retains every control observation"
+        ],
+        "evidence": []
+      },
+      {
+        "round": 18,
+        "status": "pending",
+        "expected_support": 3
+      }
+    ],
+    "rationale": "Repeat the same explicit preference after R2/R3 extraction fragmentation; no storage merge or artificial confirmation."
+  },
+  "causal_personalization_benefit": "unknown: no paired memory-off counterfactual for identical input",
+  "scope": "One synthetic student; live extraction and actual call payloads. No population generalization."
+}

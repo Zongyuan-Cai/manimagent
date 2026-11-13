@@ -1,6 +1,28 @@
+import pytest
+
 from manimagent.jobs.manager import JobManager
 from manimagent.schemas import Generation, Job, TextGenerationRequest
 from tests.support.pipeline import settings_for
+
+
+def test_execution_does_not_reset_queue_budget_when_acceptance_time_is_missing(tmp_path):
+    manager = JobManager(settings_for(tmp_path))
+    job = manager.submit(
+        "generation",
+        TextGenerationRequest(
+            source={
+                "type": "inputs",
+                "inputs": [{"type": "text", "text": "x=1"}],
+                "instruction": "解释",
+            }
+        ),
+    )
+    record = manager.store.load_record(job.job_id)
+    del record["accepted_monotonic"]
+    manager.store.save("records", job.job_id, record)
+    with pytest.raises(KeyError, match="accepted_monotonic"):
+        manager.execute(job.job_id)
+    manager.stop()
 
 
 def test_shutdown_updates_both_job_and_generation_stages(tmp_path):

@@ -13,3 +13,5 @@ testmaterial/错误编码.txt binary
 
 # Preserve generated answer evidence, including Markdown hard line breaks.
 testresult/**/answer.md whitespace=-blank-at-eol
+# Keep original generated SVG evidence without rewriting its path data.
+testresult/**/*.svg whitespace=-blank-at-eol

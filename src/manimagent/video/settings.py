@@ -66,20 +66,31 @@ class TTSSettingsStore:
         return updated
 
     def status(self, settings: Settings) -> dict:
+        credential_error = None
         try:
             configured = bool(self.credentials.resolve(settings.tts.api_key_env))
-        except ContentError:
+        except ContentError as exc:
+            if exc.error.code != "credential_unavailable":
+                raise
             configured = False
+            credential_error = exc.error.model_dump()
         return {
             "enabled": settings.tts.enabled,
             "key_configured": configured,
             "ready": configured,
-            "state": "disabled"
+            "state": "needs_configuration"
+            if credential_error
+            else "disabled"
             if not settings.tts.enabled
             else "ready"
             if configured
             else "needs_configuration",
-            "issues": [] if configured else ["语音 API Key 未配置，请在语音设置中填写并试听"],
+            "issues": [credential_error["message"]]
+            if credential_error
+            else []
+            if configured
+            else ["语音 API Key 未配置，请在语音设置中填写并试听"],
+            "credential_error": credential_error,
         }
 
     def view(self, settings: Settings) -> dict:

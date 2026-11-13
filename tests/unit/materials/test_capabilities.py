@@ -40,6 +40,14 @@ def test_upload_error_identifies_the_file_without_publishing_it(tmp_path):
     assert not list((tmp_path / "files").glob("*"))
 
 
+def test_damaged_office_archive_is_reported_as_invalid_file(tmp_path):
+    store = ContentStore(tmp_path, 1024)
+    with pytest.raises(ContentError) as caught:
+        store.put_file(BytesIO(b"PK damaged archive"), "broken.docx")
+    assert caught.value.error.code == "invalid_file"
+    assert "损坏" in caught.value.error.message
+
+
 @pytest.mark.parametrize("issue", ["invalid_selection", "content_uncertain"])
 def test_parser_failure_identifies_the_problem_file_and_keeps_its_recovery_state(
     tmp_path, monkeypatch, issue

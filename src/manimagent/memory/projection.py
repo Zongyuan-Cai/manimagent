@@ -13,7 +13,7 @@ def model_memory(snapshot: dict | None, role: str) -> dict[str, list[dict]]:
     result: dict[str, list[dict]] = {"deep": [], "recent": []}
     if snapshot is None or role in {"material_reader", "memory_extractor"}:
         return result
-    for entry in snapshot.get("entries", []):
+    for entry in snapshot["entries"]:
         field = entry["field"]
         if role in {"answer_writer", "answer_checker"} and field.startswith("visual."):
             continue

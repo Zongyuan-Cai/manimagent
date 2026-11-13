@@ -1,0 +1,27 @@
+{
+  "policy_version": "user-memory-2",
+  "manual_revision": 0,
+  "captured_at": "2026-11-11T00:00:00+00:00",
+  "scope": "global",
+  "session_id": "retirement_s1",
+  "entries": [
+    {
+      "memory_id": "memory_6cf9483f864e446cb13825692aac0e6b",
+      "field": "visual.auxiliary_line_color",
+      "value": "仅本次学习,我希望图形中的辅助线用青色表示。",
+      "scope": "global",
+      "layer": "short_term",
+      "temporary": true,
+      "updated_at": "2026-11-11T00:00:00+00:00"
+    },
+    {
+      "memory_id": "memory_6b6ed31d53a64cbeb7cfe1766db6fdf6",
+      "field": "explanation.reasoning_order",
+      "value": "我偏好每一步推导先说明依据,再写计算。",
+      "scope": "global",
+      "layer": "deep",
+      "temporary": false,
+      "updated_at": "2026-11-11T00:00:00+00:00"
+    }
+  ]
+}

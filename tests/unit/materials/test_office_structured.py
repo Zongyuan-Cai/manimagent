@@ -1,3 +1,4 @@
+import json
 from io import BytesIO
 
 import pytest
@@ -128,6 +129,28 @@ def test_notebook_reads_cells_outputs_and_reports_unread_images(tmp_path):
     assert "4\n" in result["blocks"][1]["content"]
     assert result["blocks"][1]["source"]["locator"] == {"cell": 1, "output": 1}
     assert result["issues"] and result["coverage"]["state"] == "incomplete"
+
+
+@pytest.mark.parametrize(
+    "cell",
+    [
+        {"cell_type": "markdown"},
+        {"cell_type": "unknown", "source": "text"},
+        {"cell_type": "code", "source": "print(1)"},
+        {"cell_type": "code", "source": "print(1)", "outputs": {}},
+        {"cell_type": "code", "source": "print(1)", "outputs": [{"output_type": "stream"}]},
+        {"cell_type": "code", "source": "print(1)", "outputs": [{"output_type": "other"}]},
+        {
+            "cell_type": "code",
+            "source": "print(1)",
+            "outputs": [{"output_type": "stream", "text": 0}],
+        },
+    ],
+)
+def test_notebook_rejects_missing_or_invalid_content_instead_of_skipping_it(tmp_path, cell):
+    notebook = {"cells": [{"cell_type": "markdown", "source": "valid content"}, cell]}
+    with pytest.raises(ContentError, match="结构无效"):
+        read_material(tmp_path, "broken.ipynb", json.dumps(notebook).encode())
 
 
 def workbook_bytes(configure):

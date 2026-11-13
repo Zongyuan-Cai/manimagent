@@ -280,3 +280,41 @@ def test_explicit_zero_port_never_compares_equal_to_default_origin():
 
     assert same_endpoint_origin("https://example.com/v1", "https://example.com:443/v2")
     assert not same_endpoint_origin("https://example.com/v1", "https://example.com:0/v2")
+
+
+def test_unreadable_credential_is_reported_and_can_be_replaced(tmp_path, monkeypatch):
+    from manimagent.llm.credentials import CredentialStore
+
+    cfg = settings_for(tmp_path)
+    cfg.tts.api_key_env = "local_secret_broken"
+    original = CredentialStore.resolve
+
+    def resolve(self, reference):
+        if reference == "local_secret_broken":
+            raise ContentError("credential_unavailable", "测试密钥无法解密，请重新输入", 503)
+        return original(self, reference)
+
+    monkeypatch.setattr(CredentialStore, "resolve", resolve)
+    with TestClient(create_app(cfg)) as client:
+        current = client.get("/api/v2/tts-settings")
+        assert current.status_code == 200
+        data = current.json()
+        assert not data["ready"]
+        assert data["state"] == "needs_configuration"
+        assert data["credential_error"]["code"] == "credential_unavailable"
+        assert data["issues"] == ["测试密钥无法解密，请重新输入"]
+        saved = client.put("/api/v2/tts-settings", json=update(client, "replacement-key"))
+        assert saved.status_code == 200, saved.text
+        assert saved.json()["ready"]
+        assert saved.json()["credential_error"] is None
+
+
+def test_status_does_not_hide_unrelated_content_errors(tmp_path, monkeypatch):
+    manager = JobManager(settings_for(tmp_path))
+
+    def fail(reference):
+        raise ContentError("unexpected_failure", "unexpected failure")
+
+    monkeypatch.setattr(manager.tts_settings.credentials, "resolve", fail)
+    with pytest.raises(ContentError, match="unexpected failure"):
+        manager.tts_settings.status(manager.settings)

@@ -55,8 +55,9 @@ def test_mathtext_aliases_and_prompt_examples_keep_command_prefixes():
     from manimagent.video.prompts import OUTLINE_PROMPT, PLAN_PROMPT, SCENE_PROMPT
 
     slash = chr(92)
-    assert BeatDraft.safe_formulas(["frac{1}{2}"]) == [slash + "frac{1}{2}"]
-    assert BeatDraft.safe_formulas([slash * 2 + "frac{1}{2}"]) == [slash + "frac{1}{2}"]
+    for formula in ["frac{1}{2}", slash * 2 + "frac{1}{2}"]:
+        with pytest.raises(ValueError):
+            BeatDraft.safe_formulas([formula])
     assert BeatDraft.safe_formulas([slash + "mathbf a"]) == [slash + "mathbf{a}"]
     assert BeatDraft.safe_formulas([r"\frac34", r"\frac3{4}", r"\frac{3}4"]) == [r"\frac{3}{4}"] * 3
     assert BeatDraft.safe_formulas([r"\fraction", r"\fracab"]) == [r"\fraction", r"\fracab"]

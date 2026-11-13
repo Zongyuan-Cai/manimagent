@@ -1,0 +1,63 @@
+{
+  "status_code": 200,
+  "body": {
+    "entries": [
+      {
+        "memory_id": "memory_6b6ed31d53a64cbeb7cfe1766db6fdf6",
+        "field": "explanation.reasoning_order",
+        "value": "我偏好每一步推导先说明依据,再写计算。",
+        "scope": "global",
+        "layer": "deep",
+        "state": "active",
+        "temporary": false,
+        "session_id": "s3",
+        "independent_sessions": 3,
+        "evidence": [
+          {
+            "source_id": "source1",
+            "session_id": "s1",
+            "quote": "我偏好每一步推导先说明依据，再写计算。",
+            "date": "2026-11-11T00:00:00+00:00",
+            "kind": "observation"
+          },
+          {
+            "source_id": "source2",
+            "session_id": "s1",
+            "quote": "我偏好每一步推导先说明依据，再写计算。",
+            "date": "2026-11-11T00:00:00+00:00",
+            "kind": "observation"
+          },
+          {
+            "source_id": "source3",
+            "session_id": "s2",
+            "quote": "我偏好每一步推导先说明依据，再写计算。",
+            "date": "2026-11-11T00:00:00+00:00",
+            "kind": "observation"
+          },
+          {
+            "source_id": "source4",
+            "session_id": "s3",
+            "quote": "我偏好每一步推导先说明依据，再写计算。",
+            "date": "2026-11-11T00:00:00+00:00",
+            "kind": "observation"
+          }
+        ],
+        "created_at": "2026-11-11T00:00:00+00:00",
+        "updated_at": "2026-11-11T00:00:00+00:00",
+        "expires_at": null,
+        "confirmed_at": null
+      }
+    ],
+    "warnings": [],
+    "usage": {
+      "model_calls": 0,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "tokens_reported": false,
+      "elapsed_seconds": 0,
+      "cached_input_tokens": null,
+      "cache_reported_calls": 0,
+      "cache_accounted_input_tokens": 0
+    }
+  }
+}

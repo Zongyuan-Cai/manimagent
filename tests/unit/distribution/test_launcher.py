@@ -1,13 +1,46 @@
 from __future__ import annotations
 
+import errno
 import json
 import os
 import subprocess
 import sys
 import time
+from types import SimpleNamespace
 from urllib.request import ProxyHandler, build_opener
 
+import pytest
+
+from scripts import launch_local
 from tests.support import ROOT
+
+
+def test_socket_permission_failure_is_not_reported_as_busy_ports(monkeypatch):
+    attempts = []
+    stopped = []
+
+    class DeniedSocket:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *_args):
+            pass
+
+        def bind(self, address):
+            attempts.append(address)
+            raise PermissionError(errno.EACCES, "permission denied")
+
+    manager = SimpleNamespace(start=lambda: None, stop=lambda: stopped.append(True))
+    monkeypatch.setattr(
+        launch_local,
+        "create_app",
+        lambda: SimpleNamespace(state=SimpleNamespace(job_manager=manager)),
+    )
+    monkeypatch.setattr(launch_local.os, "chdir", lambda _path: None)
+    monkeypatch.setattr(launch_local.socket, "socket", lambda: DeniedSocket())
+    with pytest.raises(PermissionError):
+        launch_local.main()
+    assert len(attempts) == 1 and stopped == [True]
 
 
 def test_desktop_second_launch_reuses_the_real_http_service(tmp_path):

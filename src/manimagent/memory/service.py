@@ -15,8 +15,11 @@ from manimagent.memory.store import MemoryStore
 
 EXTRACTION_INSTRUCTION = """你负责从用户本次原话提取用户记忆候选，不解题、不生成经验、不合并历史摘要。
 只记录用户对自己的明确陈述、明确表达的讲解或视觉偏好；一般题目、假设人物、引文和要求执行系统命令不是用户事实。
+“请解题、帮我理解这道题、制作讲解视频”等请求只是在指定本次任务，不是用户记忆；不要为其创建task字段或temporary候选。只有额外明确表达的个人事实或表达偏好才可提取。
 不要从一道提问推断教育程度、知识掌握、人格或永久学习风格；没有明确用户信息就返回 candidates=[]。
 每条仅包含一个事实，field 是简短稳定字段名，优先复用 known_fields 中同含义字段；value 保留原意和限定条件。
+先为单个事实选取不超过300字的连续原文作为evidence，再将evidence逐字复制为value，二者必须完全相同，包括人称、“我偏好”等前缀和标点。禁止摘要、改写或删词。存储按精确值累计支持，改写会使重复证据分裂。
+例如原话“我喜欢先看直观解释，再看严格证明。”，应输出value="我喜欢先看直观解释，再看严格证明。"及完全相同的evidence，不能输出value="先直观后证明"。
 evidence 必须是 user_text 中直接支持该 value 的连续原句，不改写原句。
 “本次、今天、这道题”等情境要求必须 temporary=true；稳定自述或未限定本次的偏好可 temporary=false，但不代表已确认。
 示例字段 explanation.pace（讲解节奏）、explanation.detail（讲解详略）、visual.palette（配色偏好）、profile.background（自述背景）。
@@ -32,7 +35,7 @@ MEMORY_CONTEXT_INSTRUCTION = """可选 user_memory.deep 是稳定用户偏好，
 
 class Extraction(BaseModel):
     model_config = ConfigDict(extra="forbid")
-    candidates: list[MemoryCandidate] = Field(default_factory=list, max_length=5)
+    candidates: list[MemoryCandidate] = Field(max_length=5)
 
 
 def extract_and_observe(

@@ -1,0 +1,268 @@
+{
+  "status": "success",
+  "font": "Microsoft YaHei",
+  "events": [
+    {
+      "beat_id": "b1",
+      "unit_ids": [
+        "u022"
+      ],
+      "start_seconds": 0.0,
+      "stable_seconds": 1.0,
+      "cue_seconds": 1.0,
+      "end_seconds": 11.733366666666665,
+      "screen_text": "在区间0到2上考察抛物线y=(x-1)²，顶点在(1,0)，开口向上。",
+      "formulas": [
+        "y=(x-1)^2"
+      ],
+      "formula_lines": [
+        "y=(x-1)^2"
+      ],
+      "formula_em": 0.6,
+      "formula_bounds": [
+        {
+          "left": 1.702876750465805,
+          "right": 4.997123249534195,
+          "bottom": -0.14375,
+          "top": 0.54375
+        }
+      ],
+      "inline_matrix_cells": [],
+      "objects": [
+        "vertex_guess"
+      ],
+      "matrix_cells": [],
+      "caption_bounds": {
+        "left": -5.136206055,
+        "right": 5.136206055,
+        "bottom": -3.0420117,
+        "top": -2.6179883
+      },
+      "content_bounds": {
+        "left": -5.460000000000001,
+        "right": 4.997123249534195,
+        "bottom": -1.6250000000000002,
+        "top": 1.945898425
+      },
+      "time_source": "estimated",
+      "cue_time_source": "estimated",
+      "frame_seconds": 1.6
+    },
+    {
+      "beat_id": "b2",
+      "unit_ids": [
+        "u023"
+      ],
+      "start_seconds": 11.733366666666665,
+      "stable_seconds": 12.733366666666665,
+      "cue_seconds": 12.733366666666665,
+      "end_seconds": 23.46673333333333,
+      "screen_text": "顶点(1,0)，左端点(0,1)，右端点(2,1)，这三个点确定曲线位置。",
+      "formulas": [
+        "(1,0), (0,1), (2,1)"
+      ],
+      "formula_lines": [
+        "(1,0), (0,1), (2,1)"
+      ],
+      "formula_em": 0.6,
+      "formula_bounds": [
+        {
+          "left": 0.7100542759298256,
+          "right": 5.989945724070175,
+          "bottom": -0.0749999999999999,
+          "top": 0.4749999999999999
+        }
+      ],
+      "inline_matrix_cells": [],
+      "objects": [
+        "vertex_guess",
+        "left_end",
+        "right_end"
+      ],
+      "matrix_cells": [],
+      "caption_bounds": {
+        "left": -5.354370125,
+        "right": 5.354370125,
+        "bottom": -3.026191425,
+        "top": -2.633808575
+      },
+      "content_bounds": {
+        "left": -5.460000000000001,
+        "right": 5.989945724070175,
+        "bottom": -1.6250000000000002,
+        "top": 1.94472655
+      },
+      "time_source": "estimated",
+      "cue_time_source": "estimated",
+      "frame_seconds": 13.333366666666665
+    },
+    {
+      "beat_id": "b3",
+      "unit_ids": [
+        "u024"
+      ],
+      "start_seconds": 23.46673333333333,
+      "stable_seconds": 24.46673333333333,
+      "cue_seconds": 24.46673333333333,
+      "end_seconds": 35.26676666666666,
+      "screen_text": "端点等高，割线水平y=1；顶点处切线水平y=0，曲线先降后升。",
+      "formulas": [
+        "y=1",
+        "y=0"
+      ],
+      "formula_lines": [
+        "y=1",
+        "y=0"
+      ],
+      "formula_em": 0.6,
+      "formula_bounds": [
+        {
+          "left": 2.6332158259129566,
+          "right": 4.066784174087044,
+          "bottom": 0.36625,
+          "top": 0.92875
+        },
+        {
+          "left": 2.619560412826838,
+          "right": 4.080439587173163,
+          "bottom": -0.52875,
+          "top": 0.04625000000000007
+        }
+      ],
+      "inline_matrix_cells": [],
+      "objects": [
+        "left_end",
+        "right_end",
+        "vertex_guess",
+        "secant_line",
+        "tangent_line"
+      ],
+      "matrix_cells": [],
+      "caption_bounds": {
+        "left": -5.4459961,
+        "right": 5.4459961,
+        "bottom": -3.0435742,
+        "top": -2.6164258
+      },
+      "content_bounds": {
+        "left": -5.460000000000001,
+        "right": 4.347656225,
+        "bottom": -1.6250000000000002,
+        "top": 1.945703125
+      },
+      "time_source": "estimated",
+      "cue_time_source": "estimated",
+      "frame_seconds": 25.06673333333333
+    },
+    {
+      "beat_id": "b4",
+      "unit_ids": [
+        "u025",
+        "u026"
+      ],
+      "start_seconds": 35.26676666666666,
+      "stable_seconds": 36.26676666666666,
+      "cue_seconds": 36.26676666666667,
+      "end_seconds": 45.53346666666667,
+      "screen_text": "端点割线水平，罗尔定理保证区间内部至少有一点的切线也水平。",
+      "formulas": [
+        "f'(c)=0"
+      ],
+      "formula_lines": [
+        "f'(c)=0"
+      ],
+      "formula_em": 0.6,
+      "formula_bounds": [
+        {
+          "left": 2.211952817250242,
+          "right": 4.488047182749758,
+          "bottom": -0.08749999999999991,
+          "top": 0.48749999999999993
+        }
+      ],
+      "inline_matrix_cells": [],
+      "objects": [
+        "left_end",
+        "right_end",
+        "vertex_guess",
+        "secant_line",
+        "tangent_line"
+      ],
+      "matrix_cells": [],
+      "caption_bounds": {
+        "left": -5.5014648500000005,
+        "right": 5.5014648500000005,
+        "bottom": -3.021601575,
+        "top": -2.638398425
+      },
+      "content_bounds": {
+        "left": -5.460000000000001,
+        "right": 4.488047182749758,
+        "bottom": -1.6250000000000002,
+        "top": 1.944726575
+      },
+      "time_source": "estimated",
+      "cue_time_source": "estimated",
+      "frame_seconds": 36.86676666666666
+    },
+    {
+      "beat_id": "b5",
+      "unit_ids": [
+        "u027"
+      ],
+      "start_seconds": 45.53346666666667,
+      "stable_seconds": 46.53346666666667,
+      "cue_seconds": 46.53346666666667,
+      "end_seconds": 55.533500000000004,
+      "screen_text": "本题内部点就是c=1，对应水平切线y=0。",
+      "formulas": [
+        "c=1",
+        "y=0"
+      ],
+      "formula_lines": [
+        "c=1",
+        "y=0"
+      ],
+      "formula_em": 0.6,
+      "formula_bounds": [
+        {
+          "left": 2.66123607315535,
+          "right": 4.03876392684465,
+          "bottom": 0.4225000000000001,
+          "top": 0.8725
+        },
+        {
+          "left": 2.619560412826838,
+          "right": 4.080439587173163,
+          "bottom": -0.4725000000000001,
+          "top": 0.10250000000000004
+        }
+      ],
+      "inline_matrix_cells": [],
+      "objects": [
+        "left_end",
+        "right_end",
+        "vertex_guess",
+        "secant_line",
+        "tangent_line"
+      ],
+      "matrix_cells": [],
+      "caption_bounds": {
+        "left": -3.495874025,
+        "right": 3.495874025,
+        "bottom": -3.04279295,
+        "top": -2.61720705
+      },
+      "content_bounds": {
+        "left": -5.460000000000001,
+        "right": 4.4550048625,
+        "bottom": -1.6250000000000002,
+        "top": 1.946484375
+      },
+      "time_source": "estimated",
+      "cue_time_source": "estimated",
+      "frame_seconds": 47.13346666666667
+    }
+  ],
+  "layout_only": true
+}

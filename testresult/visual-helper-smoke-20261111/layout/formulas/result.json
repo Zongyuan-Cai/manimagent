@@ -1,0 +1,139 @@
+{
+  "status": "success",
+  "font": "Microsoft YaHei",
+  "events": [
+    {
+      "beat_id": "b0",
+      "unit_ids": [
+        "u1"
+      ],
+      "start_seconds": 0.0,
+      "stable_seconds": 1.0,
+      "cue_seconds": 1.0,
+      "end_seconds": 13.500033333333333,
+      "screen_text": "先核对题目给定条件，再逐项代入计算。每个矩阵元素保留原有精度，观察图形与公式的对应关系。",
+      "formulas": [
+        "\\sigma^2=\\frac{1}{5}\\sum_{i=1}^{5}(x_i-3)^2"
+      ],
+      "formula_lines": [
+        "\\sigma^2=\\frac{1}{5}\\sum_{i=1}^{5}(x_i-3)^2"
+      ],
+      "formula_em": 0.6,
+      "formula_bounds": [
+        {
+          "left": -2.482382820010356,
+          "right": 2.482382820010356,
+          "bottom": -0.6187499999999999,
+          "top": 1.01875
+        }
+      ],
+      "inline_matrix_cells": [],
+      "objects": [],
+      "matrix_cells": [],
+      "caption_bounds": {
+        "left": -6.2,
+        "right": 6.2,
+        "bottom": -3.280863045363603,
+        "top": -2.379136954636397
+      },
+      "content_bounds": {
+        "left": -2.482382820010356,
+        "right": 2.482382820010356,
+        "bottom": -0.6187499999999999,
+        "top": 1.94746095
+      },
+      "time_source": "estimated",
+      "cue_time_source": "estimated",
+      "frame_seconds": 1.6
+    },
+    {
+      "beat_id": "b1",
+      "unit_ids": [
+        "u1"
+      ],
+      "start_seconds": 13.500033333333333,
+      "stable_seconds": 14.500033333333333,
+      "cue_seconds": 14.500033333333334,
+      "end_seconds": 27.00006666666667,
+      "screen_text": "先核对题目给定条件，再逐项代入计算。每个矩阵元素保留原有精度，观察图形与公式的对应关系。",
+      "formulas": [
+        "x=\\frac{1}{2}"
+      ],
+      "formula_lines": [
+        "x=\\frac{1}{2}"
+      ],
+      "formula_em": 0.6,
+      "formula_bounds": [
+        {
+          "left": -0.7127782699969196,
+          "right": 0.7127782699969196,
+          "bottom": -0.16874999999999996,
+          "top": 0.56875
+        }
+      ],
+      "inline_matrix_cells": [],
+      "objects": [],
+      "matrix_cells": [],
+      "caption_bounds": {
+        "left": -6.2,
+        "right": 6.2,
+        "bottom": -3.280863045363603,
+        "top": -2.379136954636397
+      },
+      "content_bounds": {
+        "left": -1.4040527250000001,
+        "right": 1.4040527250000001,
+        "bottom": -0.16874999999999996,
+        "top": 1.94746095
+      },
+      "time_source": "estimated",
+      "cue_time_source": "estimated",
+      "frame_seconds": 15.100033333333332
+    },
+    {
+      "beat_id": "b2",
+      "unit_ids": [
+        "u1"
+      ],
+      "start_seconds": 27.00006666666667,
+      "stable_seconds": 28.00006666666667,
+      "cue_seconds": 28.00006666666667,
+      "end_seconds": 40.5001,
+      "screen_text": "先核对题目给定条件，再逐项代入计算。每个矩阵元素保留原有精度，观察图形与公式的对应关系。",
+      "formulas": [
+        "x=\\frac{1}{2}"
+      ],
+      "formula_lines": [
+        "x=\\frac{1}{2}"
+      ],
+      "formula_em": 0.6,
+      "formula_bounds": [
+        {
+          "left": -0.7127782699969196,
+          "right": 0.7127782699969196,
+          "bottom": -0.16874999999999996,
+          "top": 0.56875
+        }
+      ],
+      "inline_matrix_cells": [],
+      "objects": [],
+      "matrix_cells": [],
+      "caption_bounds": {
+        "left": -6.2,
+        "right": 6.2,
+        "bottom": -3.280863045363603,
+        "top": -2.379136954636397
+      },
+      "content_bounds": {
+        "left": -1.4040527250000001,
+        "right": 1.4040527250000001,
+        "bottom": -0.16874999999999996,
+        "top": 1.94746095
+      },
+      "time_source": "estimated",
+      "cue_time_source": "estimated",
+      "frame_seconds": 28.60006666666667
+    }
+  ],
+  "layout_only": true
+}

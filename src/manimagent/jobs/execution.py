@@ -60,7 +60,7 @@ class JobExecution:
         self.animation_job = self.job.kind == "video" or (
             self.generation is not None and self.generation.output_mode == "both"
         )
-        self.accepted = self.record.get("accepted_monotonic", self.budget.started)
+        self.accepted = self.record["accepted_monotonic"]
         self.overall_deadline = self.accepted + min(900, self.settings.task_timeout)
         self.record["worker_started_at"] = now()
         if self.animation_job:

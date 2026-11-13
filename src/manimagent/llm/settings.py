@@ -93,7 +93,7 @@ class LLMSettingsStore:
             for name in ("answer_check", "answer_context_tokens"):
                 if name in saved:
                     setattr(settings, name, saved[name])
-        return settings
+        return Settings.model_validate(settings.model_dump())
 
     def view(self, settings: Settings) -> dict:
         with self.lock:
@@ -101,13 +101,18 @@ class LLMSettingsStore:
             models = {}
             for identifier, cfg in settings.models.items():
                 # References are safe; the secret value is never serialized here.
+                key_error = None
                 try:
                     configured = bool(self.credentials.resolve(cfg.api_key_env))
-                except ContentError:
+                except ContentError as exc:
+                    if exc.error.code != "credential_unavailable":
+                        raise
                     configured = False
+                    key_error = exc.error.message
                 models[identifier] = {
                     "config": cfg.model_dump(),
                     "key_configured": configured,
+                    "key_error": key_error,
                     "key_source": "local"
                     if cfg.api_key_env.startswith("local_secret_")
                     else "environment",
@@ -150,7 +155,8 @@ class LLMSettingsStore:
             old_url = previous.generate_url or previous.base_url
             new_url = cfg.generate_url or cfg.base_url
             if (
-                old_url
+                cfg.auth_mode != "none"
+                and old_url
                 and not same_endpoint_origin(old_url, new_url)
                 and self.credentials.resolve(previous.api_key_env)
             ):
@@ -208,11 +214,13 @@ class LLMSettingsStore:
         if not cfg.model.strip() or not (cfg.base_url or cfg.generate_url):
             raise ContentError("invalid_request", "请填写接口地址和模型名称")
         cfg.max_output_tokens = 256
-        secret = (
-            request.draft.api_key.get_secret_value()
-            if request.draft.api_key
-            else self.credentials.resolve(cfg.api_key_env)
-        )
+        secret = None
+        if cfg.auth_mode != "none":
+            secret = (
+                request.draft.api_key.get_secret_value()
+                if request.draft.api_key
+                else self.credentials.resolve(cfg.api_key_env)
+            )
         if cfg.auth_mode != "none" and not secret:
             raise ContentError("credential_unavailable", "请填写 API Key 或选择无鉴权")
         if not self.probe_slots.acquire(blocking=False):

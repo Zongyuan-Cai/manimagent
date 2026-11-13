@@ -1,0 +1,42 @@
+{
+  "status_code": 200,
+  "body": {
+    "entries": [
+      {
+        "memory_id": "memory_6cf9483f864e446cb13825692aac0e6b",
+        "field": "visual.auxiliary_line_color",
+        "value": "仅本次学习,我希望图形中的辅助线用青色表示。",
+        "scope": "global",
+        "layer": "short_term",
+        "state": "active",
+        "temporary": true,
+        "session_id": "retirement_s1",
+        "independent_sessions": 1,
+        "evidence": [
+          {
+            "source_id": "retirement_temp_1",
+            "session_id": "retirement_s1",
+            "quote": "仅本次学习，我希望图形中的辅助线用青色表示。",
+            "date": "2026-11-11T00:00:00+00:00",
+            "kind": "observation"
+          }
+        ],
+        "created_at": "2026-11-11T00:00:00+00:00",
+        "updated_at": "2026-11-11T00:00:00+00:00",
+        "expires_at": "2026-11-25T00:00:00+00:00",
+        "confirmed_at": null
+      }
+    ],
+    "warnings": [],
+    "usage": {
+      "model_calls": 1,
+      "input_tokens": 695,
+      "output_tokens": 52,
+      "tokens_reported": true,
+      "elapsed_seconds": 2.0,
+      "cached_input_tokens": 512,
+      "cache_reported_calls": 1,
+      "cache_accounted_input_tokens": 695
+    }
+  }
+}

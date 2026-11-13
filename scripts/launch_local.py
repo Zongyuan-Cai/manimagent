@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import errno
 import json
 import os
 import socket
@@ -77,8 +78,9 @@ def main():
                 try:
                     sock.bind(("127.0.0.1", port))
                     break
-                except OSError:
-                    continue
+                except OSError as exc:
+                    if exc.errno != errno.EADDRINUSE:
+                        raise
             else:
                 raise SystemExit(
                     "Ports 8000-8010 are busy; close an old server or use manimagent serve --port."

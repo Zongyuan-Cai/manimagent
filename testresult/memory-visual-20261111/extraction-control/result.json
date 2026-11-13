@@ -1,0 +1,308 @@
+{
+  "kind": "supplementary_real_extraction_control",
+  "passed": false,
+  "does_not_replace_main_trajectory": true,
+  "prompt_hash_before": "c4cfa82954a2fb1bfdaed5b04ab50974ae5df8bf913289954ede842a22c94aa8",
+  "steps": [
+    {
+      "step": 1,
+      "case": "first_observation",
+      "status_code": 200,
+      "expected_support": 1,
+      "passed": true,
+      "failures": [],
+      "usage": {
+        "model_calls": 1,
+        "input_tokens": 648,
+        "output_tokens": 48,
+        "tokens_reported": true,
+        "elapsed_seconds": 1.016,
+        "cached_input_tokens": 384,
+        "cache_reported_calls": 1,
+        "cache_accounted_input_tokens": 648
+      },
+      "entries": [
+        {
+          "memory_id": "memory_03d7babed2eb4b048a24b41a514f19db",
+          "field": "explanation.reasoning_style",
+          "value": "每一步推导先说明依据,再写计算",
+          "scope": "global",
+          "layer": "short_term",
+          "state": "active",
+          "temporary": false,
+          "session_id": "s1",
+          "independent_sessions": 1,
+          "evidence": [
+            {
+              "source_id": "source1",
+              "session_id": "s1",
+              "quote": "我偏好每一步推导先说明依据，再写计算。",
+              "date": "2026-11-11T00:00:00+00:00",
+              "kind": "observation"
+            }
+          ],
+          "created_at": "2026-11-11T00:00:00+00:00",
+          "updated_at": "2026-11-11T00:00:00+00:00",
+          "expires_at": "2026-11-25T00:00:00+00:00",
+          "confirmed_at": null
+        }
+      ]
+    },
+    {
+      "step": 2,
+      "case": "same_session_repeat",
+      "status_code": 200,
+      "expected_support": 1,
+      "passed": false,
+      "failures": [
+        "repeated_statement_fragmented"
+      ],
+      "usage": {
+        "model_calls": 1,
+        "input_tokens": 656,
+        "output_tokens": 50,
+        "tokens_reported": true,
+        "elapsed_seconds": 1.0,
+        "cached_input_tokens": 384,
+        "cache_reported_calls": 1,
+        "cache_accounted_input_tokens": 656
+      },
+      "entries": [
+        {
+          "memory_id": "memory_a5f88748cab74d98899d95674a8ee5de",
+          "field": "explanation.reasoning_style",
+          "value": "我偏好每一步推导先说明依据,再写计算",
+          "scope": "global",
+          "layer": "short_term",
+          "state": "active",
+          "temporary": false,
+          "session_id": "s1",
+          "independent_sessions": 1,
+          "evidence": [
+            {
+              "source_id": "source2",
+              "session_id": "s1",
+              "quote": "我偏好每一步推导先说明依据，再写计算。",
+              "date": "2026-11-11T00:00:00+00:00",
+              "kind": "observation"
+            }
+          ],
+          "created_at": "2026-11-11T00:00:00+00:00",
+          "updated_at": "2026-11-11T00:00:00+00:00",
+          "expires_at": "2026-11-25T00:00:00+00:00",
+          "confirmed_at": null
+        }
+      ]
+    },
+    {
+      "step": 3,
+      "case": "second_session",
+      "status_code": 200,
+      "expected_support": 2,
+      "passed": true,
+      "failures": [],
+      "usage": {
+        "model_calls": 1,
+        "input_tokens": 656,
+        "output_tokens": 48,
+        "tokens_reported": true,
+        "elapsed_seconds": 1.265,
+        "cached_input_tokens": 512,
+        "cache_reported_calls": 1,
+        "cache_accounted_input_tokens": 656
+      },
+      "entries": [
+        {
+          "memory_id": "memory_03d7babed2eb4b048a24b41a514f19db",
+          "field": "explanation.reasoning_style",
+          "value": "每一步推导先说明依据,再写计算",
+          "scope": "global",
+          "layer": "short_term",
+          "state": "active",
+          "temporary": false,
+          "session_id": "s2",
+          "independent_sessions": 2,
+          "evidence": [
+            {
+              "source_id": "source1",
+              "session_id": "s1",
+              "quote": "我偏好每一步推导先说明依据，再写计算。",
+              "date": "2026-11-11T00:00:00+00:00",
+              "kind": "observation"
+            },
+            {
+              "source_id": "source3",
+              "session_id": "s2",
+              "quote": "我偏好每一步推导先说明依据，再写计算。",
+              "date": "2026-11-11T00:00:00+00:00",
+              "kind": "observation"
+            }
+          ],
+          "created_at": "2026-11-11T00:00:00+00:00",
+          "updated_at": "2026-11-11T00:00:00+00:00",
+          "expires_at": "2026-11-25T00:00:00+00:00",
+          "confirmed_at": null
+        }
+      ]
+    },
+    {
+      "step": 4,
+      "case": "third_session_promotion",
+      "status_code": 200,
+      "expected_support": 3,
+      "passed": false,
+      "failures": [
+        "repeated_statement_fragmented",
+        "incorrect_independent_support",
+        "incorrect_memory_layer"
+      ],
+      "usage": {
+        "model_calls": 1,
+        "input_tokens": 656,
+        "output_tokens": 50,
+        "tokens_reported": true,
+        "elapsed_seconds": 1.094,
+        "cached_input_tokens": 512,
+        "cache_reported_calls": 1,
+        "cache_accounted_input_tokens": 656
+      },
+      "entries": [
+        {
+          "memory_id": "memory_a5f88748cab74d98899d95674a8ee5de",
+          "field": "explanation.reasoning_style",
+          "value": "我偏好每一步推导先说明依据,再写计算",
+          "scope": "global",
+          "layer": "short_term",
+          "state": "active",
+          "temporary": false,
+          "session_id": "s3",
+          "independent_sessions": 2,
+          "evidence": [
+            {
+              "source_id": "source2",
+              "session_id": "s1",
+              "quote": "我偏好每一步推导先说明依据，再写计算。",
+              "date": "2026-11-11T00:00:00+00:00",
+              "kind": "observation"
+            },
+            {
+              "source_id": "source4",
+              "session_id": "s3",
+              "quote": "我偏好每一步推导先说明依据，再写计算。",
+              "date": "2026-11-11T00:00:00+00:00",
+              "kind": "observation"
+            }
+          ],
+          "created_at": "2026-11-11T00:00:00+00:00",
+          "updated_at": "2026-11-11T00:00:00+00:00",
+          "expires_at": "2026-11-25T00:00:00+00:00",
+          "confirmed_at": null
+        }
+      ]
+    },
+    {
+      "step": 5,
+      "case": "same_source_replay",
+      "status_code": 200,
+      "expected_support": 3,
+      "passed": false,
+      "failures": [
+        "repeated_statement_fragmented",
+        "incorrect_independent_support",
+        "incorrect_memory_layer"
+      ],
+      "usage": {
+        "model_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "tokens_reported": false,
+        "elapsed_seconds": 0,
+        "cached_input_tokens": null,
+        "cache_reported_calls": 0,
+        "cache_accounted_input_tokens": 0
+      },
+      "entries": [
+        {
+          "memory_id": "memory_a5f88748cab74d98899d95674a8ee5de",
+          "field": "explanation.reasoning_style",
+          "value": "我偏好每一步推导先说明依据,再写计算",
+          "scope": "global",
+          "layer": "short_term",
+          "state": "active",
+          "temporary": false,
+          "session_id": "s3",
+          "independent_sessions": 2,
+          "evidence": [
+            {
+              "source_id": "source2",
+              "session_id": "s1",
+              "quote": "我偏好每一步推导先说明依据，再写计算。",
+              "date": "2026-11-11T00:00:00+00:00",
+              "kind": "observation"
+            },
+            {
+              "source_id": "source4",
+              "session_id": "s3",
+              "quote": "我偏好每一步推导先说明依据，再写计算。",
+              "date": "2026-11-11T00:00:00+00:00",
+              "kind": "observation"
+            }
+          ],
+          "created_at": "2026-11-11T00:00:00+00:00",
+          "updated_at": "2026-11-11T00:00:00+00:00",
+          "expires_at": "2026-11-25T00:00:00+00:00",
+          "confirmed_at": null
+        }
+      ],
+      "mechanism_checks": {
+        "zero_model_calls": true,
+        "store_unchanged": true,
+        "note": "Expected deep state is inherited from the earlier promotion test; it is separate from replay correctness."
+      }
+    },
+    {
+      "step": 6,
+      "case": "task_request_negative",
+      "status_code": 200,
+      "expected_support": null,
+      "passed": true,
+      "failures": [],
+      "usage": {
+        "model_calls": 1,
+        "input_tokens": 654,
+        "output_tokens": 6,
+        "tokens_reported": true,
+        "elapsed_seconds": 0.859,
+        "cached_input_tokens": 512,
+        "cache_reported_calls": 1,
+        "cache_accounted_input_tokens": 654
+      },
+      "entries": []
+    },
+    {
+      "step": 7,
+      "case": "fictional_speaker_negative",
+      "status_code": 200,
+      "expected_support": null,
+      "passed": true,
+      "failures": [],
+      "usage": {
+        "model_calls": 1,
+        "input_tokens": 668,
+        "output_tokens": 6,
+        "tokens_reported": true,
+        "elapsed_seconds": 0.75,
+        "cached_input_tokens": 512,
+        "cache_reported_calls": 1,
+        "cache_accounted_input_tokens": 668
+      },
+      "entries": []
+    }
+  ],
+  "model": "deepseek-flash",
+  "extractor_thinking": "disabled",
+  "private_dir": "E:\\manimagent\\testresult\\memory-visual-20261111\\extraction-control\\runtime\\private",
+  "prompt_hash_after": "c4cfa82954a2fb1bfdaed5b04ab50974ae5df8bf913289954ede842a22c94aa8",
+  "fixed_prompt": true,
+  "elapsed_seconds": 6.453
+}

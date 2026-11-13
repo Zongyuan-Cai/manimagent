@@ -197,7 +197,7 @@ class MemoryDocuments:
             }
             try:
                 self._sync(status)
-            except Exception as exc:
+            except (OSError, ContentError) as exc:
                 log.warning("记忆文件同步失败，已提交的数据库记忆保持有效", exc_info=True)
                 status["error"] = {
                     "code": exc.error.code

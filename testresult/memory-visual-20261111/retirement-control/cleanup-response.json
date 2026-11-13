@@ -1,0 +1,9 @@
+{
+  "status_code": 200,
+  "body": {
+    "expired": 1,
+    "superseded": 0,
+    "evicted": 0,
+    "remaining": 1
+  }
+}

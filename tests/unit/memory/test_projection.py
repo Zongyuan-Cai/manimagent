@@ -94,3 +94,8 @@ def test_bounded_deep_selection_does_not_churn_when_same_fact_gains_evidence(
         )
         clock.advance()
         assert model_memory(store.snapshot(reading_session), "answer_writer") == before
+
+
+def test_missing_snapshot_entries_cannot_silently_disable_selected_memory():
+    with pytest.raises(KeyError, match="entries"):
+        model_memory({}, "answer_writer")

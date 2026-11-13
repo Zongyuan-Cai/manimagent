@@ -1,5 +1,7 @@
 import json
 
+import pytest
+
 from manimagent.memory.audit import memory_context, publish_memory_context, render_memory_context
 
 
@@ -103,3 +105,15 @@ def test_memory_fences_cannot_break_the_audit_json_block():
     data["memory_snapshot"]["entries"][0]["value"] = "```example```"
     markdown = render_memory_context(memory_context(data, status="queued"))
     assert "````json\n" in markdown
+
+
+@pytest.mark.parametrize("content", ["invalid json", "[]", None, [{"type": "image_url"}]])
+def test_corrupt_request_does_not_become_a_successful_empty_memory_audit(tmp_path, content):
+    data = record()
+    event = request("answer_writer", {})
+    event["request"]["messages"][1]["content"] = content
+    data["calls"] = [event]
+    with pytest.raises(ValueError):
+        publish_memory_context(tmp_path, data, status="completed")
+    assert not (tmp_path / "memory/snapshots" / (data["job_id"] + ".md")).exists()
+    assert "memory_context_export_error" not in data

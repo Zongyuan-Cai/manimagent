@@ -90,7 +90,7 @@ class SceneLayout:
 
     def scalar_formula(self, text):
         target = self.formulas_dir / (
-            hashlib.sha256(("transparent-2" + text).encode()).hexdigest() + ".svg"
+            hashlib.sha256(("transparent-3" + text).encode()).hexdigest() + ".svg"
         )
         if not target.exists():
             with rc_context(
@@ -108,9 +108,27 @@ class SceneLayout:
                     color=self.palette["white"],
                 )
             tree = ET.parse(target)
+            empty_paths = set()
             for parent in tree.iter():
                 for child in list(parent):
                     if child.get("id") == "patch_1":
+                        parent.remove(child)
+                    elif (
+                        child.tag == "{http://www.w3.org/2000/svg}path"
+                        and not child.get("d", "").strip()
+                    ):
+                        # MathText emits spaces as paths without drawing data.
+                        # SVG defines these as non-rendering; svgelements instead
+                        # crashes on d=None. Keep later glyph transforms intact.
+                        if child.get("id"):
+                            empty_paths.add("#" + child.get("id"))
+                        parent.remove(child)
+            for parent in tree.iter():
+                for child in list(parent):
+                    if child.tag == "{http://www.w3.org/2000/svg}use" and (
+                        child.get("{http://www.w3.org/1999/xlink}href") in empty_paths
+                        or child.get("href") in empty_paths
+                    ):
                         parent.remove(child)
             tree.write(target, encoding="utf-8", xml_declaration=True)
         # Preserve the font's em scale. Normalizing every formula to the same

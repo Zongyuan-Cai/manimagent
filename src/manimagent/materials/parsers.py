@@ -1,7 +1,9 @@
-"""Public dispatch for the disposable parser worker; formats live in separate modules."""
+"""Format dispatch and the disposable parser process entry point."""
 
 from __future__ import annotations
 
+import json
+import sys
 from pathlib import Path
 
 from manimagent.errors import ContentError
@@ -71,3 +73,53 @@ def parse_file(
         "issues": issues,
         "visuals": visuals,
     }
+
+
+def main():
+    from xml.etree.ElementTree import ParseError as XMLParseError
+    from zipfile import BadZipFile
+
+    from docx.exceptions import InvalidXmlError as DocxXmlError
+    from lxml.etree import XMLSyntaxError
+    from PIL import UnidentifiedImageError
+    from pptx.exc import InvalidXmlError as PptxXmlError
+    from pypdf.errors import ParseError as PDFParseError
+    from pypdf.errors import PdfReadError
+
+    task = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+    task["path"] = Path(task["path"])
+    try:
+        candidate = parse_file(**task)
+    except ContentError as exc:
+        candidate = {
+            "error": {
+                "code": exc.error.code,
+                "message": str(exc),
+                "status": exc.http_status,
+                "state": exc.state,
+            }
+        }
+    except (
+        BadZipFile,
+        DocxXmlError,
+        PptxXmlError,
+        XMLParseError,
+        XMLSyntaxError,
+        UnidentifiedImageError,
+        PdfReadError,
+        PDFParseError,
+    ):
+        # These library exceptions identify malformed document bytes. Programming,
+        # filesystem and dependency failures must still terminate the process.
+        candidate = {
+            "error": {
+                "code": "invalid_file",
+                "message": "文件损坏或格式无法解析，请重新提供原件",
+                "state": "needs_input",
+            }
+        }
+    Path(sys.argv[2]).write_text(json.dumps(candidate, ensure_ascii=False), encoding="utf-8")
+
+
+if __name__ == "__main__":
+    main()

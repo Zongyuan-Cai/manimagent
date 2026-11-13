@@ -49,6 +49,7 @@ Thumbs.db
 # Evaluation reports are versioned; private runtime and full media stay local.
 /testresult/**/runtime/
 /testresult/**/ui-runtime/
+/testresult/**/private/render-cache/
 /testresult/cleanup-*/native/
 /testresult/**/*.mp4
 /testresult/**/*.wav

@@ -105,16 +105,21 @@ class MiMoTTS:
                 audio.setsampwidth(sample_width)
                 audio.setframerate(sample_rate)
                 audio.writeframes(pcm)
-            usage = data.get("usage") or {}
-            if not isinstance(usage, dict):
+            usage = data.get("usage")
+            if usage is None:
                 usage = {}
-            usage = {
-                name: usage[name]
-                for name in ("prompt_tokens", "completion_tokens", "total_tokens")
-                if isinstance(usage.get(name), int)
-                and not isinstance(usage[name], bool)
-                and usage[name] >= 0
-            }
+            if not isinstance(usage, dict):
+                raise ContentError("tts_invalid_usage", "MiMo 语音响应中的 usage 必须是对象")
+            token_fields = ("prompt_tokens", "completion_tokens", "total_tokens")
+            if any(
+                type(usage[name]) is not int or usage[name] < 0
+                for name in token_fields
+                if name in usage
+            ):
+                raise ContentError(
+                    "tts_invalid_usage", "MiMo 语音响应中的 token 用量必须为非负整数"
+                )
+            usage = {name: usage[name] for name in token_fields if name in usage}
             return canonical.getvalue(), {
                 "duration_seconds": duration,
                 "sample_rate": sample_rate,
@@ -141,7 +146,6 @@ class MiMoTTS:
 
     def synthesize(self, text: str, output_path: Path, budget: Budget) -> dict:
         """Preserve the original narration; timings come from decoded sample counts."""
-        self.validate_configuration()
         if not isinstance(text, str) or not text.strip() or len(text) > 2000:
             raise ContentError("tts_invalid_text", "旁白必须为非空且不超过2000字符的文本")
         key = self.credential_resolver(self.config.api_key_env)

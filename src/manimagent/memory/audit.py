@@ -29,23 +29,19 @@ SELECTION_RULES = [
 
 
 def _payload(event: dict) -> dict:
-    messages = event.get("request", {}).get("messages", [])
-    for message in messages:
-        if message.get("role") != "user":
+    for message in event["request"]["messages"]:
+        if message["role"] != "user":
             continue
-        content = message.get("content")
+        content = message["content"]
         if isinstance(content, list):
-            content = next(
-                (part.get("text") for part in content if part.get("type") == "text"), None
-            )
+            content = next((part["text"] for part in content if part["type"] == "text"), None)
         if not isinstance(content, str):
-            return {}
-        try:
-            value = json.loads(content)
-        except (ValueError, TypeError):
-            return {}
-        return value if isinstance(value, dict) else {}
-    return {}
+            raise ValueError("记忆审计请求缺少用户文本")
+        value = json.loads(content)
+        if not isinstance(value, dict):
+            raise ValueError("记忆审计请求必须包含 JSON 对象")
+        return value
+    raise ValueError("记忆审计请求缺少用户消息")
 
 
 def _entry_decisions(snapshot: dict | None, projection: dict, role: str) -> list[dict]:
@@ -167,7 +163,7 @@ def render_memory_context(context: dict) -> str:
 
 
 def publish_memory_context(root: Path, record: dict, *, status: str) -> None:
-    """Best-effort derived file; failures remain visible without undoing generation."""
+    """Report mirror I/O failures; invalid records must fail instead of inventing an audit."""
     try:
         identifier = TypeAdapter(ResourceID).validate_python(record["job_id"])
         path = root / "memory" / "snapshots" / f"{identifier}.md"
@@ -175,7 +171,7 @@ def publish_memory_context(root: Path, record: dict, *, status: str) -> None:
             raise ContentError("invalid_reference", "记忆快照路径超出私有目录")
         write_text(path, render_memory_context(memory_context(record, status=status)))
         record.pop("memory_context_export_error", None)
-    except (OSError, ValueError, ContentError):
+    except OSError:
         log.warning("任务记忆快照未能写入，原任务记录仍可读取", exc_info=True)
         record["memory_context_export_error"] = {
             "code": "memory_context_export_failed",

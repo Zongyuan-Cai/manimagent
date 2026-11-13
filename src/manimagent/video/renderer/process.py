@@ -192,8 +192,13 @@ class NativeRenderer:
                         peak = max(peak, usage)
                         if usage > budget.settings.video_memory_mb * 1024 * 1024:
                             raise ContentError("render_resource_limit", "本地渲染超过内存上限")
-                    except (psutil.NoSuchProcess, psutil.AccessDenied):
+                    except psutil.NoSuchProcess:
                         pass
+                    except psutil.AccessDenied as exc:
+                        raise ContentError(
+                            "render_monitor_unavailable",
+                            "无法读取渲染进程内存，不能执行资源上限检查",
+                        ) from exc
                     time.sleep(0.1)
             finally:
                 self.stop_tree(process)

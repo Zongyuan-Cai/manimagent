@@ -177,22 +177,29 @@ class Settings(BaseModel):
 
 def load_settings(path: str | Path | None = None) -> Settings:
     load_dotenv(Path.cwd() / ".env", override=False)
-    config_path = Path(path or os.getenv("MANIMAGENT_CONFIG", "config.yaml"))
+    configured_path = path if path is not None else os.getenv("MANIMAGENT_CONFIG")
+    config_path = Path(configured_path if configured_path is not None else "config.yaml")
     config_path = config_path.resolve()
     if config_path.parent != Path.cwd():
         load_dotenv(config_path.parent / ".env", override=False)
     data = {}
-    if config_path.exists():
+    if configured_path is not None or config_path.exists():
         try:
-            data = yaml.safe_load(config_path.read_text(encoding="utf-8")) or {}
+            data = yaml.safe_load(config_path.read_text(encoding="utf-8"))
         except yaml.YAMLError as exc:
             raise ValueError("配置文件不是有效 YAML") from exc
     if not isinstance(data, dict):
         raise ValueError("配置文件必须是 YAML 对象")
 
+    def environment_value(match):
+        name = match[1]
+        if name not in os.environ:
+            raise ValueError(f"配置引用的环境变量 {name} 未设置")
+        return os.environ[name]
+
     def expand(value):
         if isinstance(value, str):
-            return re.sub(r"\$\{([A-Za-z_][A-Za-z0-9_]*)\}", lambda m: os.getenv(m[1], ""), value)
+            return re.sub(r"\$\{([A-Za-z_][A-Za-z0-9_]*)\}", environment_value, value)
         if isinstance(value, dict):
             return {key: expand(item) for key, item in value.items()}
         if isinstance(value, list):

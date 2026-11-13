@@ -90,7 +90,7 @@ class ChatProvider:
                 "材料读取模型未启用图片输入，请在核心模型设置中配置视觉模型",
                 "vision_not_configured",
             )
-        key = self.credential_resolver(cfg.api_key_env)
+        key = self.credential_resolver(cfg.api_key_env) if cfg.auth_mode != "none" else None
         if (
             not (cfg.base_url or cfg.generate_url)
             or not cfg.model
@@ -135,8 +135,7 @@ class ChatProvider:
         last_error: ProviderError = InvalidResponse("模型结果无效")
 
         def repair_messages(raw: str, feedback: str) -> None:
-            # Keep the failed candidate so the next call can actually repair it.
-            # Fall back to regeneration if that conversation would exceed context.
+            # A repair must retain its candidate and feedback within the context budget.
             limit = min(
                 cfg.context_window,
                 self.settings.video_context_tokens
@@ -156,17 +155,18 @@ class ChatProvider:
                 )
 
             size = sum(message_size(m) for m in messages + candidates) + 512
-            if size + cfg.max_output_tokens <= limit:
-                messages.extend(candidates)
-            else:
-                instruction = {"role": "user", "content": feedback}
-                size = sum(message_size(m) for m in messages + [instruction]) + 512
-                if size + cfg.max_output_tokens <= limit:
-                    messages.append(instruction)
+            if size + cfg.max_output_tokens > limit:
+                raise ProviderError(
+                    "修复上下文超过模型预算，请增加上下文预算后重试", "context_budget_exceeded"
+                )
+            messages.extend(candidates)
 
         for attempt in range(2):
             if attempt and not budget.allow_retry():
                 break
+            can_repair = attempt == 0 and (
+                budget.retry_allowance is None or budget.retry_allowance > 0
+            )
             timeout = budget.before_call(deadline)
             body = {
                 "model": cfg.model,
@@ -243,9 +243,13 @@ class ChatProvider:
                 data = response.json()
                 if not isinstance(data, dict):
                     raise InvalidResponse("模型响应不是对象")
-                usage = data.get("usage") or {}
-                if not isinstance(usage, dict):
+                usage = data.get("usage")
+                if usage is not None and not isinstance(usage, dict):
                     raise InvalidResponse("模型用量字段格式无效")
+                if usage is not None:
+                    for name in ("prompt_tokens", "completion_tokens"):
+                        if name in usage and (type(usage[name]) is not int or usage[name] < 0):
+                            raise InvalidResponse("模型 token 用量必须为非负整数")
                 normalized = normalize_usage(usage)
                 accumulate_usage(budget.usage, normalized)
                 if (
@@ -290,11 +294,12 @@ class ChatProvider:
                     {**error, "input": str(error.get("input", ""))[:180]}
                     for error in exc.errors(include_url=False, include_context=False)[:12]
                 ]
-                repair_messages(
-                    raw,
-                    "上次输出未通过以下契约校验。保留正确内容，修正这些字段后重新返回完整 JSON：\n"
-                    + json.dumps(errors, ensure_ascii=False, default=str),
-                )
+                if can_repair:
+                    repair_messages(
+                        raw,
+                        "上次输出未通过以下契约校验。保留正确内容，修正这些字段后重新返回完整 JSON：\n"
+                        + json.dumps(errors, ensure_ascii=False, default=str),
+                    )
             except (KeyError, IndexError, ValueError, TypeError) as exc:
                 last_error = InvalidResponse(f"{role} 返回结构不符合契约")
                 last_error.__cause__ = exc
@@ -328,7 +333,7 @@ class ChatProvider:
                             "normalized_usage": normalized,
                         }
                     )
-            if attempt == 0 and schema and len(messages) == 2:
+            if can_repair and schema and len(messages) == 2:
                 repair_messages(
                     "",
                     "上次输出无法校验。请严格返回完整 schema JSON，不加解释或代码围栏。",

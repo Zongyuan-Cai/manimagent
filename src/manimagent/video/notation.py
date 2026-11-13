@@ -19,7 +19,10 @@ class MathPart:
 
 
 def scalar(text: str) -> str:
-    text = re.sub(r"\\{2,}(?=[A-Za-z{}])", lambda _: "\\", text)
+    if r"\\" in text:
+        raise ValueError("公式命令被重复转义；JSON 解码后命令前仅一个反斜杠")
+    if re.search(r"(?<![A-Za-z\\])(?:dfrac|tfrac|frac)(?=\{)", text):
+        raise ValueError("分式命令缺少反斜杠，请使用 \\frac{分子}{分母}")
     if FORBIDDEN.search(text) or "&" in text:
         raise ValueError("仅支持 MathText、最多4×4矩阵和最多4行2列的cases，不支持宏或其他环境")
     text = re.sub(
@@ -27,7 +30,6 @@ def scalar(text: str) -> str:
         lambda m: "\\" + m[1] + "{" + m[2] + "}",
         text,
     )
-    text = re.sub(r"(?<![A-Za-z\\])(?:dfrac|tfrac|frac)(?=\{)", r"\\frac", text)
     for source, target in [
         (r"\lVert", r"\Vert"),
         (r"\rVert", r"\Vert"),

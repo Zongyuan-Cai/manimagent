@@ -6,14 +6,85 @@ import os
 import httpx
 import pytest
 from fastapi.testclient import TestClient
+from pydantic import ValidationError
 
 from manimagent.api import create_app
 from manimagent.config import ModelConfig, Settings
+from manimagent.errors import ContentError
 from manimagent.jobs.manager import JobManager
 from manimagent.llm.client import ChatProvider
 from manimagent.llm.settings import LLMSettingsStore
 from manimagent.schemas import TextGenerationRequest
+from manimagent.storage import write_json
 from tests.support import wait_job
+
+
+@pytest.mark.parametrize(
+    "saved", [{"roles": {"answer_writer": "deleted-model"}}, {"answer_context_tokens": 0}]
+)
+def test_invalid_saved_settings_cannot_bypass_configuration_validation(tmp_path, saved):
+    store = LLMSettingsStore(Settings(), tmp_path)
+    write_json(store.path, {"revision": 1, "models": {}, "roles": {}, **saved})
+    with pytest.raises(ValidationError):
+        store.effective()
+
+
+def test_missing_local_credential_is_not_treated_as_unconfigured(tmp_path):
+    settings = Settings(models={"text": configured_model(api_key_env="local_secret_missing")})
+    store = LLMSettingsStore(settings, tmp_path)
+    with pytest.raises(ContentError, match="密钥记录已丢失"):
+        store.credentials.resolve("local_secret_missing")
+    view = store.view(settings)
+    assert not view["models"]["text"]["key_configured"]
+    assert "密钥记录已丢失" in view["models"]["text"]["key_error"]
+
+
+def test_unknown_credential_encoding_is_not_sent_as_plaintext(tmp_path):
+    store = LLMSettingsStore(Settings(), tmp_path)
+    write_json(
+        store.credentials.path,
+        {"local_secret_invalid": {"encoding": "unknown", "value": "encoded-secret"}},
+    )
+    with pytest.raises(ContentError, match="密钥编码无效") as exc:
+        store.credentials.resolve("local_secret_invalid")
+    assert "encoded-secret" not in str(exc.value)
+
+
+@pytest.mark.skipif(os.name != "nt", reason="Windows DPAPI encoding")
+@pytest.mark.parametrize("encoded", ["not-base64!", "非ASCII"])
+def test_corrupt_local_key_keeps_the_settings_repairable(tmp_path, encoded):
+    settings = Settings(models={"text": configured_model(api_key_env="local_secret_corrupt")})
+    store = LLMSettingsStore(settings, tmp_path)
+    write_json(
+        store.credentials.path,
+        {"local_secret_corrupt": {"encoding": "windows_dpapi", "value": encoded}},
+    )
+    assert "密钥数据已损坏" in store.view(settings)["models"]["text"]["key_error"]
+
+
+def test_no_auth_probe_does_not_read_a_stale_key_after_endpoint_change(tmp_path):
+    from manimagent.llm.settings import LLMProbeRequest
+
+    settings = Settings(models={"text": configured_model(api_key_env="local_secret_missing")})
+    store = LLMSettingsStore(settings, tmp_path)
+    request = LLMProbeRequest(
+        model_id="text",
+        draft={
+            "config": ModelConfig(
+                base_url="https://new.example/v1", model="public", auth_mode="none"
+            )
+        },
+    )
+    result = store.probe(
+        request,
+        settings,
+        httpx.MockTransport(
+            lambda _: httpx.Response(
+                200, json={"choices": [{"message": {"content": "OK"}, "finish_reason": "stop"}]}
+            )
+        ),
+    )
+    assert result["ok"]
 
 
 def configured_model(**kwargs):

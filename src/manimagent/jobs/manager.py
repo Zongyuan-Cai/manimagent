@@ -102,7 +102,10 @@ class JobManager:
         if wants_video and (
             profile == "standard_narrated" or (profile == "auto" and settings.tts.enabled)
         ):
-            if not self.tts_settings.status(settings)["ready"]:
+            speech_status = self.tts_settings.status(settings)
+            if error := speech_status.get("credential_error"):
+                raise ContentError(error["code"], error["message"], 503)
+            if not speech_status["ready"]:
                 raise ContentError(
                     "tts_not_configured",
                     "配音尚未配置，请在语音设置中填写 API Key 并试听，或选择静音动画／仅完整解答",

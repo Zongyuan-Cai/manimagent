@@ -157,17 +157,13 @@ def test_schema_retry_carries_field_feedback_and_stays_within_retry_budget():
     )
 
 
-def test_repair_omits_large_candidate_without_exceeding_context():
+def test_oversized_repair_fails_without_dropping_the_candidate():
     requests = []
 
     def handler(request):
         body = json.loads(request.content)
         requests.append(body)
-        if len(requests) == 2:
-            assert all(m["role"] != "assistant" for m in body["messages"])
-            assert '"loc": ["ok"]' in body["messages"][-1]["content"]
-            assert sum(len(m["content"].encode()) for m in body["messages"]) + 512 + 256 <= 4096
-        content = json.dumps({"ok": "x" * 5000}) if len(requests) == 1 else '{"ok":true}'
+        content = json.dumps({"ok": "x" * 5000})
         return httpx.Response(
             200, json={"choices": [{"message": {"content": content}, "finish_reason": "stop"}]}
         )
@@ -175,4 +171,62 @@ def test_repair_omits_large_candidate_without_exceeding_context():
     client, budget = provider(handler)
     client.settings.models["text"].max_output_tokens = 256
     client.settings.models["text"].context_window = 4096
-    assert client.complete("answer_checker", "check", {}, Check, budget).ok
+    with pytest.raises(ProviderError) as exc:
+        client.complete("answer_checker", "check", {}, Check, budget)
+    assert exc.value.code == "context_budget_exceeded"
+    assert len(requests) == budget.usage.model_calls == 1
+
+
+@pytest.mark.parametrize(
+    "usage",
+    [[], "", False, 0, {"prompt_tokens": "10"}, {"completion_tokens": -1}, {"prompt_tokens": True}],
+)
+def test_malformed_usage_cannot_succeed_with_unaccounted_tokens(usage):
+    client, budget = provider(
+        lambda _: httpx.Response(
+            200,
+            json={
+                "choices": [{"message": {"content": "answer"}, "finish_reason": "stop"}],
+                "usage": usage,
+            },
+        )
+    )
+    with pytest.raises(ProviderError) as exc:
+        client.complete_text("answer_writer", "answer", {}, budget)
+    assert exc.value.code == "invalid_provider_response"
+
+
+def test_no_auth_request_does_not_read_a_stale_credential():
+    client, budget = provider(
+        lambda _: httpx.Response(
+            200, json={"choices": [{"message": {"content": "answer"}, "finish_reason": "stop"}]}
+        )
+    )
+
+    def unavailable(_reference):
+        raise AssertionError("No-auth requests must not resolve a credential")
+
+    client.credential_resolver = unavailable
+    assert client.complete_text("answer_writer", "answer", {}, budget) == "answer"
+
+
+def test_disabled_retry_reports_the_schema_error_without_building_repair_context():
+    client, budget = provider(
+        lambda _: httpx.Response(
+            200,
+            json={
+                "choices": [
+                    {
+                        "message": {"content": json.dumps({"ok": "x" * 5000})},
+                        "finish_reason": "stop",
+                    }
+                ]
+            },
+        )
+    )
+    client.settings.models["text"].context_window = 1024
+    budget.retry_allowance = 0
+    with pytest.raises(ProviderError) as exc:
+        client.complete("answer_checker", "check", {}, Check, budget)
+    assert exc.value.code == "invalid_provider_response"
+    assert budget.usage.model_calls == 1

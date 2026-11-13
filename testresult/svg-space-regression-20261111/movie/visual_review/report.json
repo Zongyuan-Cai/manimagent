@@ -1,0 +1,236 @@
+{
+  "root": "E:\\manimagent\\testresult\\svg-space-regression-20261111\\movie",
+  "status": "geometry_pass_frames_available",
+  "counts": {
+    "artifacts": 1,
+    "layout_checks": 0,
+    "rendered_scenes": 1,
+    "frames": 4,
+    "issues": 0
+  },
+  "issues": [],
+  "artifacts": [
+    {
+      "scene_id": "s1",
+      "input": "E:\\manimagent\\testresult\\svg-space-regression-20261111\\movie\\input.json",
+      "result": "E:\\manimagent\\testresult\\svg-space-regression-20261111\\movie\\result.json",
+      "worker_log": "E:\\manimagent\\testresult\\svg-space-regression-20261111\\movie\\worker.log",
+      "error_file": null,
+      "status": "success",
+      "layout_only": false,
+      "events": [
+        {
+          "beat_id": "b1",
+          "unit_ids": [
+            "u001"
+          ],
+          "start_seconds": 0.0,
+          "stable_seconds": 1.0,
+          "cue_seconds": 1.0,
+          "end_seconds": 9.900000000000002,
+          "screen_text": "目标是证明：当x趋近于0时，正弦x除以x的极限等于1。",
+          "formulas": [
+            "\\lim_{x\\to 0}\\frac{\\sin x}{x}=1"
+          ],
+          "formula_lines": [
+            "\\lim_{x\\to 0}\\frac{\\sin x}{x}=1"
+          ],
+          "formula_em": 0.6,
+          "formula_bounds": [
+            {
+              "left": -1.550640773907229,
+              "right": 1.550640773907229,
+              "bottom": -0.2875,
+              "top": 0.6875
+            }
+          ],
+          "inline_matrix_cells": [],
+          "objects": [],
+          "matrix_cells": [],
+          "caption_bounds": {
+            "left": -4.6379882750000005,
+            "right": 4.6379882750000005,
+            "bottom": -3.01984375,
+            "top": -2.64015625
+          },
+          "content_bounds": {
+            "left": -1.550640773907229,
+            "right": 1.550640773907229,
+            "bottom": -0.2875,
+            "top": 1.945507825
+          },
+          "time_source": "estimated",
+          "cue_time_source": "estimated",
+          "frame_seconds": 1.6
+        },
+        {
+          "beat_id": "b2",
+          "unit_ids": [
+            "u001"
+          ],
+          "start_seconds": 9.900000000000002,
+          "stable_seconds": 10.933333333333334,
+          "cue_seconds": 10.933333333333334,
+          "end_seconds": 23.9,
+          "screen_text": "依据：正弦的自变量必须用弧度。若用角度制，极限会变成180分之π。",
+          "formulas": [
+            "x\\text{ in radians}"
+          ],
+          "formula_lines": [
+            "x\\text{ in radians}"
+          ],
+          "formula_em": 0.6,
+          "formula_bounds": [
+            {
+              "left": -1.7858283694792088,
+              "right": 1.7858283694792088,
+              "bottom": -0.037500000000000006,
+              "top": 0.4375
+            }
+          ],
+          "inline_matrix_cells": [],
+          "objects": [],
+          "matrix_cells": [],
+          "caption_bounds": {
+            "left": -5.977294945000001,
+            "right": 5.977294945000001,
+            "bottom": -3.021210925,
+            "top": -2.638789075
+          },
+          "content_bounds": {
+            "left": -1.7858283694792088,
+            "right": 1.7858283694792088,
+            "bottom": -0.037500000000000006,
+            "top": 1.9470703
+          },
+          "time_source": "estimated",
+          "cue_time_source": "estimated",
+          "frame_seconds": 11.533333333333333
+        },
+        {
+          "beat_id": "b3",
+          "unit_ids": [
+            "u001"
+          ],
+          "start_seconds": 23.9,
+          "stable_seconds": 24.933333333333362,
+          "cue_seconds": 24.933333333333362,
+          "end_seconds": 38.333333333333385,
+          "screen_text": "依据：极限考察x无限接近0时的趋势，而不是x等于0处的函数值。",
+          "formulas": [
+            "x\\neq 0"
+          ],
+          "formula_lines": [
+            "x\\neq 0"
+          ],
+          "formula_em": 0.6,
+          "formula_bounds": [
+            {
+              "left": -0.7383543567857881,
+              "right": 0.7383543567857881,
+              "bottom": -0.031249999999999972,
+              "top": 0.43125
+            }
+          ],
+          "inline_matrix_cells": [],
+          "objects": [],
+          "matrix_cells": [],
+          "caption_bounds": {
+            "left": -5.538281270000001,
+            "right": 5.538281270000001,
+            "bottom": -3.02140625,
+            "top": -2.63859375
+          },
+          "content_bounds": {
+            "left": -2.22077635,
+            "right": 2.22077635,
+            "bottom": -0.031249999999999972,
+            "top": 1.94589845
+          },
+          "time_source": "estimated",
+          "cue_time_source": "estimated",
+          "frame_seconds": 25.533333333333363
+        },
+        {
+          "beat_id": "b4",
+          "unit_ids": [
+            "u002"
+          ],
+          "start_seconds": 38.333333333333385,
+          "stable_seconds": 39.36666666666668,
+          "cue_seconds": 39.36666666666668,
+          "end_seconds": 54.33333333333332,
+          "screen_text": "题目要求用夹逼定理：若能找到两个函数从两边夹住目标，且两端极限相同，则目标极限等于该值。",
+          "formulas": [],
+          "formula_lines": [],
+          "formula_em": null,
+          "formula_bounds": [],
+          "inline_matrix_cells": [],
+          "objects": [],
+          "matrix_cells": [],
+          "caption_bounds": {
+            "left": -6.199999999999999,
+            "right": 6.199999999999999,
+            "bottom": -3.282944879750093,
+            "top": -2.3770551202499073
+          },
+          "content_bounds": {
+            "left": -5.85,
+            "right": 5.85,
+            "bottom": -0.20987746417506908,
+            "top": 1.945703125
+          },
+          "time_source": "estimated",
+          "cue_time_source": "estimated",
+          "frame_seconds": 39.96666666666668
+        }
+      ],
+      "media": {
+        "width": 1280,
+        "height": 720,
+        "fps": 30.0,
+        "codec": "h264",
+        "pix_fmt": "yuv420p",
+        "duration_seconds": 54.333333333333336,
+        "audio_streams": 0
+      },
+      "frame_count": 4,
+      "video": "E:\\manimagent\\testresult\\svg-space-regression-20261111\\movie\\scene.mp4"
+    }
+  ],
+  "frames": [
+    {
+      "path": "E:\\manimagent\\testresult\\svg-space-regression-20261111\\movie\\frame_000.png",
+      "scene_id": "s1",
+      "beat_id": "b1",
+      "seconds": 1.6
+    },
+    {
+      "path": "E:\\manimagent\\testresult\\svg-space-regression-20261111\\movie\\frame_001.png",
+      "scene_id": "s1",
+      "beat_id": "b2",
+      "seconds": 11.533333333333333
+    },
+    {
+      "path": "E:\\manimagent\\testresult\\svg-space-regression-20261111\\movie\\frame_002.png",
+      "scene_id": "s1",
+      "beat_id": "b3",
+      "seconds": 25.533333333333335
+    },
+    {
+      "path": "E:\\manimagent\\testresult\\svg-space-regression-20261111\\movie\\frame_003.png",
+      "scene_id": "s1",
+      "beat_id": "b4",
+      "seconds": 39.96666666666667
+    }
+  ],
+  "contact_sheets": [
+    "E:\\manimagent\\testresult\\svg-space-regression-20261111\\movie\\visual_review\\contact_sheet_01.png"
+  ],
+  "limits": [
+    "Layout checks emit geometry only; all PNGs here come from decoded actual videos.",
+    "No semantic or complete visual pass is claimed without viewing the frames.",
+    "Object-label collisions and in-animation transients lack exported per-object bounds.",
+    "Formula, caption, content and matrix-cell boxes are checked where recorded."
+  ]
+}

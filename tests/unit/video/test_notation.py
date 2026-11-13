@@ -28,6 +28,9 @@ def test_symbolic_matrix_preserves_order_cells_and_tex_row_separators():
         "x\ny",
         "$x$",
         "x=中文",
+        "frac{1}{2}",
+        r"\\frac{1}{2}",
+        r"\begin{matrix}frac{1}{2}\end{matrix}",
     ],
 )
 def test_unsupported_or_ambiguous_notation_is_rejected(text):

@@ -1,0 +1,24 @@
+{
+  "entries": [],
+  "policy": {
+    "promotion_sessions": 3,
+    "short_term_days": 14,
+    "max_entries": 200,
+    "max_evidence_per_entry": 20,
+    "max_snapshot_entries": 12,
+    "max_snapshot_chars": 6000,
+    "max_sources": 10000
+  },
+  "learning": {
+    "tasks": [],
+    "counts": {
+      "waiting": 0,
+      "queued": 0,
+      "running": 0,
+      "completed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0
+    }
+  }
+}

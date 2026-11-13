@@ -314,3 +314,15 @@ def test_sync_preserves_editor_save_while_new_document_is_being_rendered(store, 
     store.confirm(entry.memory_id)
     assert store.read_document(entry.memory_id) == draft
     assert item(store.sync_documents(), entry.memory_id)["status"] == "stale"
+
+
+@pytest.mark.parametrize(
+    "error", [RuntimeError("programming defect"), ValueError("corrupt entries")]
+)
+def test_sync_does_not_disguise_store_failures_as_optional_file_errors(store, monkeypatch, error):
+    def fail():
+        raise error
+
+    monkeypatch.setattr(store, "list_entries", fail)
+    with pytest.raises(type(error), match=str(error)):
+        store.sync_documents()

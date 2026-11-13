@@ -1,0 +1,43 @@
+{
+  "kind": "supplementary_retirement_control",
+  "passed": true,
+  "database_run": "E:\\manimagent\\testresult\\memory-visual-20261111\\extraction-control-v2",
+  "main_trajectory_replacement": false,
+  "prompt_hash": "9b8120b8f2849d3eb0bb353af0965891cc4844077dd2852254b0a74c36cb28e0",
+  "checks": {
+    "preexisting_naturally_promoted_deep": true,
+    "real_single_extraction": true,
+    "temporary_different_field": true,
+    "temporary_used_in_original_session": true,
+    "expired_entry_still_stored_before_cleanup": true,
+    "expired_excluded_before_cleanup": true,
+    "deep_selected_before_cleanup": true,
+    "cleanup_count_matches": true,
+    "expired_deleted": true,
+    "deep_still_stored": true,
+    "deep_still_selected": true,
+    "deep_contents_unchanged": true
+  },
+  "usage": {
+    "model_calls": 1,
+    "input_tokens": 695,
+    "output_tokens": 52,
+    "tokens_reported": true,
+    "elapsed_seconds": 2.0,
+    "cached_input_tokens": 512,
+    "cache_reported_calls": 1,
+    "cache_accounted_input_tokens": 695
+  },
+  "deep_entry_ids": [
+    "memory_6b6ed31d53a64cbeb7cfe1766db6fdf6"
+  ],
+  "temporary_entry_ids": [
+    "memory_6cf9483f864e446cb13825692aac0e6b"
+  ],
+  "cleanup": {
+    "expired": 1,
+    "superseded": 0,
+    "evicted": 0,
+    "remaining": 1
+  }
+}

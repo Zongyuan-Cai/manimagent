@@ -1,0 +1,10 @@
+{
+  "model_calls": 1,
+  "input_tokens": 9188,
+  "output_tokens": 1882,
+  "tokens_reported": true,
+  "elapsed_seconds": 7.297,
+  "cached_input_tokens": 2816,
+  "cache_reported_calls": 1,
+  "cache_accounted_input_tokens": 9188
+}

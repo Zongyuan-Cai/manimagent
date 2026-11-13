@@ -1,0 +1,38 @@
+{
+  "root": "E:\\manimagent\\testresult\\visual-helper-failure-20261111",
+  "status": "fail",
+  "counts": {
+    "artifacts": 1,
+    "layout_checks": 0,
+    "rendered_scenes": 0,
+    "frames": 0,
+    "issues": 1
+  },
+  "issues": [
+    {
+      "scene_id": "dense",
+      "code": "renderer_error",
+      "message": "layout: 节拍 b0 的内容尺寸 20.59×2.58 超过区域 5.8×3.35，缩小后无法保证可读性，请缩短该节拍",
+      "path": "E:\\manimagent\\testresult\\visual-helper-failure-20261111\\layout\\dense"
+    }
+  ],
+  "artifacts": [
+    {
+      "scene_id": "dense",
+      "input": "E:\\manimagent\\testresult\\visual-helper-failure-20261111\\layout\\dense\\input.json",
+      "result": "E:\\manimagent\\testresult\\visual-helper-failure-20261111\\layout\\dense\\result.json",
+      "worker_log": "E:\\manimagent\\testresult\\visual-helper-failure-20261111\\layout\\dense\\worker.log",
+      "error_file": "E:\\manimagent\\testresult\\visual-helper-failure-20261111\\layout\\dense\\error.txt",
+      "status": "error",
+      "layout_only": false
+    }
+  ],
+  "frames": [],
+  "contact_sheets": [],
+  "limits": [
+    "Layout checks emit geometry only; all PNGs here come from decoded actual videos.",
+    "No semantic or complete visual pass is claimed without viewing the frames.",
+    "Object-label collisions and in-animation transients lack exported per-object bounds.",
+    "Formula, caption, content and matrix-cell boxes are checked where recorded."
+  ]
+}

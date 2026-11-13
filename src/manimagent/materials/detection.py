@@ -40,8 +40,8 @@ def detect_upload(path: Path, filename: str) -> str:
                     return XLSX
                 if {"[Content_Types].xml", "ppt/presentation.xml"} <= names:
                     return PPTX
-        except zipfile.BadZipFile:
-            pass
+        except zipfile.BadZipFile as exc:
+            raise ContentError("invalid_file", "压缩文档已损坏，请检查原件", 415) from exc
         raise ContentError(
             "unsupported_file_input",
             "不支持此压缩容器，请解压后选择材料，或另存为 DOCX、XLSX、PPTX",

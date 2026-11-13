@@ -114,10 +114,42 @@ def test_base64_validation_and_usage_allowlist(tmp_path):
     with pytest.raises(ContentError):
         speech.synthesize("测试旁白", tmp_path / "bad.wav", budget())
     body = response_body()
-    body["usage"] = {"prompt_tokens": "private-test-key", "completion_tokens": True, "secret": 3}
+    body["usage"] = {"prompt_tokens": 3, "secret": "private-test-key"}
     speech = provider(lambda _: httpx.Response(200, json=body))
     result = speech.synthesize("测试旁白", tmp_path / "ok.wav", budget())
-    assert result["usage"] == {}
+    assert result["usage"] == {"prompt_tokens": 3}
+
+
+@pytest.mark.parametrize(
+    "usage",
+    [
+        [],
+        False,
+        {"prompt_tokens": "private-test-key"},
+        {"completion_tokens": True},
+        {"total_tokens": -1},
+    ],
+)
+def test_malformed_usage_fails_without_publishing_or_retrying(tmp_path, usage):
+    body = {**response_body(), "usage": usage}
+    speech = provider(lambda _: httpx.Response(200, json=body))
+    with pytest.raises(ContentError) as exc:
+        speech.synthesize("测试旁白", tmp_path / "bad.wav", budget())
+    assert exc.value.error.code == "tts_invalid_usage"
+    assert "private-test-key" not in str(exc.value)
+    assert speech.calls == 1
+    assert not list(tmp_path.iterdir())
+
+
+@pytest.mark.parametrize("include_null", [False, True])
+def test_omitted_usage_remains_unreported(tmp_path, include_null):
+    body = response_body()
+    if include_null:
+        body["usage"] = None
+    else:
+        del body["usage"]
+    speech = provider(lambda _: httpx.Response(200, json=body))
+    assert speech.synthesize("测试旁白", tmp_path / "ok.wav", budget())["usage"] == {}
 
 
 @pytest.mark.parametrize("status", [302, 401, 403, 402, 404])

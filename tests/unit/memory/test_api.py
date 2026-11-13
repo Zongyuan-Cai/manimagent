@@ -1,9 +1,12 @@
+import httpx
 import pytest
 from fastapi.testclient import TestClient
 
 from manimagent.api import create_app
 from manimagent.config import Settings
+from manimagent.llm.client import ChatProvider
 from manimagent.memory.store import MemoryStore
+from tests.support.animation import config
 from tests.support.memory import Clock, observe
 
 
@@ -49,3 +52,39 @@ def test_patch_cannot_resurrect_expired_memory_even_with_confirmation(tmp_path):
         assert response.status_code in {404, 422}
         assert response.json()["error"]["code"] in {"invalid_memory", "memory_not_found"}
         assert all(entry.value == original.value for entry in manager.memory.list_entries())
+
+
+def test_missing_extraction_candidates_fail_without_recording_an_empty_observation(tmp_path):
+    settings = config(tmp_path)
+    provider = ChatProvider(
+        settings,
+        httpx.MockTransport(
+            lambda request: httpx.Response(
+                200,
+                json={
+                    "choices": [{"message": {"content": "{}"}, "finish_reason": "stop"}],
+                    "usage": {"prompt_tokens": 10, "completion_tokens": 2},
+                },
+            )
+        ),
+    )
+    app = create_app(settings, provider)
+    with TestClient(app) as client:
+        response = client.post(
+            "/api/v2/memory/observations",
+            json={
+                "text": "请详细讲解",
+                "session_id": "test",
+                "source_id": "missing-candidates",
+            },
+        )
+        assert response.status_code != 200
+        assert response.json()["error"]["code"] == "invalid_provider_response"
+        assert (
+            app.state.job_manager.memory.replay(
+                session_id="test",
+                source_id="missing-candidates",
+                source_text="请详细讲解",
+            )
+            is None
+        )

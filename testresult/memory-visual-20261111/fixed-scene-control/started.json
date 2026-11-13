@@ -1,0 +1,9 @@
+{
+  "source_round": 11,
+  "scene_id": "s5",
+  "new_model_calls_requested": 1,
+  "source_payload_sha256": "94d0beb67fd883b1a849ab42b32594ea74c857a029a2ad02a6ab7edabdf6b4ca",
+  "candidate_prompt_sha256": "016eac03aa7f7ea00e704cd1baa0b6693be1f89f5aad4a30052442da19d38133",
+  "source_hash_at_start": "f9c7ac820a52756ec1241e5ff90ef5df82df0759ddbf5eeb56617ddbe03826fb",
+  "baseline_note": "R11 final scene includes one schema-repair response; original user payload unchanged."
+}

@@ -40,12 +40,20 @@ def parse_structured(path, media_type, selection, index, file_id, limits):
             unit_kind = "row"
         elif media_type == "application/x-ipynb+json":
             notebook = json.loads(text)
+            if not isinstance(notebook, dict):
+                raise ValueError("Invalid notebook")
             cells = notebook["cells"]
             if not isinstance(cells, list):
                 raise ValueError("Invalid notebook cells")
             for number, cell in enumerate(cells, 1):
                 total = number
-                source = cell.get("source", "")
+                if not isinstance(cell, dict) or cell["cell_type"] not in {
+                    "code",
+                    "markdown",
+                    "raw",
+                }:
+                    raise ValueError("Invalid notebook cell")
+                source = cell["source"]
                 source = "".join(source) if isinstance(source, list) else source
                 if not isinstance(source, str):
                     raise ValueError("Invalid notebook source")
@@ -63,8 +71,18 @@ def parse_structured(path, media_type, selection, index, file_id, limits):
                     )
                 if cell.get("attachments"):
                     issues.append(f"Notebook 单元 {number} 包含附件图片，请另行提供可读取内容")
-                for output_number, output in enumerate(cell.get("outputs", []), 1):
-                    data = output.get("data", {})
+                outputs = cell["outputs"] if cell["cell_type"] == "code" else []
+                if not isinstance(outputs, list):
+                    raise ValueError("Invalid notebook outputs")
+                for output_number, output in enumerate(outputs, 1):
+                    if not isinstance(output, dict):
+                        raise ValueError("Invalid notebook output")
+                    output_type = output["output_type"]
+                    if output_type not in {"stream", "error", "display_data", "execute_result"}:
+                        raise ValueError("Invalid notebook output type")
+                    data = (
+                        output["data"] if output_type in {"display_data", "execute_result"} else {}
+                    )
                     if not isinstance(data, dict):
                         raise ValueError("Invalid notebook MIME data")
                     if any(key.startswith("image/") for key in data):
@@ -76,18 +94,20 @@ def parse_structured(path, media_type, selection, index, file_id, limits):
                         issues.append(
                             f"Notebook 单元 {number} 包含未读取的富媒体输出，请另行提供完整文本或图片"
                         )
-                    content = (
-                        output.get("text")
-                        or output.get("traceback")
-                        or data.get("text/plain")
-                        or data.get("text/markdown")
-                        or data.get("text/html")
-                        or data.get("text/latex")
-                    )
+                    if output_type == "stream":
+                        content = output["text"]
+                    elif output_type == "error":
+                        content = output["traceback"]
+                    else:
+                        content = ""
+                        for mime in ("text/plain", "text/markdown", "text/html", "text/latex"):
+                            if mime in data:
+                                content = data[mime]
+                                break
+                    content = "".join(content) if isinstance(content, list) else content
+                    if not isinstance(content, str):
+                        raise ValueError("Invalid notebook output")
                     if content:
-                        content = "".join(content) if isinstance(content, list) else content
-                        if not isinstance(content, str):
-                            raise ValueError("Invalid notebook output")
                         used = append_bounded(
                             blocks,
                             block(

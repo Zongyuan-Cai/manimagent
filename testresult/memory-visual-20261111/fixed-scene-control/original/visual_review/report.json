@@ -1,0 +1,674 @@
+{
+  "root": "E:\\manimagent\\testresult\\memory-visual-20261111\\fixed-scene-control\\original",
+  "status": "geometry_pass_frames_available",
+  "counts": {
+    "artifacts": 2,
+    "layout_checks": 1,
+    "rendered_scenes": 1,
+    "frames": 5,
+    "issues": 0
+  },
+  "issues": [],
+  "artifacts": [
+    {
+      "scene_id": "s5",
+      "input": "E:\\manimagent\\testresult\\memory-visual-20261111\\fixed-scene-control\\original\\layout\\s5\\input.json",
+      "result": "E:\\manimagent\\testresult\\memory-visual-20261111\\fixed-scene-control\\original\\layout\\s5\\result.json",
+      "worker_log": "E:\\manimagent\\testresult\\memory-visual-20261111\\fixed-scene-control\\original\\layout\\s5\\worker.log",
+      "error_file": null,
+      "status": "success",
+      "layout_only": true,
+      "events": [
+        {
+          "beat_id": "b1",
+          "unit_ids": [
+            "u022"
+          ],
+          "start_seconds": 0.0,
+          "stable_seconds": 1.0,
+          "cue_seconds": 1.0,
+          "end_seconds": 15.133366666666666,
+          "screen_text": "横轴是x，纵轴是y。在闭区间零到二上画出抛物线y等于(x减1)的平方，作为下面观察割线与切线的依据。",
+          "formulas": [
+            "y=(x-1)^2"
+          ],
+          "formula_lines": [
+            "y=(x-1)^2"
+          ],
+          "formula_em": 0.6,
+          "formula_bounds": [
+            {
+              "left": 1.702876750465805,
+              "right": 4.997123249534195,
+              "bottom": -0.14375,
+              "top": 0.54375
+            }
+          ],
+          "inline_matrix_cells": [],
+          "objects": [
+            "seg_left",
+            "seg_right"
+          ],
+          "matrix_cells": [],
+          "caption_bounds": {
+            "left": -5.9536132749999995,
+            "right": 5.9536132749999995,
+            "bottom": -3.28253905,
+            "top": -2.37746095
+          },
+          "content_bounds": {
+            "left": -5.9625,
+            "right": 5.154687475,
+            "bottom": -1.6250000000000002,
+            "top": 1.94472655
+          },
+          "time_source": "estimated",
+          "cue_time_source": "estimated",
+          "frame_seconds": 1.6
+        },
+        {
+          "beat_id": "b2",
+          "unit_ids": [
+            "u023"
+          ],
+          "start_seconds": 15.133366666666666,
+          "stable_seconds": 16.133366666666664,
+          "cue_seconds": 16.133366666666667,
+          "end_seconds": 30.866733333333332,
+          "screen_text": "顶点(1,0)：左端点(0,1)，右端点(2,1)。两端的函数值都是1，这是端点等高、可与罗尔定理对照的原因。",
+          "formulas": [
+            "f(0)=1\\quad f(1)=0\\quad f(2)=1"
+          ],
+          "formula_lines": [
+            "f(0)=1",
+            "f(1)=0",
+            "f(2)=1"
+          ],
+          "formula_em": 0.6,
+          "formula_bounds": [
+            {
+              "left": 2.279200981251095,
+              "right": 4.420799018748905,
+              "bottom": 0.7949999999999999,
+              "top": 1.3449999999999998
+            },
+            {
+              "left": 2.271202032591554,
+              "right": 4.428797967408446,
+              "bottom": -0.0749999999999999,
+              "top": 0.4749999999999999
+            },
+            {
+              "left": 2.279200981251095,
+              "right": 4.420799018748905,
+              "bottom": -0.9449999999999998,
+              "top": -0.39499999999999996
+            }
+          ],
+          "inline_matrix_cells": [],
+          "objects": [
+            "seg_left",
+            "seg_right",
+            "pt_left",
+            "pt_vertex",
+            "pt_right"
+          ],
+          "matrix_cells": [],
+          "caption_bounds": {
+            "left": -5.794458,
+            "right": 5.794458,
+            "bottom": -3.284101575,
+            "top": -2.375898425
+          },
+          "content_bounds": {
+            "left": -5.9625,
+            "right": 4.7519043,
+            "bottom": -1.6250000000000002,
+            "top": 1.94472655
+          },
+          "time_source": "estimated",
+          "cue_time_source": "estimated",
+          "frame_seconds": 16.733366666666665
+        },
+        {
+          "beat_id": "b3",
+          "unit_ids": [
+            "u024"
+          ],
+          "start_seconds": 30.866733333333332,
+          "stable_seconds": 31.866733333333332,
+          "cue_seconds": 31.866733333333336,
+          "end_seconds": 45.66676666666667,
+          "screen_text": "连接(0,1)与(2,1)的割线，纵坐标相同，所以斜率为零，这条割线是水平线y=1。",
+          "formulas": [
+            "m=\\frac{1-1}{2-0}=0",
+            "y=1"
+          ],
+          "formula_lines": [
+            "m=\\frac{1-1}{2-0}=0",
+            "y=1"
+          ],
+          "formula_em": 0.6,
+          "formula_bounds": [
+            {
+              "left": 1.595709982405887,
+              "right": 5.1042900175941135,
+              "bottom": 0.2725000000000001,
+              "top": 1.01
+            },
+            {
+              "left": 2.6332158259129566,
+              "right": 4.066784174087044,
+              "bottom": -0.6100000000000001,
+              "top": -0.04749999999999993
+            }
+          ],
+          "inline_matrix_cells": [],
+          "objects": [
+            "seg_left",
+            "seg_right",
+            "pt_left",
+            "pt_vertex",
+            "pt_right",
+            "secant"
+          ],
+          "matrix_cells": [],
+          "caption_bounds": {
+            "left": -5.85961915,
+            "right": 5.85961915,
+            "bottom": -3.30509765,
+            "top": -2.35490235
+          },
+          "content_bounds": {
+            "left": -5.9625,
+            "right": 5.149218725000001,
+            "bottom": -1.6250000000000002,
+            "top": 1.9466797
+          },
+          "time_source": "estimated",
+          "cue_time_source": "estimated",
+          "frame_seconds": 32.46673333333333
+        },
+        {
+          "beat_id": "b4",
+          "unit_ids": [
+            "u024"
+          ],
+          "start_seconds": 45.66676666666667,
+          "stable_seconds": 46.66676666666667,
+          "cue_seconds": 46.666766666666675,
+          "end_seconds": 61.866800000000005,
+          "screen_text": "在顶点(1,0)处，f'(1)=0，切线斜率为零，方程为水平线y=0，只是最低点的一条水平线。",
+          "formulas": [
+            "f'(1)=2(1-1)=0",
+            "y=0"
+          ],
+          "formula_lines": [
+            "f'(1)=2(1-1)=0",
+            "y=0"
+          ],
+          "formula_em": 0.6,
+          "formula_bounds": [
+            {
+              "left": 0.6057472529790715,
+              "right": 6.094252747020929,
+              "bottom": 0.3600000000000002,
+              "top": 0.935
+            },
+            {
+              "left": 2.619560412826838,
+              "right": 4.080439587173163,
+              "bottom": -0.5350000000000001,
+              "top": 0.04000000000000009
+            }
+          ],
+          "inline_matrix_cells": [],
+          "objects": [
+            "seg_left",
+            "seg_right",
+            "pt_left",
+            "pt_vertex",
+            "pt_right",
+            "secant",
+            "tangent"
+          ],
+          "matrix_cells": [],
+          "caption_bounds": {
+            "left": -6.048217780000002,
+            "right": 6.048217780000002,
+            "bottom": -3.2813672,
+            "top": -2.3786328
+          },
+          "content_bounds": {
+            "left": -5.9625,
+            "right": 6.094252747020929,
+            "bottom": -1.6250000000000002,
+            "top": 1.946875
+          },
+          "time_source": "estimated",
+          "cue_time_source": "estimated",
+          "frame_seconds": 47.26676666666667
+        },
+        {
+          "beat_id": "b5",
+          "unit_ids": [
+            "u025",
+            "u026",
+            "u027"
+          ],
+          "start_seconds": 61.866800000000005,
+          "stable_seconds": 62.866800000000005,
+          "cue_seconds": 62.86680000000001,
+          "end_seconds": 78.16683333333334,
+          "screen_text": "端点割线水平，罗尔定理保证内部至少一点切线也水平。本题该点c=1，对应切线y=0，与图一致。",
+          "formulas": [
+            "c=1",
+            "y=0"
+          ],
+          "formula_lines": [
+            "c=1",
+            "y=0"
+          ],
+          "formula_em": 0.6,
+          "formula_bounds": [
+            {
+              "left": 2.66123607315535,
+              "right": 4.03876392684465,
+              "bottom": 0.4225000000000001,
+              "top": 0.8725
+            },
+            {
+              "left": 2.619560412826838,
+              "right": 4.080439587173163,
+              "bottom": -0.4725000000000001,
+              "top": 0.10250000000000004
+            }
+          ],
+          "inline_matrix_cells": [],
+          "objects": [
+            "seg_left",
+            "seg_right",
+            "pt_left",
+            "pt_vertex",
+            "pt_right",
+            "secant",
+            "tangent"
+          ],
+          "matrix_cells": [],
+          "caption_bounds": {
+            "left": -6.05056152,
+            "right": 6.05056152,
+            "bottom": -3.304707025,
+            "top": -2.3552929750000002
+          },
+          "content_bounds": {
+            "left": -5.9625,
+            "right": 4.755419925,
+            "bottom": -1.6250000000000002,
+            "top": 1.9453125
+          },
+          "time_source": "estimated",
+          "cue_time_source": "estimated",
+          "frame_seconds": 63.466800000000006
+        }
+      ],
+      "media": null,
+      "frame_count": 0
+    },
+    {
+      "scene_id": "s5",
+      "input": "E:\\manimagent\\testresult\\memory-visual-20261111\\fixed-scene-control\\original\\s5\\input.json",
+      "result": "E:\\manimagent\\testresult\\memory-visual-20261111\\fixed-scene-control\\original\\s5\\result.json",
+      "worker_log": "E:\\manimagent\\testresult\\memory-visual-20261111\\fixed-scene-control\\original\\s5\\worker.log",
+      "error_file": null,
+      "status": "success",
+      "layout_only": false,
+      "events": [
+        {
+          "beat_id": "b1",
+          "unit_ids": [
+            "u022"
+          ],
+          "start_seconds": 0.0,
+          "stable_seconds": 0.9999999999999999,
+          "cue_seconds": 1.0,
+          "end_seconds": 15.133333333333335,
+          "screen_text": "横轴是x，纵轴是y。在闭区间零到二上画出抛物线y等于(x减1)的平方，作为下面观察割线与切线的依据。",
+          "formulas": [
+            "y=(x-1)^2"
+          ],
+          "formula_lines": [
+            "y=(x-1)^2"
+          ],
+          "formula_em": 0.6,
+          "formula_bounds": [
+            {
+              "left": 1.702876750465805,
+              "right": 4.997123249534195,
+              "bottom": -0.14375,
+              "top": 0.54375
+            }
+          ],
+          "inline_matrix_cells": [],
+          "objects": [
+            "seg_left",
+            "seg_right"
+          ],
+          "matrix_cells": [],
+          "caption_bounds": {
+            "left": -5.9536132749999995,
+            "right": 5.9536132749999995,
+            "bottom": -3.28253905,
+            "top": -2.37746095
+          },
+          "content_bounds": {
+            "left": -5.9625,
+            "right": 5.154687475,
+            "bottom": -1.6250000000000002,
+            "top": 1.94472655
+          },
+          "time_source": "estimated",
+          "cue_time_source": "estimated",
+          "frame_seconds": 1.5999999999999999
+        },
+        {
+          "beat_id": "b2",
+          "unit_ids": [
+            "u023"
+          ],
+          "start_seconds": 15.133333333333335,
+          "stable_seconds": 16.16666666666667,
+          "cue_seconds": 16.16666666666667,
+          "end_seconds": 30.866666666666696,
+          "screen_text": "顶点(1,0)：左端点(0,1)，右端点(2,1)。两端的函数值都是1，这是端点等高、可与罗尔定理对照的原因。",
+          "formulas": [
+            "f(0)=1\\quad f(1)=0\\quad f(2)=1"
+          ],
+          "formula_lines": [
+            "f(0)=1",
+            "f(1)=0",
+            "f(2)=1"
+          ],
+          "formula_em": 0.6,
+          "formula_bounds": [
+            {
+              "left": 2.279200981251095,
+              "right": 4.420799018748905,
+              "bottom": 0.7949999999999999,
+              "top": 1.3449999999999998
+            },
+            {
+              "left": 2.271202032591554,
+              "right": 4.428797967408446,
+              "bottom": -0.0749999999999999,
+              "top": 0.4749999999999999
+            },
+            {
+              "left": 2.279200981251095,
+              "right": 4.420799018748905,
+              "bottom": -0.9449999999999998,
+              "top": -0.39499999999999996
+            }
+          ],
+          "inline_matrix_cells": [],
+          "objects": [
+            "seg_left",
+            "seg_right",
+            "pt_left",
+            "pt_vertex",
+            "pt_right"
+          ],
+          "matrix_cells": [],
+          "caption_bounds": {
+            "left": -5.794458,
+            "right": 5.794458,
+            "bottom": -3.284101575,
+            "top": -2.375898425
+          },
+          "content_bounds": {
+            "left": -5.9625,
+            "right": 4.7519043,
+            "bottom": -1.6250000000000002,
+            "top": 1.94472655
+          },
+          "time_source": "estimated",
+          "cue_time_source": "estimated",
+          "frame_seconds": 16.766666666666673
+        },
+        {
+          "beat_id": "b3",
+          "unit_ids": [
+            "u024"
+          ],
+          "start_seconds": 30.866666666666696,
+          "stable_seconds": 31.90000000000008,
+          "cue_seconds": 31.90000000000008,
+          "end_seconds": 45.66666666666673,
+          "screen_text": "连接(0,1)与(2,1)的割线，纵坐标相同，所以斜率为零，这条割线是水平线y=1。",
+          "formulas": [
+            "m=\\frac{1-1}{2-0}=0",
+            "y=1"
+          ],
+          "formula_lines": [
+            "m=\\frac{1-1}{2-0}=0",
+            "y=1"
+          ],
+          "formula_em": 0.6,
+          "formula_bounds": [
+            {
+              "left": 1.595709982405887,
+              "right": 5.1042900175941135,
+              "bottom": 0.2725000000000001,
+              "top": 1.01
+            },
+            {
+              "left": 2.6332158259129566,
+              "right": 4.066784174087044,
+              "bottom": -0.6100000000000001,
+              "top": -0.04749999999999993
+            }
+          ],
+          "inline_matrix_cells": [],
+          "objects": [
+            "seg_left",
+            "seg_right",
+            "pt_left",
+            "pt_vertex",
+            "pt_right",
+            "secant"
+          ],
+          "matrix_cells": [],
+          "caption_bounds": {
+            "left": -5.85961915,
+            "right": 5.85961915,
+            "bottom": -3.30509765,
+            "top": -2.35490235
+          },
+          "content_bounds": {
+            "left": -5.9625,
+            "right": 5.149218725000001,
+            "bottom": -1.6250000000000002,
+            "top": 1.9466797
+          },
+          "time_source": "estimated",
+          "cue_time_source": "estimated",
+          "frame_seconds": 32.50000000000008
+        },
+        {
+          "beat_id": "b4",
+          "unit_ids": [
+            "u024"
+          ],
+          "start_seconds": 45.66666666666673,
+          "stable_seconds": 46.7,
+          "cue_seconds": 46.7,
+          "end_seconds": 61.86666666666664,
+          "screen_text": "在顶点(1,0)处，f'(1)=0，切线斜率为零，方程为水平线y=0，只是最低点的一条水平线。",
+          "formulas": [
+            "f'(1)=2(1-1)=0",
+            "y=0"
+          ],
+          "formula_lines": [
+            "f'(1)=2(1-1)=0",
+            "y=0"
+          ],
+          "formula_em": 0.6,
+          "formula_bounds": [
+            {
+              "left": 0.6057472529790715,
+              "right": 6.094252747020929,
+              "bottom": 0.3600000000000002,
+              "top": 0.935
+            },
+            {
+              "left": 2.619560412826838,
+              "right": 4.080439587173163,
+              "bottom": -0.5350000000000001,
+              "top": 0.04000000000000009
+            }
+          ],
+          "inline_matrix_cells": [],
+          "objects": [
+            "seg_left",
+            "seg_right",
+            "pt_left",
+            "pt_vertex",
+            "pt_right",
+            "secant",
+            "tangent"
+          ],
+          "matrix_cells": [],
+          "caption_bounds": {
+            "left": -6.048217780000002,
+            "right": 6.048217780000002,
+            "bottom": -3.2813672,
+            "top": -2.3786328
+          },
+          "content_bounds": {
+            "left": -5.9625,
+            "right": 6.094252747020929,
+            "bottom": -1.6250000000000002,
+            "top": 1.946875
+          },
+          "time_source": "estimated",
+          "cue_time_source": "estimated",
+          "frame_seconds": 47.300000000000004
+        },
+        {
+          "beat_id": "b5",
+          "unit_ids": [
+            "u025",
+            "u026",
+            "u027"
+          ],
+          "start_seconds": 61.86666666666664,
+          "stable_seconds": 62.89999999999991,
+          "cue_seconds": 62.89999999999991,
+          "end_seconds": 78.16666666666654,
+          "screen_text": "端点割线水平，罗尔定理保证内部至少一点切线也水平。本题该点c=1，对应切线y=0，与图一致。",
+          "formulas": [
+            "c=1",
+            "y=0"
+          ],
+          "formula_lines": [
+            "c=1",
+            "y=0"
+          ],
+          "formula_em": 0.6,
+          "formula_bounds": [
+            {
+              "left": 2.66123607315535,
+              "right": 4.03876392684465,
+              "bottom": 0.4225000000000001,
+              "top": 0.8725
+            },
+            {
+              "left": 2.619560412826838,
+              "right": 4.080439587173163,
+              "bottom": -0.4725000000000001,
+              "top": 0.10250000000000004
+            }
+          ],
+          "inline_matrix_cells": [],
+          "objects": [
+            "seg_left",
+            "seg_right",
+            "pt_left",
+            "pt_vertex",
+            "pt_right",
+            "secant",
+            "tangent"
+          ],
+          "matrix_cells": [],
+          "caption_bounds": {
+            "left": -6.05056152,
+            "right": 6.05056152,
+            "bottom": -3.304707025,
+            "top": -2.3552929750000002
+          },
+          "content_bounds": {
+            "left": -5.9625,
+            "right": 4.755419925,
+            "bottom": -1.6250000000000002,
+            "top": 1.9453125
+          },
+          "time_source": "estimated",
+          "cue_time_source": "estimated",
+          "frame_seconds": 63.499999999999915
+        }
+      ],
+      "media": {
+        "width": 1280,
+        "height": 720,
+        "fps": 30.0,
+        "codec": "h264",
+        "pix_fmt": "yuv420p",
+        "duration_seconds": 78.16666666666667,
+        "audio_streams": 0
+      },
+      "frame_count": 5,
+      "video": "E:\\manimagent\\testresult\\memory-visual-20261111\\fixed-scene-control\\original\\s5\\scene.mp4"
+    }
+  ],
+  "frames": [
+    {
+      "path": "E:\\manimagent\\testresult\\memory-visual-20261111\\fixed-scene-control\\original\\s5\\frame_000.png",
+      "scene_id": "s5",
+      "beat_id": "b1",
+      "seconds": 1.6
+    },
+    {
+      "path": "E:\\manimagent\\testresult\\memory-visual-20261111\\fixed-scene-control\\original\\s5\\frame_001.png",
+      "scene_id": "s5",
+      "beat_id": "b2",
+      "seconds": 16.766666666666666
+    },
+    {
+      "path": "E:\\manimagent\\testresult\\memory-visual-20261111\\fixed-scene-control\\original\\s5\\frame_002.png",
+      "scene_id": "s5",
+      "beat_id": "b3",
+      "seconds": 32.5
+    },
+    {
+      "path": "E:\\manimagent\\testresult\\memory-visual-20261111\\fixed-scene-control\\original\\s5\\frame_003.png",
+      "scene_id": "s5",
+      "beat_id": "b4",
+      "seconds": 47.3
+    },
+    {
+      "path": "E:\\manimagent\\testresult\\memory-visual-20261111\\fixed-scene-control\\original\\s5\\frame_004.png",
+      "scene_id": "s5",
+      "beat_id": "b5",
+      "seconds": 63.5
+    }
+  ],
+  "contact_sheets": [
+    "E:\\manimagent\\testresult\\memory-visual-20261111\\fixed-scene-control\\original\\visual_review\\contact_sheet_01.png"
+  ],
+  "limits": [
+    "Layout checks emit geometry only; all PNGs here come from decoded actual videos.",
+    "No semantic or complete visual pass is claimed without viewing the frames.",
+    "Object-label collisions and in-animation transients lack exported per-object bounds.",
+    "Formula, caption, content and matrix-cell boxes are checked where recorded."
+  ]
+}

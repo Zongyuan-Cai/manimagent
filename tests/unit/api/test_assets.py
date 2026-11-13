@@ -15,7 +15,6 @@ from manimagent.config import Settings
         "results.js",
         "settings.js",
         "memory.js",
-        "memory-learning.js",
         "memory-files.js",
         "tts-settings.js",
         "onboarding.js",

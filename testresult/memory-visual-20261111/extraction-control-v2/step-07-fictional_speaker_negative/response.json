@@ -1,0 +1,17 @@
+{
+  "status_code": 200,
+  "body": {
+    "entries": [],
+    "warnings": [],
+    "usage": {
+      "model_calls": 1,
+      "input_tokens": 706,
+      "output_tokens": 6,
+      "tokens_reported": true,
+      "elapsed_seconds": 0.891,
+      "cached_input_tokens": 512,
+      "cache_reported_calls": 1,
+      "cache_accounted_input_tokens": 706
+    }
+  }
+}
