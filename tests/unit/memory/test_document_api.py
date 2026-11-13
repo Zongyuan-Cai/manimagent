@@ -14,7 +14,7 @@ def edit_value(content, before, after):
     return prefix + "## 记忆内容" + body.replace(before, after, 1)
 
 
-def test_document_routes_export_safe_download_and_import_a_versioned_correction(tmp_path):
+def test_document_routes_export_safe_download_and_reject_import(tmp_path):
     app = create_app(Settings(runs_dir=tmp_path))
     memory = app.state.job_manager.memory
     original = observe(memory)
@@ -37,20 +37,12 @@ def test_document_routes_export_safe_download_and_import_a_versioned_correction(
         assert download.headers["cache-control"] == "no-store"
         edited = edit_value(current["content"], original.value, "先解释符号")
         result = client.post(url + "/import", json={"content": edited})
-        assert result.status_code == 200, result.text
-        corrected = result.json()
-        assert corrected["value"] == "先解释符号"
-        assert corrected["memory_id"] != original.memory_id
-        assert corrected["layer"] == original.layer
-        assert corrected["expires_at"] == original.expires_at
-        assert corrected["independent_sessions"] == 1
-        assert memory.revision() == 1
-        replay = client.post(url + "/import", json={"content": edited})
-        assert replay.status_code in {404, 409}, replay.text
-        assert memory.revision() == 1
+        assert result.status_code == 409, result.text
+        assert result.json()["error"]["code"] == "memory_document_read_only"
+        assert memory.list_entries()[0].value == original.value
 
 
-def test_document_disk_edits_require_explicit_import_and_survive_sync(tmp_path):
+def test_document_disk_edits_survive_sync_without_learning(tmp_path):
     app = create_app(Settings(runs_dir=tmp_path))
     memory = app.state.job_manager.memory
     original = observe(memory)
@@ -72,8 +64,8 @@ def test_document_disk_edits_require_explicit_import_and_survive_sync(tmp_path):
         assert path.read_text(encoding="utf-8") == edited
         assert memory.list_entries()[0].value == original.value
         result = client.post(f"/api/v2/memory/documents/{original.memory_id}/import", json={})
-        assert result.status_code == 200, result.text
-        assert result.json()["value"] == "先解释图例"
+        assert result.status_code == 409, result.text
+        assert memory.list_entries()[0].value == original.value
 
 
 def test_stale_or_forged_markdown_cannot_overwrite_an_updated_memory(tmp_path):
@@ -83,10 +75,11 @@ def test_stale_or_forged_markdown_cannot_overwrite_an_updated_memory(tmp_path):
     with TestClient(app) as client:
         url = f"/api/v2/memory/documents/{original.memory_id}"
         content = client.get(url).json()["content"]
+        initial_revision = memory.revision()
         forged = content.replace("short_term", "deep", 1)
         invalid = client.post(url + "/import", json={"content": forged})
         assert invalid.status_code in {409, 422}, invalid.text
-        assert memory.revision() == 0
+        assert memory.revision() == initial_revision
         confirmed = client.post(f"/api/v2/memory/{original.memory_id}/confirm", json={})
         assert confirmed.status_code == 200
         stale = client.post(

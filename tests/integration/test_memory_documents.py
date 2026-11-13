@@ -14,9 +14,9 @@ def test_saved_file_and_api_follow_actual_answer_and_video_contexts(tmp_path):
     settings, captured = config(tmp_path), []
     app = create_app(settings, memory_provider(settings, captured), TemplateRenderer())
     manager = app.state.job_manager
-    visual = observe(manager.memory, value="蓝色", field="visual.palette")
+    visual = observe(manager.memory, value="blue_gold", field="visual.palette")
     manager.memory.confirm(visual.memory_id)
-    observe(manager.memory, source="detail", value="详细", field="explanation.detail")
+    observe(manager.memory, source="detail", value="detailed", field="explanation.detail")
     with TestClient(app) as client:
         job, _, answer = generate(client, memory={"session_id": "new", "learn": False}, mode="both")
         endpoint = f"/api/v2/jobs/{job['job_id']}/memory-context"
@@ -30,7 +30,7 @@ def test_saved_file_and_api_follow_actual_answer_and_video_contexts(tmp_path):
         for call, traced in zip(context["calls"], requests, strict=True):
             payload = json.loads(traced["request"]["messages"][1]["content"])
             assert call["projection"] == {
-                key: payload[key] for key in ("user_memory", "recent_user_memory") if key in payload
+                key: payload[key] for key in ("teaching_spec", "visual_spec") if key in payload
             }
         writer = next(call for call in context["calls"] if call["role"] == "answer_writer")
         scene = next(call for call in context["calls"] if call["role"] == "scene_generator")
@@ -80,12 +80,12 @@ def test_acceptance_and_shutdown_audits_do_not_claim_calls_that_never_started(tm
     assert "interrupted" in path.read_text(encoding="utf-8")
 
 
-def test_execution_does_not_fill_a_missing_historical_snapshot_from_current_memory(tmp_path):
+def test_missing_new_snapshot_fails_without_substituting_current_memory(tmp_path):
     settings, captured = config(tmp_path), []
     manager = create_app(
         settings, memory_provider(settings, captured), TemplateRenderer()
     ).state.job_manager
-    observe(manager.memory, value="详细讲解", field="explanation.detail")
+    observe(manager.memory, value="detailed", field="explanation.detail")
     job = manager.submit(
         "generation",
         TextGenerationRequest(
@@ -101,8 +101,8 @@ def test_execution_does_not_fill_a_missing_historical_snapshot_from_current_memo
     assert record.pop("memory_snapshot")["entries"]
     manager.store.save("records", job.job_id, record)
     finished = manager.execute(job.job_id)
-    assert finished.status == "completed"
-    assert captured and all("user_memory" not in payload for _, payload in captured)
+    assert finished.status == "failed"
+    assert all("user_memory" not in payload for _, payload in captured)
     audit = memory_context(manager.store.load_record(job.job_id), status=finished.status)
     assert audit["snapshot_state"] == "unknown"
     assert audit["memory_snapshot"] is None
@@ -116,6 +116,10 @@ def test_video_from_legacy_answer_preserves_unknown_memory_snapshot_state(tmp_pa
         _, _, answer = generate(client)
         answer_id = answer["answer_id"]
         answer.pop("memory_snapshot", None)
+        answer.pop("effective_profile", None)
+        answer.pop("request_intent", None)
+        answer.pop("document", None)
+        answer.pop("verification", None)
         manager.store.save("answers", answer_id, answer)
         response = client.post(
             "/api/v2/videos",

@@ -18,12 +18,11 @@ from pathlib import Path
 
 from dotenv import dotenv_values
 
-from evals.support import save
+from evals.support import legacy_model_memory, save
 from manimagent.budget import Budget, BudgetExceeded
 from manimagent.config import ModelConfig, Settings, load_settings
 from manimagent.llm.client import ChatProvider, ProviderError
 from manimagent.llm.settings import LLMSettingsStore
-from manimagent.memory.projection import user_context
 from manimagent.schemas import Usage
 
 SYSTEM = (
@@ -130,9 +129,15 @@ def payload_for(variant: str, shared: dict, item: dict) -> dict:
         return {"instruction": item["instruction"], **shared, "user_memory": item["snapshot"]}
     if variant != "stable_prefix":
         raise ValueError("Unknown comparison variant")
-    return user_context(
-        shared, role="answer_writer", snapshot=item["snapshot"], instruction=item["instruction"]
-    )
+    # Preserve this historical experiment's input contract independently of the
+    # production compiler, which now accepts only typed effective parameters.
+    memory = legacy_model_memory(item["snapshot"], "answer_writer")
+    return {
+        "user_memory": {"deep": memory["deep"]},
+        **shared,
+        "recent_user_memory": memory["recent"],
+        "instruction": item["instruction"],
+    }
 
 
 def solution_matches(response: str | None, expected: int) -> bool | None:
@@ -161,7 +166,8 @@ def render_report(result: dict) -> str:
             "",
             "50 条程序构造的一次方程教学材料，每条包含准确解及代回验算，无无关填充。"
             "两方案采用同一 system、材料/ref ID、稳定偏好，交错各调用 3 次；每轮提问不同练习。"
-            "旧方案把 instruction 放在前、完整审计 snapshot 放在末；当前方案直接调用 user_context。",
+            "旧方案把 instruction 放在前、完整审计 snapshot 放在末；稳定前缀方案使用历史记忆投影。"
+            "本脚本保留重写前的实验协议，不代表当前 EffectiveProfile 流水线。",
             "",
             "上限：6 次调用、384 输出 token/次、40 秒/次、240 秒总期限；thinking disabled，禁止重试。"
             "供应商缓存状态无法清空或控制：第 1 轮只是首次尝试，第 2–3 轮只是复用尝试，不预先认定冷/热命中。",
@@ -305,9 +311,10 @@ def run(settings: Settings, resolver: Callable[[str], str | None], output: Path,
         }
     paths = [
         Path(__file__),
+        Path(__file__).with_name("support.py"),
         *[
             Path(__file__).parents[1] / "src/manimagent" / name
-            for name in ("llm/client.py", "llm/usage.py", "memory/projection.py")
+            for name in ("llm/client.py", "llm/usage.py")
         ],
     ]
     result["source_sha256"] = {

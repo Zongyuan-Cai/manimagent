@@ -61,11 +61,32 @@ def provider(settings, calls, *, uncertain=False):
             )
         else:
             payload = json.loads(body["messages"][1]["content"])
-            if "candidate_markdown" in payload:
+            if "user_text" in payload:
+                result = json.dumps(
+                    {
+                        "intent": {"overrides": [], "exclude_memory": [], "issues": []},
+                        "proposals": [],
+                    }
+                )
+            elif "candidate_document" in payload:
                 result = json.dumps({"decision": "pass", "message": "通过"})
             else:
                 ref = payload["allowed_source_refs"][0]
-                result = f"# 解答\n\nx+3=5。[[{ref['material_id']}:{ref['block_id']}]]"
+                result = json.dumps(
+                    {
+                        "title": "解答",
+                        "units": [
+                            {
+                                "unit_id": "u001",
+                                "title": "计算",
+                                "content": "x+3=5。",
+                                "source_refs": [ref],
+                                "depends_on": [],
+                                "required": True,
+                            }
+                        ],
+                    }
+                )
         return httpx.Response(
             200,
             json={
@@ -122,7 +143,7 @@ def test_image_to_answer_retains_unverified_source_and_does_not_log_image_payloa
         serialized = json.dumps(record)
         assert "data:image/" not in serialized
         assert '"redacted": true' in serialized
-        assert len(calls) == 3
+        assert len(calls) == 4
 
 
 @pytest.mark.parametrize(
@@ -139,7 +160,9 @@ def test_missing_vision_or_uncertain_reading_does_not_invent_an_answer(
         assert job["status"] == ("needs_review" if vision else "needs_input"), job
         assert job["error"]["code"] == expected
         assert job["error"]["details"]["filename"] == f"题目.{kind}"
-        assert len(calls) == int(vision)
+        assert len(calls) == 1 + int(vision)
+        assert "user_text" in json.loads(calls[0]["messages"][1]["content"])
+        assert all(call["model"] == "reader" for call in calls[1:])
         generation = client.get(f"/api/v2/generations/{job['resource_ref']['id']}").json()
         assert generation["answer_id"] is None
 

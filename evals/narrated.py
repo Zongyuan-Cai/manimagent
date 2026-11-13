@@ -20,11 +20,10 @@ from pathlib import Path
 from fastapi.testclient import TestClient
 
 from evals.cases.video import QUESTION
-from evals.support import save, source_hash
+from evals.support import legacy_model_memory, save, source_hash
 from manimagent.api import create_app
 from manimagent.config import load_settings
 from manimagent.llm.settings import LLMSettingsStore
-from manimagent.memory.projection import model_memory
 from manimagent.video.renderer.media import probe
 from manimagent.video.settings import TTSSettingsStore
 
@@ -72,8 +71,18 @@ def memory_context_roles(record: dict, snapshot: dict) -> list[str]:
         if not isinstance(content, str):
             continue
         payload = json.loads(content)
+        if record.get("effective_profile") is not None:
+            from manimagent.memory.projection import user_context
+
+            expected = user_context(
+                {}, role=call["role"], effective_profile=record["effective_profile"]
+            )
+            if expected:
+                assert all(payload.get(key) == value for key, value in expected.items())
+                roles.append(call["role"])
+            continue
         if "user_memory" in payload:
-            projection = model_memory(snapshot, call["role"])
+            projection = legacy_model_memory(snapshot, call["role"])
             assert payload["user_memory"] == {"deep": projection["deep"]}
             assert payload["recent_user_memory"] == projection["recent"]
             roles.append(call["role"])
@@ -245,7 +254,7 @@ def run(client, settings, args, root, result):
             result["memory"] = {
                 "entry_count": len(snapshot["entries"]),
                 "consistent_snapshot": True,
-                "roles_using_snapshot": sorted(set(roles)),
+                "roles_using_profile": sorted(set(roles)),
                 "learning_calls": (learning.get("usage") or {}).get("model_calls"),
                 "learning_state": learning["state"],
                 "learning_usage_is_separate": True,

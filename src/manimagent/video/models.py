@@ -8,11 +8,13 @@ from typing import Annotated, Literal
 
 from pydantic import Field, StringConstraints, field_validator, model_validator
 
-from manimagent.schemas import Contract, ResourceID, now
+from manimagent.personalization import VisualSpec
+from manimagent.schemas import Contract, ResourceID, SourceRef, now
+from manimagent.video.capabilities import CAPABILITY_VERSION, geometry_points, polynomial_bounds
 from manimagent.video.notation import normalize_formula
 
-PROMPT_VERSION = "memory-projected-templates-21"
-TEMPLATE_VERSION = "native-manim-6"
+PROMPT_VERSION = "typed-visual-22"
+TEMPLATE_VERSION = "native-manim-7"
 SmallText = Annotated[str, StringConstraints(min_length=1, max_length=120)]
 LocalID = Annotated[str, StringConstraints(pattern=r"^[A-Za-z][A-Za-z0-9_]{0,39}$")]
 Coordinate = Annotated[float, Field(ge=-20, le=20, allow_inf_nan=False)]
@@ -45,6 +47,10 @@ class TeachingUnit(Contract):
     end: int = Field(gt=0)
     text: str
     sha256: str
+    title: str = "教学单元"
+    source_refs: tuple[SourceRef, ...] = ()
+    depends_on: tuple[str, ...] = ()
+    required: bool = True
 
 
 class SceneOutline(Contract):
@@ -85,28 +91,81 @@ class VideoOutline(Contract):
 
 class GraphicObject(Contract):
     object_id: LocalID
-    kind: Literal["vector", "point", "segment", "dashed", "polygon", "circle"]
-    points: list[Point] = Field(min_length=1, max_length=8)
+    kind: Literal[
+        "vector",
+        "point",
+        "samples",
+        "segment",
+        "dashed",
+        "polygon",
+        "circle",
+        "function",
+        "secant",
+        "tangent",
+    ]
+    points: list[Point] = Field(default_factory=list, max_length=64)
     label: Annotated[str, StringConstraints(max_length=18)] | None = None
-    color: Literal["blue", "gold", "teal", "red", "white", "muted"] = "blue"
+    color: Literal["primary", "accent", "secondary", "warning", "text", "muted"] = "primary"
     radius: float = Field(default=0.2, gt=0, le=10, allow_inf_nan=False)
+    coefficients: list[Annotated[float, Field(ge=-100, le=100, allow_inf_nan=False)]] = Field(
+        default_factory=list,
+        max_length=5,
+        description="Polynomial coefficients in increasing power order, e.g. [0,0,1] means x squared; only used by function/secant/tangent.",
+    )
+    domain: tuple[Coordinate, Coordinate] | None = None
+    at: Coordinate | None = None
+    through: Coordinate | None = None
 
     @model_validator(mode="after")
     def valid_shape(self):
         count = len(self.points)
+        if self.kind in {"function", "secant", "tangent"}:
+            if (
+                self.points
+                or not self.coefficients
+                or self.domain is None
+                or self.domain[0] >= self.domain[1]
+            ):
+                raise ValueError("函数/割线/切线需要多项式系数和递增定义域，不接受手填采样点")
+            if self.kind == "function":
+                if self.at is not None or self.through is not None:
+                    raise ValueError("函数图像不能带割线/切线锚点")
+            else:
+                if self.at is None or not self.domain[0] <= self.at <= self.domain[1]:
+                    raise ValueError("割线/切线锚点必须位于定义域内")
+                if self.kind == "secant":
+                    if (
+                        self.through is None
+                        or not self.domain[0] <= self.through <= self.domain[1]
+                        or abs(self.at - self.through) < 1e-5
+                    ):
+                        raise ValueError("割线需要定义域内两个不同横坐标")
+                elif self.through is not None:
+                    raise ValueError("切线不接受第二个割线锚点")
+            return self
+        if (
+            self.coefficients
+            or self.domain is not None
+            or self.at is not None
+            or self.through is not None
+        ):
+            raise ValueError("普通几何对象不能附带函数参数")
         if self.kind in {"vector", "segment", "dashed"}:
             if count != 2 or math.dist(*self.points) < 1e-5:
                 raise ValueError("线段和向量需要两个不同的点")
         elif self.kind == "polygon":
-            if count < 3:
-                raise ValueError("多边形至少三个点")
+            if not 3 <= count <= 8:
+                raise ValueError("多边形需要3到8个点")
+        elif self.kind == "samples":
+            if not 1 <= count <= 64:
+                raise ValueError("离散采样需要1到64个点，不连接")
         elif count != 1:
             raise ValueError("点和圆需要一个中心点")
         return self
 
 
 class Diagram(Contract):
-    kind: Literal["plane", "matrix", "none"] = "none"
+    kind: Literal["plane", "numberline", "matrix", "none"] = "none"
     x_range: tuple[Coordinate, Coordinate] = (-1, 5)
     y_range: tuple[Coordinate, Coordinate] = (-1, 4)
     objects: list[GraphicObject] = Field(default_factory=list, max_length=10)
@@ -132,16 +191,34 @@ class Diagram(Contract):
                 raise ValueError("矩阵超出模板限制")
             if self.objects:
                 raise ValueError("矩阵模板不能混入坐标图")
-        if self.kind == "plane":
+        if self.kind in {"plane", "numberline"}:
             if self.matrix:
                 raise ValueError("坐标图不能附带矩阵")
             for obj in self.objects:
-                for x, y in obj.points:
+                if self.kind == "numberline" and (
+                    obj.kind not in {"point", "samples", "segment", "dashed", "vector"}
+                    or any(y != 0 for _, y in obj.points)
+                ):
+                    raise ValueError("数轴仅接受纵坐标为零的点、采样、线段或向量")
+                for x, y in geometry_points(obj):
                     if (
                         not self.x_range[0] <= x <= self.x_range[1]
                         or not self.y_range[0] <= y <= self.y_range[1]
                     ):
                         raise ValueError("对象坐标超出坐标范围")
+                if obj.kind == "function":
+                    low, high = polynomial_bounds(obj.coefficients, obj.domain)
+                    if low < self.y_range[0] or high > self.y_range[1]:
+                        raise ValueError("函数内部极值超出坐标范围，不能裁切后冒充完整图像")
+                if obj.kind == "circle":
+                    x, y = obj.points[0]
+                    if (
+                        x - obj.radius < self.x_range[0]
+                        or x + obj.radius > self.x_range[1]
+                        or y - obj.radius < self.y_range[0]
+                        or y + obj.radius > self.y_range[1]
+                    ):
+                        raise ValueError("圆的边界超出坐标范围")
         return self
 
 
@@ -225,6 +302,8 @@ class ResolvedBeat(BeatDraft):
 class PlannedScene(SceneOutline):
     beats: list[ResolvedBeat]
     duration_seconds: float
+    visual_spec: VisualSpec = Field(default_factory=VisualSpec)
+    capability_version: Literal[CAPABILITY_VERSION] = CAPABILITY_VERSION
 
 
 class VideoPlan(Contract):
@@ -242,6 +321,8 @@ class VideoPlan(Contract):
     teaching_units: list[TeachingUnit]
     scenes: list[PlannedScene]
     duration_seconds: float
+    visual_spec: VisualSpec = Field(default_factory=VisualSpec)
+    capability_version: Literal[CAPABILITY_VERSION] = CAPABILITY_VERSION
 
 
 class UnitCheck(Contract):

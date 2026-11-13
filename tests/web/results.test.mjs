@@ -5,6 +5,20 @@ import {browser, response, aid, bid, jid} from './helpers.mjs';
 const nodes = node => [node, ...node.children?.flatMap(nodes) || []];
 const answer = (id, snapshot) => ({answer_id: id, markdown: 'body ' + id, warnings: [], material_ids: [], memory_snapshot: snapshot});
 
+test('generation failures display independent memory enqueue failures and saved outcomes', async () => {
+  for (const [state, text] of [['failed', /偏好尚未保存.*重试/], ['completed', /偏好保存任务已完成/], ['unknown', /暂不可确认/]]) {
+    const b = browser({storage: {'manimagent.textJob': jid}, job: {kind: 'generation', status: 'failed', message: '正文失败', result: null, answer_id: null, memory_save: {state}}});
+    await b.ready;
+    assert.equal(b.workspace.state.status, 'failed');
+    assert.equal(b.element('message').textContent, '正文失败');
+    assert.equal(b.element('job-memory-save').hidden, false);
+    assert.match(b.element('job-memory-save').textContent, text);
+    b.window.location.search = '?answer_id=' + aid;
+    await b.workspace.restore();
+    assert.equal(b.element('job-memory-save').hidden, true);
+  }
+});
+
 test('answer memory displays its immutable snapshot as text, never reading the current memory library', async () => {
   const hostile = '<img src=x onerror=alert(1)>';
   const snapshot = {entries: [{field: 'visual.preference', value: hostile, layer: 'deep', scope: 'global'}]};

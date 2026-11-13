@@ -5,9 +5,9 @@ from contextlib import nullcontext
 import pytest
 
 from evals.narrated import isolated_settings, memory_context_roles
+from evals.support import legacy_model_memory
 from manimagent.config import ModelConfig, Settings, TTSConfig
 from manimagent.llm.settings import LLMSettingsStore
-from manimagent.memory.projection import user_context
 from manimagent.video.settings import TTSDraft, TTSSettingsStore, TTSSettingsUpdate
 
 
@@ -70,7 +70,7 @@ def trace(role, content):
     }
 
 
-def test_memory_audit_skips_multimodal_reader_and_checks_every_personalized_role():
+def test_legacy_memory_audit_skips_multimodal_reader_and_checks_every_personalized_role():
     snapshot = {
         "captured_at": "audit-only",
         "entries": [
@@ -102,12 +102,20 @@ def test_memory_audit_skips_multimodal_reader_and_checks_every_personalized_role
         "scene_generator",
         "plan_checker",
     ]
-    calls.extend(
-        trace(
-            role, json.dumps(user_context({}, role=role, snapshot=snapshot, instruction="本次要求"))
+    for role in expected:
+        memory = legacy_model_memory(snapshot, role)
+        calls.append(
+            trace(
+                role,
+                json.dumps(
+                    {
+                        "user_memory": {"deep": memory["deep"]},
+                        "recent_user_memory": memory["recent"],
+                        "instruction": "本次要求",
+                    }
+                ),
+            )
         )
-        for role in expected
-    )
     assert memory_context_roles({"calls": calls}, snapshot) == expected
     # Ignoring unrelated image traces must not hide a mismatched memory projection.
     broken = trace("answer_writer", json.dumps({"user_memory": snapshot, "recent_user_memory": []}))

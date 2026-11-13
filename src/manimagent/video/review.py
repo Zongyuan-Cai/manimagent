@@ -7,11 +7,12 @@ from dataclasses import dataclass
 
 from manimagent.answers.context import ContextAssembler
 from manimagent.answers.prompts import CHECK_INSTRUCTION
-from manimagent.answers.service import checker_profile_hash
+from manimagent.answers.service import checker_profile_hash, derive_answer
 from manimagent.errors import ContentError
 from manimagent.memory.projection import user_context
-from manimagent.schemas import AnswerCheck
+from manimagent.schemas import AnswerCheck, AnswerDocument, AnswerUnit, VerifiedAnswer
 from manimagent.storage import read_json_bytes
+from manimagent.teaching import artifact_digest, document_steps, render_document, validate_sources
 from manimagent.video.models import PlanCheck, digest
 from manimagent.video.prompts import PLAN_PROMPT
 
@@ -39,25 +40,68 @@ class VideoReviewer:
     def require_content_check(self, answer, budget, record):
         policy = digest(CHECK_INSTRUCTION)
         profile = checker_profile_hash(self.provider)
+        sources = ContextAssembler(self.store, self.settings).build_bundle(answer.material_ids)
+        document = answer.document
+        if document is None:
+            # Preserve exact user Markdown as an explicit legacy artifact. No heuristic
+            # segmentation can invent the dependencies of a manually revised answer.
+            legacy = derive_answer(
+                answer.markdown,
+                answer.material_ids,
+                answer.instruction,
+                sources.model_dump(mode="json"),
+            )
+            document = AnswerDocument(
+                origin="legacy_markdown",
+                title=answer.title,
+                units=(
+                    AnswerUnit(
+                        unit_id="legacy_document",
+                        title=answer.title,
+                        content=answer.markdown,
+                        source_refs=tuple(legacy.steps[0].source_refs),
+                        depends_on=(),
+                        required=True,
+                    ),
+                ),
+            )
+        validate_sources(document, sources)
+        if render_document(document) != answer.markdown:
+            raise ContentError(
+                "content_uncertain",
+                "教学文档与保存的正文不一致，请重新生成或显式修订",
+                state="needs_review",
+            )
+        document_hash, source_hash = artifact_digest(document), artifact_digest(sources)
+        record["video_source_bundle"] = sources.model_dump(mode="json")
         receipt_path = self.store.path("answer_checks", answer.answer_id)
         if receipt_path.exists():
-            receipt = json.loads(read_json_bytes(receipt_path))
-            if (
-                receipt.get("answer_hash") == digest(answer.markdown)
-                and receipt.get("policy_hash") == policy
-                and receipt.get("checker_profile_hash") == profile
-                and receipt.get("decision") == "pass"
-            ):
-                record["video_content_check"] = {"reused": True, **receipt}
-                return
-        bundle = ContextAssembler(self.store, self.settings).build(answer.material_ids)
+            saved = json.loads(read_json_bytes(receipt_path))
+            if "verification" in saved:
+                receipt = VerifiedAnswer.model_validate(saved["verification"])
+                checked_document = AnswerDocument.model_validate(saved["document"])
+                if (
+                    receipt.answer_id == answer.answer_id
+                    and receipt.document_digest == document_hash
+                    and artifact_digest(checked_document) == document_hash
+                    and receipt.source_digest == source_hash
+                    and receipt.policy_hash == policy
+                ):
+                    answer.document, answer.verification = document, receipt
+                    answer.steps = document_steps(document)
+                    record["video_content_check"] = {
+                        "reused": True,
+                        **receipt.model_dump(mode="json"),
+                    }
+                    return receipt
         payload = user_context(
-            bundle,
+            sources.model_dump(mode="json"),
             role="answer_checker",
-            snapshot=answer.memory_snapshot,
             instruction=answer.instruction,
-            candidate_markdown=answer.markdown,
+            candidate_document=document.model_dump(mode="json"),
         )
+        record["video_content_check_input"] = payload
+        self.store.save("records", record["job_id"], record)
         check = self.call(
             "answer_checker",
             CHECK_INSTRUCTION,
@@ -66,19 +110,28 @@ class VideoReviewer:
             budget,
         )
         record["video_content_check"] = {"reused": False, **check.model_dump()}
+        self.store.save("records", record["job_id"], record)
         if check.decision != "pass":
             raise ContentError("content_uncertain", check.message, state=check.decision)
+        receipt = VerifiedAnswer(
+            answer_id=answer.answer_id,
+            document_digest=document_hash,
+            source_digest=source_hash,
+            policy_hash=policy,
+            checker_profile_hash=profile,
+            report=check,
+        )
         self.store.save(
             "answer_checks",
             answer.answer_id,
             {
-                "answer_hash": digest(answer.markdown),
-                "policy_hash": policy,
-                "checker_profile_hash": profile,
-                "decision": "pass",
-                "report": check.model_dump(),
+                "document": document.model_dump(mode="json"),
+                "verification": receipt.model_dump(mode="json"),
             },
         )
+        answer.document, answer.verification = document, receipt
+        answer.steps = document_steps(document)
+        return receipt
 
     def check_plan(self, answer, plan, budget, record, repairs: RepairBudget):
         """Return the checked report and ordered scene IDs needing local revision."""
@@ -86,9 +139,13 @@ class VideoReviewer:
             "plan_checker",
             PLAN_PROMPT,
             user_context(
-                {"answer": answer.model_dump(include={"title", "markdown", "steps", "warnings"})},
+                {
+                    "answer": answer.model_dump(
+                        include={"title", "document", "verification", "warnings"}
+                    )
+                },
                 role="plan_checker",
-                snapshot=answer.memory_snapshot,
+                effective_profile=answer.effective_profile,
                 instruction=answer.instruction,
                 plan=plan.model_dump(exclude={"plan_id", "answer_id", "answer_hash"}),
             ),

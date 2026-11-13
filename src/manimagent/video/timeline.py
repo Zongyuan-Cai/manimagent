@@ -8,6 +8,7 @@ import re
 
 from manimagent.content_store import new_id
 from manimagent.errors import ContentError
+from manimagent.personalization import EffectiveProfile, VisualSpec
 from manimagent.video.models import PlannedScene, ResolvedBeat, SceneDraft, VideoPlan, digest
 
 
@@ -63,6 +64,13 @@ def resolve_scene(outline, draft: SceneDraft) -> PlannedScene:
 
 
 def build_plan(answer, outline, units, scenes):
+    visual_spec = (
+        EffectiveProfile.model_validate(answer.effective_profile).visual
+        if answer.effective_profile is not None
+        else VisualSpec()
+    )
+    if not scenes or any(scene.visual_spec != visual_spec for scene in scenes):
+        raise ContentError("invalid_plan", "场景必须使用同一冻结视觉参数", state="needs_review")
     duration = sum(s.duration_seconds for s in scenes)
     seen = set()
     for scene in scenes:
@@ -106,4 +114,5 @@ def build_plan(answer, outline, units, scenes):
         teaching_units=units,
         scenes=scenes,
         duration_seconds=duration,
+        visual_spec=visual_spec,
     )

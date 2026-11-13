@@ -141,8 +141,27 @@ def test_save_configuration_immediately_drives_generation_and_survives_restart(t
         assert request.headers["authorization"] == "Bearer test-only-secret"
         body = json.loads(request.content)
         payload = json.loads(body["messages"][1]["content"])
-        ref = payload["allowed_source_refs"][0]
-        text = f"# 回答\n\n结果为 3。[[{ref['material_id']}:{ref['block_id']}]]"
+        if "user_text" in payload:
+            output = {
+                "intent": {"overrides": [], "exclude_memory": [], "issues": []},
+                "proposals": [],
+            }
+        else:
+            ref = payload["allowed_source_refs"][0]
+            output = {
+                "title": "回答",
+                "units": [
+                    {
+                        "unit_id": "result",
+                        "title": "结果",
+                        "content": "结果为3。",
+                        "source_refs": [ref],
+                        "depends_on": [],
+                        "required": True,
+                    }
+                ],
+            }
+        text = json.dumps(output, ensure_ascii=False)
         return httpx.Response(
             200, json={"choices": [{"message": {"content": text}, "finish_reason": "stop"}]}
         )
@@ -171,7 +190,7 @@ def test_save_configuration_immediately_drives_generation_and_survives_restart(t
             ).json()["job_id"],
         )
         assert job["status"] == "completed", job
-        assert len(received) == 1
+        assert len(received) == 2
         for path in (tmp_path / "private" / "records").glob("*.json"):
             assert "test-only-secret" not in path.read_text(encoding="utf-8")
         raw_config = (tmp_path / "private" / "configuration" / "llm.json").read_text(

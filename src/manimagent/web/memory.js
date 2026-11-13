@@ -10,14 +10,12 @@ export function createMemory({dom, api, storage, sessionStorage, crypto, schedul
   const {el} = dom;
   const savedSession = get(sessionStorage, sessionKey);
   const savedLearning = get(storage, learningKey);
-  const state = {entries: [], buttons: [], inputs: [], policy: {}, learningTasks: null, busy: false, epoch: 0, pending: null,
+  const state = {entries: [], fields: [], buttons: [], inputs: [], policy: {}, learningTasks: null, busy: false, epoch: 0, pending: null,
     editing: new Map(), openDetails: new Set(), entriesDeferred: false, entrySignature: '', loading: 0, timer: null, polls: 0, failures: 0,
-    learning: savedLearning === null || savedLearning === undefined ? get(storage, enabledKey) === 'true' : savedLearning === 'true',
+    learning: savedLearning === 'true',
     sessionId: /^[A-Za-z0-9_-]{1,80}$/.test(savedSession || '') ? savedSession : crypto.randomUUID()};
   const learningView = createLearningView({dom, onAction: learningAction});
-  const files = createMemoryFiles({dom, api, importDocument: (id, content) => mutate(
-    () => api.post(`/api/v2/memory/documents/${encodeURIComponent(id)}/import`, content === undefined ? {} : {content}),
-    '已导入记忆文件，后续任务将使用更正后的内容。', null, true)});
+  const files = createMemoryFiles({dom, api});
   put(sessionStorage, sessionKey, state.sessionId);
   put(storage, learningKey, String(state.learning));
   el('memory-enabled').checked = get(storage, enabledKey) === 'true';
@@ -26,23 +24,25 @@ export function createMemory({dom, api, storage, sessionStorage, crypto, schedul
   function message(text) { el('memory-message').textContent = text; }
   function renderOptions() {
     const enabled = el('memory-enabled').checked;
-    el('memory-learn').disabled = !enabled;
-    el('memory-learn').checked = enabled && state.learning;
-    el('memory-mode').textContent = !enabled ? '本次不使用记忆。' : state.learning ? '使用已有记忆，完成后记住新偏好。' : '只使用已有记忆。';
+    el('memory-learn').disabled = false;
+    el('memory-learn').checked = state.learning;
+    el('memory-mode').textContent = enabled ? state.learning ? '使用已有记忆，并保存新的可复用偏好。' : '只使用已有记忆。' : state.learning ? '本次不读取已有记忆；新的偏好可保存供以后使用。' : '本次不读取或保存记忆，仍遵循当前要求。';
   }
   function enabledChanged() { put(storage, enabledKey, String(el('memory-enabled').checked)); renderOptions(); }
   function learningChanged() {
-    if (!el('memory-enabled').checked) return;
     state.learning = el('memory-learn').checked; put(storage, learningKey, String(state.learning)); renderOptions();
   }
-  function options() { return el('memory-enabled').checked ? {session_id: state.sessionId, scope: 'global', learn: state.learning} : null; }
+  function options() {
+    const read = el('memory-enabled').checked;
+    return read || state.learning ? {session_id: state.sessionId, scope: 'global', read, learn: state.learning} : null;
+  }
   function newSession() {
     if (state.busy) return;
     if (state.editing.size) { message('请先保存或取消正在编辑的记忆，再开始新会话。'); return; }
     state.sessionId = crypto.randomUUID(); state.pending = null;
     put(sessionStorage, sessionKey, state.sessionId);
     render();
-    message('已开始新会话。原会话的临时记忆不再沿用，有效期内的近期偏好与深层记忆继续保留。');
+    message('已开始新会话。已有的有效偏好继续保留；仅本次要求不会成为跨任务记忆。');
   }
   function setBusy(busy) {
     state.busy = busy;
@@ -70,31 +70,36 @@ export function createMemory({dom, api, storage, sessionStorage, crypto, schedul
     const present = new Set(state.entries.map(entry => entry.memory_id));
     for (const id of state.openDetails) if (!present.has(id)) state.openDetails.delete(id);
     const expired = entry => entry.expires_at && Date.parse(entry.expires_at) <= Date.now();
-    const active = state.entries.filter(entry => entry.state === 'active' && !expired(entry));
-    const deep = active.filter(entry => entry.layer === 'deep').length;
-    el('memory-state').textContent = active.length ? `近期 ${active.length - deep} · 长期 ${deep}` : '还没有记忆';
+    const active = state.entries.filter(entry => entry.state === 'active' && !expired(entry) && !entry.temporary && state.fields.some(field => field.field === entry.field && field.values.some(value => value.value === entry.value)));
+    const backgrounds = active.filter(entry => entry.field === 'profile.background').length;
+    const deep = active.filter(entry => entry.layer === 'deep' && entry.field !== 'profile.background').length;
+    el('memory-state').textContent = active.length ? `近期 ${active.length - deep - backgrounds} · 长期 ${deep}${backgrounds ? ` · 自述 ${backgrounds}` : ''}` : '还没有记忆';
     if (!state.entries.length) {
       const empty = dom.create('p'); empty.className = 'hint'; empty.textContent = '写下你的偏好或背景，或在生成时启用用户记忆。'; list.append(empty); return;
     }
     for (const entry of state.entries) {
       const card = dom.create('article'); card.className = 'memory-card';
       const heading = dom.create('div'); heading.className = 'memory-heading';
-      const title = dom.create('strong'); title.className = 'memory-card-title'; title.textContent = entry.value;
+      const definition = state.fields.find(field => field.field === entry.field);
+      const supported = definition?.values.some(option => option.value === entry.value);
+      const background = entry.field === 'profile.background';
+      const title = dom.create('strong'); title.className = 'memory-card-title';
+      title.textContent = definition?.values.find(option => option.value === entry.value)?.label || entry.value;
       const badge = dom.create('span'); badge.className = 'memory-badge';
-      badge.textContent = entry.state === 'superseded' ? '已被替代' : expired(entry) ? '已到期' : entry.temporary ? (entry.session_id === state.sessionId ? '本次会话' : '其他会话 · 临时') : entry.layer === 'deep' ? '长期' : '近期';
+      badge.textContent = entry.state === 'superseded' ? '已被替代' : expired(entry) ? '已到期' : entry.temporary || !supported ? '历史记录 · 不再应用' : background ? '自述背景' : entry.layer === 'deep' ? '长期' : '近期';
       heading.append(title, badge);
       const meta = dom.create('p'); meta.className = 'hint';
       const threshold = state.policy.promotion_sessions || 3;
-      meta.textContent = `${entry.confirmed_at ? '已由你确认' : entry.temporary ? '临时要求，只用于原会话，不自动晋升' : entry.layer === 'deep' ? `自动沉淀 · ${entry.independent_sessions ?? 0} 个独立会话支持` : `晋升进度：独立会话 ${entry.independent_sessions ?? 0}/${threshold}`}${entry.scope !== 'global' ? ` · 适用于 ${entry.scope}` : ''}`;
+      meta.textContent = `${background ? '自述记录，不代表能力或掌握度；重复表达不会自动晋升，确认后仍按有效期使用。' : entry.confirmed_at ? '已由你确认' : entry.temporary ? '历史临时要求，不再跨任务应用' : entry.layer === 'deep' ? `自动沉淀 · ${entry.independent_sessions ?? 0} 个独立会话支持` : `晋升进度：独立会话 ${entry.independent_sessions ?? 0}/${threshold}`}${entry.scope !== 'global' ? ` · 适用于 ${scopeLabel(entry.scope)}` : ''}`;
       const evidence = dom.create('details'); evidence.className = 'memory-evidence';
       evidence.open = state.openDetails.has(entry.memory_id);
       evidence.addEventListener('toggle', () => { if (evidence.open) state.openDetails.add(entry.memory_id); else state.openDetails.delete(entry.memory_id); });
       const summary = dom.create('summary'); summary.textContent = '详情与来源'; evidence.append(summary);
-      const field = dom.create('p'); field.textContent = `字段：${entry.field}`;
-      const scope = dom.create('p'); scope.textContent = `范围：${entry.scope || 'global'}`;
+      const field = dom.create('p'); field.textContent = `字段：${definition?.label || entry.field}`;
+      const scope = dom.create('p'); scope.textContent = `范围：${scopeLabel(entry.scope)}`;
       const identity = dom.create('p'); identity.textContent = `记录：${entry.memory_id}`;
       evidence.append(meta, field, scope, identity);
-      for (const [label, raw] of [['更新于', entry.updated_at], ['有效至', entry.expires_at]]) {
+      for (const [label, raw] of [[background ? '记录于' : '更新于', entry.updated_at], ['有效至', entry.expires_at]]) {
         if (!raw) continue;
         const date = new Date(raw), text = dom.create('p');
         text.textContent = `${label} ${Number.isNaN(date.getTime()) ? raw : date.toLocaleString()}`; evidence.append(text);
@@ -104,23 +109,24 @@ export function createMemory({dom, api, storage, sessionStorage, crypto, schedul
       }
       const actions = dom.create('div'); actions.className = 'button-row memory-actions';
       const path = `/api/v2/memory/${encodeURIComponent(entry.memory_id)}`;
-      const editable = entry.state === 'active' && !expired(entry);
+      const editable = entry.state === 'active' && !expired(entry) && supported && !entry.temporary;
       if (editable && entry.layer !== 'deep' && !entry.temporary) {
-        actions.append(button('确认沉淀', () => mutate(() => api.post(path + '/confirm', {}), '已确认，后续任务可使用这条深层记忆。', entry.memory_id)));
+        actions.append(button(background ? '确认此自述' : '确认沉淀', () => mutate(() => api.post(path + '/confirm', {}), background ? '已确认此自述，仍按记录的有效期使用。' : '已确认为长期默认，后续任务可使用这条偏好。', entry.memory_id)));
       }
       const editor = dom.create('form'); editor.className = 'memory-editor'; editor.hidden = true;
-      const label = dom.create('label'); label.textContent = '更正后的内容';
-      const input = dom.create('input'); input.value = entry.value; input.maxLength = 300; input.required = true;
+      const label = dom.create('label'); label.textContent = definition?.label || entry.field;
+      const input = dom.create('select'); input.required = true;
+      for (const value of definition?.values || []) {
+        const option = dom.create('option'); option.value = value.value; option.textContent = value.label; input.append(option);
+      }
+      input.value = entry.value;
       input.disabled = state.busy; state.inputs.push(input);
       input.setAttribute('aria-label', `更正 ${entry.field}`); label.append(input); editor.append(label);
       const explanation = dom.create('p'); explanation.className = 'hint'; editor.append(explanation);
       const save = button('保存更正', () => {}); save.type = 'submit';
-      let confirmLongTerm = false;
-      function openEditor(confirm = false) {
+      function openEditor() {
         state.editing.set(entry.memory_id, editor);
-        confirmLongTerm = confirm;
-        explanation.textContent = confirm ? '保存即确认这是一条长期偏好，将替代相同范围内的旧值，用于后续任务。' : entry.temporary ? '只更正这条临时记忆，仍限原会话使用，保留原到期时间。' : entry.layer === 'deep' ? '更正后仍为深层记忆，后续任务使用新值。' : '只更正这条短期记忆，保留原到期时间，不会自动沉淀为深层记忆。';
-        save.textContent = confirm ? '确认并保存为深层记忆' : '保存更正';
+        explanation.textContent = background ? '保存纠正后的自述，替代同范围旧记录；记录观察日期，按有效期使用。' : '保存即确认新的默认偏好，替代相同范围内的旧值，用于后续任务。';
         editor.hidden = false; input.focus();
       }
       const cancel = button('取消', () => closeEditor(entry.memory_id, editor));
@@ -128,12 +134,11 @@ export function createMemory({dom, api, storage, sessionStorage, crypto, schedul
       editor.addEventListener('submit', event => {
         event.preventDefault();
         const corrected = input.value.trim();
-        if (!corrected) { message('请填写更正后的内容。'); input.focus(); return; }
-        return mutate(() => api.request(path, {method: 'PATCH', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({value: corrected, confirm_long_term: confirmLongTerm})}), confirmLongTerm ? '已更正并确认为深层记忆，后续任务将使用新值。' : '已更正内容，记忆层级和有效期保持不变。', entry.memory_id);
+        if (!definition?.values.some(value => value.value === corrected)) { message('请选择受支持的偏好。'); input.focus(); return; }
+        return mutate(() => api.request(path, {method: 'PATCH', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({value: corrected, confirm_long_term: true})}), background ? '已更正自述，仍按记录的有效期使用。' : '已更正默认偏好，后续任务将使用新值。', entry.memory_id);
       });
       if (editable) {
         actions.append(button('纠正', () => openEditor()));
-        if (entry.temporary) actions.append(button('改为长期偏好', () => openEditor(true)));
       }
       actions.append(button('删除', () => mutate(() => api.request(path, {method: 'DELETE'}), '已删除，后续任务不再使用这条记忆。', entry.memory_id)));
       card.append(heading, actions, evidence); if (editable) card.append(editor); list.append(card);
@@ -163,9 +168,9 @@ export function createMemory({dom, api, storage, sessionStorage, crypto, schedul
     try {
       const data = await api.request('/api/v2/memory');
       if (epoch !== state.epoch) return false;
-      const signature = JSON.stringify([data.entries, data.policy || {}]);
+      const signature = JSON.stringify([data.entries, data.fields || [], data.policy || {}]);
       const changed = signature !== state.entrySignature;
-      state.entrySignature = signature; state.failures = 0; state.entries = data.entries; state.policy = data.policy || {};
+      state.entrySignature = signature; state.failures = 0; state.entries = data.entries; state.fields = data.fields || []; state.policy = data.policy || {};
       state.learningTasks = Array.isArray(data.learning?.tasks) ? data.learning : null;
       if (changed || !background) render();
       learningView.render(state.learningTasks); el('memory-learning-sync').textContent = hasPendingLearning(state.learningTasks) ? '正在自动刷新沉淀状态。' : '';
@@ -179,7 +184,7 @@ export function createMemory({dom, api, storage, sessionStorage, crypto, schedul
       return false;
     } finally { state.loading--; if (epoch === state.epoch) schedulePoll(); }
   }
-  async function mutate(action, success, closedEditorId = null, propagate = false) {
+  async function mutate(action, success, closedEditorId = null) {
     if (state.busy) return;
     setBusy(true); ++state.epoch; message('正在保存…');
     try {
@@ -188,7 +193,7 @@ export function createMemory({dom, api, storage, sessionStorage, crypto, schedul
       message(typeof success === 'function' ? success(result) : success);
       await load({preserveMessage: true});
       return result;
-    } catch (error) { message(error.message); if (propagate) throw error; }
+    } catch (error) { message(error.message); }
     finally { setBusy(false); schedulePoll(); }
   }
   async function observe(event) {
@@ -211,7 +216,15 @@ export function createMemory({dom, api, storage, sessionStorage, crypto, schedul
 }
 
 const pendingStates = new Set(['waiting', 'queued', 'running']);
-const labels = {waiting: '等待本次生成结束', queued: '待处理', running: '沉淀中', completed: '已完成', failed: '失败', skipped: '已跳过', cancelled: '已取消'};
+const labels = {waiting: '等待请求解释', queued: '待保存', running: '保存中', completed: '已完成', failed: '失败', skipped: '已跳过', cancelled: '已取消'};
+
+function scopeLabel(scope) {
+  if (scope === 'global') return '所有课程';
+  const parts = (scope || '').split('.');
+  if (parts[0] === 'course' && parts.length === 2) return `课程 ${parts[1]}`;
+  if (parts[0] === 'topic' && parts.length === 3) return `课程 ${parts[1]} · 主题 ${parts[2]}`;
+  return scope || '范围未知';
+}
 
 function hasPendingLearning(learning) {
   return !!learning && ([...pendingStates].some(name => learning.counts?.[name] > 0) || learning.tasks.some(task => pendingStates.has(task.state)));
@@ -244,9 +257,9 @@ function createLearningView({dom, onAction}) {
       const badge = dom.create('span'); badge.className = 'memory-badge'; badge.setAttribute('data-state', task.state);
       badge.textContent = labels[task.state] || '状态未知'; heading.append(title, badge);
       const result = dom.create('p'); result.className = 'hint';
-      result.textContent = task.state === 'failed' ? (['provider_auth_error', 'model_unavailable'].includes(task.error?.code) ? task.can_retry ? '请检查核心 API 配置后重试。' : '请检查核心 API 配置。' : task.can_retry ? '偏好尚未保存，可以重试。' : '偏好尚未保存，请查看详情。') : task.state === 'completed' ? (task.counts_known === false ? '请在记忆列表核对结果。' : task.entry_ids?.length ? `已更新 ${task.entry_ids.length} 条偏好。` : '没有需要保存的新偏好。') : '';
+      result.textContent = task.state === 'failed' ? (task.can_retry ? '偏好尚未保存，可以重试。' : '偏好尚未保存，请查看详情。') : task.state === 'completed' ? (task.counts_known === false ? '请在记忆列表核对结果。' : task.entry_ids?.length ? `已更新 ${task.entry_ids.length} 条偏好。` : '没有需要保存的新偏好。') : '';
       const outcome = dom.create('p');
-      outcome.textContent = task.state === 'completed' ? (task.entry_ids?.length ? `已处理 ${task.entry_ids.length} 条记忆，其中 ${task.promoted_ids?.length || 0} 条自动沉淀为深层。` : '未识别到可保存的新偏好。') : task.state === 'waiting' ? '等待本次生成结束，不会延迟本次结果。' : task.state === 'queued' ? '等待后台处理。' : task.state === 'running' ? '正在提取有原句依据的偏好。' : task.state === 'cancelled' ? '已取消此沉淀任务。' : task.state === 'skipped' ? '本次未进行沉淀。' : '本次沉淀未完成，已有记忆和生成结果仍可使用。';
+      outcome.textContent = task.state === 'completed' ? (task.entry_ids?.length ? `已处理 ${task.entry_ids.length} 条记忆，其中 ${task.promoted_ids?.length || 0} 条自动沉淀为深层。` : '没有需要保存的新偏好。') : task.state === 'waiting' ? '请求解释通过后保存合法偏好，不等待文字或视频生成。' : task.state === 'queued' ? '已验证候选，等待保存。' : task.state === 'running' ? '正在按原句证据更新偏好，后台不再次调用模型。' : task.state === 'cancelled' ? '已取消此保存任务。' : task.state === 'skipped' ? '本次未保存偏好。' : '偏好保存未完成；生成结果与保存状态分别报告。';
       if (task.state === 'completed' && task.counts_known === false) outcome.textContent = '沉淀已完成；本次新增或强化的统计未知，请核对记忆列表。';
       else if (task.state === 'completed' && task.counts_known && task.counts) outcome.textContent = `新增 ${task.counts.created} 条，强化 ${task.counts.reinforced} 条，自动沉淀为深层 ${task.counts.promoted} 条。`;
       const details = dom.create('details'); details.className = 'memory-evidence'; details.open = openDetails.has(task.job_id);
@@ -255,9 +268,7 @@ function createLearningView({dom, onAction}) {
       const identity = dom.create('p'); identity.textContent = `任务 ${task.job_id} · 已尝试 ${task.attempts ?? 0}/${task.max_attempts ?? 3} 次`;
       const timestamp = dom.create('p'), date = new Date(task.updated_at || task.created_at || '');
       timestamp.textContent = Number.isNaN(date.getTime()) ? '更新时间未知' : `更新于 ${date.toLocaleString()}`;
-      const usage = dom.create('p'), used = task.usage;
-      usage.textContent = !used || task.usage_unknown ? '后台提取用量：未知或不完整，不计入本次正文的用量展示。' : `后台提取用量：${used.model_calls ?? 0} 次调用${used.tokens_reported ? `，输入 ${used.input_tokens ?? 0} / 输出 ${used.output_tokens ?? 0} token` : '，token 用量未报告'}。与本次正文分开记账。`;
-      details.append(outcome, identity, timestamp, usage);
+      details.append(outcome, identity, timestamp);
       if (task.error?.message) { const error = dom.create('p'); error.className = task.state === 'failed' ? 'error-text' : 'hint'; error.textContent = task.error.message; details.append(error); }
       const actions = dom.create('div'); actions.className = 'button-row memory-actions';
       if (task.can_retry === true) actions.append(actionButton('重试沉淀', task, 'retry'));

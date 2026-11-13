@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 import queue
+import sqlite3
 import threading
 import time
 
@@ -76,8 +77,19 @@ class JobManager:
                 if job.status in {"queued", "running"}:
                     interrupt(self.store, job, "服务已重启，请重新提交；已保存结果仍可读取")
             self.learning.recover()
-            for job_id in self.learning.waiting_ids():
-                self.learning_worker.reconcile(job_id)
+            # Recover the crash window between the durable interpretation and
+            # queue insertion, without running the interpreter again.
+            from manimagent.personalization import Interpretation
+
+            for path in (self.store.root / "records").glob("*.json"):
+                record = self.store.load_record(path.stem)
+                if record.get("memory_save", {}).get("state") == "pending":
+                    interpretation = Interpretation.model_validate(record["interpretation"])
+                    self.enqueue_memory(record["job_id"], interpretation, record)
+                    self.store.save("records", record["job_id"], record)
+                    recovered_job = self.store.load("jobs", record["job_id"], Job)
+                    recovered_job.memory_save = dict(record["memory_save"])
+                    save_job(self.store, recovered_job)
             self.memory.cleanup()
             self.learning.cleanup()
             self.learning_thread.start()
@@ -169,6 +181,7 @@ class JobManager:
                     job.resource_ref = Ref(type="generation", id=generation.generation_id)
                     self.store.save("generations", generation.generation_id, generation)
                 record = {
+                    "pipeline_version": "fixed-2",
                     "job_id": job.job_id,
                     "request": request.model_dump(),
                     "settings": snapshot.model_dump(mode="json"),
@@ -179,25 +192,18 @@ class JobManager:
                 source = request.source if kind == "generation" else request
                 options = getattr(request, "memory", None) or getattr(source, "memory", None)
                 if options is not None:
-                    record["memory_snapshot"] = self.memory.snapshot(
-                        options.session_id, options.scope
+                    accepted = self.memory.accept(
+                        source_id=job.job_id,
+                        session_id=options.session_id,
+                        source_text=source.instruction,
+                        scope=options.scope,
+                        read=options.read,
                     )
-                    if options.learn:
-                        try:
-                            self.learning.enqueue(
-                                job.job_id,
-                                source.instruction,
-                                options,
-                                record["memory_snapshot"]["manual_revision"],
-                            )
-                        except ContentError as exc:
-                            record["memory_warnings"] = [
-                                {
-                                    "code": "memory_learning_not_queued",
-                                    "message": "本次后台记忆任务未排入，已有记忆仍可用于生成",
-                                    "reason": exc.error.code,
-                                }
-                            ]
+                    record["memory_snapshot"] = accepted["snapshot"]
+                    record["memory_acceptance"] = {
+                        "sequence": accepted["sequence"],
+                        "options": options.model_dump(),
+                    }
                 elif kind == "video" or (kind == "generation" and request.source.type == "answer"):
                     answer = self.store.load("answers", source.answer_id, Answer)
                     record["memory_snapshot"] = answer.memory_snapshot
@@ -210,10 +216,6 @@ class JobManager:
                     self.store.save("records", job.job_id, record)
                 self.queue.put_nowait(job.job_id)
             except Exception:
-                try:
-                    self.learning.cancel(job.job_id, "answer_not_published")
-                except Exception:
-                    log.warning("未能撤销未发布任务的记忆事件 %s", job.job_id)
                 try:
                     unpublished = [("jobs", job.job_id), ("records", job.job_id)]
                     if generation:
@@ -265,10 +267,6 @@ class JobManager:
                 except Exception:
                     log.exception("无法写入失败状态 %s", identifier)
             finally:
-                try:
-                    self.learning_worker.reconcile(identifier)
-                except Exception:
-                    log.exception("记忆任务状态暂未更新，将在恢复时重试 %s", identifier)
                 self.queue.task_done()
                 self.slots.release()
                 self.learning_worker.wake.set()
@@ -290,10 +288,6 @@ class JobManager:
                 # draining other jobs even if one record cannot be saved.
                 log.exception("关闭时无法保存中断状态 %s", identifier)
             finally:
-                try:
-                    self.learning_worker.reconcile(identifier)
-                except Exception:
-                    log.exception("关闭时无法更新记忆任务，将在恢复时重试 %s", identifier)
                 self.queue.task_done()
                 self.slots.release()
         if self.thread.is_alive():
@@ -307,7 +301,238 @@ class JobManager:
             transport=self.provider.transport if self.provider else None,
             credentials=self.llm_settings.credentials.resolve,
             renderer=self.renderer,
+            memory_sink=self.enqueue_memory,
         ).run()
+
+    def enqueue_memory(self, job_id, interpretation, record):
+        from manimagent.memory.models import MemoryOptions
+
+        accepted = record.get("memory_acceptance")
+        if accepted is None or not accepted["options"]["learn"]:
+            record["memory_save"] = {"state": "disabled"}
+            return
+        request = record["request"]
+        source = request.get("source", request)
+        try:
+            task = self.learning.enqueue(
+                job_id,
+                list(interpretation.proposals),
+                MemoryOptions.model_validate(accepted["options"]),
+                accepted["sequence"],
+                source["instruction"],
+            )
+            record["memory_save"] = {"state": task["state"], "job_id": job_id}
+            self.learning_worker.wake.set()
+        except Exception as exc:
+            # The validated interpretation is already durable and remains reviewable.
+            # A storage failure in this independent branch must not change answer quality.
+            log.exception("已验证的偏好候选未能排入提交队列 %s", job_id)
+            record["memory_save"] = {"state": "failed", "code": "memory_commit_unavailable"}
+            record["memory_warnings"] = [
+                {
+                    "code": "memory_commit_unavailable",
+                    "message": "偏好未保存，请检查记忆状态后重试",
+                    "reason": exc.error.code if isinstance(exc, ContentError) else "storage_error",
+                }
+            ]
+
+    def unqueued_memory_status(self, job_id, *, job=None):
+        """Expose a validated candidate whose independent queue insertion failed."""
+        job = job or self.store.load("jobs", job_id, Job)
+        record = self.store.load_record(job_id)
+        status = record.get("memory_save", {})
+        if status.get("state") not in {"failed", "pending"} or "interpretation" not in record:
+            raise ContentError("memory_learning_not_found", "没有可恢复的偏好保存任务", 404)
+        if record.get("pipeline_version") != "fixed-2" or not record.get(
+            "memory_acceptance", {}
+        ).get("options", {}).get("learn"):
+            raise ContentError("invalid_record", "偏好保存记录没有有效学习授权", 500)
+        source = record["request"].get("source", record["request"])
+        options = record["memory_acceptance"]["options"]
+        if self.memory.was_withdrawn(job_id):
+            return {
+                "job_id": job_id,
+                "state": "cancelled",
+                "attempts": 0,
+                "max_attempts": 3,
+                "entry_ids": [],
+                "promoted_ids": [],
+                "counts_known": False,
+                "can_cancel": False,
+                "can_retry": False,
+                "created_at": job.created_at,
+                "updated_at": job.updated_at,
+                "error": {
+                    "code": "memory_learning_cancelled",
+                    "message": "此来源已撤回或保存已取消",
+                },
+                "origin": "acceptance_withdrawal",
+            }
+        committed = self.memory.replay(
+            session_id=options["session_id"],
+            source_id=job_id,
+            source_text=source["instruction"],
+            scope=options["scope"],
+        )
+        if committed is not None:
+            return {
+                "job_id": job_id,
+                "state": "completed",
+                "attempts": 0,
+                "max_attempts": 3,
+                "entry_ids": [entry.memory_id for entry in committed],
+                "promoted_ids": [],
+                "counts_known": False,
+                "can_cancel": False,
+                "can_retry": False,
+                "created_at": job.created_at,
+                "updated_at": job.updated_at,
+                "error": None,
+                "origin": "source_receipt",
+            }
+        waiting = status["state"] == "pending" and job.status in {"queued", "running"}
+        return {
+            "job_id": job_id,
+            "state": "waiting" if waiting else "failed",
+            "attempts": 0,
+            "max_attempts": 3,
+            "entry_ids": [],
+            "promoted_ids": [],
+            "counts_known": False,
+            "can_cancel": False,
+            "can_retry": not waiting,
+            "created_at": job.created_at,
+            "updated_at": job.updated_at,
+            "error": None
+            if waiting
+            else {
+                "code": "memory_commit_unavailable",
+                "message": "偏好候选已验证但未进入保存队列，可以重试保存。",
+                "retryable": True,
+            },
+            "origin": "durable_interpretation",
+        }
+
+    def memory_save_status(self, job):
+        if job.memory_save is None or job.memory_save.get("state") == "disabled":
+            return job.memory_save
+        try:
+            return self.learning.get(job.job_id)
+        except ContentError as exc:
+            if exc.error.code != "memory_learning_not_found":
+                raise
+            try:
+                return self.unqueued_memory_status(job.job_id, job=job)
+            except ContentError as missing:
+                if missing.error.code != "memory_learning_not_found":
+                    raise
+                return {
+                    "job_id": job.job_id,
+                    "state": "unknown",
+                    "can_retry": False,
+                    "error": {
+                        "code": "memory_history_cleared",
+                        "message": "保存任务历史已清理，当前结果请在记忆列表核对。",
+                    },
+                }
+        except (sqlite3.Error, OSError):
+            # The generation remains readable while the independent memory database
+            # is unavailable. Do not turn an unknown commit outcome into success.
+            return {
+                "job_id": job.job_id,
+                "state": "unknown",
+                "can_retry": False,
+                "error": {
+                    "code": "memory_status_unavailable",
+                    "message": "偏好保存状态暂不可用，请稍后刷新。",
+                },
+            }
+
+    def memory_learning_status(self, job_id):
+        try:
+            return self.learning.get(job_id)
+        except ContentError as exc:
+            if (
+                exc.error.code != "memory_learning_not_found"
+                or not self.store.path("records", job_id).exists()
+            ):
+                raise
+            return self.unqueued_memory_status(job_id)
+
+    def memory_learning_list(self):
+        from manimagent.memory.learning import MAX_HISTORY
+
+        result = self.learning.list()
+        known = {task["job_id"] for task in result["tasks"]}
+        # Only bounded recent job bodies are read; return the scan boundary so a
+        # recent-history view never claims to audit every historical record.
+        paths = sorted(
+            (self.store.root / "jobs").glob("*.json"),
+            key=lambda path: path.stat().st_mtime,
+            reverse=True,
+        )
+        recovered = []
+        for path in paths[:MAX_HISTORY]:
+            job = self.store.load("jobs", path.stem, Job)
+            if job.job_id in known or (job.memory_save or {}).get("state") not in {
+                "failed",
+                "pending",
+            }:
+                continue
+            try:
+                self.learning.get(job.job_id)
+            except ContentError as exc:
+                if exc.error.code != "memory_learning_not_found":
+                    raise
+                recovered.append(self.unqueued_memory_status(job.job_id, job=job))
+        for task in recovered:
+            result["counts"][task["state"]] = result["counts"].get(task["state"], 0) + 1
+        result["tasks"] = sorted(
+            [*result["tasks"], *recovered], key=lambda task: task["updated_at"], reverse=True
+        )[:20]
+        result["unqueued_scan"] = {
+            "examined": min(len(paths), MAX_HISTORY),
+            "limit": MAX_HISTORY,
+            "older_jobs_omitted": len(paths) > MAX_HISTORY,
+        }
+        return result
+
+    def retry_memory_save(self, job_id):
+        from manimagent.personalization import Interpretation
+
+        with self.lock:
+            if self.stopping.is_set():
+                raise ContentError("interrupted", "服务已停止", 503)
+            try:
+                self.learning.get(job_id)
+            except ContentError as exc:
+                if exc.error.code != "memory_learning_not_found":
+                    raise
+            else:
+                task = self.learning.retry(job_id)
+                self.learning_worker.wake.set()
+                return task
+            job = self.store.load("jobs", job_id, Job)
+            status = self.unqueued_memory_status(job_id, job=job)
+            if not status["can_retry"]:
+                raise ContentError(
+                    "memory_learning_conflict", "偏好正在提交或已经提交，不能重新排队", 409
+                )
+            record = self.store.load_record(job_id)
+            interpretation = Interpretation.model_validate(record["interpretation"])
+            source = record["request"].get("source", record["request"])
+            interpretation.validate_source(
+                source["instruction"], record["memory_acceptance"]["options"]["scope"]
+            )
+            self.enqueue_memory(job_id, interpretation, record)
+            self.store.save("records", job_id, record)
+            job.memory_save = dict(record["memory_save"])
+            save_job(self.store, job)
+            if job.memory_save["state"] == "failed":
+                raise ContentError(
+                    "memory_commit_unavailable", "偏好仍未进入保存队列，请检查存储后重试", 503
+                )
+            return self.learning.get(job_id)
 
     def configuration(self):
         with self.lock:

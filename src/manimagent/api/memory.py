@@ -10,8 +10,8 @@ from manimagent.budget import Budget, BudgetExceeded
 from manimagent.errors import ContentError
 from manimagent.llm.client import ChatProvider, ProviderError
 from manimagent.memory.files import MAX_DOCUMENT_BYTES
-from manimagent.memory.models import MemoryCandidate, MemoryOptions
-from manimagent.memory.service import extract_and_observe
+from manimagent.memory.models import MemoryOptions
+from manimagent.personalization import FIELD_LABELS, FIELD_VALUES, VALUE_LABELS, interpret_request
 from manimagent.schemas import Usage
 
 
@@ -42,7 +42,9 @@ class CorrectionRequest(BaseModel):
     @field_validator("value")
     @classmethod
     def valid_value(cls, value):
-        return MemoryCandidate(field="validation", value=value, evidence=value).value
+        if not value.strip():
+            raise ValueError("偏好取值不能为空")
+        return value
 
 
 class DocumentImportRequest(BaseModel):
@@ -58,7 +60,15 @@ def router(manager):
         return {
             "entries": manager.memory.list_entries(),
             "policy": manager.memory.policy.model_dump(),
-            "learning": manager.learning.list(),
+            "learning": manager.memory_learning_list(),
+            "fields": [
+                {
+                    "field": field,
+                    "label": FIELD_LABELS[field],
+                    "values": [{"value": value, "label": VALUE_LABELS[value]} for value in values],
+                }
+                for field, values in FIELD_VALUES.items()
+            ],
         }
 
     @routes.get("/documents")
@@ -92,15 +102,13 @@ def router(manager):
 
     @routes.get("/learning/{job_id}")
     def learning_status(job_id: str):
-        return manager.learning.get(job_id)
+        return manager.memory_learning_status(job_id)
 
     @routes.post("/learning/{job_id}/retry")
     def retry_learning(job_id: str):
         if manager.stopping.is_set():
             raise ContentError("interrupted", "服务已停止", 503)
-        task = manager.learning.retry(job_id, manager.memory.revision())
-        manager.learning_worker.wake.set()
-        return task
+        return manager.retry_memory_save(job_id)
 
     @routes.post("/learning/{job_id}/cancel")
     def cancel_learning(job_id: str):
@@ -111,6 +119,14 @@ def router(manager):
         if manager.stopping.is_set() or not manager.memory_slots.acquire(blocking=False):
             raise ContentError("memory_busy", "记忆提取正在进行，请稍后重试", 429)
         try:
+            replay = manager.memory.replay(
+                session_id=request.session_id,
+                source_id=request.source_id,
+                source_text=request.text,
+                scope=request.scope,
+            )
+            if replay is not None:
+                return {"entries": replay, "warnings": [], "usage": Usage().model_dump()}
             with manager.lock:
                 settings = manager.settings.model_copy(deep=True)
             errors = settings.configuration_errors(
@@ -118,27 +134,38 @@ def router(manager):
             )
             if errors:
                 raise ContentError("model_unavailable", "；".join(errors), 503)
-            settings.task_timeout = min(25, settings.task_timeout)
+            settings.task_timeout = min(settings.memory_learning_timeout, settings.task_timeout)
             settings.max_model_calls = 1
             settings.max_total_tokens = settings.memory_learning_max_tokens
-            revision = manager.memory.revision()
+            accepted = manager.memory.accept(
+                request.source_id,
+                request.session_id,
+                request.text,
+                request.scope,
+                read=False,
+            )
             usage = Usage()
             budget = Budget(settings, usage, manager.stopping)
+            budget.retry_allowance = 0
             provider = ChatProvider(
                 settings,
                 manager.provider.transport if manager.provider else None,
                 credential_resolver=manager.llm_settings.credentials.resolve,
             )
-            entries = extract_and_observe(
-                manager.memory,
-                provider,
-                budget,
-                request.text,
-                MemoryOptions(session_id=request.session_id, scope=request.scope),
-                request.source_id,
-                expected_revision=revision,
+            interpretation = interpret_request(provider, budget, request.text, request.scope)
+            entries = manager.memory.observe_proposals(
+                list(interpretation.proposals),
+                session_id=request.session_id,
+                source_id=request.source_id,
+                source_text=request.text,
+                scope=request.scope,
+                sequence=accepted["sequence"],
             )
-            return {"entries": entries, "warnings": [], "usage": usage.model_dump()}
+            return {
+                "entries": entries,
+                "warnings": [issue.model_dump() for issue in interpretation.intent.issues],
+                "usage": usage.model_dump(),
+            }
         except ProviderError as exc:
             raise ContentError(exc.code, "记忆提取服务未返回可用结果，请稍后重试", 502) from exc
         except BudgetExceeded as exc:
@@ -151,6 +178,10 @@ def router(manager):
     @routes.post("/cleanup")
     def cleanup():
         return manager.memory.cleanup()
+
+    @routes.delete("/sources/{source_id}")
+    def withdraw_source(source_id: str):
+        return manager.memory.withdraw_source(source_id)
 
     @routes.post("/{memory_id}/confirm")
     def confirm(memory_id: str):

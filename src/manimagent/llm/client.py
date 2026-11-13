@@ -38,7 +38,7 @@ def parse_object(text: str) -> dict:
     try:
         value = json.loads(text)
     except (ValueError, TypeError) as exc:
-        raise InvalidResponse("模型未返回有效 JSON 对象") from exc
+        raise InvalidResponse(f"模型未返回有效 JSON 对象：{exc}") from exc
     if not isinstance(value, dict):
         raise InvalidResponse("模型结果必须是 JSON 对象")
     return value
@@ -135,30 +135,11 @@ class ChatProvider:
         last_error: ProviderError = InvalidResponse("模型结果无效")
 
         def repair_messages(raw: str, feedback: str) -> None:
-            # A repair must retain its candidate and feedback within the context budget.
-            limit = min(
-                cfg.context_window,
-                self.settings.video_context_tokens
-                if role in {"video_planner", "scene_generator", "plan_checker"}
-                else self.settings.answer_context_tokens,
-            )
+            # Retain the original request and candidate. The next assembled
+            # request goes through the same single budgeting path as the first.
             candidates = ([{"role": "assistant", "content": raw}] if raw else []) + [
                 {"role": "user", "content": feedback}
             ]
-
-            def message_size(message):
-                value = message["content"]
-                return (
-                    len(value.encode("utf-8"))
-                    if isinstance(value, str)
-                    else len(content.encode("utf-8")) + 8192 * len(images or [])
-                )
-
-            size = sum(message_size(m) for m in messages + candidates) + 512
-            if size + cfg.max_output_tokens > limit:
-                raise ProviderError(
-                    "修复上下文超过模型预算，请增加上下文预算后重试", "context_budget_exceeded"
-                )
             messages.extend(candidates)
 
         for attempt in range(2):
@@ -167,7 +148,6 @@ class ChatProvider:
             can_repair = attempt == 0 and (
                 budget.retry_allowance is None or budget.retry_allowance > 0
             )
-            timeout = budget.before_call(deadline)
             body = {
                 "model": cfg.model,
                 "messages": [dict(message) for message in messages],
@@ -177,6 +157,50 @@ class ChatProvider:
                 body["response_format"] = {"type": "json_object"}
             if cfg.thinking != "default":
                 body["thinking"] = {"type": cfg.thinking}
+            # Budget and trace the assembled request that will actually be sent,
+            # including its schema and any retained failed candidate/feedback.
+            measured = json.loads(json.dumps(body))
+            image_tokens = 0
+            for message in measured["messages"]:
+                if isinstance(message["content"], list):
+                    for part in message["content"]:
+                        if part.get("type") == "image_url":
+                            part["image_url"] = {"url": "<image>"}
+                            image_tokens += 8192
+            estimate = (
+                len(json.dumps(measured, ensure_ascii=False).encode("utf-8")) + 512 + image_tokens
+            )
+            limit = min(
+                cfg.context_window,
+                self.settings.video_context_tokens
+                if role in {"video_planner", "scene_generator", "plan_checker"}
+                else self.settings.answer_context_tokens,
+            )
+            if self.trace:
+                self.trace(
+                    {
+                        "event": "request_budget",
+                        "role": role,
+                        "attempt": attempt + 1,
+                        "input_estimate": estimate,
+                        "output_reserved": cfg.max_output_tokens,
+                        "limit": limit,
+                        "method": "assembled_request_utf8_upper_bound_v2",
+                    }
+                )
+            if estimate + cfg.max_output_tokens > limit:
+                raise ProviderError(
+                    "完整模型请求超过上下文预算，请缩小输入或增加已验证的预算",
+                    "context_budget_exceeded",
+                )
+            if (
+                estimate + cfg.max_output_tokens
+                > budget.settings.max_total_tokens
+                - budget.usage.input_tokens
+                - budget.usage.output_tokens
+            ):
+                raise BudgetExceeded("完整模型请求及输出预留超过任务剩余用量预算")
+            timeout = budget.before_call(deadline)
             if self.trace:
                 traced = json.loads(json.dumps(body))
                 if images:
@@ -197,6 +221,7 @@ class ChatProvider:
             elapsed = None
             http_status = None
             normalized = normalize_usage(None)
+            raw = None
             try:
                 response = asyncio.run(
                     self._post(
@@ -333,9 +358,11 @@ class ChatProvider:
                             "normalized_usage": normalized,
                         }
                     )
-            if can_repair and schema and len(messages) == 2:
+            if can_repair and schema and isinstance(raw, str) and len(messages) == 2:
                 repair_messages(
-                    "",
-                    "上次输出无法校验。请严格返回完整 schema JSON，不加解释或代码围栏。",
+                    raw if isinstance(raw, str) else "",
+                    "上次输出无法校验："
+                    + str(last_error)
+                    + "。保留正确内容，修正后返回完整 schema JSON。",
                 )
         raise last_error

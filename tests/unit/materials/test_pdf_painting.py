@@ -1,3 +1,5 @@
+import json
+
 import pytest
 from fastapi.testclient import TestClient
 
@@ -24,7 +26,8 @@ def test_every_pdf_path_painting_variant_stops_before_answer_generation(tmp_path
         assert job["status"] == "needs_input"
         assert job["error"]["code"] == "vision_not_configured"
         assert job["error"]["details"]["file_id"] == asset["file_id"]
-        assert job["usage"]["model_calls"] == 0 and not calls
+        assert job["usage"]["model_calls"] == 1 and len(calls) == 1
+        assert "user_text" in json.loads(calls[0]["messages"][1]["content"])
         record = client.app.state.job_manager.store.load_record(job["job_id"])
         visuals = record["parse"]["candidates"][0]["visual_inputs"]
         assert len(visuals) == 1 and visuals[0]["locator"] == {"page": 1}

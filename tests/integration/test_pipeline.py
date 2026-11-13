@@ -34,21 +34,25 @@ def test_complete_text_answer_revision_reuse_and_rendering(tmp_path):
         assert generation["output_mode"] == "text" and set(generation["stages"]) == {
             "material",
             "answer",
+            "interpretation",
         }
-        assert len(calls) == 2
-        assert (
-            "response_format" not in calls[0]
-            and "只返回符合" not in calls[0]["messages"][0]["content"]
-        )
-        assert "response_format" in calls[1]
-        assert "candidate_markdown" in json.loads(calls[1]["messages"][1]["content"])
-        assert job["usage"]["model_calls"] == 2
+        assert len(calls) == 3
+        assert all("response_format" in call for call in calls)
+        assert "user_text" in json.loads(calls[0]["messages"][1]["content"])
+        assert "candidate_document" in json.loads(calls[2]["messages"][1]["content"])
+        assert job["usage"]["model_calls"] == 3
         markdown = client.get(f"/api/v2/answers/{answer['answer_id']}/markdown?download=true")
+        from manimagent.schemas import AnswerDocument
+        from manimagent.teaching import render_document
+
         assert (
             markdown.text
             == answer["markdown"]
-            == "".join(step["content"] for step in answer["steps"])
+            == render_document(AnswerDocument.model_validate(answer["document"]))
         )
+        assert [step["content"] for step in answer["steps"]] == [
+            unit["content"] for unit in answer["document"]["units"]
+        ]
         assert "attachment" in markdown.headers["content-disposition"]
         html = client.get(f"/api/v2/answers/{answer['answer_id']}/html").text
         assert "<h1>投影解答</h1>" in html and r"\operatorname" in html
@@ -75,7 +79,7 @@ def test_complete_text_answer_revision_reuse_and_rendering(tmp_path):
         reuse_job = wait_job(client, reused.json()["job_id"])
         assert reuse_job["status"] == "completed"
         assert get_generation_answer(client, reuse_job)[0]["material_ids"] == answer["material_ids"]
-        assert len(calls) == 4
+        assert len(calls) == 6
 
 
 def test_upload_and_parse_work_without_any_models_or_docker(tmp_path, monkeypatch):
@@ -256,7 +260,7 @@ def test_aggregate_context_budget_fails_before_model_call(tmp_path):
         create_app(settings, text_provider=controlled_provider(settings, calls))
     ) as client:
         job = wait_job(client, submit(client).json()["job_id"])
-        assert job["error"]["code"] == "budget_exceeded" and not calls
+        assert job["error"]["code"] == "context_budget_exceeded" and not calls
 
 
 @pytest.mark.parametrize(

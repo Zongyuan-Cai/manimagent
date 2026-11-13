@@ -1,4 +1,4 @@
-"""Contracts for evidence-backed, two-layer user memory."""
+"""Finite, sourced personalization storage contracts."""
 
 from __future__ import annotations
 
@@ -7,8 +7,17 @@ from typing import Annotated, Literal
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints, field_validator
 
 MemoryIdentifier = Annotated[
-    str, StringConstraints(strip_whitespace=True, min_length=1, max_length=80, pattern=r"^[\w.-]+$")
+    str,
+    StringConstraints(strip_whitespace=True, min_length=1, max_length=100, pattern=r"^[\w.-]+$"),
 ]
+
+
+def valid_scope(value: str) -> str:
+    import re
+
+    if not re.fullmatch(r"global|course\.[\w-]+|topic\.[\w-]+\.[\w-]+", value):
+        raise ValueError("scope 必须为 global、course.<id> 或 topic.<course>.<id>")
+    return value
 
 
 class MemoryContract(BaseModel):
@@ -17,30 +26,10 @@ class MemoryContract(BaseModel):
 
 class MemoryOptions(MemoryContract):
     session_id: MemoryIdentifier
-    scope: MemoryIdentifier = "global"
+    scope: str = "global"
+    read: bool = True
     learn: bool = True
-
-
-class LearningInput(MemoryContract):
-    job_id: MemoryIdentifier
-    text: str = Field(min_length=1, max_length=12000)
-    options: MemoryOptions
-    revision: int = Field(ge=0, strict=True)
-
-
-class MemoryCandidate(MemoryContract):
-    field: str = Field(min_length=1, max_length=80)
-    value: str = Field(min_length=1, max_length=300)
-    evidence: str = Field(min_length=1, max_length=500)
-    temporary: bool = False
-
-    @field_validator("field", "value", "evidence")
-    @classmethod
-    def nonblank(cls, value: str) -> str:
-        value = value.strip()
-        if not value or any(ord(char) < 32 and char not in "\n\t" for char in value):
-            raise ValueError("记忆内容不能为空或包含控制字符")
-        return value
+    _scope = field_validator("scope")(valid_scope)
 
 
 class MemoryPolicy(MemoryContract):
@@ -48,8 +37,8 @@ class MemoryPolicy(MemoryContract):
     short_term_days: int = Field(default=14, ge=1, le=365)
     max_entries: int = Field(default=200, ge=1, le=10000)
     max_evidence_per_entry: int = Field(default=20, ge=1, le=100)
-    max_snapshot_entries: int = Field(default=12, ge=1, le=100)
-    max_snapshot_chars: int = Field(default=6000, ge=256, le=50000)
+    max_snapshot_entries: int = Field(default=200, ge=1, le=10000)
+    max_snapshot_chars: int = Field(default=100000, ge=256, le=1000000)
     max_sources: int = Field(default=10000, ge=1, le=1000000)
 
 
@@ -58,7 +47,7 @@ class MemoryEvidence(MemoryContract):
     session_id: str
     quote: str
     date: str
-    kind: Literal["observation", "confirmation", "correction"] = "observation"
+    kind: Literal["observation", "confirmation", "correction", "restoration"] = "observation"
 
 
 class MemoryEntry(MemoryContract):
@@ -68,7 +57,7 @@ class MemoryEntry(MemoryContract):
     scope: str
     layer: Literal["short_term", "deep"] = "short_term"
     state: Literal["active", "superseded"] = "active"
-    temporary: bool = False
+    temporary: Literal[False] = False
     session_id: str
     independent_sessions: int = 1
     evidence: list[MemoryEvidence] = Field(default_factory=list)
@@ -76,3 +65,5 @@ class MemoryEntry(MemoryContract):
     updated_at: str
     expires_at: str | None = None
     confirmed_at: str | None = None
+    accepted_sequence: int = 0
+    self_reported: bool = False

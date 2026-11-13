@@ -23,9 +23,9 @@ scene_id 使用 s1、s2 等简短编号，忽略大小写仍须唯一，不能�
 单一概念通常 120～180 秒，多步题 180～360 秒。时长取决于解释工作量，不按难度标签机械映射。
 主题很简单或太复杂而无法在 120～360 秒完整教学时返回 scope_issue，不填充无关材料。
 说明受众默认假设、难度理由、教学依赖与时长理由。最多8场景、全片最多42节拍。
-模板支持：公式逐步推导、二维平面向量/点/线段/多边形/圆、至多4×4数值或符号矩阵。
-直线或分段直线图像可用线段准确表示；模板没有通用函数曲线、弧形扇区和空心点。若必需的图示无法准确表达，应返回scope_issue，不以错误图形冒充完成。
-不支持任意代码、外部素材、三维、函数程序求值或复杂 LaTeX 环境；必要时明确 scope_issue。
+模板能力由 payload.capabilities 限定：公式逐步推导、二维几何、离散采样、不超过四次的多项式函数与其割线/切线、至多4×4数值或符号矩阵。
+多项式曲线、割线和切线由程序根据类型和系数计算；其他函数、弧形扇区和空心点不支持，必需时返回scope_issue，不以错误图形冒充完成。
+不支持任意代码、外部素材、三维、任意函数表达式求值或复杂 LaTeX 环境；必要时明确 scope_issue。
 所有数学依据必须来自正文；可以把已有推理拆成观察、解释、代入、核对，不能重复结论凑时长。"""
 )
 
@@ -33,6 +33,7 @@ SCENE_PROMPT = (
     COMMON
     + r"""
 仅生成指定场景，不改变全局大纲。覆盖其全部 unit_ids。按分配 beat_count 输出同样数量的节拍。
+selected_units还包含解释当前场景所需的前置依赖；依赖仅供理解，不把未分配给本场景的unit_id填入beat.unit_ids，也不能重新解题。
 遵守 payload.scene_time_budget_seconds；按每秒5个屏幕字符估算阅读，另留公式理解与动作时间。优先短句，保留必要依据，不靠加速。
 每步一个认知变化：短标题、25～50字中文屏幕解释、1～3行短公式、25～60字可朗读旁白、阅读理由。
 旁白每拍最多60个中文字符左右，只解释当前关键依据，不逐字重复整张符号表或多个区间的全部计算。多区间分别放入已有节拍，合并重复介绍；修订时按反馈指出的超时节拍缩短旁白，不只改标题或屏幕文字。
@@ -50,14 +51,15 @@ cue_text 必须逐字取自 spoken_text 中一个靠前的短语；cue_objects �
 例如 x=2 或 x=3 写作 x=2\quad\mathrm{or}\quad x=3；“h不能为零”公式写 h\neq0，理由写屏幕文字。
 公式要简短，一行通常少于50字符，长推导拆成多拍；中文解释放 screen_text。
 公式高度也占预算：带极限下标、分式、求和或积分的高公式优先每拍一行，最多两行；三行只用于普通短等式。多个高公式应分配到相邻节拍，或把已知上下界的趋向写进屏幕解释，保留完整依据与关键结论；不能用“三行较短”解决纵向溢出。
-无图时 diagram={"kind":"none"}；坐标图用 kind=plane、x_range/y_range、objects。
+无图时 diagram={"kind":"none"}；坐标图用 kind=plane、x_range/y_range、objects。数轴用kind=numberline和x_range，所有points纵坐标必须为0，仅接受point/samples/segment/dashed/vector。
 纯代数与概率题优先 kind=none，只在正文确有几何推理时使用坐标图。所有 points 的两个坐标都必须落在给出的范围内。
 数列采样只用离散点；线段不能冒充非线性函数的精确曲线，实心点不能代表空洞。对点和线逐一代入其公式，核对象限、斜率和定义域；屏幕必须说清横纵坐标含义。
-对象kind仅vector/point/segment/dashed/polygon/circle；vector/segment/dashed的points恰有两个不同端点。
-point或circle的points恰有一个坐标，例如point使用points=[[1,2]]。多个采样点必须分别创建不同object_id的point对象，不能放在一个point的points数组中。
-dashed是一条虚线段，不是折线或函数曲线；不要把多个采样点塞入它，也不能通过删掉采样点把曲线伪装成两端连线。可用少量独立point展示并明确标注“采样示意”，割线或切线各用两个经核算的端点；需要精确曲线时遵守大纲的能力边界。
-多个segment也不能拼出假曲线：曲线上几个点连成的V形不是抛物线，尖角不能当作存在水平切线的光滑点。非线性函数只展示未连接的样点，并把割线/切线明确标为独立直线，不声称已绘出函数曲线。
-颜色仅blue/gold/teal/red/white/muted。label是简短纯文本，不写LaTeX；说明图例代表谁。
+对象kind为vector/point/samples/segment/dashed/polygon/circle/function/secant/tangent；普通线段/向量恰有两个不同points，point/circle恰有一个points。
+数列或离散采样用samples及未连接points（最多64个），不要连线。polygon需要3～8点。color是语义角色primary/accent/secondary/warning/text/muted；程序按visual_spec主题映射真实颜色，不能输出HEX或颜色名blue/gold。
+function只接受coefficients（升幂多项式系数，最多5项）和domain（两个递增横坐标），不填points。例如x平方用coefficients=[0,0,1]；程序绘制该精确函数的密集数值近似。
+secant同样给coefficients/domain以及at和through两个不同横坐标；tangent给coefficients/domain和at；程序计算真实斜率和端点，禁止手填切线points。所有定义域、内部极值和线段端点必须落在坐标框内，否则扩大范围或缩小明确显示的定义域。
+不支持的函数不能用线段、V形或少数样点冒充精确曲线；若仅展示离散采样，屏幕明确“样点”。label使用简短纯文本，说明坐标与图例。
+visual_spec中large表示真实大字号，减少每拍字数和公式密度；minimal减少过渡动画，不改变必要推理、旁白或阅读时间。不得自行改写这些程序参数。
 图形、公式与解释分区显示。不能把系数当向量，不能因模板限制省略题目的必要内容。
 有图时公式区只有半屏：最多三行短式。长代数计算可以在该拍用kind=none获得整屏，必要几何解释保留在相邻拍；不能删掉计算依据或用更小字塞下。
 若收到 feedback，依据 previous_scene 局部修改，保留已正确的推理、条件和全部 selected_units；不能为了修一处而删掉另一处依据。

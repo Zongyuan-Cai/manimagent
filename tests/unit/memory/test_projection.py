@@ -1,101 +1,69 @@
+import json
 from copy import deepcopy
 
 import pytest
 
-from manimagent.memory.models import MemoryPolicy
-from manimagent.memory.projection import model_memory
+from manimagent.memory.projection import user_context
 from manimagent.memory.store import MemoryStore
+from manimagent.personalization import RequestIntent, compile_profile
 from tests.support.memory import Clock, observe
 
 
-def test_projection_is_unchanged_by_reaffirmation_capture_time_and_other_session(tmp_path):
+@pytest.mark.parametrize("key", ["snapshot", "user_memory", "recent_user_memory"])
+@pytest.mark.parametrize("location", ["shared", "current"])
+def test_raw_memory_cannot_bypass_compiled_profile(key, location):
+    raw = {key: {"entries": []}}
+    with pytest.raises(ValueError, match="compile an EffectiveProfile"):
+        user_context(
+            raw if location == "shared" else {},
+            role="answer_writer",
+            **(raw if location == "current" else {}),
+        )
+
+
+def test_reaffirmation_does_not_change_compiled_stage_payload(tmp_path):
     clock = Clock()
     store = MemoryStore(tmp_path / "memory.sqlite3", clock=clock)
-    first = observe(store, field="explanation.detail", value="详细解释")
-    store.confirm(first.memory_id)
-    second = observe(store, source="other", field="profile.background", value="本科生")
-    store.confirm(second.memory_id)
-    before = store.snapshot("s1")
+    first = observe(store, field="explanation.detail", value="detailed", intent="default")
+    request = RequestIntent(overrides=(), exclude_memory=(), issues=())
+    before = store.snapshot("one")
     original = deepcopy(before)
-    projected = model_memory(before, "answer_writer")
-    clock.advance()
-    observe(store, source="again", field="explanation.detail", value="详细解释")
-    after = store.snapshot("new-session")
-    assert before != after
-    assert model_memory(after, "answer_writer") == projected
-    assert before == original
-    assert projected == {
-        "deep": [
-            {"field": "explanation.detail", "value": "详细解释", "scope": "global"},
-            {"field": "profile.background", "value": "本科生", "scope": "global"},
-        ],
-        "recent": [],
-    }
-
-
-def test_projection_keeps_selected_winner_scope_and_temporary_semantics(tmp_path):
-    store = MemoryStore(tmp_path / "memory.sqlite3", clock=Clock())
-    original = observe(store, field="explanation.pace", value="慢一点")
-    store.confirm(original.memory_id)
-    observe(store, source="override", field="explanation.pace", value="这次快一点", temporary=True)
-    observe(
-        store, source="scoped", field="custom.preference", value="原句条件不改写", scope="geometry"
+    profile = compile_profile(request, before).model_dump(mode="json")
+    payload = user_context(
+        {"materials": []}, role="answer_writer", effective_profile=profile, instruction="解题"
     )
-    projected = model_memory(store.snapshot("s1", "geometry"), "scene_generator")
-    assert projected["deep"] == []
-    assert projected["recent"] == [
-        {
-            "field": "custom.preference",
-            "value": "原句条件不改写",
-            "scope": "geometry",
-            "temporary": False,
-        },
-        {"field": "explanation.pace", "value": "这次快一点", "scope": "global", "temporary": True},
-    ]
+    clock.advance()
+    observe(store, source="again", session="two", field="explanation.detail", value="detailed")
+    after = store.snapshot("three")
+    assert after != before and before == original
+    other = compile_profile(request, after).model_dump(mode="json")
+    assert (
+        user_context(
+            {"materials": []}, role="answer_writer", effective_profile=other, instruction="解题"
+        )
+        == payload
+    )
+    assert first.memory_id not in json.dumps(payload)
+    assert "captured_at" not in json.dumps(payload)
 
 
 @pytest.mark.parametrize(
-    "role", ["answer_writer", "answer_checker", "scene_generator", "custom_role"]
+    "role", ["material_reader", "request_interpreter", "answer_checker", "plan_checker"]
 )
-def test_roles_filter_only_known_irrelevant_fields_and_keep_unknowns(role):
-    snapshot = {
-        "entries": [
-            {"field": field, "value": "原样值", "scope": "global", "layer": "deep"}
-            for field in ("visual.palette", "profile.background", "视觉偏好", "custom.preference")
-        ]
+def test_fact_and_input_checks_do_not_receive_personalization(role):
+    profile = compile_profile(
+        RequestIntent(overrides=(), exclude_memory=(), issues=()), None
+    ).model_dump(mode="json")
+    assert user_context({"content": "given"}, role=role, effective_profile=profile) == {
+        "content": "given"
     }
-    fields = {item["field"] for item in model_memory(snapshot, role)["deep"]}
-    assert {"profile.background", "视觉偏好", "custom.preference"} <= fields
-    assert ("visual.palette" in fields) == (role not in {"answer_writer", "answer_checker"})
 
 
-@pytest.mark.parametrize("role", ["material_reader", "memory_extractor"])
-def test_reading_and_extraction_do_not_receive_personalization(role):
-    assert model_memory({"entries": [{"field": "anything"}]}, role) == {"deep": [], "recent": []}
-    assert model_memory(None, role) == {"deep": [], "recent": []}
-
-
-@pytest.mark.parametrize("reading_session", ["unseen", "support"])
-@pytest.mark.parametrize("evidence_session", ["new-session", "support"])
-def test_bounded_deep_selection_does_not_churn_when_same_fact_gains_evidence(
-    tmp_path, reading_session, evidence_session
-):
-    clock = Clock()
-    store = MemoryStore(tmp_path / "memory.sqlite3", MemoryPolicy(max_snapshot_entries=2), clock)
-    for field in ("a", "b", "c"):
-        entry = observe(store, source=field, field=field, value="不变", session="support")
-        store.confirm(entry.memory_id)
-        clock.advance()
-    before = model_memory(store.snapshot(reading_session), "answer_writer")
-    assert [entry["field"] for entry in before["deep"]] == ["a", "b"]
-    for field in ("c", "a", "b"):
-        observe(
-            store, source=f"repeat-{field}", field=field, value="不变", session=evidence_session
-        )
-        clock.advance()
-        assert model_memory(store.snapshot(reading_session), "answer_writer") == before
-
-
-def test_missing_snapshot_entries_cannot_silently_disable_selected_memory():
-    with pytest.raises(KeyError, match="entries"):
-        model_memory({}, "answer_writer")
+def test_visual_parameters_only_reach_visual_generation():
+    profile = compile_profile(
+        RequestIntent(overrides=(), exclude_memory=(), issues=()), None
+    ).model_dump(mode="json")
+    writer = user_context({}, role="answer_writer", effective_profile=profile)
+    scene = user_context({}, role="scene_generator", effective_profile=profile)
+    assert set(writer) == {"teaching_spec"}
+    assert set(scene) == {"teaching_spec", "visual_spec"}

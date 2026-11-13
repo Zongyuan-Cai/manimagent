@@ -13,6 +13,7 @@ from manimagent.content_store import ContentStore, new_id
 from manimagent.errors import ContentError
 from manimagent.llm.client import ChatProvider
 from manimagent.schemas import Answer
+from manimagent.video.capabilities import CAPABILITY_VERSION
 from manimagent.video.models import PROMPT_VERSION, VideoRequest, VideoResult, digest
 from manimagent.video.planning import VideoPlanner
 from manimagent.video.review import VideoReviewer
@@ -39,24 +40,6 @@ class VideoService:
         self.audio_evidence = []
 
     def call(self, role, instruction, payload, schema, budget):
-        cfg = self.settings.model_for(role)
-        estimate = (
-            len(
-                (
-                    instruction
-                    + json.dumps(payload, ensure_ascii=False)
-                    + json.dumps(schema.model_json_schema())
-                ).encode("utf-8")
-            )
-            + 512
-            + cfg.max_output_tokens
-        )
-        if estimate > min(cfg.context_window, self.settings.video_context_tokens):
-            raise ContentError(
-                "budget_exceeded",
-                "动画完整上下文超过预算，请提高已验证模型的上下文配置或拆分主题",
-                state="needs_input",
-            )
         return self.provider.complete(
             role, instruction, payload, schema, budget, deadline=budget.deadline - 25
         )
@@ -86,6 +69,8 @@ class VideoService:
             video_answer_id=answer.answer_id,
             video_answer_hash=digest(answer.markdown),
             video_prompt_version=PROMPT_VERSION,
+            video_capability_version=CAPABILITY_VERSION,
+            video_profile_hash=digest(json.dumps(answer.effective_profile, sort_keys=True)),
         )
         cached = {}
         if request.resume_job_id:
@@ -94,6 +79,8 @@ class VideoService:
                 previous.get("video_answer_id") != answer.answer_id
                 or previous.get("video_answer_hash") != digest(answer.markdown)
                 or previous.get("video_prompt_version") != PROMPT_VERSION
+                or previous.get("video_capability_version") != CAPABILITY_VERSION
+                or previous.get("video_profile_hash") != record["video_profile_hash"]
             ):
                 raise ContentError("invalid_reference", "不能复用其他回答版本或不兼容提示词的分块")
             cached = previous

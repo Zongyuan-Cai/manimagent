@@ -14,6 +14,44 @@ class Check(BaseModel):
     ok: bool
 
 
+def test_json_syntax_repair_retains_failed_candidate_and_parse_feedback():
+    requests = []
+
+    def handler(request):
+        requests.append(json.loads(request.content))
+        text = '{"ok":tru}' if len(requests) == 1 else '{"ok":true}'
+        return httpx.Response(
+            200, json={"choices": [{"message": {"content": text}, "finish_reason": "stop"}]}
+        )
+
+    client, budget = provider(handler)
+    assert client.complete("answer_checker", "check", {"original": "keep"}, Check, budget).ok
+    repaired = requests[1]["messages"]
+    assert repaired[:2] == requests[0]["messages"]
+    assert repaired[2] == {"role": "assistant", "content": '{"ok":tru}'}
+    assert "column" in repaired[3]["content"]
+
+
+@pytest.mark.parametrize("transport_error", [False, True])
+def test_transient_retry_sends_identical_prepared_request(transport_error):
+    requests = []
+
+    def handler(request):
+        requests.append(json.loads(request.content))
+        if len(requests) == 1:
+            if transport_error:
+                raise httpx.ConnectError("disconnected", request=request)
+            return httpx.Response(503)
+        return httpx.Response(
+            200,
+            json={"choices": [{"message": {"content": '{"ok":true}'}, "finish_reason": "stop"}]},
+        )
+
+    client, budget = provider(handler)
+    assert client.complete("answer_checker", "check", {"original": "keep"}, Check, budget).ok
+    assert requests[0] == requests[1]
+
+
 def provider(handler, **kwargs):
     settings = Settings(
         models={
@@ -224,7 +262,8 @@ def test_disabled_retry_reports_the_schema_error_without_building_repair_context
             },
         )
     )
-    client.settings.models["text"].context_window = 1024
+    client.settings.models["text"].context_window = 2048
+    client.settings.models["text"].max_output_tokens = 256
     budget.retry_allowance = 0
     with pytest.raises(ProviderError) as exc:
         client.complete("answer_checker", "check", {}, Check, budget)

@@ -32,7 +32,9 @@ def router(manager: JobManager) -> APIRouter:
 
     @router.get("/jobs/{job_id}", response_model=Job)
     def job(job_id: str):
-        return store.load("jobs", job_id, Job)
+        result = store.load("jobs", job_id, Job)
+        result.memory_save = manager.memory_save_status(result)
+        return result
 
     @router.get("/jobs/{job_id}/memory-context")
     def job_memory_context(job_id: str, download: bool = False):

@@ -37,6 +37,7 @@ def test_both_outputs_share_answer_and_video_only_retry_never_calls_writer(tmp_p
         assert client.get(f"/api/v2/videos/{vid}/content").content == b"controlled-complete-movie"
         assert client.get(f"/api/v2/videos/{vid}/frames/99").status_code == 404
         assert calls == [
+            "interpretation",
             "writer",
             "answer_check",
             "outline",
@@ -93,7 +94,7 @@ def test_revision_requires_fresh_content_check_before_video(tmp_path):
         assert calls.count("writer") == 1 and calls.count("answer_check") == 2
 
 
-def test_changing_checker_profile_invalidates_receipt_before_video(tmp_path):
+def test_changing_checker_profile_keeps_valid_content_receipt(tmp_path):
     settings = config(tmp_path)
     calls = []
     with TestClient(create_app(settings, transport(settings, calls), TemplateRenderer())) as client:
@@ -105,7 +106,7 @@ def test_changing_checker_profile_invalidates_receipt_before_video(tmp_path):
             response = client.post("/api/v2/videos", json={"answer_id": generation["answer_id"]})
             job = wait_job(client, response.json()["job_id"])
             assert job["status"] == "completed", job
-        assert calls.count("answer_check") == 2
+        assert calls.count("answer_check") == 1
         assert calls.count("writer") == 1
 
 
@@ -155,6 +156,7 @@ def test_short_actual_video_cannot_pass_planned_duration_gate(tmp_path):
     from types import SimpleNamespace
 
     from manimagent.budget import Budget
+    from manimagent.personalization import VisualSpec
     from manimagent.schemas import Usage
 
     class ShortRenderer(NativeRenderer):
@@ -163,7 +165,7 @@ def test_short_actual_video_cannot_pass_planned_duration_gate(tmp_path):
 
     with pytest.raises(ContentError, match="时长"):
         ShortRenderer().render(
-            SimpleNamespace(duration_seconds=180, model_dump=lambda: {}),
+            SimpleNamespace(duration_seconds=180, visual_spec=VisualSpec(), model_dump=lambda: {}),
             tmp_path,
             SimpleNamespace(outline=SimpleNamespace(title="测试"), scenes=[1]),
             Budget(config(tmp_path), Usage()),

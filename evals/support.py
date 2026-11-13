@@ -50,3 +50,30 @@ def source_hash(root: Path) -> str:
             digest.update(len(part).to_bytes(8, "big"))
             digest.update(part)
     return digest.hexdigest()
+
+
+def legacy_model_memory(snapshot: dict | None, role: str) -> dict[str, list[dict]]:
+    """Read-only projection for auditing pre-rewrite evaluation evidence.
+
+    The snapshot owns validity and conflict resolution. IDs, evidence, observation
+    timestamps and session bookkeeping belong only to that audit record. Roles
+    filter known irrelevant fields conservatively; custom fields remain intact.
+    """
+    result: dict[str, list[dict]] = {"deep": [], "recent": []}
+    if snapshot is None or role in {"material_reader", "memory_extractor"}:
+        return result
+    for entry in snapshot["entries"]:
+        field = entry["field"]
+        if role in {"answer_writer", "answer_checker"} and field.startswith("visual."):
+            continue
+        item = {key: entry[key] for key in ("field", "value", "scope")}
+        if entry["layer"] == "deep":
+            result["deep"].append(item)
+        else:
+            # Keep the difference between a current-session exception and a
+            # recent, unconfirmed preference, without injecting changing dates.
+            item["temporary"] = entry.get("temporary", False)
+            result["recent"].append(item)
+    for entries in result.values():
+        entries.sort(key=lambda item: (item["scope"], item["field"], item["value"]))
+    return result

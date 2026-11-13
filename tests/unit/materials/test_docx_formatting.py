@@ -1,3 +1,4 @@
+import json
 from io import BytesIO
 
 import pytest
@@ -23,7 +24,8 @@ def test_docx_math_run_formatting_never_silently_disappears(tmp_path, formatting
             client, submit(client, [{"type": "file", "file_id": asset["file_id"]}]).json()["job_id"]
         )
         assert job["status"] == "needs_review"
-        assert job["usage"]["model_calls"] == 0 and not calls
+        assert job["usage"]["model_calls"] == 1 and len(calls) == 1
+        assert "user_text" in json.loads(calls[0]["messages"][1]["content"])
 
 
 def test_unused_docx_math_style_does_not_block_plain_text(tmp_path):
@@ -37,7 +39,7 @@ def test_unused_docx_math_style_does_not_block_plain_text(tmp_path):
             client, submit(client, [{"type": "file", "file_id": asset["file_id"]}]).json()["job_id"]
         )
         assert job["status"] == "completed"
-        assert job["usage"]["model_calls"] == 2
+        assert job["usage"]["model_calls"] == 3
 
 
 @pytest.mark.parametrize("boolean_value", ["1", "true", "on"])
@@ -58,4 +60,5 @@ def test_default_docx_style_math_is_not_lost(tmp_path, boolean_value):
             client, submit(client, [{"type": "file", "file_id": asset["file_id"]}]).json()["job_id"]
         )
         assert job["status"] == "needs_review"
-        assert job["usage"]["model_calls"] == 0 and not calls
+        assert job["usage"]["model_calls"] == 1 and len(calls) == 1
+        assert "user_text" in json.loads(calls[0]["messages"][1]["content"])

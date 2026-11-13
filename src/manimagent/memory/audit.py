@@ -21,10 +21,10 @@ log = logging.getLogger(__name__)
 
 SELECTION_RULES = [
     "任务接收时冻结适用记忆；复用回答或生成视频时继承该回答的快照。",
-    "选取有效且作用范围匹配的条目；临时要求只适用于所属会话。",
-    "同字段冲突依次考虑当前会话表达、适用范围和深层偏好，再应用条目/字符预算。",
-    "回答与内容检查过滤 visual.*；材料读取和记忆提取不注入历史偏好。",
-    "模型投影只保留字段、值、范围及近期条目的临时标记；证据与时间不进入投影。",
+    "固定请求解释只读本次原句；临时要求仅进入本次输入，不进入记忆库。",
+    "先应用本轮排除，再按当前要求、主题、课程、全局及产品默认编译；同范围稳定优先。",
+    "生成阶段读取已编译的TeachingSpec/VisualSpec；材料读取、请求解释与事实检查不注入历史偏好。",
+    "后台只提交合法候选，不调用模型；记忆提交结果与教学发布分别报告。",
 ]
 
 
@@ -44,7 +44,27 @@ def _payload(event: dict) -> dict:
     raise ValueError("记忆审计请求缺少用户消息")
 
 
-def _entry_decisions(snapshot: dict | None, projection: dict, role: str) -> list[dict]:
+def _entry_decisions(
+    snapshot: dict | None, projection: dict, role: str, profile: dict | None = None
+) -> list[dict]:
+    if profile is not None:
+        selected = {
+            item["memory_id"]: item
+            for item in profile["applications"]
+            if item["origin"] == "memory"
+        }
+        return [
+            {
+                "memory_id": entry["memory_id"],
+                "included": entry["memory_id"] in selected
+                and (
+                    (entry["field"].startswith("visual.") and "visual_spec" in projection)
+                    or (not entry["field"].startswith("visual.") and "teaching_spec" in projection)
+                ),
+                "reason": "以编译采用记录和该阶段实际参数为准；未重复发送原句或证据",
+            }
+            for entry in (snapshot or {}).get("entries", [])
+        ]
     deep = projection.get("user_memory", {})
     deep = deep.get("deep", []) if isinstance(deep, dict) else []
     recent = projection.get("recent_user_memory", [])
@@ -76,17 +96,25 @@ def memory_context(record: dict, *, status: str) -> dict:
         if event.get("event") == "request":
             payload = _payload(event)
             projection = {
-                key: payload[key] for key in ("user_memory", "recent_user_memory") if key in payload
+                key: payload[key]
+                for key in ("user_memory", "recent_user_memory", "teaching_spec", "visual_spec")
+                if key in payload
             }
             role = event.get("role", "unknown")
+            decisions = _entry_decisions(
+                snapshot, projection, role, record.get("effective_profile")
+            )
             calls.append(
                 {
                     "number": len(calls) + 1,
                     "role": role,
                     "attempt": event.get("attempt"),
-                    "memory_present": bool(projection),
+                    "memory_present": any(item["included"] for item in decisions)
+                    if record.get("effective_profile") is not None
+                    else bool(projection),
+                    "parameters_present": bool(projection),
                     "projection": projection,
-                    "entries": _entry_decisions(snapshot, projection, role),
+                    "entries": decisions,
                     "http_status": None,
                     "response_recorded": False,
                 }
@@ -105,6 +133,8 @@ def memory_context(record: dict, *, status: str) -> dict:
         if snapshot is not None
         else "disabled",
         "memory_snapshot": snapshot,
+        "effective_profile": record.get("effective_profile"),
+        "memory_save": record.get("memory_save"),
         "snapshot_source": record.get("memory_snapshot_source", "job_acceptance"),
         "selection_rules": SELECTION_RULES,
         "calls": calls,
@@ -152,7 +182,9 @@ def render_memory_context(context: dict) -> str:
                 "",
                 f"HTTP 状态：{call['http_status'] if call['response_recorded'] else '未记录'}。",
                 "",
-                _json_block(call["projection"]) if call["memory_present"] else "此请求没有记忆段。",
+                _json_block(call["projection"])
+                if call["projection"]
+                else "此请求没有记忆或偏好参数段。",
                 "",
                 "快照条目去向：",
                 "",

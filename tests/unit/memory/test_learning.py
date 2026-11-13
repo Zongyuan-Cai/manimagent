@@ -1,290 +1,191 @@
-import json
-import sqlite3
-from concurrent.futures import ThreadPoolExecutor
+"""The queue commits validated candidates without a second model call."""
 
 import pytest
 
 from manimagent.errors import ContentError
-from manimagent.memory.database import fingerprint
 from manimagent.memory.learning import LearningStore
-from manimagent.memory.models import MemoryCandidate, MemoryOptions
 from manimagent.memory.store import MemoryStore
 from manimagent.schemas import Usage
-from tests.support.memory import Clock, observe
+from tests.support.memory import pending
 
 
 @pytest.fixture
-def queue(tmp_path):
-    return LearningStore(tmp_path / "memory.sqlite3")
+def stores(tmp_path):
+    path = tmp_path / "memory.sqlite3"
+    return MemoryStore(path), LearningStore(path)
 
 
-@pytest.fixture
-def memory(queue):
-    return MemoryStore(queue.path)
-
-
-def begin(queue, job_id="job-one", session="s1", text="我希望详细讲解"):
+def enqueue(memory, queue, source="job1"):
+    task = pending(memory, source=source, intent="default")
     queue.enqueue(
-        job_id, text, MemoryOptions(session_id=session), MemoryStore(queue.path).revision()
+        source, task["proposals"], {"session_id": "s1"}, task["sequence"], task["source_text"]
     )
-    queue.activate(job_id)
-    return queue.claim()
+    return task
 
 
-def commit(queue, task, candidates=None):
-    if candidates is None:
-        candidates = [
-            MemoryCandidate(field="explanation.detail", value="详细", evidence=task["text"])
-        ]
-    return MemoryStore(queue.path).observe(
-        candidates,
-        session_id=task["options"]["session_id"],
-        scope=task["options"]["scope"],
-        source_id=task["job_id"],
-        source_text=task["text"],
-        expected_revision=task["revision"],
-        learning_job_id=task["job_id"],
-    )
+def test_immediately_queued_no_answer_publication_or_second_model(stores):
+    memory, queue = stores
+    original = enqueue(memory, queue)
+    assert queue.get("job1")["state"] == "queued"
+    task = queue.claim()
+    assert task["proposals"][0]["value"] == "detailed" and task["sequence"] == original["sequence"]
+    memory.observe_proposals(**original, learning_job_id="job1")
+    result = queue.finish("job1", "completed", usage=Usage())
+    assert result["state"] == "completed" and result["counts"] == {
+        "created": 1,
+        "reinforced": 0,
+        "promoted": 1,
+    }
+    assert result["usage"] == {} and result["usage_unknown"] is False
 
 
-def usage(calls=1, tokens=10):
-    return Usage(model_calls=calls, input_tokens=tokens, output_tokens=2, tokens_reported=True)
+def test_cancel_before_commit_fences_write(stores):
+    memory, queue = stores
+    original = enqueue(memory, queue)
+    queue.claim()
+    assert queue.cancel("job1")["state"] == "cancelled"
+    with pytest.raises(ContentError, match="已停止"):
+        memory.observe_proposals(**original, learning_job_id="job1")
+    assert not memory.list_entries()
 
 
-def raw_payload(queue, job_id):
-    with sqlite3.connect(queue.path) as db:
-        return json.loads(
-            db.execute(
-                "SELECT payload FROM memory_learning_jobs WHERE job_id=?", (job_id,)
-            ).fetchone()[0]
-        )
+def test_cancel_after_commit_returns_actual_completed_result(stores):
+    memory, queue = stores
+    original = enqueue(memory, queue)
+    queue.claim()
+    memory.observe_proposals(**original, learning_job_id="job1")
+    assert queue.cancel("job1")["state"] == "completed"
 
 
-def test_waiting_requires_activation_is_durable_and_never_exposes_input(queue):
-    options = MemoryOptions(session_id="private-session")
-    first = queue.enqueue("job-one", "private-user-original", options, 0)
-    assert first["state"] == "waiting" and queue.claim() is None
-    restarted = LearningStore(queue.path)
-    assert restarted.enqueue("job-one", "private-user-original", options, 0) == first
-    assert restarted.waiting_ids() == ["job-one"]
-    for summary in (restarted.get("job-one"), restarted.list()):
-        encoded = json.dumps(summary)
-        assert "private-user-original" not in encoded and "private-session" not in encoded
-        assert (
-            '"text"' not in encoded and '"settings"' not in encoded and '"options"' not in encoded
-        )
-    with pytest.raises(ContentError, match="改绑"):
-        restarted.enqueue("job-one", "different", options, 0)
-    assert restarted.activate("job-one")["state"] == "queued"
-    task = restarted.claim()
-    assert task["text"] == "private-user-original" and task["attempt"] == 1
-    assert restarted.claim() is None
-
-
-def test_claim_is_atomic_across_independent_connections(queue):
-    queue.enqueue("job-one", "用户表达", {"session_id": "s1"}, 0)
-    queue.activate("job-one")
-    stores = [LearningStore(queue.path) for _ in range(4)]
-    with ThreadPoolExecutor(max_workers=4) as pool:
-        claimed = list(pool.map(lambda store: store.claim(), stores))
-    assert sum(item is not None for item in claimed) == 1
-    assert queue.get("job-one")["attempts"] == 1
-
-
-def test_write_receipts_count_creation_reinforcement_and_promotion_atomically(queue):
-    first_id = None
-    for number in range(3):
-        task = begin(queue, job_id=f"job-{number}", session=f"session-{number}")
-        result = commit(queue, task)
-        first_id = first_id or result[0].memory_id
-        finished = queue.finish(task["job_id"], "completed", usage=usage())
-        assert finished["state"] == "completed" and finished["counts_known"]
-        assert finished["entry_ids"] == [first_id]
-        assert finished["counts"] == {
-            "created": int(number == 0),
-            "reinforced": int(number > 0),
-            "promoted": int(number == 2),
-        }
-        assert finished["promoted_ids"] == ([first_id] if number == 2 else [])
-        assert "text" not in raw_payload(queue, task["job_id"])
-        assert queue.finish(task["job_id"], "completed", usage=usage())["usage"]["model_calls"] == 1
-
-
-def test_provider_failures_require_manual_retry_and_accumulate_cost_with_three_attempt_limit(
-    queue, memory
-):
-    task = begin(queue)
-    for attempt in range(1, 4):
-        assert task["attempt"] == attempt
-        failed = queue.finish(
-            task["job_id"],
-            "failed",
-            usage=usage(tokens=attempt * 10),
-            error={
-                "code": "provider_timeout",
-                "message": "remote-private-secret",
-                "details": {"text": "private"},
-            },
-        )
-        assert queue.claim() is None
-        assert failed["usage"]["model_calls"] == attempt
-        assert failed["usage"]["input_tokens"] == sum(10 * n for n in range(1, attempt + 1))
-        assert len(failed["attempt_history"]) == attempt
-        assert "remote-private-secret" not in json.dumps(failed)
-        assert failed["can_retry"] == (attempt < 3)
-        if attempt < 3:
-            queue.retry(task["job_id"], memory.revision())
-            task = queue.claim()
-    with pytest.raises(ContentError, match="三次"):
-        queue.retry(task["job_id"], memory.revision())
-    assert "text" not in raw_payload(queue, task["job_id"])
-
-
-def test_uncommitted_restart_marks_failure_with_unknown_cost_without_automatic_call(queue):
-    begin(queue)
-    restored = LearningStore(queue.path)
-    assert restored.recover() == {"completed": 0, "failed": 1}
-    failed = restored.get("job-one")
-    assert failed["can_retry"] and failed["attempts"] == 1 and failed["usage_unknown"]
-    assert failed["error"]["code"] == "interrupted" and failed["usage"] == {}
-    assert restored.claim() is None
-    restored.retry("job-one", 0)
-    assert restored.claim()["attempt"] == 2
-
-
-@pytest.mark.parametrize("deleted", [False, True])
-@pytest.mark.parametrize("empty", [False, True])
-def test_crash_after_commit_recovers_without_relearning_or_resurrecting_deleted_data(
-    queue, memory, deleted, empty
-):
-    task = begin(queue)
-    entries = commit(queue, task, [] if empty else None)
-    if deleted and entries:
-        memory.delete(entries[0].memory_id)
+def test_recover_committed_receipt_after_crash(stores):
+    memory, queue = stores
+    original = enqueue(memory, queue)
+    queue.claim()
+    memory.observe_proposals(**original, learning_job_id="job1")
     assert LearningStore(queue.path).recover() == {"completed": 1, "failed": 0}
-    recovered = queue.get(task["job_id"])
-    assert recovered["counts_known"] and recovered["usage_unknown"]
-    assert recovered["entry_ids"] == ([] if empty or deleted else [entries[0].memory_id])
-    assert recovered["counts"]["created"] == int(not empty and not deleted)
-    assert not recovered["can_retry"] and queue.claim() is None
-    assert "text" not in raw_payload(queue, task["job_id"])
+    assert queue.get("job1")["counts_known"]
+    assert memory.list_entries()[0].independent_sessions == 1
 
 
-def test_cancel_blocks_late_write_but_retains_late_provider_usage_once(queue, memory):
-    task = begin(queue)
-    assert queue.cancel(task["job_id"])["state"] == "cancelled"
-    with pytest.raises(ContentError) as exc:
-        commit(queue, task)
-    assert exc.value.error.code == "memory_learning_cancelled" and not memory.list_entries()
-    for _ in range(2):
-        cancelled = queue.finish(
-            task["job_id"], "failed", usage=usage(), error={"code": "memory_learning_cancelled"}
-        )
-        assert cancelled["state"] == "cancelled" and not cancelled["can_retry"]
-        assert cancelled["usage"]["model_calls"] == 1 and not cancelled["usage_unknown"]
-    assert len(cancelled["attempt_history"]) == 1
-    assert cancelled["attempt_history"][0]["state"] == "cancelled"
+def test_recover_uncommitted_retry_keeps_original_sequence(stores):
+    memory, queue = stores
+    original = enqueue(memory, queue)
+    queue.claim()
+    assert queue.recover() == {"completed": 0, "failed": 1}
+    queue.retry("job1", 99999)
+    assert queue.claim()["sequence"] == original["sequence"]
+    memory.observe_proposals(**original, learning_job_id="job1")
+    assert queue.finish("job1", "completed")["attempts"] == 2
 
 
-def test_cancellation_after_atomic_commit_reports_completed_instead_of_false_cancel(queue):
-    task = begin(queue)
-    commit(queue, task)
-    assert queue.cancel(task["job_id"])["state"] == "completed"
-    finished = queue.finish(task["job_id"], "completed", usage=usage())
-    assert finished["usage"]["model_calls"] == 1 and not finished["usage_unknown"]
-
-
-@pytest.mark.parametrize("action", ["confirm", "correct", "delete"])
-def test_manual_revision_fences_stale_background_writes(queue, memory, action):
-    existing = observe(memory)
-    captured = memory.snapshot("s1")
-    task = begin(queue)
-    if action == "correct":
-        memory.correct(existing.memory_id, "新值")
-    else:
-        getattr(memory, action)(existing.memory_id)
-    assert memory.revision() == captured["manual_revision"] + 1
-    with pytest.raises(ContentError) as exc:
-        commit(queue, task)
-    assert exc.value.error.code == "memory_changed"
-    with sqlite3.connect(queue.path) as db:
-        assert (
-            db.execute(
-                "SELECT 1 FROM sources WHERE id=?", (fingerprint(task["job_id"]),)
-            ).fetchone()
-            is None
-        )
-    assert "write_result" not in raw_payload(queue, task["job_id"])
-
-
-def test_committed_replay_precedes_revision_and_cancel_checks(queue, memory):
-    task = begin(queue)
-    entries = commit(queue, task)
-    memory.delete(entries[0].memory_id)
-    # Source replay returns the already-deleted result as empty; it never writes.
-    assert commit(queue, task) == []
-
-
-def test_pending_limit_and_terminal_history_are_bounded_and_waiting_not_hidden(queue):
-    for number in range(100):
-        queue.enqueue(f"waiting-{number}", "候选表达", {"session_id": "s1"}, 0)
-    with pytest.raises(ContentError) as exc:
-        queue.enqueue("overflow", "候选表达", {"session_id": "s1"}, 0)
-    assert exc.value.error.code == "memory_learning_capacity"
-    for number in range(99):
-        queue.cancel(f"waiting-{number}")
-    for number in range(105):
-        job_id = f"terminal-{number}"
-        queue.enqueue(job_id, "候选表达", {"session_id": "s1"}, 0)
-        queue.cancel(job_id)
-    view = queue.list()
-    assert len(view["tasks"]) == 20 and view["counts"]["cancelled"] == 200
-    assert queue.waiting_ids() == ["waiting-99"]
-    assert queue.cleanup()["remaining"] == 201
-
-
-def test_queue_cleanup_leaves_entry_cleanup_to_configured_memory_store(queue, memory):
-    clock = Clock()
-    memory.clock = clock
-    observe(memory)
-    clock.advance(14)
-    queue.cleanup()
-    assert len(memory.list_entries()) == 1
-    assert memory.cleanup()["expired"] == 1
-    assert memory.revision() == 0 and not memory.list_entries()
-
-
-def test_queue_does_not_let_uncommitted_task_claim_success(queue):
-    task = begin(queue)
+def test_cannot_finish_without_committing_or_report_fake_model_usage(stores):
+    memory, queue = stores
+    enqueue(memory, queue)
+    queue.claim()
     with pytest.raises(ContentError, match="尚未提交"):
-        queue.finish(task["job_id"], "completed", usage=usage(calls=0))
+        queue.finish("job1", "completed")
+    with pytest.raises(ContentError, match="模型调用"):
+        queue.finish("job1", "failed", usage=Usage(model_calls=1))
 
 
-@pytest.mark.parametrize("committed", [False, True])
-def test_history_retains_cancelled_inflight_usage_until_response_settles(queue, committed):
-    task = begin(queue)
-    if committed:
-        commit(queue, task)
-    queue.cancel(task["job_id"])
-    for number in range(200):
-        job_id = f"cancel-{number}"
-        queue.enqueue(job_id, "用户表达", {"session_id": "s1"}, 0)
-        queue.cancel(job_id)
-    assert queue.cleanup()["remaining"] == 200
-    pending = queue.get(task["job_id"])
-    assert pending["usage_unknown"] and "usage_pending" not in pending
-    settled = queue.finish(task["job_id"], "failed", usage=usage())
-    assert settled["state"] == ("completed" if committed else "cancelled")
-    assert settled["usage"]["model_calls"] == 1 and not settled["usage_unknown"]
-    assert "usage_pending" not in raw_payload(queue, task["job_id"])
+def test_queue_idempotent_and_rejects_rebinding(stores):
+    memory, queue = stores
+    original = enqueue(memory, queue)
+    enqueue(memory, queue)
+    assert queue.list()["counts"]["queued"] == 1
+    with pytest.raises(ContentError, match="改绑"):
+        queue.enqueue(
+            "job1", [], {"session_id": "s1"}, original["sequence"], original["source_text"]
+        )
 
 
-def test_recovery_releases_unsettled_history_without_inventing_usage(queue):
-    task = begin(queue)
-    queue.cancel(task["job_id"])
-    assert raw_payload(queue, task["job_id"])["usage_pending"]
-    assert LearningStore(queue.path).recover() == {"completed": 0, "failed": 0}
-    recovered = queue.get(task["job_id"])
-    assert recovered["state"] == "cancelled" and recovered["usage_unknown"]
-    assert recovered["usage"] == {} and not recovered["can_retry"]
-    assert "usage_pending" not in raw_payload(queue, task["job_id"])
+def test_memory_failure_does_not_require_generation_status(stores):
+    memory, queue = stores
+    enqueue(memory, queue)
+    queue.claim()
+    result = queue.finish("job1", "failed", error={"code": "memory_internal_error"})
+    assert result["can_retry"] and result["error"]["code"] == "memory_internal_error"
+
+
+def test_recreated_pruned_queue_task_replays_without_losing_receipt(stores):
+    memory, queue = stores
+    original = enqueue(memory, queue)
+    queue.claim()
+    first = memory.observe_proposals(**original, learning_job_id="job1")[0]
+    queue.finish("job1", "completed")
+    with queue.database.transaction() as db:
+        db.execute("DELETE FROM memory_learning_jobs WHERE job_id='job1'")
+    enqueue(memory, queue)
+    queue.claim()
+    second = memory.observe_proposals(**original, learning_job_id="job1")[0]
+    result = queue.finish("job1", "completed")
+    assert first.memory_id == second.memory_id
+    assert result["counts"] == {"created": 0, "reinforced": 0, "promoted": 0}
+    assert second.independent_sessions == 1
+
+
+def test_cancelled_source_cannot_reenqueue_after_history_pruning(stores, monkeypatch):
+    memory, queue = stores
+    original = enqueue(memory, queue)
+    queue.claim()
+    queue.finish("job1", "failed", error={"code": "memory_internal_error"})
+    queue.retry("job1")
+    queue.cancel("job1")
+    assert memory.was_withdrawn("job1")
+    monkeypatch.setattr("manimagent.memory.learning.MAX_HISTORY", 0)
+    assert queue.cleanup()["removed"] == 1
+    with pytest.raises(ContentError) as error:
+        enqueue(memory, queue)
+    assert error.value.error.code == "memory_learning_cancelled"
+    assert queue.claim() is None
+    assert memory.observe_proposals(**original) == []
+    assert not memory.list_entries()
+
+
+def test_withdrawn_source_cannot_enter_or_retry_queue(stores):
+    memory, queue = stores
+    original = pending(memory, source="withdraw-before-enqueue")
+    memory.withdraw_source("withdraw-before-enqueue")
+    with pytest.raises(ContentError) as error:
+        queue.enqueue(
+            "withdraw-before-enqueue",
+            original["proposals"],
+            {"session_id": "s1"},
+            original["sequence"],
+            original["source_text"],
+        )
+    assert error.value.error.code == "memory_learning_cancelled"
+    enqueue(memory, queue)
+    queue.claim()
+    queue.finish("job1", "failed", error={"code": "memory_internal_error"})
+    memory.withdraw_source("job1")
+    assert queue.retry("job1")["state"] == "cancelled"
+    assert queue.claim() is None
+    assert not memory.list_entries()
+
+
+def test_cancel_after_atomic_commit_does_not_withdraw_its_evidence(stores):
+    memory, queue = stores
+    original = enqueue(memory, queue)
+    queue.claim()
+    memory.observe_proposals(**original, learning_job_id="job1")
+    assert queue.cancel("job1")["state"] == "completed"
+    assert not memory.was_withdrawn("job1")
+    assert memory.list_entries()[0].independent_sessions == 1
+
+
+def test_reenqueue_preserves_committed_result_even_if_source_was_later_withdrawn(stores):
+    memory, queue = stores
+    original = enqueue(memory, queue)
+    queue.claim()
+    memory.observe_proposals(**original, learning_job_id="job1")
+    memory.withdraw_source("job1")
+    queue.enqueue(
+        "job1",
+        original["proposals"],
+        {"session_id": "s1"},
+        original["sequence"],
+        original["source_text"],
+    )
+    assert queue.get("job1")["state"] == "completed"
+    assert not memory.list_entries()

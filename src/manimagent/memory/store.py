@@ -1,10 +1,9 @@
-"""Transactional local user memory with bounded evidence and immutable source keys."""
+"""Deterministic typed preferences with ordered, evidence-backed transactions."""
 
 from __future__ import annotations
 
 import json
-import unicodedata
-from collections.abc import Callable
+from collections import Counter
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from uuid import uuid4
@@ -13,498 +12,605 @@ from pydantic import ValidationError
 
 from manimagent.errors import ContentError
 
-from .database import MemoryDatabase, expired, fingerprint
-from .files import MemoryDocuments, parse_edit, publish_documents
-from .models import MemoryCandidate, MemoryEntry, MemoryEvidence, MemoryOptions, MemoryPolicy
+from .database import SCHEMA_VERSION, MemoryDatabase, expired, fingerprint
+from .files import MemoryDocuments, publish_documents
+from .models import MemoryEntry, MemoryEvidence, MemoryOptions, MemoryPolicy
 
-POLICY_VERSION = "user-memory-2"
+POLICY_VERSION = "typed-user-memory-3"
 
 
-def normalized(value: str) -> str:
-    return " ".join(unicodedata.normalize("NFKC", value).split())
+def applicable_scopes(scope):
+    return {
+        "global",
+        scope,
+        *(["course." + scope.split(".")[1]] if scope.startswith("topic.") else []),
+    }
 
 
 class MemoryStore:
-    def __init__(
-        self,
-        path: Path,
-        policy: MemoryPolicy | None = None,
-        clock: Callable[[], datetime] | None = None,
-    ):
+    def __init__(self, path: Path, policy: MemoryPolicy | None = None, clock=None):
         self.database = MemoryDatabase(path)
         self.path = self.database.path
         self.policy = policy or MemoryPolicy()
         self.clock = clock or (lambda: datetime.now(UTC))
         self.documents = MemoryDocuments(self)
 
-    def _now(self) -> datetime:
-        value = self.clock()
-        if value.tzinfo is None:
+    def _now(self):
+        at = self.clock()
+        if at.tzinfo is None:
             raise ValueError("memory clock must return a timezone-aware datetime")
-        return value.astimezone(UTC)
-
-    def revision(self) -> int:
-        with self.database.transaction() as db:
-            return self.database.revision(db)
+        return at
 
     @staticmethod
-    def _save(db, entry: MemoryEntry):
+    def _save(db, entry):
         db.execute(
-            "INSERT INTO entries(id,body) VALUES (?,?) "
-            "ON CONFLICT(id) DO UPDATE SET body=excluded.body",
+            "INSERT INTO entries VALUES (?,?) ON CONFLICT(id) DO UPDATE SET body=excluded.body",
             (entry.memory_id, entry.model_dump_json()),
         )
 
     @staticmethod
-    def _get(db, memory_id) -> MemoryEntry:
+    def _get(db, memory_id):
         row = db.execute("SELECT body FROM entries WHERE id=?", (memory_id,)).fetchone()
         if row is None:
             raise ContentError("memory_not_found", "记忆不存在或已清理", 404)
         return MemoryEntry.model_validate_json(row[0])
 
-    def _prune(self, db, at, protected=()) -> dict:
-        counts = {"expired": 0, "superseded": 0, "evicted": 0}
-        for entry in self.database.entries(db):
-            reason = (
-                "superseded"
-                if entry.state == "superseded"
-                else "expired"
-                if expired(entry, at)
-                else None
-            )
-            if reason and entry.memory_id not in protected:
-                db.execute("DELETE FROM entries WHERE id=?", (entry.memory_id,))
-                counts[reason] += 1
-        entries = self.database.entries(db)
-        excess = max(0, len(entries) - self.policy.max_entries)
-        candidates = sorted(
-            (e for e in entries if e.memory_id not in protected and e.layer == "short_term"),
-            key=lambda e: (not e.temporary, e.independent_sessions, e.updated_at, e.memory_id),
-        )
-        if len(candidates) < excess:
-            raise ContentError("memory_capacity", "记忆容量已满，请删除不再需要的深层记忆", 409)
-        for entry in candidates[:excess]:
-            db.execute("DELETE FROM entries WHERE id=?", (entry.memory_id,))
-            counts["evicted"] += 1
-        return counts
-
-    def _supersede(self, db, entry, at):
-        for other in self.database.entries(db):
-            if (
-                other.memory_id != entry.memory_id
-                and other.state == "active"
-                and other.scope == entry.scope
-                and normalized(other.field) == normalized(entry.field)
-                and not other.temporary
-            ):
-                other.state = "superseded"
-                other.updated_at = at.isoformat()
-                self._save(db, other)
-
-    def _append_evidence(self, entry, evidence):
-        entry.evidence = (entry.evidence + [evidence])[-self.policy.max_evidence_per_entry :]
-
-    def replay(
-        self, *, session_id: str, source_id: str, source_text: str, scope: str = "global"
-    ) -> list[MemoryEntry] | None:
-        """Return prior results before another extraction call; [] includes deletion."""
-        options = MemoryOptions(session_id=session_id, scope=scope)
-        signature = fingerprint(
-            {
-                "session_id": options.session_id,
-                "scope": options.scope,
-                "text": source_text,
-            }
-        )
+    def revision(self):
         with self.database.transaction() as db:
-            previous = db.execute(
+            return self.database.revision(db)
+
+    def _snapshot(self, db, session_id, scope, at):
+        # Preserve all applicable candidates: the compiler handles exclusions and priority.
+        entries = [
+            e
+            for e in self.database.entries(db)
+            if e.state == "active" and not expired(e, at) and e.scope in applicable_scopes(scope)
+        ]
+        entries.sort(key=lambda e: (e.scope, e.field, e.value, e.memory_id))
+        snapshot = {
+            "policy_version": POLICY_VERSION,
+            "schema_version": SCHEMA_VERSION,
+            "revision": self.database.revision(db),
+            "manual_revision": self.database.revision(db),
+            "captured_at": at.isoformat(),
+            "scope": scope,
+            "session_id": session_id,
+            "entries": [e.model_dump(exclude={"evidence"}) for e in entries],
+        }
+        if (
+            len(entries) > self.policy.max_snapshot_entries
+            or len(json.dumps(snapshot, ensure_ascii=False)) > self.policy.max_snapshot_chars
+        ):
+            raise ContentError(
+                "memory_budget", "冻结记忆超过预算，请调整配置或清理条目；未静默裁剪", 422
+            )
+        return snapshot
+
+    def snapshot(self, session_id, scope="global"):
+        options = MemoryOptions(session_id=session_id, scope=scope)
+        with self.database.transaction() as db:
+            return self._snapshot(db, options.session_id, options.scope, self._now())
+
+    @staticmethod
+    def _input(session_id, source_text, scope):
+        return fingerprint({"session_id": session_id, "scope": scope, "text": source_text})
+
+    def _accept(self, db, source_id, session_id, source_text, scope, read):
+        if (
+            not isinstance(source_id, str)
+            or not 1 <= len(source_id) <= 100
+            or len(source_text) > 12000
+        ):
+            raise ContentError("invalid_memory", "记忆来源标识或输入长度无效", 422)
+        signature = self._input(session_id, source_text, scope)
+        row = db.execute(
+            "SELECT sequence,signature,snapshot FROM acceptances WHERE source_hash=?",
+            (fingerprint(source_id),),
+        ).fetchone()
+        if row:
+            if row[1] != signature:
+                raise ContentError("memory_source_conflict", "同一来源 ID 不能用于不同输入", 409)
+            return {"sequence": row[0], "snapshot": json.loads(row[2]) if row[2] else None}
+        count = db.execute(
+            "SELECT COUNT(*) FROM (SELECT source_hash AS id FROM acceptances UNION SELECT id FROM sources)"
+        ).fetchone()[0]
+        if count >= self.policy.max_sources:
+            raise ContentError("memory_capacity", "记忆来源索引已满，未丢弃防重放依据", 409)
+        at = self._now()
+        snapshot = self._snapshot(db, session_id, scope, at) if read else None
+        sequence = self.database.next_sequence(db)
+        db.execute(
+            "INSERT INTO acceptances(source_hash,sequence,signature,snapshot,accepted_at) VALUES (?,?,?,?,?)",
+            (
+                fingerprint(source_id),
+                sequence,
+                signature,
+                json.dumps(snapshot, ensure_ascii=False) if snapshot is not None else None,
+                at.isoformat(),
+            ),
+        )
+        return {"sequence": sequence, "snapshot": snapshot}
+
+    def accept(self, source_id, session_id, source_text, scope="global", read=True):
+        options = MemoryOptions(session_id=session_id, scope=scope, read=read)
+        with self.database.transaction() as db:
+            return self._accept(db, source_id, options.session_id, source_text, options.scope, read)
+
+    def replay(self, *, session_id, source_id, source_text, scope="global"):
+        with self.database.transaction() as db:
+            row = db.execute(
                 "SELECT input_fingerprint,entry_ids FROM sources WHERE id=?",
                 (fingerprint(source_id),),
             ).fetchone()
-            if previous is None:
+            if row is None:
                 return None
-            if previous[0] != signature:
-                raise ContentError(
-                    "memory_source_conflict", "同一来源 ID 不能用于不同记忆输入", 409
-                )
-            ids = set(json.loads(previous[1]))
-            return [entry for entry in self.database.entries(db) if entry.memory_id in ids]
+            if row[0] != self._input(session_id, source_text, scope):
+                raise ContentError("memory_source_conflict", "同一来源 ID 不能用于不同输入", 409)
+            ids = json.loads(row[1])
+            return [
+                e
+                for e in self.database.entries(db)
+                if e.memory_id in ids and e.state == "active" and not expired(e, self._now())
+            ]
 
-    @publish_documents
-    def observe(
-        self,
-        candidates: list[MemoryCandidate],
-        *,
-        session_id: str,
-        source_id: str,
-        source_text: str,
-        scope: str = "global",
-        expected_revision: int | None = None,
-        learning_job_id: str | None = None,
-    ) -> list[MemoryEntry]:
-        options = MemoryOptions(session_id=session_id, scope=scope)
-        session_id, scope = options.session_id, options.scope
-        if not source_id.strip() or len(source_id) > 200:
-            raise ContentError("invalid_memory", "记忆来源 ID 无效")
-        if len(candidates) > 12:
-            raise ContentError("invalid_memory", "每次最多提取 12 条记忆")
-        candidates = [MemoryCandidate.model_validate(c) for c in candidates]
-        for candidate in candidates:
-            if candidate.evidence not in source_text:
-                raise ContentError("ungrounded_memory", "记忆证据必须逐字来自用户输入")
-        key = fingerprint(source_id)
-        input_data = {"session_id": session_id, "scope": scope, "text": source_text}
-        signature = fingerprint(
-            {
-                **input_data,
-                "candidates": [c.model_dump() for c in candidates],
-            }
+    @staticmethod
+    def _fence(db, scope, field, sequence):
+        db.execute(
+            "INSERT INTO memory_fences VALUES (?,?,?) ON CONFLICT(scope,field) DO UPDATE SET sequence=MAX(sequence,excluded.sequence)",
+            (scope, field, sequence),
         )
-        at = self._now()
-        with self.database.transaction() as db:
-            previous = db.execute(
-                "SELECT fingerprint,entry_ids FROM sources WHERE id=?", (key,)
-            ).fetchone()
-            if previous:
-                if previous[0] != signature:
-                    raise ContentError(
-                        "memory_source_conflict", "同一来源 ID 不能用于不同记忆输入", 409
-                    )
-                ids = set(json.loads(previous[1]))
-                return [e for e in self.database.entries(db) if e.memory_id in ids]
-            if expected_revision is not None and expected_revision != self.database.revision(db):
+
+    def _supersede(self, db, chosen):
+        for e in self.database.entries(db):
+            if (
+                e.memory_id != chosen.memory_id
+                and e.scope == chosen.scope
+                and e.field == chosen.field
+                and e.state == "active"
+                and e.layer == "deep"
+            ):
+                e.state = "superseded"
+                self._save(db, e)
+
+    def _recompute(self, db, entry):
+        rows = db.execute(
+            "SELECT source_id,session_id,quote,intent,observed_at,sequence FROM observations WHERE entry_id=? ORDER BY sequence,id",
+            (entry.memory_id,),
+        ).fetchall()
+        if not rows:
+            db.execute("DELETE FROM entries WHERE id=?", (entry.memory_id,))
+            return None
+        confirmations = [r for r in rows if r[3] in {"default", "correct", "restore"}]
+        entry.confirmed_at = confirmations[-1][4] if confirmations else None
+        latest = rows[-1]
+        entry.session_id, entry.updated_at, entry.accepted_sequence = (
+            latest[1],
+            latest[4],
+            latest[5],
+        )
+        entry.self_reported = entry.field.startswith("profile.")
+        explicit = bool(confirmations)
+        # A stable preference retains its historical support window; merely ageing
+        # does not erase it. Source withdrawal recomputes that window from evidence.
+        days = 365 if entry.self_reported else self.policy.short_term_days
+        dated = [(datetime.fromisoformat(r[4]), r[1]) for r in rows]
+        dated.sort()
+        active_sessions = Counter()
+        left, window_support = 0, 0
+        for end, session in dated:
+            active_sessions[session] += 1
+            while dated[left][0] <= end - timedelta(days=days):
+                prior_session = dated[left][1]
+                active_sessions[prior_session] -= 1
+                if not active_sessions[prior_session]:
+                    del active_sessions[prior_session]
+                left += 1
+            window_support = max(window_support, len(active_sessions))
+        promoted = not entry.self_reported and window_support >= self.policy.promotion_sessions
+        current_start = datetime.fromisoformat(latest[4]) - timedelta(days=days)
+        entry.independent_sessions = (
+            len({r[1] for r in rows})
+            if explicit or promoted
+            else len({session for date, session in dated if date > current_start})
+        )
+        entry.layer = "deep" if explicit or promoted else "short_term"
+        days = 365 if entry.self_reported else self.policy.short_term_days
+        entry.expires_at = (
+            (datetime.fromisoformat(latest[4]) + timedelta(days=days)).isoformat()
+            if entry.self_reported or entry.layer == "short_term"
+            else None
+        )
+        kinds = {
+            "observe": "observation",
+            "default": "confirmation",
+            "correct": "correction",
+            "restore": "restoration",
+        }
+        entry.evidence = [
+            MemoryEvidence(source_id=r[0], session_id=r[1], quote=r[2], kind=kinds[r[3]], date=r[4])
+            for r in rows[-self.policy.max_evidence_per_entry :]
+        ]
+        self._save(db, entry)
+        return entry
+
+    def _prune(self, db, at, protected=()):
+        counts = {"expired": 0, "superseded": 0, "evicted": 0}
+        for e in self.database.entries(db):
+            reason = (
+                "superseded" if e.state == "superseded" else "expired" if expired(e, at) else None
+            )
+            if reason:
+                db.execute("DELETE FROM entries WHERE id=?", (e.memory_id,))
+                counts[reason] += 1
+        entries = self.database.entries(db)
+        removable = sorted(
+            (e for e in entries if e.layer == "short_term" and e.memory_id not in protected),
+            key=lambda e: (e.accepted_sequence, e.memory_id),
+        )
+        overflow = len(entries) - self.policy.max_entries
+        if overflow > len(removable):
+            raise ContentError("memory_capacity", "记忆容量已满，未丢弃已确认默认", 409)
+        for e in removable[: max(0, overflow)]:
+            db.execute("DELETE FROM entries WHERE id=?", (e.memory_id,))
+            counts["evicted"] += 1
+        return counts
+
+    def _apply(
+        self,
+        db,
+        proposals,
+        *,
+        source_id,
+        session_id,
+        source_text,
+        scope,
+        sequence,
+        learning_job_id=None,
+    ):
+        from manimagent.personalization import MemoryProposal
+
+        proposals = [MemoryProposal.model_validate(p) for p in proposals]
+        if type(sequence) is not int or sequence <= 0:
+            raise ContentError("invalid_memory", "受理序号必须是正整数", 422)
+        decisions = {}
+        for proposal in proposals:
+            if proposal.intent != "forget":
+                key = (proposal.scope, proposal.field)
+                if key in decisions and decisions[key] != proposal.value:
+                    raise ContentError("invalid_memory", "同次候选对同范围字段存在冲突", 422)
+                decisions[key] = proposal.value
+        if len(proposals) > 20:
+            raise ContentError("invalid_memory", "记忆候选超过20条上限", 422)
+        for p in proposals:
+            if not p.quote.strip() or p.quote not in source_text:
+                raise ContentError("ungrounded_memory", "记忆证据必须逐字来自用户输入", 422)
+            if p.scope not in applicable_scopes(scope):
                 raise ContentError(
-                    "memory_changed", "记忆已被你修改，旧的后台提取结果已停止写入", 409
+                    "invalid_memory_scope", "候选范围不属于用户选择的课程或主题", 422
                 )
-            if learning_job_id is not None:
-                if learning_job_id != source_id:
-                    raise ContentError("invalid_memory", "后台记忆来源必须与任务一致")
-                self.database.require_running(db, learning_job_id)
-            source_count = db.execute("SELECT COUNT(*) FROM sources").fetchone()[0]
-            if source_count >= self.policy.max_sources:
-                raise ContentError("memory_capacity", "记忆来源索引已满，暂停新的自动记忆写入", 409)
-            self._prune(db, at)
-            before = {entry.memory_id: entry.layer for entry in self.database.entries(db)}
-            changed = []
-            for candidate in candidates:
-                field, value = normalized(candidate.field), normalized(candidate.value)
-                entry = next(
-                    (
-                        e
-                        for e in self.database.entries(db)
-                        if (
-                            e.state == "active"
-                            and e.scope == scope
-                            and normalized(e.field) == field
-                            and normalized(e.value) == value
-                            and e.temporary == candidate.temporary
-                            and (not candidate.temporary or e.session_id == session_id)
-                        )
-                    ),
-                    None,
-                )
-                if entry is None:
-                    # Evict after processing the batch: a new confirming value may
-                    # supersede a deep entry even when the store is currently full.
-                    entry = MemoryEntry(
-                        memory_id="memory_" + uuid4().hex,
-                        field=field,
-                        value=value,
-                        scope=scope,
-                        temporary=candidate.temporary,
-                        session_id=session_id,
-                        created_at=at.isoformat(),
-                        updated_at=at.isoformat(),
-                    )
-                entry.updated_at = at.isoformat()
-                entry.session_id = session_id
-                self._save(db, entry)
-                order = db.execute(
-                    "SELECT COALESCE(MAX(last_order), 0) + 1 FROM sessions"
-                ).fetchone()[0]
+        signature = self._input(session_id, source_text, scope)
+        source_hash = fingerprint(source_id)
+        accepted = db.execute(
+            "SELECT sequence,signature,accepted_at,withdrawn FROM acceptances WHERE source_hash=?",
+            (source_hash,),
+        ).fetchone()
+        if not accepted or accepted[0] != sequence or accepted[1] != signature:
+            raise ContentError("memory_source_conflict", "候选未绑定相同的已受理用户输入", 409)
+        proposal_hash = fingerprint([p.model_dump() for p in proposals])
+        if learning_job_id:
+            if learning_job_id != source_id:
+                raise ContentError("invalid_memory", "提交任务必须使用自身来源标识", 422)
+            self.database.require_running(db, learning_job_id)
+            queued = json.loads(
                 db.execute(
-                    "INSERT INTO sessions(entry_id,session_id,last_seen,last_order) VALUES (?,?,?,?) "
-                    "ON CONFLICT(entry_id,session_id) DO UPDATE SET "
-                    "last_seen=excluded.last_seen,last_order=excluded.last_order",
-                    (entry.memory_id, session_id, at.isoformat(), order),
-                )
-                # Sources are bounded, so independent-session metadata is bounded too.
-                entry.independent_sessions = db.execute(
-                    "SELECT COUNT(*) FROM sessions WHERE entry_id=?", (entry.memory_id,)
+                    "SELECT payload FROM memory_learning_jobs WHERE job_id=?", (learning_job_id,)
                 ).fetchone()[0]
-                self._append_evidence(
-                    entry,
-                    MemoryEvidence(
-                        source_id=source_id,
-                        session_id=session_id,
-                        quote=candidate.evidence,
-                        date=at.isoformat(),
-                    ),
+            )
+            if queued["sequence"] != sequence or fingerprint(queued["proposals"]) != proposal_hash:
+                raise ContentError("memory_source_conflict", "提交候选与持久任务不一致", 409)
+        prior = db.execute(
+            "SELECT fingerprint,input_fingerprint,entry_ids FROM sources WHERE id=?", (source_hash,)
+        ).fetchone()
+        if prior:
+            if prior[:2] != (proposal_hash, signature):
+                raise ContentError("memory_source_conflict", "同一来源不能改写已经提交的候选", 409)
+            ids = set(json.loads(prior[2]))
+            if learning_job_id:
+                self.database.record_learning_write(
+                    db,
+                    learning_job_id,
+                    {
+                        "created_ids": [],
+                        "reinforced_ids": [],
+                        "promoted_ids": [],
+                        "skipped_proposals": [],
+                        "replayed": True,
+                    },
                 )
-                if (
-                    entry.layer == "short_term"
-                    and not entry.temporary
-                    and entry.independent_sessions >= self.policy.promotion_sessions
-                ):
-                    entry.layer = "deep"
-                    self._supersede(db, entry, at)
-                entry.expires_at = (
-                    (at + timedelta(days=self.policy.short_term_days)).isoformat()
-                    if entry.layer == "short_term"
-                    else None
+            return [
+                e
+                for e in self.database.entries(db)
+                if e.memory_id in ids and e.state == "active" and not expired(e, self._now())
+            ]
+        at = self._now()
+        before = {e.memory_id: e.layer for e in self.database.entries(db)}
+        changed, skipped = set(), []
+        if accepted[3]:
+            skipped.append({"reason": "source_withdrawn"})
+            proposals = []
+        for p in proposals:
+            candidate_days = 365 if p.field.startswith("profile.") else self.policy.short_term_days
+            if (p.intent == "observe" or p.field.startswith("profile.")) and datetime.fromisoformat(
+                accepted[2]
+            ) + timedelta(days=candidate_days) <= at:
+                skipped.append({"field": p.field, "reason": "expired_before_commit"})
+                continue
+            key = (p.scope, p.field)
+            explicit_fence = db.execute(
+                "SELECT sequence FROM memory_explicit_fences WHERE scope=? AND field=?", key
+            ).fetchone()
+            if explicit_fence and sequence < explicit_fence[0]:
+                skipped.append({"field": p.field, "reason": "newer_explicit_decision"})
+                continue
+            barrier = db.execute(
+                "SELECT sequence FROM memory_fences WHERE scope=? AND field=?", key
+            ).fetchone()
+            same_stable_value = p.intent == "observe" and any(
+                e.state == "active"
+                and e.layer == "deep"
+                and (e.scope, e.field, e.value) == (*key, p.value)
+                for e in self.database.entries(db)
+            )
+            if barrier and sequence < barrier[0] and not same_stable_value:
+                skipped.append({"field": p.field, "reason": "newer_decision"})
+                continue
+            suppressed = db.execute(
+                "SELECT sequence FROM memory_suppressions WHERE scope=? AND field=? AND value=?",
+                (*key, p.value),
+            ).fetchone()
+            if (
+                suppressed
+                and p.intent != "forget"
+                and (p.intent != "restore" or sequence <= suppressed[0])
+            ):
+                skipped.append({"field": p.field, "reason": "suppressed"})
+                continue
+            if p.intent != "observe":
+                db.execute(
+                    "INSERT INTO memory_explicit_fences VALUES (?,?,?) ON CONFLICT(scope,field) DO UPDATE SET sequence=MAX(sequence,excluded.sequence)",
+                    (*key, sequence),
+                )
+            if p.intent == "forget":
+                db.execute(
+                    "INSERT INTO memory_suppressions VALUES (?,?,?,?) ON CONFLICT(scope,field,value) DO UPDATE SET sequence=MAX(sequence,excluded.sequence)",
+                    (*key, p.value, sequence),
+                )
+                for e in self.database.entries(db):
+                    if (e.scope, e.field, e.value) == (*key, p.value):
+                        db.execute("DELETE FROM entries WHERE id=?", (e.memory_id,))
+                self._fence(db, *key, sequence)
+                continue
+            if p.intent == "restore":
+                db.execute(
+                    "DELETE FROM memory_suppressions WHERE scope=? AND field=? AND value=?",
+                    (*key, p.value),
+                )
+            entry = next(
+                (
+                    e
+                    for e in self.database.entries(db)
+                    if e.state == "active"
+                    and not expired(e, at)
+                    and (e.scope, e.field, e.value) == (*key, p.value)
+                ),
+                None,
+            )
+            if entry is None:
+                entry = MemoryEntry(
+                    memory_id="memory_" + uuid4().hex,
+                    field=p.field,
+                    value=p.value,
+                    scope=p.scope,
+                    session_id=session_id,
+                    created_at=accepted[2],
+                    updated_at=accepted[2],
                 )
                 self._save(db, entry)
-                if entry.memory_id not in changed:
-                    changed.append(entry.memory_id)
-            self._prune(db, at, protected=changed)
             db.execute(
-                "INSERT INTO sources(id,fingerprint,entry_ids,input_fingerprint) VALUES (?,?,?,?)",
-                (key, signature, json.dumps(changed), fingerprint(input_data)),
-            )
-            result = [self._get(db, identifier) for identifier in changed]
-            if learning_job_id is not None:
-                # Commit the exact effect alongside memory and the source ledger.
-                # Recovery can finish this task without another paid extraction.
-                effect = {
-                    "entry_ids": changed,
-                    "created_ids": [
-                        entry.memory_id for entry in result if entry.memory_id not in before
-                    ],
-                    "reinforced_ids": [
-                        entry.memory_id for entry in result if entry.memory_id in before
-                    ],
-                    "promoted_ids": [
-                        entry.memory_id
-                        for entry in result
-                        if before.get(entry.memory_id) == "short_term" and entry.layer == "deep"
-                    ],
-                }
-                self.database.record_learning_write(db, learning_job_id, effect)
-            return result
-
-    def list_entries(self) -> list[MemoryEntry]:
-        with self.database.transaction() as db:
-            return sorted(
-                self.database.entries(db), key=lambda e: (e.updated_at, e.memory_id), reverse=True
-            )
-
-    @publish_documents
-    def confirm(self, memory_id: str) -> MemoryEntry:
-        at = self._now()
-        with self.database.transaction() as db:
-            entry = self._get(db, memory_id)
-            if entry.temporary or entry.state != "active" or expired(entry, at):
-                raise ContentError(
-                    "invalid_memory", "临时、过期或已替代的记忆不能直接确认为长期偏好"
-                )
-            entry.layer, entry.expires_at = "deep", None
-            entry.updated_at = entry.confirmed_at = at.isoformat()
-            self._append_evidence(
-                entry,
-                MemoryEvidence(
-                    source_id="confirmation_" + uuid4().hex,
-                    session_id=entry.session_id,
-                    quote=entry.value,
-                    date=at.isoformat(),
-                    kind="confirmation",
+                "INSERT OR IGNORE INTO observations(entry_id,source_hash,source_id,session_id,quote,intent,observed_at,sequence) VALUES (?,?,?,?,?,?,?,?)",
+                (
+                    entry.memory_id,
+                    source_hash,
+                    source_id,
+                    session_id,
+                    p.quote,
+                    p.intent,
+                    accepted[2],
+                    sequence,
                 ),
             )
-            self._supersede(db, entry, at)
-            self._save(db, entry)
-            self._prune(db, at, protected=[entry.memory_id])
-            self.database.bump_revision(db)
-            return entry
+            entry = self._recompute(db, entry)
+            if entry.layer == "deep":
+                self._supersede(db, entry)
+                self._fence(db, *key, entry.accepted_sequence)
+            changed.add(entry.memory_id)
+        self._prune(db, at, protected=changed)
+        entries = [
+            e
+            for e in self.database.entries(db)
+            if e.memory_id in changed and e.state == "active" and not expired(e, at)
+        ]
+        ids = [e.memory_id for e in entries]
+        db.execute(
+            "INSERT INTO sources VALUES (?,?,?,?)",
+            (source_hash, proposal_hash, json.dumps(ids), signature),
+        )
+        self.database.bump_revision(db)
+        if learning_job_id:
+            self.database.record_learning_write(
+                db,
+                learning_job_id,
+                {
+                    "created_ids": [i for i in ids if i not in before],
+                    "reinforced_ids": [i for i in ids if i in before],
+                    "promoted_ids": [
+                        e.memory_id
+                        for e in entries
+                        if e.layer == "deep" and before.get(e.memory_id) != "deep"
+                    ],
+                    "skipped_proposals": skipped,
+                },
+            )
+        return entries
 
     @publish_documents
-    def correct(
+    def observe_proposals(
         self,
-        memory_id: str,
-        value: str,
+        proposals,
         *,
-        confirm_long_term: bool = False,
-        document: str | None = None,
-    ) -> MemoryEntry:
-        at = self._now()
+        source_id,
+        session_id,
+        source_text,
+        scope="global",
+        sequence,
+        learning_job_id=None,
+    ):
+        options = MemoryOptions(session_id=session_id, scope=scope)
+        with self.database.transaction() as db:
+            return self._apply(
+                db,
+                proposals,
+                source_id=source_id,
+                session_id=options.session_id,
+                source_text=source_text,
+                scope=options.scope,
+                sequence=sequence,
+                learning_job_id=learning_job_id,
+            )
+
+    def list_entries(self):
+        with self.database.transaction() as db:
+            return sorted(
+                (
+                    e
+                    for e in self.database.entries(db)
+                    if e.state == "active" and not expired(e, self._now())
+                ),
+                key=lambda e: (e.accepted_sequence, e.memory_id),
+                reverse=True,
+            )
+
+    def _manage(self, db, entry, value, intent):
+        from manimagent.personalization import MemoryProposal
+
+        if entry.state != "active" or expired(entry, self._now()):
+            raise ContentError("invalid_memory", "过期或已替代的记忆不能修改", 409)
+        source_id = "management_" + uuid4().hex
+        try:
+            proposal = MemoryProposal(
+                field=entry.field, value=value, scope=entry.scope, intent=intent, quote=value
+            )
+        except ValidationError as exc:
+            raise ContentError("invalid_memory", "该字段不支持此规范取值", 422) from exc
+        accepted = self._accept(db, source_id, entry.session_id, value, entry.scope, False)
+        result = self._apply(
+            db,
+            [proposal],
+            source_id=source_id,
+            session_id=entry.session_id,
+            source_text=value,
+            scope=entry.scope,
+            sequence=accepted["sequence"],
+        )
+        if not result and intent != "forget":
+            raise ContentError(
+                "memory_suppressed", "此取值已被遗忘，请明确重新记住后再设为默认", 409
+            )
+        return result[0] if result else None
+
+    @publish_documents
+    def confirm(self, memory_id):
+        with self.database.transaction() as db:
+            entry = self._get(db, memory_id)
+            return self._manage(db, entry, entry.value, "default")
+
+    @publish_documents
+    def correct(self, memory_id, value, *, confirm_long_term=False):
         with self.database.transaction() as db:
             old = self._get(db, memory_id)
-            if old.state != "active" or expired(old, at):
-                raise ContentError("invalid_memory", "过期或已替代的记忆不能纠正，请添加新的表达")
-            if document is not None:
-                if confirm_long_term:
-                    raise ContentError(
-                        "memory_document_invalid", "文件导入不能同时改变记忆层级", 422
-                    )
-                value = parse_edit(document, old)
-                if normalized(value) == old.value:
-                    return old
-            candidate = MemoryCandidate(field=old.field, value=value, evidence=value)
-            entry = MemoryEntry(
-                memory_id="memory_" + uuid4().hex,
-                field=old.field,
-                value=normalized(candidate.value),
-                scope=old.scope,
-                layer="deep" if confirm_long_term else old.layer,
-                temporary=False if confirm_long_term else old.temporary,
-                session_id=old.session_id,
-                independent_sessions=1,
-                created_at=at.isoformat(),
-                updated_at=at.isoformat(),
-                expires_at=None if confirm_long_term else old.expires_at,
-                confirmed_at=at.isoformat() if confirm_long_term else old.confirmed_at,
-                evidence=[
-                    MemoryEvidence(
-                        source_id="correction_" + uuid4().hex,
-                        session_id=old.session_id,
-                        quote=candidate.value,
-                        date=at.isoformat(),
-                        kind="correction",
-                    )
-                ],
-            )
-            old.state, old.updated_at = "superseded", at.isoformat()
-            self._save(db, old)
-            if entry.layer == "deep":
-                self._supersede(db, entry, at)
-            self._save(db, entry)
-            # A correction is one new explicit statement, not evidence that all
-            # historical sessions endorsed its new value. Preserve its original
-            # session's override without copying the old support count.
-            order = db.execute("SELECT COALESCE(MAX(last_order), 0) + 1 FROM sessions").fetchone()[
-                0
-            ]
-            db.execute(
-                "INSERT INTO sessions(entry_id,session_id,last_seen,last_order) VALUES (?,?,?,?)",
-                (entry.memory_id, entry.session_id, at.isoformat(), order),
-            )
-            self._prune(db, at, protected=[entry.memory_id])
-            self.database.bump_revision(db)
-            return entry
+            result = self._manage(db, old, value, "correct")
+            if result and result.memory_id != old.memory_id:
+                db.execute("DELETE FROM entries WHERE id=?", (old.memory_id,))
+            return result
 
     @publish_documents
-    def delete(self, memory_id: str) -> None:
+    def delete(self, memory_id):
         with self.database.transaction() as db:
-            self._get(db, memory_id)
-            db.execute("DELETE FROM entries WHERE id=?", (memory_id,))
+            entry = self._get(db, memory_id)
+            # Forgetting must remain available when the source ledger is full.
+            # It needs ordered revocation, not a new supporting observation.
+            sequence = self.database.next_sequence(db)
+            key = (entry.scope, entry.field)
+            db.execute(
+                "INSERT INTO memory_explicit_fences VALUES (?,?,?) ON CONFLICT(scope,field) DO UPDATE SET sequence=MAX(sequence,excluded.sequence)",
+                (*key, sequence),
+            )
+            db.execute(
+                "INSERT INTO memory_suppressions VALUES (?,?,?,?) ON CONFLICT(scope,field,value) DO UPDATE SET sequence=MAX(sequence,excluded.sequence)",
+                (*key, entry.value, sequence),
+            )
+            for existing in self.database.entries(db):
+                if (existing.scope, existing.field, existing.value) == (*key, entry.value):
+                    db.execute("DELETE FROM entries WHERE id=?", (existing.memory_id,))
+            self._fence(db, *key, sequence)
             self.database.bump_revision(db)
 
     @publish_documents
-    def cleanup(self) -> dict:
+    def withdraw_source(self, source_id):
+        with self.database.transaction() as db:
+            source_hash = fingerprint(source_id)
+            accepted = db.execute(
+                "SELECT 1 FROM acceptances WHERE source_hash=?", (source_hash,)
+            ).fetchone()
+            if not accepted:
+                raise ContentError("memory_source_not_found", "记忆来源不存在", 404)
+            affected = [
+                r[0]
+                for r in db.execute(
+                    "SELECT DISTINCT entry_id FROM observations WHERE source_hash=?", (source_hash,)
+                )
+            ]
+            db.execute("UPDATE acceptances SET withdrawn=1 WHERE source_hash=?", (source_hash,))
+            db.execute("DELETE FROM observations WHERE source_hash=?", (source_hash,))
+            for identifier in affected:
+                self._recompute(db, self._get(db, identifier))
+            self.database.bump_revision(db)
+            return {"withdrawn": True, "affected_ids": affected}
+
+    def was_withdrawn(self, source_id):
+        """Durable source cancellation survives bounded learning-job history."""
+        with self.database.transaction() as db:
+            row = db.execute(
+                "SELECT withdrawn FROM acceptances WHERE source_hash=?",
+                (fingerprint(source_id),),
+            ).fetchone()
+            return bool(row and row[0])
+
+    @publish_documents
+    def cleanup(self):
         with self.database.transaction() as db:
             counts = self._prune(db, self._now())
-            if counts["evicted"]:
+            if any(counts.values()):
                 self.database.bump_revision(db)
             return {**counts, "remaining": db.execute("SELECT COUNT(*) FROM entries").fetchone()[0]}
 
-    def sync_documents(self) -> dict:
+    def sync_documents(self):
         return self.documents.sync()
 
-    def read_document(self, memory_id: str) -> str:
+    def read_document(self, memory_id):
         return self.documents.read(memory_id)
 
-    def import_document(self, memory_id: str, content: str | None = None) -> MemoryEntry:
-        self.documents.path(memory_id)
-        content = self.read_document(memory_id) if content is None else content
-        try:
-            result = self.correct(memory_id, "", document=content)
-        except ValidationError as exc:
-            raise ContentError(
-                "memory_document_invalid", "记忆内容必须为 1 到 300 个有效字符", 422
-            ) from exc
-        except ContentError as exc:
-            if exc.error.code == "memory_not_found":
-                raise ContentError(
-                    "memory_document_conflict", "原记忆已删除或清理，文件不能重新创建该记忆", 409
-                ) from exc
-            raise
-        self.documents.accepted(memory_id, content)
-        self.sync_documents()
-        return result
-
-    def snapshot(self, session_id: str, scope: str = "global") -> dict:
-        options = MemoryOptions(session_id=session_id, scope=scope)
-        session_id, scope = options.session_id, options.scope
-        at = self._now()
-        with self.database.transaction() as db:
-            entries = [
-                e
-                for e in self.database.entries(db)
-                if (e.state == "active" and not expired(e, at) and e.scope in {"global", scope})
-            ]
-            seen = {
-                row[0]: (row[1], row[2])
-                for row in db.execute(
-                    "SELECT entry_id,last_seen,last_order FROM sessions WHERE session_id=?",
-                    (session_id,),
-                )
-            }
-            seen = {
-                identifier: details
-                for identifier, details in seen.items()
-                if datetime.fromisoformat(details[0])
-                > at - timedelta(days=self.policy.short_term_days)
-            }
-            entries = [e for e in entries if not e.temporary or e.session_id == session_id]
-            # Recent non-temporary facts remain available across sessions. Explicit
-            # statements in this session win first (latest statement wins ties),
-            # then applicable scope, then stable defaults over unconfirmed changes.
-            entries.sort(
-                key=lambda e: (
-                    e.memory_id in seen,
-                    seen.get(e.memory_id, ("", 0))[1],
-                    e.scope == scope,
-                    e.layer == "deep",
-                    e.updated_at,
-                    e.memory_id,
-                ),
-                reverse=True,
-            )
-            # Resolve each field before applying capacity limits. The losing
-            # value must not reappear when its winning value is too large.
-            winners = {}
-            for entry in entries:
-                winners.setdefault(entry.field, entry)
-            # Across unrelated fields, evidence recency/order is bookkeeping,
-            # not a reason to evict a semantically unchanged fact from context.
-            # Current-session and scoped requirements retain their precedence;
-            # temporary exceptions are important for this session only.
-            entries = sorted(
-                winners.values(),
-                key=lambda e: (
-                    e.memory_id not in seen,
-                    e.scope != scope,
-                    not e.temporary,
-                    e.layer != "deep",
-                    e.scope,
-                    e.field,
-                ),
-            )
-            selected = []
-            snapshot = {
-                "policy_version": POLICY_VERSION,
-                "manual_revision": self.database.revision(db),
-                "captured_at": at.isoformat(),
-                "scope": scope,
-                "session_id": session_id,
-                "entries": selected,
-            }
-            if len(json.dumps(snapshot, ensure_ascii=False)) > self.policy.max_snapshot_chars:
-                raise ContentError("memory_budget", "记忆上下文预算不足以容纳会话信息")
-            for entry in entries:
-                item = {
-                    key: getattr(entry, key)
-                    for key in (
-                        "memory_id",
-                        "field",
-                        "value",
-                        "scope",
-                        "layer",
-                        "temporary",
-                        "updated_at",
-                    )
-                }
-                selected.append(item)
-                if len(json.dumps(snapshot, ensure_ascii=False)) > self.policy.max_snapshot_chars:
-                    selected.pop()
-                if len(selected) == self.policy.max_snapshot_entries:
-                    break
-            return snapshot
+    def import_document(self, memory_id, content=None):
+        raise ContentError(
+            "memory_document_read_only", "记忆 Markdown 仅用于导出，请通过结构化管理修改默认", 409
+        )

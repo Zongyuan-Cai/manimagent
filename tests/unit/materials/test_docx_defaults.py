@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from io import BytesIO
 
 import pytest
@@ -39,6 +40,7 @@ def test_docdefaults_math_blocks_real_parser_and_preserves_original(tmp_path, ki
         job = wait_job(
             client, submit(client, [{"type": "file", "file_id": asset["file_id"]}]).json()["job_id"]
         )
-        assert job["status"] == "needs_review" and not calls
-        assert job["usage"]["model_calls"] == 0
+        assert job["status"] == "needs_review"
+        assert job["usage"]["model_calls"] == 1 and len(calls) == 1
+        assert "user_text" in json.loads(calls[0]["messages"][1]["content"])
         assert client.get(f"/api/v2/files/{asset['file_id']}/content").content == stream.getvalue()

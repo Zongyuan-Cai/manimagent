@@ -13,8 +13,7 @@ from collections import Counter
 from datetime import datetime
 from pathlib import Path
 
-from evals.support import save
-from manimagent.memory.projection import model_memory
+from evals.support import legacy_model_memory, save
 from manimagent.memory.store import normalized
 
 
@@ -471,7 +470,7 @@ def assess_round(case, before, after, snapshot, learning, record, history, actio
                 mismatched.append(role + ": missing memory payload")
             continue
         used_roles.append(role)
-        projected = model_memory(snapshot, role)
+        projected = legacy_model_memory(snapshot, role)
         if (
             payload.get("user_memory") != {"deep": projected["deep"]}
             or payload.get("recent_user_memory") != projected["recent"]

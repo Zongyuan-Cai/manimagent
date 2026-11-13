@@ -7,13 +7,11 @@ import subprocess
 import sys
 import threading
 
-import httpx
 import pytest
 
 from manimagent.jobs.manager import JobManager
-from manimagent.llm.client import ChatProvider
 from manimagent.schemas import Job, TextGenerationRequest
-from tests.support.animation import config, transport
+from tests.support.animation import config
 
 
 def learning_request():
@@ -49,62 +47,43 @@ else:
     return json.loads(completed.stdout)
 
 
-def test_stop_retains_process_lease_until_inflight_memory_response_finishes(tmp_path):
+def test_stop_retains_process_lease_until_inflight_memory_commit_finishes(tmp_path, monkeypatch):
+    from manimagent.personalization import MemoryProposal
+
     settings = config(tmp_path)
-    base = transport(settings, [])
+    manager = JobManager(settings)
     entered, release = threading.Event(), threading.Event()
+    original_commit = manager.memory.observe_proposals
+    source_id = "queued-memory"
+    accepted = manager.memory.accept(source_id, "shutdown", "请详细讲解")
+    manager.learning.enqueue(
+        source_id,
+        [MemoryProposal(field="explanation.detail", value="detailed", quote="请详细讲解")],
+        {"session_id": "shutdown"},
+        accepted["sequence"],
+        "请详细讲解",
+    )
 
-    def handler(request):
-        body = json.loads(request.content)
-        payload = json.loads(body["messages"][1]["content"])
-        if "user_text" not in payload:
-            return base.transport.handler(request)
+    def blocked_commit(*args, **kwargs):
         entered.set()
-        assert release.wait(15), "Test did not release the in-flight memory response"
-        return httpx.Response(
-            200,
-            json={
-                "choices": [
-                    {
-                        "message": {
-                            "content": json.dumps(
-                                {
-                                    "candidates": [
-                                        {
-                                            "field": "explanation.detail",
-                                            "value": "详细讲解",
-                                            "evidence": "请详细讲解",
-                                        }
-                                    ]
-                                }
-                            )
-                        },
-                        "finish_reason": "stop",
-                    }
-                ],
-                "usage": {"prompt_tokens": 50, "completion_tokens": 20},
-            },
-        )
+        assert release.wait(15), "Test did not release in-flight SQLite commit"
+        return original_commit(*args, **kwargs)
 
-    manager = JobManager(settings, ChatProvider(settings, httpx.MockTransport(handler)))
+    monkeypatch.setattr(manager.memory, "observe_proposals", blocked_commit)
     try:
         manager.start()
-        manager.start()  # The local launcher and ASGI lifespan can both call start.
-        accepted = manager.submit("generation", learning_request())
+        manager.start()
         assert entered.wait(5)
-        foreground = manager.store.load("jobs", accepted.job_id, Job)
-        assert foreground.status == "completed"
-        manager.stop()  # Its three-second join expires while the HTTP response is held.
+        manager.stop()
         assert manager.learning_thread.is_alive() and manager.thread.is_alive()
         assert probe_lease_in_another_process(manager.store.root) == {"error": "instance_busy"}
         release.set()
         manager.thread.join(5)
         assert not manager.thread.is_alive() and not manager.learning_thread.is_alive()
-        task = manager.learning.get(accepted.job_id)
-        assert task["state"] == "failed" and task["error"]["code"] == "interrupted"
-        assert task["usage"]["model_calls"] == 1 and task["usage"]["input_tokens"] == 50
-        assert manager.memory.list_entries() == []
-        assert manager.store.load("jobs", accepted.job_id, Job).usage == foreground.usage
+        task = manager.learning.get(source_id)
+        assert task["state"] == "completed"
+        assert task["usage"] == {} and not task["usage_unknown"]
+        assert manager.memory.list_entries()[0].value == "detailed"
         assert probe_lease_in_another_process(manager.store.root) == {"acquired": True}
     finally:
         release.set()
@@ -113,26 +92,19 @@ def test_stop_retains_process_lease_until_inflight_memory_response_finishes(tmp_
             manager.thread.join(5)
 
 
-def test_reconciliation_waits_for_acceptance_to_publish_parent_json(tmp_path, monkeypatch):
+def test_acceptance_does_not_enqueue_uninterpreted_user_text(tmp_path, monkeypatch):
     manager = JobManager(config(tmp_path))
     inside_accept, release = threading.Event(), threading.Event()
-    reconcile_started, reconcile_entered = threading.Event(), threading.Event()
     saved, failures = [], []
     original_save = manager.store.save
-    original_reconcile = manager.learning_worker._reconcile
 
     def save(kind, identifier, body):
         if kind == "records":
             inside_accept.set()
-            assert release.wait(5), "Test did not release parent JSON publication"
+            assert release.wait(5)
         return original_save(kind, identifier, body)
 
-    def reconcile(job_id):
-        reconcile_entered.set()
-        return original_reconcile(job_id)
-
     monkeypatch.setattr(manager.store, "save", save)
-    monkeypatch.setattr(manager.learning_worker, "_reconcile", reconcile)
 
     def accept():
         try:
@@ -142,37 +114,19 @@ def test_reconciliation_waits_for_acceptance_to_publish_parent_json(tmp_path, mo
 
     accepted_thread = threading.Thread(target=accept)
     accepted_thread.start()
-    reconcile_thread = None
     try:
         assert inside_accept.wait(3)
-        task = manager.learning.list()["tasks"][0]
-        assert task["state"] == "waiting"
-        assert not (manager.store.root / "jobs" / f"{task['job_id']}.json").exists()
-
-        def check_parent():
-            reconcile_started.set()
-            manager.learning_worker.reconcile(task["job_id"])
-
-        reconcile_thread = threading.Thread(target=check_parent)
-        reconcile_thread.start()
-        assert reconcile_started.wait(3)
-        assert not reconcile_entered.wait(0.1)  # Acceptance holds the shared manager lock.
-        manager.learning.cleanup()
-        assert manager.learning.get(task["job_id"])["state"] == "waiting"
+        assert manager.learning.list()["tasks"] == []
     finally:
         release.set()
         accepted_thread.join(5)
-        if reconcile_thread is not None:
-            reconcile_thread.join(5)
     assert not failures and len(saved) == 1
-    assert reconcile_entered.is_set()
     assert manager.store.load("jobs", saved[0].job_id, Job).status == "queued"
-    assert manager.learning.get(saved[0].job_id)["state"] == "waiting"
+    assert manager.learning.list()["tasks"] == []
+    manager.stop()
 
 
-def test_failed_acceptance_releases_capacity_even_if_learning_rollback_also_fails(
-    tmp_path, monkeypatch
-):
+def test_failed_acceptance_releases_capacity_without_creating_learning_task(tmp_path, monkeypatch):
     settings = config(tmp_path)
     settings.max_waiting = 0
     manager = JobManager(settings)
@@ -183,14 +137,11 @@ def test_failed_acceptance_releases_capacity_even_if_learning_rollback_also_fail
             raise OSError("controlled record failure")
         return original_save(kind, identifier, body)
 
-    def fail_cancel(*_args):
-        raise OSError("controlled SQLite cleanup failure")
-
     with monkeypatch.context() as faults:
         faults.setattr(manager.store, "save", fail_record)
-        faults.setattr(manager.learning, "cancel", fail_cancel)
         with pytest.raises(OSError):
             manager.submit("generation", learning_request())
+    assert manager.learning.list()["tasks"] == []
     request = learning_request().model_copy(update={"memory": None})
     accepted = manager.submit("generation", request)
     assert accepted.status == "queued"

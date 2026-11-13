@@ -16,6 +16,7 @@ from pathlib import Path
 import manimagent
 from manimagent.budget import Budget, BudgetExceeded
 from manimagent.errors import ContentError
+from manimagent.video.capabilities import visual_parameters
 from manimagent.video.models import PlannedScene
 
 
@@ -36,6 +37,11 @@ def renderer_fingerprint() -> str:
             "video/__init__.py",
             "video/models.py",
             "video/notation.py",
+            "video/capabilities.py",
+            "personalization.py",
+            "llm/__init__.py",
+            "llm/client.py",
+            "llm/usage.py",
         ]
     )
     fingerprint = hashlib.sha256()
@@ -230,7 +236,7 @@ class NativeRenderer:
         return self.run("check", directory, {"font": budget.settings.video_font}, budget, 30)
 
     def validate_layout(self, scene, directory, outline, scene_count, budget, index):
-        return self.run(
+        result = self.run(
             "layout",
             directory,
             {
@@ -239,10 +245,34 @@ class NativeRenderer:
                 "scene_index": index,
                 "scene_count": scene_count,
                 "font": budget.settings.video_font,
+                "visual_spec": scene.visual_spec.model_dump(),
             },
             budget,
             30,
         )
+        self.verify_visual(result, scene)
+        return result
+
+    @staticmethod
+    def verify_visual(result, scene):
+        expected = visual_parameters(scene.visual_spec)
+        if result.get("visual_parameters") != expected:
+            raise ContentError("render_visual", "渲染器未执行冻结视觉参数", state="needs_review")
+        if len(result["events"]) != len(scene.beats):
+            raise ContentError("render_coverage", "渲染缺少教学节拍", state="needs_review")
+        for event, beat in zip(result["events"], scene.beats, strict=True):
+            styles = [
+                {
+                    "object_id": obj.object_id,
+                    "color_role": obj.color,
+                    "color": expected["palette"][obj.color],
+                }
+                for obj in beat.diagram.objects
+            ]
+            if event.get("visual_parameters") != expected or event.get("object_styles") != styles:
+                raise ContentError(
+                    "render_visual", "实际图形颜色或视觉参数与合同不符", state="needs_review"
+                )
 
     def render(
         self, scene: PlannedScene, directory: Path, plan, budget: Budget, index: int
@@ -256,6 +286,7 @@ class NativeRenderer:
                 "scene_index": index,
                 "scene_count": len(plan.scenes),
                 "font": budget.settings.video_font,
+                "visual_spec": scene.visual_spec.model_dump(),
             },
             budget,
             budget.settings.video_render_timeout,
@@ -263,6 +294,7 @@ class NativeRenderer:
         media = result["media"]
         if abs(media["duration_seconds"] - scene.duration_seconds) > 1 / 30 + 0.001:
             raise ContentError("render_timing", "场景实测时长与计划不符", state="needs_review")
+        self.verify_visual(result, scene)
         if [e["beat_id"] for e in result["events"]] != [b.beat_id for b in scene.beats]:
             raise ContentError("render_coverage", "渲染缺少教学节拍", state="needs_review")
         for event, beat in zip(result["events"], scene.beats, strict=True):

@@ -13,6 +13,7 @@ import pytest
 from manimagent.budget import Budget
 from manimagent.config import Settings
 from manimagent.errors import ContentError
+from manimagent.personalization import VisualSpec
 from manimagent.schemas import Usage
 from manimagent.video.models import SceneDraft, SceneOutline
 from manimagent.video.renderer.media import probe
@@ -76,6 +77,96 @@ def test_fractional_beat_waits_preserve_exact_final_frame_count(tmp_path):
         abs(event["end_seconds"] - beat.end_seconds) < 0.001
         for event, beat in zip(result["events"], scene.beats, strict=True)
     )
+
+
+def test_visual_spec_executes_theme_large_text_and_minimal_motion(tmp_path):
+    scene = planned(
+        "visual",
+        [
+            {
+                "kind": "plane",
+                "x_range": [-2, 2],
+                "y_range": [-2, 5],
+                "objects": [
+                    {
+                        "object_id": "f",
+                        "kind": "function",
+                        "coefficients": [0, 0, 1],
+                        "domain": [-2, 2],
+                        "color": "primary",
+                    },
+                    {
+                        "object_id": "t",
+                        "kind": "tangent",
+                        "coefficients": [0, 0, 1],
+                        "domain": [0, 2],
+                        "at": 1,
+                        "color": "accent",
+                    },
+                    {
+                        "object_id": "n",
+                        "kind": "samples",
+                        "points": [[-1, 1], [0, 0], [1, 1]],
+                        "color": "secondary",
+                    },
+                ],
+            }
+        ]
+        * 3,
+    )
+    scene.visual_spec = VisualSpec(theme="blue_gold", font_scale="large", motion="minimal")
+    scene.title = "曲线与切线"
+    for beat in scene.beats:
+        beat.headline = "比较斜率"
+        beat.screen_text = "蓝色表示函数，金色表示切线。"
+    plan = SimpleNamespace(outline=SimpleNamespace(title="视觉参数执行"), scenes=[scene])
+    renderer = NativeRenderer()
+    budget = Budget(Settings(runs_dir=tmp_path), Usage())
+    original = scene.model_copy(deep=True)
+    original.visual_spec = VisualSpec()
+    reference = renderer.validate_layout(
+        original, tmp_path / "standard", plan.outline, 1, budget, 0
+    )
+    layout = renderer.validate_layout(scene, tmp_path / "layout", plan.outline, 1, budget, 0)
+    reference_box = reference["events"][0]["caption_bounds"]
+    large_box = layout["events"][0]["caption_bounds"]
+    assert (large_box["right"] - large_box["left"]) > 1.08 * (
+        reference_box["right"] - reference_box["left"]
+    )
+    result = renderer.render(scene, tmp_path / "render", plan, budget, 0)
+    assert result["visual_parameters"]["font_multiplier"] == 1.12
+    assert result["visual_parameters"]["motion"] == "minimal"
+    for event in result["events"]:
+        assert event["object_styles"][1]["color"] == "#FFD166"
+        assert event["geometry"][1]["slope"] == 2
+        assert event["geometry"][2]["kind"] == "samples"
+        assert event["stable_seconds"] == pytest.approx(1 + event["start_seconds"], abs=0.04)
+    assert probe(tmp_path / "render" / result["video_path"], decode=True)["decoded_frames"] > 0
+
+
+def test_numberline_uses_unconnected_samples_and_real_axis(tmp_path):
+    scene = planned(
+        "numberline",
+        [
+            {
+                "kind": "numberline",
+                "x_range": [-2, 3],
+                "objects": [
+                    {
+                        "object_id": "n",
+                        "kind": "samples",
+                        "points": [[0, 0], [1, 0], [2, 0]],
+                        "color": "accent",
+                    }
+                ],
+            }
+        ]
+        * 3,
+    )
+    result = NativeRenderer().validate_layout(
+        scene, tmp_path, SimpleNamespace(title="数轴采样"), 1, Budget(Settings(), Usage()), 0
+    )
+    assert result["events"][0]["geometry"][0]["points"] == [[0, 0], [1, 0], [2, 0]]
 
 
 def test_real_render_precision_geometry_and_decoded_complete_movie(tmp_path):

@@ -33,14 +33,14 @@
           <div class="attachment-section"><label for="files">添加附件 <span class="optional">可多选</span></label><input id="files" type="file" accept=".txt,.md,.markdown,.pdf,.docx,.xlsx,.pptx,.csv,.tsv,.json,.jsonl,.ipynb,.png,.jpg,.jpeg,.webp,.gif,.bmp,.tif,.tiff,.py,.js,.ts,.tex" multiple aria-describedby="file-help upload-error"><p class="hint" id="file-help">文档、图片、表格或代码</p><details class="input-support" id="input-support"><summary>支持的格式与限制</summary><p class="hint" id="upload-limits"></p><ul id="upload-support"><li>文字、Markdown、代码和结构化数据：保留正文与来源。</li><li>PDF / Word：文字、常见公式与表格；图像内容通过视觉模型读取。</li><li>Excel / PowerPoint：工作表、幻灯片文字与表格；复杂图表和特殊对象需要核对。</li><li>截图与扫描页：在核心 API 中配置支持图片的模型。</li></ul></details><p id="upload-summary" class="hint" role="status" aria-live="polite"></p><p id="upload-error" class="error-text" role="alert"></p><div id="file-list"></div></div>
           <button type="button" class="text-button" id="upload-reload" hidden>重新读取上传支持</button>
           <div class="generation-options"><div><label for="output-mode">输出内容</label><select id="output-mode"><option value="both">解答 + 动画</option><option value="text">仅完整解答</option></select></div><div id="video-options"><label for="video-profile">动画旁白</label><select id="video-profile"><option value="auto">跟随设置</option><option value="standard_narrated">本次配音</option><option value="standard_silent">本次不配音</option></select><p class="hint" id="narration-help">正在读取语音设置…</p></div></div>
-          <div class="memory-option"><label class="check-label"><input type="checkbox" id="memory-enabled">使用已有记忆</label><label class="check-label"><input type="checkbox" id="memory-learn" disabled>记住新的偏好</label><a id="memory-manage-link" href="#user-memory">管理</a><p class="visually-hidden" id="memory-mode" role="status"></p></div>
+          <div class="memory-option"><label class="check-label"><input type="checkbox" id="memory-enabled">使用已有记忆</label><label class="check-label"><input type="checkbox" id="memory-learn">记住新的偏好</label><a id="memory-manage-link" href="#user-memory">管理</a><p class="visually-hidden" id="memory-mode" role="status"></p></div>
           <button type="submit" id="generate">开始生成 <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h12m-5-5 5 5-5 5"/></svg></button><p id="error" role="alert"></p>
         </form>
       </section>
       <div class="results-column">
         <section class="panel output" id="answer-section" aria-labelledby="answer-heading">
           <div class="output-heading"><div><h2 id="answer-heading">解答</h2><p id="answer-meta">在这里阅读、编辑和导出</p></div><span class="state-badge" id="workspace-state" data-state="idle">等待输入</span></div>
-          <div class="task-summary"><div id="status" role="status" aria-live="polite"></div><p id="message"></p></div>
+          <div class="task-summary"><div id="status" role="status" aria-live="polite"></div><p id="message"></p><p id="job-memory-save" role="status" hidden></p></div>
           <div id="actions" class="toolbar" hidden><a id="download">下载 Markdown</a><button id="copy" class="secondary">复制</button><button id="edit" class="secondary">编辑</button><button id="reuse" class="secondary">复用材料</button><a id="video-jump" href="#video-panel" hidden>查看动画 ↓</a><button id="animate" class="secondary">生成动画 ↗</button></div>
           <div id="warnings" role="status"></div>
           <article id="result"><div class="empty-state">
@@ -72,7 +72,7 @@
       <div class="settings-content"><p class="settings-intro">填写连接信息，选择“使用此模型”，保存即可开始。</p>
         <form id="llm-form" autocomplete="off">
           <div id="llm-models"></div><button type="button" class="secondary" id="llm-add">＋ 新增模型</button>
-          <details class="role-settings" id="model-roles"><summary>高级 · 为不同任务分配模型</summary><p class="hint">默认可共用一个模型。回答与内容检查负责文字质量，规划、分块和计划检查负责动画；记忆提取也使用回答模型。</p><div class="llm-grid">
+          <details class="role-settings" id="model-roles"><summary>高级 · 为不同任务分配模型</summary><p class="hint">默认可共用一个模型。回答与内容检查负责文字质量，规划、分块和计划检查负责动画；前置请求解释也使用回答模型。</p><div class="llm-grid">
             <div><label for="llm-writer">回答模型</label><select id="llm-writer" required></select></div>
             <div><label for="llm-checker">内容检查模型</label><select id="llm-checker" required></select></div>
             <div><label for="llm-planner">动画规划模型</label><select id="llm-planner" required></select></div>
@@ -129,7 +129,7 @@
       <details class="add-memory"><summary>＋ 添加偏好</summary>
         <form id="memory-form">
           <label for="memory-text">希望系统记住什么？</label><textarea id="memory-text" maxlength="4000" required placeholder="例如：讲解几何题时，我更喜欢先看图，再看公式。"></textarea>
-          <p class="hint">会使用回答模型提取，请核对结果。</p>
+          <p class="hint">会先解释本次表达，再保存有原句依据的偏好；请核对结果。</p>
           <div class="button-row"><button type="submit" id="memory-add">生成记忆</button></div>
         </form>
       </details>
@@ -137,20 +137,19 @@
         <section class="memory-learning" aria-labelledby="memory-learning-heading"><div class="section-heading"><h3 id="memory-learning-heading">偏好沉淀进度</h3><button type="button" class="text-button" id="memory-learning-reload">刷新沉淀状态</button></div><p class="hint" id="memory-learning-summary" role="status" aria-live="polite">正在读取沉淀任务…</p><p class="hint" id="memory-learning-sync" role="status"></p><details><summary>最近的沉淀任务</summary><div id="memory-learning-list"></div></details><p class="hint">后台任务不改写已有回答与视频。可取消尚未完成的任务；已写入的记忆可在下方纠正或删除。</p></section>
       </details>
       <details class="advanced-disclosure" id="memory-advanced"><summary>高级管理</summary>
-        <p class="hint">短期记忆获得多次独立会话支持，或经你确认后进入深层。纠正、删除仅影响后续任务。</p>
+        <p class="hint">近期偏好获得多次独立会话支持，或经你明确确认后成为长期默认。仅本次要求不入库；在这里纠正、删除只影响后续任务。</p>
         <div class="button-row memory-tools"><button type="button" class="secondary" id="memory-new-session">开始新会话</button><button type="button" class="secondary" id="memory-reload">刷新记忆</button><button type="button" class="secondary" id="memory-cleanup">清理失效记忆</button></div>
-        <p class="hint">“记住新的偏好”在输出结束后处理；关闭它仍可使用已有记忆。已排队任务可在更新记录中取消。</p>
+        <p class="hint">读取与保存独立控制。请求解释后即可保存合法偏好，文字或视频失败不影响保存；取消生成也不会撤回已保存的偏好。尚未提交的保存任务可在更新记录中取消。</p>
         <details class="memory-files" id="memory-files"><summary>记忆文件 · 查看与调试</summary>
-          <p class="hint">每条记忆对应一个 Markdown 文件，索引与文件由系统维护。修改后需要显式导入，才会用于后续任务；已检测到的本地修改会保留。</p>
+          <p class="hint">Markdown 是有效记忆的只读导出，用于查看和调试。本地修改不会导入；更改偏好请使用上方管理操作。</p>
           <p class="memory-file-path" id="memory-files-root"></p>
           <button type="button" class="secondary" id="memory-files-reload">刷新文件状态</button>
           <p id="memory-files-message" role="status" aria-live="polite"></p>
           <details><summary>查看 MEMORY.md 索引</summary><pre id="memory-files-index"></pre></details>
           <div id="memory-files-list"></div>
-          <form id="memory-file-editor" hidden><h3 id="memory-file-title"></h3><label for="memory-file-content">Markdown 原文</label><textarea id="memory-file-content" maxlength="524288" spellcheck="false" required></textarea>
-            <p class="hint">只修改“## 记忆内容”的正文。字段、层级、版本和证据不能在这里修改；沉淀为深层仍使用上方“确认沉淀”。旧版本导入会被拒绝，请核对当前内容，不要改写版本号。</p>
-            <div class="button-row"><button type="submit" id="memory-file-save">保存并导入</button><button type="button" class="secondary" id="memory-file-close">关闭编辑，放弃页面修改</button></div>
-          </form>
+          <section id="memory-file-editor" hidden><h3 id="memory-file-title"></h3><label for="memory-file-content">Markdown 原文 · 只读</label><textarea id="memory-file-content" spellcheck="false" readonly></textarea>
+            <div class="button-row"><button type="button" class="secondary" id="memory-file-close">关闭预览</button></div>
+          </section>
         </details>
       </details>
     </section>

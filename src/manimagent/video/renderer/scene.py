@@ -19,6 +19,8 @@ from manim import (
     tempconfig,
 )
 
+from manimagent.personalization import VisualSpec
+from manimagent.video.capabilities import geometry_evidence, visual_parameters
 from manimagent.video.models import PlannedScene
 from manimagent.video.models import wrap_text as wrapped
 from manimagent.video.notation import break_formula
@@ -29,7 +31,12 @@ from manimagent.video.renderer.media import extract, probe
 def render(data: dict, directory: Path) -> dict:
     spec = PlannedScene.model_validate(data["scene"])
     font = font_name(data.get("font", "auto"))
-    layout = SceneLayout(directory, font)
+    visual_spec = VisualSpec.model_validate(data["visual_spec"])
+    if visual_spec != spec.visual_spec:
+        raise ValueError("visual: 场景与渲染参数不一致")
+    layout = SceneLayout(directory, font, visual_spec)
+    parameters = visual_parameters(visual_spec)
+    minimal = visual_spec.motion == "minimal"
     evidence = []
 
     class TeachingScene(Scene):
@@ -56,8 +63,10 @@ def render(data: dict, directory: Path) -> dict:
             count = layout.label(
                 f"{data['scene_index'] + 1:02d} / {data['scene_count']:02d}", 22, "muted"
             ).move_to(np.array([5.85, 3.48, 0]))
-            divider = Line([-6.65, 3.05, 0], [6.65, 3.05, 0], color="#33465F", stroke_width=1)
-            scene_title = layout.fit(layout.label(spec.title, 24, "blue"), 12.5, 0.45).move_to(
+            divider = Line(
+                [-6.65, 3.05, 0], [6.65, 3.05, 0], color=layout.palette["axis"], stroke_width=1
+            )
+            scene_title = layout.fit(layout.label(spec.title, 24, "primary"), 12.5, 0.45).move_to(
                 np.array([-6.5, 2.65, 0]), aligned_edge=LEFT
             )
             caption_card = RoundedRectangle(
@@ -65,7 +74,7 @@ def render(data: dict, directory: Path) -> dict:
                 height=1.32,
                 corner_radius=0.15,
                 stroke_width=0,
-                fill_color="#18283D",
+                fill_color=layout.palette["surface"],
                 fill_opacity=1,
             ).move_to([0, -2.83, 0])
             self.add(header, count, divider, scene_title, caption_card)
@@ -74,14 +83,18 @@ def render(data: dict, directory: Path) -> dict:
                 layout.active_beat = beat.beat_id
                 start = float(self.time)
                 if len(previous):
-                    self.play(FadeOut(previous), run_time=0.25)
+                    if minimal:
+                        self.remove(previous)
+                        self.wait(0.25, frozen_frame=True)
+                    else:
+                        self.play(FadeOut(previous), run_time=0.25)
                 else:
                     self.wait(0.25, frozen_frame=True)
                 diagram, objects, arrows, matrix_cells = layout.graphic(beat.diagram)
                 has_graphic = beat.diagram.kind != "none"
                 center = np.array([3.35 if has_graphic else 0, 0.2, 0])
                 width = 6.05 if has_graphic else 11.7
-                title = layout.fit(layout.label(beat.headline, 29, "gold"), width, 0.55).move_to(
+                title = layout.fit(layout.label(beat.headline, 29, "accent"), width, 0.55).move_to(
                     center + [0, 1.55, 0]
                 )
                 equations, inline_cells, formula_lines = VGroup(), [], []
@@ -125,12 +138,19 @@ def render(data: dict, directory: Path) -> dict:
                         or b["top"] > 2.25
                     ):
                         raise ValueError("layout: 内容越出安全边距")
-                self.play(FadeIn(VGroup(title, equations, caption, page)), run_time=0.35)
+                if minimal:
+                    self.add(title, equations, caption, page)
+                    self.wait(0.35, frozen_frame=True)
+                else:
+                    self.play(FadeIn(VGroup(title, equations, caption, page)), run_time=0.35)
                 # Draw vectors; the rest of the diagram appears in the same fixed window.
                 others = VGroup(*(part for part in diagram if all(part is not a for a in arrows)))
                 animations = [FadeIn(others)] if len(others) else []
                 animations.extend(GrowArrow(a) for a in arrows)
-                if animations:
+                if minimal:
+                    self.add(diagram)
+                    self.wait(0.4, frozen_frame=True)
+                elif animations:
                     self.play(*animations, run_time=0.4)
                 else:
                     self.wait(0.4, frozen_frame=True)
@@ -143,9 +163,17 @@ def render(data: dict, directory: Path) -> dict:
                     if beat.cue_objects
                     else equations
                 )
-                self.play(
-                    Indicate(highlight, scale_factor=1, color=layout.palette["gold"]), run_time=0.5
-                )
+                if minimal:
+                    # A static colour cue retains semantic emphasis without motion.
+                    highlighted = highlight.copy().set_color(layout.palette["accent"])
+                    self.add(highlighted)
+                    self.wait(0.5, frozen_frame=True)
+                    self.remove(highlighted)
+                else:
+                    self.play(
+                        Indicate(highlight, scale_factor=1, color=layout.palette["accent"]),
+                        run_time=0.5,
+                    )
                 # Frozen waits floor duration / frame_duration in Manim. Count
                 # frames against the absolute plan to prevent per-beat drift.
                 remaining_frames = round(beat.end_seconds * 30) - round(float(self.time) * 30)
@@ -173,6 +201,16 @@ def render(data: dict, directory: Path) -> dict:
                             for text, cell in inline_cells
                         ],
                         "objects": list(objects),
+                        "visual_parameters": parameters,
+                        "object_styles": [
+                            {
+                                "object_id": obj.object_id,
+                                "color_role": obj.color,
+                                "color": objects[obj.object_id].get_color().to_hex().upper(),
+                            }
+                            for obj in beat.diagram.objects
+                        ],
+                        "geometry": [geometry_evidence(obj) for obj in beat.diagram.objects],
                         "matrix_cells": matrix_cells,
                         "caption_bounds": layout.bounds(caption),
                         "content_bounds": layout.bounds(VGroup(title, equations, diagram)),
@@ -190,7 +228,7 @@ def render(data: dict, directory: Path) -> dict:
             "pixel_width": 1280,
             "pixel_height": 720,
             "frame_rate": 30,
-            "background_color": "#0C1728",
+            "background_color": layout.palette["background"],
             "media_dir": str(directory / "media"),
             "video_dir": str(directory),
             "output_file": "scene.mp4",
@@ -207,12 +245,19 @@ def render(data: dict, directory: Path) -> dict:
         scene = TeachingScene()
         scene.render()
     if data.get("layout_only"):
-        return {"status": "success", "font": font, "events": evidence, "layout_only": True}
+        return {
+            "status": "success",
+            "font": font,
+            "events": evidence,
+            "layout_only": True,
+            "visual_parameters": parameters,
+        }
     path = directory / "scene.mp4"
     metadata = probe(path)
     frames = extract(path, [e["frame_seconds"] for e in evidence], directory)
     return {
         "status": "success",
+        "visual_parameters": parameters,
         "video_path": path.name,
         "media": metadata,
         "events": evidence,

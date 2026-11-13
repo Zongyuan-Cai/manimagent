@@ -13,6 +13,7 @@ from manimagent.errors import ContentError
 from manimagent.llm.client import ChatProvider, ProviderError
 from manimagent.materials.service import MaterialService
 from manimagent.memory.audit import publish_memory_context
+from manimagent.personalization import compile_profile, interpret_request
 from manimagent.schemas import (
     Answer,
     AnswerRequest,
@@ -34,7 +35,9 @@ log = logging.getLogger(__name__)
 
 
 class JobExecution:
-    def __init__(self, store, identifier, *, stopping, transport, credentials, renderer):
+    def __init__(
+        self, store, identifier, *, stopping, transport, credentials, renderer, memory_sink
+    ):
         self.job = store.load("jobs", identifier, Job)
         self.record = store.load_record(identifier)
         self.settings = Settings.model_validate(self.record["settings"])
@@ -43,6 +46,7 @@ class JobExecution:
             self.settings.max_upload_bytes,
         )
         self.transport, self.credentials, self.renderer = transport, credentials, renderer
+        self.memory_sink = memory_sink
         self.usage = Usage()
         self.budget = Budget(self.settings, self.usage, stopping)
         self.generation = (
@@ -89,6 +93,7 @@ class JobExecution:
         self.stage_name = name
         self.job.stage = name
         self.job.message = {
+            "interpretation": "正在解释本次要求与偏好",
             "material": "正在解析材料",
             "answer": "正在生成并检查文字回答",
             "video": "正在生成教学动画",
@@ -109,9 +114,18 @@ class JobExecution:
     def video(self, answer_id, resume_job_id=None, video_profile_id="auto"):
         answer = self.store.load("answers", answer_id, Answer)
         self.record["memory_snapshot"] = answer.memory_snapshot
+        self.record["effective_profile"] = answer.effective_profile
+        self.record["request_intent"] = answer.request_intent
         self.record["memory_snapshot_known"] = "memory_snapshot" in answer.model_fields_set
         self.record.setdefault("memory_snapshot_source", {"answer_id": answer_id})
         self.stage("video")
+        issues = (answer.request_intent or {}).get("issues", [])
+        if any(item["stage"] == "video" for item in issues):
+            raise ContentError(
+                "unsupported_request",
+                "；".join(item["message"] for item in issues if item["stage"] == "video"),
+                state="needs_input",
+            )
         issues = self.renderer.preflight()
         if issues:
             raise ContentError("video_unavailable", "；".join(issues))
@@ -182,6 +196,9 @@ class JobExecution:
 
     def dispatch(self):
         request = self.record["request"]
+        source = request.get("source", request)
+        if self.job.kind in {"answer", "generation"} and source.get("type") != "answer":
+            self.interpret(source["instruction"])
         if self.job.kind == "video":
             result = self.video(
                 request["answer_id"],
@@ -203,6 +220,46 @@ class JobExecution:
             result = self.answers.generate(parsed, self.budget, self.record)
             return Ref(type="answer", id=result.answer_id)
         return self.generate_outputs()
+
+    def interpret(self, text):
+        if "memory_snapshot" not in self.record:
+            raise ContentError("invalid_record", "新任务缺少受理时的记忆审计快照", 500)
+        if self.generation:
+            from manimagent.schemas import StageState
+
+            self.generation.stages["interpretation"] = StageState()
+        self.stage("interpretation")
+        accepted = self.record.get("memory_acceptance")
+        scope = accepted["options"]["scope"] if accepted else "global"
+        interpretation = interpret_request(
+            self.provider_for(self.settings), self.budget, text, scope
+        )
+        self.record["interpretation"] = interpretation.model_dump(mode="json")
+        self.record["request_intent"] = interpretation.intent.model_dump(mode="json")
+        self.record["memory_save"] = {
+            "state": "pending" if accepted and accepted["options"]["learn"] else "disabled"
+        }
+        self.job.memory_save = dict(self.record["memory_save"])
+        # Persist the checked source-linked artifact before either consumer runs.
+        self.store.save("records", self.job.job_id, self.record)
+        self.save()
+        self.memory_sink(self.job.job_id, interpretation, self.record)
+        self.job.memory_save = dict(self.record["memory_save"])
+        self.save()
+        self.record["effective_profile"] = compile_profile(
+            interpretation.intent,
+            self.record["memory_snapshot"],
+            scope,
+        ).model_dump(mode="json")
+        self.store.save("records", self.job.job_id, self.record)
+        if self.generation:
+            self.generation.stages["interpretation"].status = "completed"
+            self.save_generation()
+        problems = [
+            issue.message for issue in interpretation.intent.issues if issue.stage == "answer"
+        ]
+        if problems:
+            raise ContentError("unsupported_request", "；".join(problems), state="needs_input")
 
     def run(self) -> Job:
         try:
@@ -255,8 +312,10 @@ class JobExecution:
             if self.generation:
                 self.generation.stages[self.stage_name].status = self.job.status
                 self.generation.stages[self.stage_name].error = self.job.error
-                if self.stage_name == "material":
+                if self.stage_name in {"material", "interpretation"}:
                     self.generation.stages["answer"].status = "blocked"
+                    if self.stage_name == "interpretation":
+                        self.generation.stages["material"].status = "blocked"
                 if self.generation.output_mode == "both":
                     if self.generation.answer_id:
                         self.job.status = "partial"

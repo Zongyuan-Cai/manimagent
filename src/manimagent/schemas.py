@@ -136,8 +136,141 @@ class MaterialIR(Contract):
 
 
 class SourceRef(Contract):
+    model_config = ConfigDict(extra="forbid", frozen=True)
     material_id: ResourceID
     block_id: ResourceID
+
+
+class SourceBlock(Contract):
+    """Accepted material text with immutable, lossless source-location metadata."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+    block_id: ResourceID
+    kind: Literal["heading", "text", "formula", "table", "image"]
+    content: NonEmpty
+    input_index: int = Field(ge=0)
+    file_id: ResourceID | None = None
+    locator: tuple[tuple[str, int], ...] = ()
+    verification: Literal["verified", "unverified", "unavailable"]
+    review_state: Literal["verified", "unverified"]
+
+
+class SourceWarning(Contract):
+    model_config = ConfigDict(extra="forbid", frozen=True)
+    code: str
+    message: str
+    block_ids: tuple[ResourceID, ...] = ()
+
+
+class SourceFile(Contract):
+    model_config = ConfigDict(extra="forbid", frozen=True)
+    file_id: ResourceID
+    filename: str
+    media_type: str
+
+
+class SourceMaterial(Contract):
+    model_config = ConfigDict(extra="forbid", frozen=True)
+    material_id: ResourceID
+    blocks: tuple[SourceBlock, ...] = Field(min_length=1)
+    warnings: tuple[SourceWarning, ...] = ()
+    source_files: tuple[SourceFile, ...] = ()
+
+
+class SourceBundle(Contract):
+    model_config = ConfigDict(extra="forbid", frozen=True)
+    schema_version: Literal["source-bundle-1"] = "source-bundle-1"
+    materials: tuple[SourceMaterial, ...] = Field(min_length=1)
+    allowed_source_refs: tuple[SourceRef, ...] = Field(min_length=1)
+
+    @model_validator(mode="after")
+    def exact_sources(self):
+        actual = [(m.material_id, b.block_id) for m in self.materials for b in m.blocks]
+        allowed = [(ref.material_id, ref.block_id) for ref in self.allowed_source_refs]
+        if (
+            len(actual) != len(set(actual))
+            or len(allowed) != len(set(allowed))
+            or set(actual) != set(allowed)
+        ):
+            raise ValueError("来源合同必须逐一对应完整材料块，不得重复或伪造引用")
+        return self
+
+
+class AnswerUnit(Contract):
+    model_config = ConfigDict(extra="forbid", frozen=True)
+    unit_id: Annotated[str, StringConstraints(pattern=r"^[A-Za-z][A-Za-z0-9_]{0,39}$")]
+    title: Annotated[str, StringConstraints(min_length=1, max_length=120)]
+    content: NonEmpty
+    source_refs: tuple[SourceRef, ...] = Field(min_length=1)
+    depends_on: tuple[str, ...]
+    required: bool = Field(strict=True)
+
+
+class AnswerDocument(Contract):
+    """One fact source for the readable answer and every downstream teaching unit."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+    schema_version: Literal["answer-document-1"] = "answer-document-1"
+    origin: Literal["structured", "legacy_markdown"] = "structured"
+    title: Annotated[str, StringConstraints(min_length=1, max_length=120)]
+    units: tuple[AnswerUnit, ...] = Field(min_length=1, max_length=70)
+
+    @model_validator(mode="after")
+    def coherent_units(self):
+        if self.origin == "structured" and any(
+            "\n" in title or "\r" in title or "[[" in title or "]]" in title
+            for title in (self.title, *(unit.title for unit in self.units))
+        ):
+            raise ValueError("结构化标题必须是单行，来源引用不能藏在标题中")
+        seen = set()
+        for unit in self.units:
+            if unit.unit_id in seen:
+                raise ValueError("教学单元 ID 必须唯一")
+            if (
+                len(unit.depends_on) != len(set(unit.depends_on))
+                or not set(unit.depends_on) <= seen
+            ):
+                raise ValueError("单元依赖必须引用已声明的先前单元，不能缺失或循环")
+            refs = [(ref.material_id, ref.block_id) for ref in unit.source_refs]
+            if len(refs) != len(set(refs)):
+                raise ValueError("单元来源不能重复")
+            if self.origin == "structured" and ("[[" in unit.content or "]]" in unit.content):
+                raise ValueError("来源放入 source_refs，由程序生成引用标记")
+            seen.add(unit.unit_id)
+        if not any(unit.required for unit in self.units):
+            raise ValueError("回答必须包含必要教学内容")
+        if self.origin == "legacy_markdown" and (len(self.units) != 1 or self.units[0].depends_on):
+            raise ValueError("旧 Markdown 只允许完整原文单元，不推测分段或依赖")
+        if sum(len(unit.content) for unit in self.units) > 180000:
+            raise ValueError("完整回答超过支持的正文容量，请拆分主题")
+        return self
+
+
+class AnswerCheck(Contract):
+    model_config = ConfigDict(extra="forbid", frozen=True)
+    decision: Literal["pass", "needs_input", "needs_review"]
+    message: str
+
+
+class VerifiedAnswer(Contract):
+    """A check receipt bound to the exact document, source snapshot and policy."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+    schema_version: Literal["verified-answer-1"] = "verified-answer-1"
+    answer_id: ResourceID
+    document_digest: Annotated[str, StringConstraints(pattern=r"^[a-f0-9]{64}$")]
+    source_digest: Annotated[str, StringConstraints(pattern=r"^[a-f0-9]{64}$")]
+    policy_hash: Annotated[str, StringConstraints(pattern=r"^[a-f0-9]{64}$")]
+    checker_profile_hash: Annotated[str, StringConstraints(pattern=r"^[a-f0-9]{64}$")]
+    decision: Literal["pass"] = "pass"
+    report: AnswerCheck
+    checked_at: str = Field(default_factory=now)
+
+    @model_validator(mode="after")
+    def passed(self):
+        if self.report.decision != "pass":
+            raise ValueError("未通过检查的回答不能生成放行凭据")
+        return self
 
 
 class AnswerNotice(Contract):
@@ -166,6 +299,10 @@ class Answer(Contract):
     steps: list[AnswerStep] = Field(min_length=1)
     warnings: list[AnswerNotice] = Field(default_factory=list)
     memory_snapshot: dict | None = None
+    request_intent: dict | None = None
+    effective_profile: dict | None = None
+    document: AnswerDocument | None = None
+    verification: VerifiedAnswer | None = None
     created_at: str = Field(default_factory=now)
 
 
@@ -274,10 +411,6 @@ class Job(Contract):
     error: Error | None = None
     diagnostic_asset_ids: list[ResourceID] = Field(default_factory=list)
     usage: dict = Field(default_factory=dict)
+    memory_save: dict | None = None
     created_at: str = Field(default_factory=now)
     updated_at: str = Field(default_factory=now)
-
-
-class AnswerCheck(Contract):
-    decision: Literal["pass", "needs_input", "needs_review"]
-    message: str

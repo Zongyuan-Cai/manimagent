@@ -32,7 +32,10 @@ def test_video_execution_passes_overridden_snapshot_to_service_and_budget(monkey
     task.record = {}
     task.store = SimpleNamespace(
         load=lambda *args: SimpleNamespace(
-            memory_snapshot=None, model_fields_set={"memory_snapshot"}
+            memory_snapshot=None,
+            effective_profile=None,
+            request_intent=None,
+            model_fields_set={"memory_snapshot"},
         )
     )
     task.transport = task.credentials = None

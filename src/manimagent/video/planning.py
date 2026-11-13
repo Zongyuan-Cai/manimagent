@@ -4,11 +4,13 @@ from __future__ import annotations
 
 from manimagent.errors import ContentError
 from manimagent.memory.projection import user_context
+from manimagent.personalization import EffectiveProfile, VisualSpec
+from manimagent.video.capabilities import CAPABILITIES, visual_parameters
 from manimagent.video.models import BeatDraft, SceneDraft, VideoOutline
 from manimagent.video.prompts import OUTLINE_PROMPT, SCENE_PROMPT
 from manimagent.video.review import RepairBudget
 from manimagent.video.timeline import build_plan, resolve_scene
-from manimagent.video.units import teaching_units
+from manimagent.video.units import dependency_closure, teaching_units
 
 
 class VideoPlanner:
@@ -18,9 +20,20 @@ class VideoPlanner:
         self.record.setdefault("scene_chunks", {})
         self.cached, self.progress = cached, progress
         self.repairs = RepairBudget()
-        self.units = teaching_units(self.answer.markdown)
+        self.units = teaching_units(self.answer)
         self.all_units = {u.unit_id for u in self.units}
+        self.effective_profile = (
+            EffectiveProfile.model_validate(self.answer.effective_profile)
+            if self.answer.effective_profile is not None
+            else None
+        )
+        self.visual_spec = self.effective_profile.visual if self.effective_profile else VisualSpec()
+        self.record["visual_application"] = {
+            "origin": "effective_profile" if self.effective_profile else "legacy_default",
+            **visual_parameters(self.visual_spec),
+        }
         self.payload = {
+            "capabilities": CAPABILITIES,
             "profile": {"min_seconds": 120, "max_seconds": 360, "max_scenes": 8, "max_beats": 42},
             "answer_markdown": self.answer.markdown,
             "teaching_units": [u.model_dump() for u in self.units],
@@ -28,10 +41,16 @@ class VideoPlanner:
         }
 
     def context(self, role, shared=None, **current):
+        stage_payload = {
+            key: value
+            for key, value in self.payload.items()
+            if role != "scene_generator"
+            or key not in {"answer_markdown", "teaching_units", "required_unit_ids"}
+        }
         return user_context(
-            {**self.payload, **(shared or {})},
+            {**stage_payload, **(shared or {})},
             role=role,
-            snapshot=self.answer.memory_snapshot,
+            effective_profile=self.answer.effective_profile,
             instruction=self.answer.instruction,
             **current,
         )
@@ -103,7 +122,9 @@ class VideoPlanner:
                 scene_time_budget_seconds=round(
                     285 * spec.beat_count / sum(s.beat_count for s in self.outline.scenes)
                 ),
-                selected_units=[u.model_dump() for u in self.units if u.unit_id in spec.unit_ids],
+                selected_units=[
+                    u.model_dump() for u in dependency_closure(self.units, spec.unit_ids)
+                ],
                 feedback=feedback,
                 previous_scene=self.record["scene_chunks"].get(spec.scene_id) if feedback else None,
             ),
@@ -139,6 +160,7 @@ class VideoPlanner:
                     scene = resolve_scene(spec, draft)
                 else:
                     scene = self.chunk(index, feedback)
+                scene.visual_spec = self.visual_spec
                 self.record["scene_chunks"][spec.scene_id] = scene.model_dump()
                 self.store.save("records", self.record["job_id"], self.record)
                 self.layout(index, scene)

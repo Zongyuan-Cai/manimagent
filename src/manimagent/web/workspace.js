@@ -7,7 +7,7 @@ const labels = {queued: '排队中', running: '处理中', completed: '已完成
 export function createWorkspace({dom, api, window, storage, crypto, scheduler = globalThis, memoryOptions = () => null, generationReadiness = () => null, onCompleted = () => {}}) {
   const {el} = dom;
   const state = {epoch: 0, jobId: null, answer: null, videoId: null, resumeJobId: null, timer: null, busy: false, revisionSaving: false, status: 'idle', reusedMaterialIds: null, fileRows: [], inputCapabilities: null, inputsLoading: false};
-  const {clearVideo, clearMemorySnapshot, setStatus, showAnswer, showVideo, showUsage, showMemoryContext} = createResults({state, dom, api, storage, window, crypto});
+  const {clearVideo, clearMemorySnapshot, setStatus, showAnswer, showVideo, showUsage, showMemoryContext, showMemorySave} = createResults({state, dom, api, storage, window, crypto});
   function beginView(clearShared = true) {
     state.epoch += 1; scheduler.clearTimeout(state.timer); state.timer = null; state.jobId = null; state.resumeJobId = null;
     storage.removeItem('manimagent.textJob');
@@ -17,6 +17,7 @@ export function createWorkspace({dom, api, window, storage, crypto, scheduler = 
     setStatus('');
     showUsage(null);
     showMemoryContext(null);
+    showMemorySave(null);
     if (clearShared && window.history) {
       const url = new URL(window.location.href);
       url.searchParams.delete('answer_id'); url.searchParams.delete('video_id');
@@ -124,6 +125,7 @@ export function createWorkspace({dom, api, window, storage, crypto, scheduler = 
       const job = await api.request(`/api/v2/jobs/${jobId}`);
       if (epoch !== state.epoch || jobId !== state.jobId) return;
       showUsage(job.usage);
+      showMemorySave(job.memory_save);
       setStatus(labels[job.status] || job.status, job.status);
       el('message').textContent = job.message;
       if (job.resource_ref?.type === 'generation') {

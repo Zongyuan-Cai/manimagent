@@ -81,7 +81,13 @@ def transport(settings, calls, check="pass"):
         body = json.loads(request.content)
         system = body["messages"][0]["content"]
         payload = json.loads(body["messages"][1]["content"])
-        if "先规划整体" in system:
+        if "user_text" in payload:
+            role = "interpretation"
+            output = {
+                "intent": {"overrides": [], "exclude_memory": [], "issues": []},
+                "proposals": [],
+            }
+        elif "先规划整体" in system:
             role = "outline"
             units = [u["unit_id"] for u in payload["teaching_units"]]
             output = {
@@ -97,7 +103,7 @@ def transport(settings, calls, check="pass"):
                         "scene_id": f"s{i}",
                         "title": f"教学单元{i}",
                         "objective": "解释完整推理过程",
-                        "unit_ids": units[i - 1 :: 3],
+                        "unit_ids": units[i - 1 :: 3] or units,
                         "beat_count": 3,
                     }
                     for i in range(1, 4)
@@ -149,8 +155,35 @@ def transport(settings, calls, check="pass"):
         else:
             role = "writer"
             ref = payload["allowed_source_refs"][0]
-            marker = f"[[{ref['material_id']}:{ref['block_id']}]]"
-            output = f"# 已知条件\n\n给定 x=1。{marker}\n\n# 计算依据\n\n采用给定数值直接相加，1+1=2。\n\n# 结论核对\n\n答案为2，满足给定计算。"
+            output = {
+                "title": "向量与计算",
+                "units": [
+                    {
+                        "unit_id": "u001",
+                        "title": "已知条件",
+                        "content": "给定 x=1。",
+                        "source_refs": [ref],
+                        "depends_on": [],
+                        "required": True,
+                    },
+                    {
+                        "unit_id": "u002",
+                        "title": "计算依据",
+                        "content": "采用给定数值直接相加，1+1=2。",
+                        "source_refs": [ref],
+                        "depends_on": ["u001"],
+                        "required": True,
+                    },
+                    {
+                        "unit_id": "u003",
+                        "title": "结论核对",
+                        "content": "答案为2，满足给定计算。",
+                        "source_refs": [ref],
+                        "depends_on": ["u002"],
+                        "required": True,
+                    },
+                ],
+            }
         calls.append(role)
         text = output if isinstance(output, str) else json.dumps(output, ensure_ascii=False)
         return httpx.Response(

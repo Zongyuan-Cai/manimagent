@@ -156,6 +156,7 @@ def test_cache_does_not_reduce_the_token_budget_and_over_budget_response_is_trac
         ),
         max_total_tokens=1000,
     )
+    client.settings.models["text"].max_output_tokens = 128
     with pytest.raises(BudgetExceeded):
         client.complete_text("answer_writer", "instruction", {}, budget)
     assert budget.usage.input_tokens + budget.usage.output_tokens == 1001

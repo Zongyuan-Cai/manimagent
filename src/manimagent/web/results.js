@@ -2,6 +2,18 @@ import {appendLink} from './dom.js';
 
 export function createResults({state, dom, api, storage, window, crypto}) {
   const {el} = dom;
+  function showMemorySave(status) {
+    const node = el('job-memory-save');
+    node.hidden = !status || status.state === 'disabled';
+    node.textContent = !status || status.state === 'disabled' ? '' : {
+      pending: '偏好候选已验证，正在提交保存。', waiting: '偏好候选已验证，正在提交保存。',
+      queued: '偏好等待保存，可在“我的偏好”查看进度。', running: '正在保存偏好，可在“我的偏好”查看进度。',
+      completed: '偏好保存任务已完成，可在“我的偏好”核对结果。',
+      failed: '偏好尚未保存。请在“我的偏好 → 偏好更新记录”查看原因或重试。',
+      cancelled: '本次偏好保存已取消。', skipped: '本次未保存新偏好。',
+      unknown: '偏好保存状态暂不可确认，请在“我的偏好”刷新核对。',
+    }[status.state] || '偏好保存状态暂不可确认。';
+  }
   function showMemoryContext(jobId) {
     el('memory-context-links').hidden = !jobId;
     for (const id of ['memory-context-view', 'memory-context-download']) el(id).removeAttribute('href');
@@ -127,5 +139,5 @@ export function createResults({state, dom, api, storage, window, crypto}) {
     }
   }
 
-  return {clearVideo, clearMemorySnapshot, setStatus, showAnswer, showVideo, showUsage, showMemoryContext};
+  return {clearVideo, clearMemorySnapshot, setStatus, showAnswer, showVideo, showUsage, showMemoryContext, showMemorySave};
 }

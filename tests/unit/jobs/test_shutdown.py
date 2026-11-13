@@ -44,9 +44,7 @@ def test_shutdown_updates_both_job_and_generation_stages(tmp_path):
     assert all(s.status == "interrupted" for s in generation.stages.values())
 
 
-def test_shutdown_continues_draining_after_storage_and_reconciliation_failures(
-    tmp_path, monkeypatch
-):
+def test_shutdown_continues_draining_after_storage_failure(tmp_path, monkeypatch):
     settings = settings_for(tmp_path)
     manager = JobManager(settings)
     request = TextGenerationRequest(
@@ -59,21 +57,15 @@ def test_shutdown_continues_draining_after_storage_and_reconciliation_failures(
     )
     first = manager.submit("generation", request)
     second = manager.submit("generation", request)
-    original_save, original_reconcile = manager.store.save, manager.learning_worker.reconcile
+    original_save = manager.store.save
 
     def fail_first_save(kind, identifier, body):
         if kind == "jobs" and identifier == first.job_id:
             raise OSError("controlled shutdown save failure")
         return original_save(kind, identifier, body)
 
-    def fail_first_reconcile(identifier):
-        if identifier == first.job_id:
-            raise OSError("controlled shutdown reconciliation failure")
-        return original_reconcile(identifier)
-
     with monkeypatch.context() as faults:
         faults.setattr(manager.store, "save", fail_first_save)
-        faults.setattr(manager.learning_worker, "reconcile", fail_first_reconcile)
         manager.stop()
     assert manager.queue.unfinished_tasks == 0 and manager.queue.empty()
     for _ in range(settings.max_waiting + 1):
@@ -81,14 +73,12 @@ def test_shutdown_continues_draining_after_storage_and_reconciliation_failures(
     assert not manager.slots.acquire(False)
     assert manager.store.load("jobs", first.job_id, Job).status == "queued"
     assert manager.store.load("jobs", second.job_id, Job).status == "interrupted"
-    cancelled = manager.learning.get(second.job_id)
-    assert cancelled["state"] == "cancelled"
-    assert cancelled["error"]["code"] == "answer_not_published"
+    assert manager.learning.list()["tasks"] == []
     # The first disk write can be recovered after storage becomes available.
     restarted = JobManager(settings)
     try:
         restarted.start()
         assert restarted.store.load("jobs", first.job_id, Job).status == "interrupted"
-        assert restarted.learning.get(first.job_id)["state"] == "cancelled"
+        assert restarted.learning.list()["tasks"] == []
     finally:
         restarted.stop()

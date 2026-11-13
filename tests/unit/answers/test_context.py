@@ -24,7 +24,11 @@ def test_context_keeps_same_name_files_separate_and_provides_actual_filenames(tm
             ).json()["job_id"],
         )
         assert job["status"] == "completed"
-        context = json.loads(calls[0]["messages"][1]["content"])
+        context = next(
+            payload
+            for call in calls
+            if "materials" in (payload := json.loads(call["messages"][1]["content"]))
+        )
         files = context["materials"][0]["source_files"]
         assert [f["filename"] for f in files] == ["same.txt", "same.txt"]
         assert len({f["file_id"] for f in files}) == 2

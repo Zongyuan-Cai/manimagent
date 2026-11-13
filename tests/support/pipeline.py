@@ -25,17 +25,32 @@ def controlled_provider(settings, calls, decision="pass", finish="stop", invalid
     def handler(request):
         body = json.loads(request.content)
         calls.append(body)
-        if "response_format" in body:
+        payload = json.loads(body["messages"][1]["content"])
+        if "user_text" in payload:
+            content = json.dumps(
+                {"intent": {"overrides": [], "exclude_memory": [], "issues": []}, "proposals": []}
+            )
+        elif "candidate_document" in payload:
             content = json.dumps({"decision": decision, "message": "检查结果"})
         else:
-            payload = json.loads(body["messages"][1]["content"])
             ref = payload["allowed_source_refs"][0]
             if invalid_ref:
                 ref["block_id"] = new_id("block")
-            content = (
-                "# 投影解答\n\n投影系数是 $3$，投影向量为 $(3,0)$。\n\n"
-                "\\[\\operatorname{proj}_{b}(a)=(3,0)\\]\n\n"
-                f"[[{ref['material_id']}:{ref['block_id']}]]\n"
+            content = json.dumps(
+                {
+                    "title": "投影解答",
+                    "units": [
+                        {
+                            "unit_id": "u001",
+                            "title": "计算投影",
+                            "content": "投影系数是 $3$，投影向量为 $(3,0)$。\\[\\operatorname{proj}_{b}(a)=(3,0)\\]",
+                            "source_refs": [ref],
+                            "depends_on": [],
+                            "required": True,
+                        }
+                    ],
+                },
+                ensure_ascii=False,
             )
         return httpx.Response(
             200,

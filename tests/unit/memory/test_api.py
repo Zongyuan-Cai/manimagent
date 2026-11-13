@@ -1,5 +1,4 @@
 import httpx
-import pytest
 from fastapi.testclient import TestClient
 
 from manimagent.api import create_app
@@ -10,30 +9,25 @@ from tests.support.animation import config
 from tests.support.memory import Clock, observe
 
 
-@pytest.mark.parametrize("temporary", [False, True])
-def test_patch_preserves_layer_until_explicit_long_term_confirmation(tmp_path, temporary):
+def test_patch_is_typed_explicit_correction_with_new_evidence(tmp_path):
     app = create_app(Settings(runs_dir=tmp_path))
     manager = app.state.job_manager
-    clock = Clock()
-    manager.memory = MemoryStore(manager.memory.path, clock=clock)
-    original = observe(manager.memory, temporary=temporary)
-    clock.advance(2)
+    original = observe(manager.memory)
     with TestClient(app) as client:
         response = client.patch(
-            f"/api/v2/memory/{original.memory_id}", json={"value": "先解释图例"}
+            f"/api/v2/memory/{original.memory_id}",
+            json={"value": "high_contrast", "confirm_long_term": True},
         )
         assert response.status_code == 200, response.text
         corrected = response.json()
-        assert corrected["layer"] == "short_term" and corrected["temporary"] is temporary
-        assert corrected["expires_at"] == original.expires_at
-        assert corrected["confirmed_at"] is None
-        promoted = client.patch(
-            f"/api/v2/memory/{corrected['memory_id']}",
-            json={"value": "以后先解释图例", "confirm_long_term": True},
+        assert corrected["value"] == "high_contrast" and corrected["layer"] == "deep"
+        assert corrected["independent_sessions"] == 1
+        assert (
+            client.patch(
+                f"/api/v2/memory/{corrected['memory_id']}", json={"value": "arbitrary theme"}
+            ).status_code
+            == 422
         )
-        assert promoted.status_code == 200, promoted.text
-        assert promoted.json()["layer"] == "deep" and not promoted.json()["temporary"]
-        assert promoted.json()["expires_at"] is None and promoted.json()["confirmed_at"]
 
 
 def test_patch_cannot_resurrect_expired_memory_even_with_confirmation(tmp_path):
@@ -46,7 +40,7 @@ def test_patch_cannot_resurrect_expired_memory_even_with_confirmation(tmp_path):
     with TestClient(app) as client:
         response = client.patch(
             f"/api/v2/memory/{original.memory_id}",
-            json={"value": "新值", "confirm_long_term": True},
+            json={"value": "high_contrast", "confirm_long_term": True},
         )
         # Background expiry cleanup may already have removed this record.
         assert response.status_code in {404, 422}

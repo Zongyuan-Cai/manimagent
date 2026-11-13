@@ -1,0 +1,34 @@
+{
+  "date": "2026-11-13",
+  "baseline": "e993868e16442327cbea0754681d8b045b0b1b38",
+  "source_sha256": "7971e80494058ec3b84e3e17344899309875d9140e4fd23ed4a8e1d87cbbcd60",
+  "python": {
+    "tests": "561",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "7",
+    "time": "148.526"
+  },
+  "web": {
+    "tests": 98,
+    "passed": 98,
+    "failed": 0
+  },
+  "native": {
+    "passed": 7,
+    "warnings": 1,
+    "seconds": 205.15,
+    "evidence": "terminal observation; temporary render artifacts not retained"
+  },
+  "distribution_checks": [
+    "PASS: manimagent-0.3.1-py3-none-any.whl - 94 runtime files match current source",
+    "PASS: manimagent-0.3.1-py3-none-any.whl - isolated install, CLI, HTTP API, UI and assets",
+    "PASS: manimagent-0.3.1.tar.gz - 94 runtime files match current source",
+    "PASS: manimagent-0.3.1.tar.gz - isolated install, CLI, HTTP API, UI and assets"
+  ],
+  "lint": "ruff check src tests scripts evals: passed",
+  "format": "186 files already formatted",
+  "lock_check": "passed",
+  "real_model_calls": 0,
+  "student_simulation_resumed": false
+}
